@@ -1,0 +1,56 @@
+# ARAPPAV top-level configuration
+# Composes sub-configs for models, training, reward, and data.
+# Use with Hydra: python scripts/run_selfplay.py --config-name default
+
+defaults:
+  - models/perturber
+  - models/verifier
+  - training/grpo
+  - training/dpo
+  - reward/reward
+  - data/corpus
+
+# --- Operating Mode ---
+# "paper": perturb/verify academic papers (original mode)
+# "math":  perturb/verify math problem solutions (Hendrycks MATH dataset)
+mode: paper
+
+# --- Self-Play Loop ---
+self_play:
+  num_rounds: 20
+  episodes_per_round: 512            # N: rollouts for Perturber update
+  verifier_episodes_per_round: 256   # M: rollouts for Verifier update
+  group_size_G: 8                    # GRPO group size (perturbations per paper)
+  pairs_per_update: 128              # DPO preference pairs per update
+  checkpoint_frequency: 5            # save checkpoint every N rounds
+  eval_frequency: 5                  # run held-out eval every N rounds
+  seed: 42
+
+# --- vLLM Serving ---
+vllm:
+  tensor_parallel_size: 1
+  gpu_memory_utilization: 0.90
+  max_model_len: 8192
+  dtype: "auto"
+  enforce_eager: false
+
+# --- Wandb ---
+wandb:
+  enabled: false
+  project: "arappav"
+  entity: null
+  run_name: null                     # auto-generated if null
+
+# --- Output ---
+output_dir: "./outputs"
+rollout_dir: "./data/rollouts"
+
+# --- Mode-specific defaults ---
+# Override these when running with mode=math
+math:
+  topics: ["algebra", "counting_and_probability", "geometry", "intermediate_algebra",
+           "number_theory", "prealgebra", "precalculus"]
+  max_train_per_topic: null          # null = use all training examples
+  max_val_per_topic: 100
+  max_test_per_topic: 100
+  k_range: [1, 4]                    # fewer errors for shorter solution texts

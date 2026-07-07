@@ -1,0 +1,16 @@
+# DPO training configuration for Verifier
+
+dpo:
+  learning_rate: 5.0e-6
+  per_device_batch_size: 2
+  gradient_accumulation_steps: 4
+  num_epochs: 1
+  max_grad_norm: 1.0
+  warmup_ratio: 0.1
+  lr_scheduler_type: "cosine"
+  optim: "adamw_8bit"
+  beta: 0.1                          # DPO temperature parameter
+  max_prompt_length: 4096
+  max_length: 6144                    # prompt + completion
+  loss_type: "sigmoid"               # sigmoid, hinge, ipo, etc.
+  precompute_ref_log_probs: false

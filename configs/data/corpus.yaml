@@ -1,0 +1,22 @@
+# Data / corpus configuration
+
+corpus:
+  source: "local"                     # "local" | "arxiv" | "huggingface"
+  raw_dir: "./data/raw"
+  processed_dir: "./data/processed"
+
+  # Chunking
+  chunk_strategy: "section"           # "section" | "fixed_window"
+  chunk_size: 2048                    # tokens (for fixed_window strategy)
+  chunk_overlap: 256                  # tokens (for fixed_window strategy)
+  min_chunk_tokens: 512               # skip chunks shorter than this
+
+  # Splits
+  train_split: 0.80
+  val_split: 0.10
+  test_split: 0.10
+  split_seed: 42
+
+  # Ingestion
+  supported_formats: ["txt", "md"]    # PDF/LaTeX are stretch goals
+  max_papers: null                    # null = use all; set for debugging with small corpus

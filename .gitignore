@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data (large / generated)
+data/raw/*
+data/processed/*
+data/rollouts/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/rollouts/.gitkeep
+
+# Models
+models/
+checkpoints/
+outputs/
+
+# Wandb
+wandb/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
