@@ -26,7 +26,6 @@ data/rollouts/*
 !data/rollouts/.gitkeep
 
 # Models
-models/
 checkpoints/
 outputs/
 
@@ -43,3 +42,6 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# claude code configuration file
+claude-code-source.sh

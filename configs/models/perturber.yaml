@@ -1,0 +1,16 @@
+# Perturber model configuration
+
+perturber:
+  model_name_or_path: "Qwen/Qwen2.5-3B-Instruct"
+  use_peft: true
+  lora:
+    r: 64
+    alpha: 128
+    dropout: 0.05
+    target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+  generation:
+    max_new_tokens: 4096
+    temperature: 0.8
+    top_p: 0.95
+    do_sample: true
+  prompt_template: "perturber_default"   # key into prompt registry
