@@ -44,6 +44,7 @@ class SelfPlayLoop:
         """
         self.cfg = cfg
         self.mode = cfg.get("mode", "paper")
+        self.freeze = cfg.self_play.get("freeze", None)  # None, "perturber", or "verifier"
         self.output_dir = Path(cfg.get("output_dir", "./outputs"))
         self.rollout_dir = Path(cfg.get("rollout_dir", "./data/rollouts"))
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -87,6 +88,8 @@ class SelfPlayLoop:
 
         self._load_perturber()
         self._load_verifier()
+
+        self._validate_freeze()
 
         logger.info(f"Self-play loop initialised (mode={self.mode}).")
 
@@ -159,6 +162,23 @@ class SelfPlayLoop:
 
         self.verifier_model = model
         self.verifier_tokenizer = tokenizer
+
+    def _validate_freeze(self):
+        """Validate the freeze config and log the active mode."""
+        allowed = (None, "perturber", "verifier")
+        if self.freeze not in allowed:
+            raise ValueError(
+                f"Invalid self_play.freeze={self.freeze!r}. "
+                f"Must be null, 'perturber', or 'verifier'."
+            )
+        if self.freeze is None:
+            logger.info("Freeze mode: none — both Perturber and Verifier will be trained.")
+        else:
+            logger.info(
+                "Freeze mode: '%s' — %s will NOT be trained.",
+                self.freeze,
+                "Perturber" if self.freeze == "perturber" else "Verifier",
+            )
 
     # ------------------------------------------------------------------
     # Data
@@ -414,33 +434,45 @@ class SelfPlayLoop:
         logger.info(f"{'='*60}\n  SELF-PLAY ROUND {self.round} / {self.cfg.self_play.num_rounds}  (mode={self.mode})\n{'='*60}")
 
         # --- Phase 1: Perturber update (GRPO) ---
-        logger.info("Phase 1: Collecting Perturber rollouts + GRPO update")
+        freeze_perturber = self.freeze == "perturber"
+
+        if freeze_perturber:
+            logger.info("Phase 1: Collecting Perturber rollouts (GRPO update SKIPPED — perturber frozen)")
+        else:
+            logger.info("Phase 1: Collecting Perturber rollouts + GRPO update")
+
         p_rollouts = self.collect_perturber_rollouts()
 
-        grpo_dataset = self._build_grpo_dataset(p_rollouts)
-        if grpo_dataset is not None and len(grpo_dataset) > 0:
-            self._train_perturber(grpo_dataset)
+        if not freeze_perturber:
+            grpo_dataset = self._build_grpo_dataset(p_rollouts)
+            if grpo_dataset is not None and len(grpo_dataset) > 0:
+                self._train_perturber(grpo_dataset)
 
         self._save_rollouts(p_rollouts, "perturber")
 
         # --- Phase 2: Verifier update (DPO) ---
-        logger.info("Phase 2: Collecting Verifier rollouts + DPO update")
-        v_rollouts = self.collect_verifier_rollouts(p_rollouts)
+        freeze_verifier = self.freeze == "verifier"
 
-        from arappav.training.preference_builder import build_preference_pairs, pairs_to_dataset
+        if freeze_verifier:
+            logger.info("Phase 2: Verifier frozen — skipping DPO update")
+        else:
+            logger.info("Phase 2: Collecting Verifier rollouts + DPO update")
+            v_rollouts = self.collect_verifier_rollouts(p_rollouts)
 
-        pairs = build_preference_pairs(
-            v_rollouts,
-            reward_config=OmegaConf.to_container(self.cfg.reward, resolve=True),
-            min_reward_gap=0.05,
-            max_pairs=self.cfg.self_play.pairs_per_update,
-        )
+            from arappav.training.preference_builder import build_preference_pairs, pairs_to_dataset
 
-        if pairs:
-            dpo_dataset = pairs_to_dataset(pairs)
-            self._train_verifier(dpo_dataset)
+            pairs = build_preference_pairs(
+                v_rollouts,
+                reward_config=OmegaConf.to_container(self.cfg.reward, resolve=True),
+                min_reward_gap=0.05,
+                max_pairs=self.cfg.self_play.pairs_per_update,
+            )
 
-        self._save_rollouts(v_rollouts, "verifier")
+            if pairs:
+                dpo_dataset = pairs_to_dataset(pairs)
+                self._train_verifier(dpo_dataset)
+
+            self._save_rollouts(v_rollouts, "verifier")
 
         # --- Checkpoint ---
         if self.round % self.cfg.self_play.checkpoint_frequency == 0:

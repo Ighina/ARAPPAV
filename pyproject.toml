@@ -26,10 +26,10 @@ classifiers = [
 dependencies = [
     "torch>=2.3.0",
     "transformers>=4.44.0",
-    "trl>=0.11.0",
+    "trl>=0.12.0,<0.20.0",
     "peft>=0.12.0",
     "accelerate>=0.33.0",
-    "vllm>=0.5.0",
+    "vllm>=0.14.0,<=0.23.0",
     "pydantic>=2.8.0",
     "datasets>=2.20.0",
     "wandb>=0.17.0",

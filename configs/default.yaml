@@ -22,6 +22,7 @@ self_play:
   verifier_episodes_per_round: 256   # M: rollouts for Verifier update
   group_size_G: 8                    # GRPO group size (perturbations per paper)
   pairs_per_update: 128              # DPO preference pairs per update
+  freeze: null                       # null (train both), "perturber" (train V only), "verifier" (train P only)
   checkpoint_frequency: 5            # save checkpoint every N rounds
   eval_frequency: 5                  # run held-out eval every N rounds
   seed: 42
