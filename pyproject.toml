@@ -24,22 +24,36 @@ classifiers = [
 ]
 
 dependencies = [
+    # Do NOT list torch here: on Colab it's preinstalled and CUDA-matched
+    # to the runtime already (torch 2.11.0+cu128 at time of writing).
+    # Re-declaring/pinning it here invites the resolver to touch it.
+
+    # Let trl's own [vllm] extra pick a vLLM version it actually supports.
+    # DO NOT pin vllm separately here — trl==0.19.1 documents its tested
+    # vLLM integration range as 0.10.2–0.12.x; a manually-pinned newer vllm
+    # (e.g. 0.20.0, 0.23.0) breaks on renamed internals like
+    # GuidedDecodingParams -> StructuredOutputsParams. See:
+    # https://github.com/huggingface/trl/issues/4617
+    "trl[vllm]==0.19.1",
+
     "transformers>=4.44.0,<5.0.0",
-    "trl==0.19.1",
     "peft>=0.12.0,<0.14.0",
     "accelerate>=1.4.0,<2.0.0",
-    "vllm==0.23.0",
-    "mistral-common[image]",
-    "torchao==0.17.0",
-    "pydantic>=2.8.0,<3.0.0",
     "datasets>=3.0.0,<4.0.0",
+    "pydantic>=2.8.0,<3.0.0",
     "wandb>=0.17.0",
     "pyyaml>=6.0",
     "omegaconf>=2.3.0,<2.4.0",
     "hydra-core>=1.3.0,<1.4.0",
     "rich>=13.0.0",
-    "numpy>=2.0.0,<3.0.0",
+    "numpy>=1.26.0,<3.0.0",
     "scikit-learn>=1.5.0",
+
+    # torchao intentionally omitted: not required for basic GRPO/DPO
+    # training, and recent versions (0.17.0) pull CUDA-13-linked CUTLASS
+    # kernels (_C_cutlass_90a.abi3.so, _C_mxfp8...so) that conflict with
+    # a CUDA-12 torch/vllm stack. Add back only if quantization is needed,
+    # and re-verify the whole install from scratch when you do.
 ]
 
 [project.optional-dependencies]
