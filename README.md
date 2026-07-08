@@ -279,13 +279,43 @@ All settings are in YAML files under `configs/`, composed by [Hydra](https://hyd
 
 | File | Controls |
 |------|----------|
-| `configs/default.yaml` | Top-level: **mode** (`paper` or `math`), rounds, episodes, vLLM, wandb, output paths, math dataset settings |
+| `configs/default.yaml` | Top-level: **mode** (`paper` or `math`), **freeze** (selective training), rounds, episodes, vLLM, wandb, output paths, math dataset settings |
 | `configs/models/perturber.yaml` | Perturber model ID, LoRA, generation params |
 | `configs/models/verifier.yaml` | Verifier model ID, LoRA, generation params |
 | `configs/training/grpo.yaml` | GRPO hyperparameters (lr, beta, group size, etc.) |
 | `configs/training/dpo.yaml` | DPO hyperparameters (lr, beta, loss type, etc.) |
 | `configs/reward/reward.yaml` | k range, format penalty, matching thresholds, anti-spam/duplicate |
 | `configs/data/corpus.yaml` | Corpus source, chunking strategy, split ratios (paper mode) |
+
+### Freeze Mode
+
+The `self_play.freeze` parameter allows selectively **deactivating the finetuning** of one model
+so you can train the other in isolation — useful for ablation studies and controlled experiments.
+
+| Value | Effect |
+|-------|--------|
+| `null` (default) | Both Perturber (GRPO) and Verifier (DPO) are trained normally |
+| `"perturber"` | Perturber is **frozen** — only the Verifier is trained (DPO) |
+| `"verifier"` | Verifier is **frozen** — only the Perturber is trained (GRPO) |
+
+> **Assertion:** At most one model can be frozen at a time. Setting `freeze` to `"perturber"`
+> or `"verifier"` guarantees the other model is still trained — it is not possible to freeze both.
+
+**CLI examples:**
+
+```bash
+# Train only the Perturber (keep Verifier fixed)
+python scripts/run_selfplay.py self_play.freeze=verifier
+
+# Train only the Verifier (keep Perturber fixed)
+python scripts/run_selfplay.py self_play.freeze=perturber
+
+# Train both (default)
+python scripts/run_selfplay.py
+```
+
+When a model is frozen, its rollouts are still collected (they're needed to compute rewards for
+the other model), but the weight update step is skipped.
 
 ---
 
