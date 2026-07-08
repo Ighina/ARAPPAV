@@ -226,7 +226,7 @@ class PerturberModel:
         text: str,
         k: int,
         solution: str | None = None,
-        template_name: str = "perturber_default",
+        template_name: str | None = None,
         **override_kwargs,
     ) -> tuple[PerturberOutput | MathPerturberOutput | None, str | None]:
         """Generate a perturbed version of the input with k errors.
@@ -236,13 +236,17 @@ class PerturberModel:
                   In math mode, this is the **problem** statement.
             k: Number of errors to inject.
             solution: Required in math mode — the correct solution to perturb.
-            template_name: Prompt template to use.
+            template_name: Prompt template to use (auto-selected per mode if None).
             **override_kwargs: Override default generation kwargs.
 
         Returns:
             ``(Output, None)`` on success, ``(None, error_msg)`` on failure.
             Output is ``PerturberOutput`` in paper mode, ``MathPerturberOutput`` in math mode.
         """
+        # Auto-select template based on mode
+        if template_name is None:
+            template_name = "perturber_math_default" if self.mode == "math" else "perturber_default"
+
         if self.mode == "math":
             if solution is None:
                 return None, "Math mode requires a 'solution' argument."
