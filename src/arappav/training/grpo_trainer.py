@@ -105,9 +105,8 @@ class GRPOPerturberTrainer:
             epsilon=self.config.epsilon,
             num_generations=self.config.num_generations,
             temperature=self.config.temperature,
-            max_prompt_length=self.config.max_prompt_length,
+            max_completion_length=self.config.max_prompt_length,
             use_vllm=self.config.use_vllm_for_rollouts,
-            missing_eos_penalty=self.config.missing_eos_penalty,
             logging_steps=10,
             save_steps=500,
             report_to="wandb" if False else "none",  # config-driven in practice

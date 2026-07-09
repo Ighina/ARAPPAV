@@ -93,7 +93,6 @@ class DPOVerifierTrainer:
             lr_scheduler_type=self.config.lr_scheduler_type,
             optim=self.config.optim,
             beta=self.config.beta,
-            max_prompt_length=self.config.max_prompt_length,
             max_length=self.config.max_length,
             loss_type=self.config.loss_type,
             precompute_ref_log_probs=self.config.precompute_ref_log_probs,
