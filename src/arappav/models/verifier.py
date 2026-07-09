@@ -16,6 +16,7 @@ from typing import Optional
 
 from arappav.errors.schema import VerifierOutput, validate_verifier_output
 from arappav.errors.schema_math import MathVerifierOutput, validate_math_verifier_output
+from arappav.utils.parsing import extract_first_json_object, strip_json_fences
 
 logger = logging.getLogger(__name__)
 
@@ -249,26 +250,20 @@ class VerifierModel:
 def _parse_verifier_response(
     raw_output: str, mode: str = "paper"
 ) -> tuple[VerifierOutput | MathVerifierOutput | None, str | None]:
-    """Attempt to parse the Verifier's raw string output as JSON."""
-    cleaned = raw_output.strip()
-    if cleaned.startswith("```json"):
-        cleaned = cleaned[7:]
-    elif cleaned.startswith("```"):
-        cleaned = cleaned[3:]
-    if cleaned.endswith("```"):
-        cleaned = cleaned[:-3]
-    cleaned = cleaned.strip()
+    """Attempt to parse the Verifier's raw string output as JSON.
 
-    if not cleaned.startswith("{"):
-        start = cleaned.find("{")
-        end = cleaned.rfind("}")
-        if start != -1 and end != -1 and end > start:
-            cleaned = cleaned[start:end + 1]
+    Handles common failure modes:
+    - Markdown code fences (including multiple blocks)
+    - Extra data after the first JSON object (e.g. a second ``{"claims":[]}``)
+    - Surrounding text before/after the JSON
+    """
+    # Strip all markdown fences (handles multi-block output)
+    cleaned = strip_json_fences(raw_output)
 
-    try:
-        data = json.loads(cleaned)
-    except json.JSONDecodeError as e:
-        return None, f"JSON parse error: {e}\nRaw output (first 500 chars): {raw_output[:500]}"
+    # Extract the first complete JSON object, ignoring trailing data
+    data, err = extract_first_json_object(cleaned)
+    if data is None:
+        return None, f"{err}\nRaw output (first 500 chars): {raw_output[:500]}"
 
     if mode == "math":
         return validate_math_verifier_output(data)

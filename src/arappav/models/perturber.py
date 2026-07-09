@@ -18,6 +18,7 @@ from arappav.errors.schema import PerturberOutput, validate_perturber_output
 from arappav.errors.schema_math import MathPerturberOutput, validate_math_perturber_output
 from arappav.errors.taxonomy import ErrorType
 from arappav.errors.taxonomy_math import MathErrorType
+from arappav.utils.parsing import apply_error_injections, extract_first_json_object, strip_json_fences
 
 logger = logging.getLogger(__name__)
 
@@ -267,39 +268,84 @@ class PerturberModel:
         if raw_output.startswith(prompt):
             raw_output = raw_output[len(prompt):].strip()
 
-        return _parse_response(raw_output, k, self.mode)
+        # Determine original text and the target field name
+        if self.mode == "math":
+            original_for_check = solution
+        else:
+            original_for_check = text
+
+        parsed, err = _parse_response(raw_output, k, self.mode, original_for_check)
+        if parsed is None:
+            return None, err
+
+        # --- Mechanical backoff: ensure errors are actually in the text -----
+        if self.mode == "math":
+            perturbed = parsed.perturbed_solution
+        else:
+            perturbed = parsed.perturbed_text
+
+        # Count how many injected_text substrings are actually present
+        error_dicts = [
+            {"error_id": e.error_id, "original_text": e.original_text,
+             "injected_text": e.injected_text}
+            for e in parsed.errors
+        ]
+        found = sum(
+            1 for e in error_dicts
+            if e["injected_text"] in perturbed
+        )
+
+        if found < len(error_dicts):
+            logger.warning(
+                "Only %d/%d injected_text values found in perturbed output — "
+                "applying mechanical backoff.", found, len(error_dicts),
+            )
+            mechanically_perturbed, warnings = apply_error_injections(
+                perturbed, error_dicts,
+            )
+            for w in warnings:
+                logger.warning("Mechanical injection: %s", w)
+
+            # Update the output object with the mechanically-perturbed text
+            if self.mode == "math":
+                parsed.perturbed_solution = mechanically_perturbed
+            else:
+                parsed.perturbed_text = mechanically_perturbed
+        else:
+            logger.info(
+                "All %d injected_text values found in perturbed output — "
+                "using model output as-is.", len(error_dicts),
+            )
+
+        return parsed, None
 
 
 def _parse_response(
-    raw_output: str, k: int, mode: str = "paper"
+    raw_output: str, k: int, mode: str = "paper",
+    original_text: str | None = None,
 ) -> tuple[PerturberOutput | MathPerturberOutput | None, str | None]:
     """Attempt to parse the Perturber's raw string output as JSON.
 
-    Handles common failure modes: markdown code fences, trailing commas,
+    Handles common failure modes: markdown code fences (including multiple
+    blocks), extra data after the first JSON object, trailing commas,
     missing outer braces.
+
+    Args:
+        raw_output: Raw model output.
+        k: Expected number of errors.
+        mode: ``"paper"`` or ``"math"``.
+        original_text: If provided, the original text/solution.  Used to
+            reject outputs where the perturbed text is unchanged.
     """
-    cleaned = raw_output.strip()
-    if cleaned.startswith("```json"):
-        cleaned = cleaned[7:]
-    elif cleaned.startswith("```"):
-        cleaned = cleaned[3:]
-    if cleaned.endswith("```"):
-        cleaned = cleaned[:-3]
-    cleaned = cleaned.strip()
+    # Strip all markdown fences (handles multi-block output)
+    cleaned = strip_json_fences(raw_output)
 
-    # Try to extract JSON object if there's surrounding text
-    if not cleaned.startswith("{"):
-        start = cleaned.find("{")
-        end = cleaned.rfind("}")
-        if start != -1 and end != -1 and end > start:
-            cleaned = cleaned[start:end + 1]
-
-    try:
-        data = json.loads(cleaned)
-    except json.JSONDecodeError as e:
-        return None, f"JSON parse error: {e}\nRaw output (first 500 chars): {raw_output[:500]}"
+    # Extract the first complete JSON object, ignoring trailing data
+    data, err = extract_first_json_object(cleaned)
+    if data is None:
+        return None, f"{err}\nRaw output (first 500 chars): {raw_output[:500]}"
 
     if mode == "math":
-        return validate_math_perturber_output(data, k)
+        return validate_math_perturber_output(data, k, original_text)
     else:
-        return validate_perturber_output(data, k)
+        return validate_perturber_output(data, k, original_text)

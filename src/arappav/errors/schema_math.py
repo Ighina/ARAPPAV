@@ -10,9 +10,13 @@ differ: math mode works with (problem, solution) pairs, not free-form text.
 
 from __future__ import annotations
 
+import logging
+
 from pydantic import BaseModel, Field, field_validator
 
 from arappav.errors.taxonomy_math import MathErrorType
+
+logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -100,6 +104,25 @@ class MathVerifierClaim(BaseModel):
             raise ValueError("quoted_text and explanation must not be empty")
         return v
 
+    @field_validator("error_type", mode="before")
+    @classmethod
+    def coerce_unknown_to_none(cls, v: str | MathErrorType | None) -> MathErrorType | None:
+        """If the Verifier outputs an error type not in the taxonomy, treat it as
+        ``None`` rather than failing validation.  The Verifier should not be
+        constrained to the Perturber's fixed taxonomy."""
+        if v is None:
+            return None
+        if isinstance(v, MathErrorType):
+            return v
+        # v is a string — check if it's a valid enum member
+        try:
+            return MathErrorType(v)
+        except ValueError:
+            logger.warning(
+                "Unknown error_type %r — coercing to None.", v,
+            )
+            return None
+
 
 class MathVerifierOutput(BaseModel):
     """Full structured output from the Verifier in math mode."""
@@ -116,13 +139,15 @@ class MathVerifierOutput(BaseModel):
 
 
 def validate_math_perturber_output(
-    data: dict, expected_k: int
+    data: dict, expected_k: int, original_solution: str | None = None
 ) -> tuple[MathPerturberOutput | None, str | None]:
     """Validate and parse Perturber output in math mode.
 
     Args:
         data: Raw parsed JSON from the Perturber.
         expected_k: Required number of injected errors.
+        original_solution: If provided, the original correct solution.  Used to
+            verify that the perturbed solution actually differs from the input.
 
     Returns:
         (MathPerturberOutput, None) on success, or (None, error_message) on failure.
@@ -141,6 +166,25 @@ def validate_math_perturber_output(
     ids = [e.error_id for e in output.errors]
     if len(ids) != len(set(ids)):
         return None, f"Duplicate error_ids detected: {ids}"
+
+    # Reject if the perturbed solution is identical to the original
+    if original_solution is not None and output.perturbed_solution == original_solution:
+        return None, (
+            "Perturber returned perturbed_solution identical to the original — "
+            "no errors were actually injected into the solution. "
+            f"The model defined {len(output.errors)} error(s) in JSON but "
+            "did not modify the solution text."
+        )
+
+    # Soft warning: check each injected_text appears somewhere in the output
+    for error in output.errors:
+        if error.injected_text not in output.perturbed_solution:
+            logger.warning(
+                "Injected text for %s not found in perturbed_solution — "
+                "the error may not be detectable. Injected: %r",
+                error.error_id,
+                error.injected_text[:120],
+            )
 
     return output, None
 

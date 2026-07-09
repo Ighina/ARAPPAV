@@ -11,10 +11,11 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from typing import Any
 
 from datasets import Dataset
 
-from arappav.errors.schema import InjectedError, VerifierOutput
+from arappav.errors.schema import InjectedError, VerifierClaim, VerifierOutput
 from arappav.reward.reward_fns import compute_rewards
 
 logger = logging.getLogger(__name__)
@@ -45,12 +46,14 @@ def build_preference_pairs(
 
     Each rollout dict must contain:
     - ``"prompt"``: the verifier prompt string.
-    - ``"responses"``: list of (raw_response_text, VerifierOutput | None, error | None) tuples
-      (from sampling n completions).
-    - ``"perturbed_text"``: the perturbed paper text.
+    - ``"responses"``: list of dicts, each with keys ``"raw_text"`` (str),
+      ``"parsed"`` (dict | None with ``"claims"`` key), ``"parse_error"``
+      (str | None).
+    - ``"perturbed_text"``: the perturbed paper/solution text.
     - ``"ground_truth"``: list of InjectedError objects.
     - ``"k"``: expected error count.
     - ``"paper_id"``: paper identifier.
+    - ``"mode"``: ``"paper"`` or ``"math"`` (used to reconstruct verifier output).
 
     Args:
         rollouts: List of rollout dicts as described above.
@@ -68,9 +71,16 @@ def build_preference_pairs(
         if len(responses) < 2:
             continue
 
+        mode = rollout.get("mode", "paper")
+
         # Score each response
         scored = []
-        for raw_text, verifier_out, parse_error in responses:
+        for r in responses:
+            raw_text = r["raw_text"]
+
+            # Reconstruct VerifierOutput from the serialised ``parsed`` dict
+            verifier_out = _parsed_to_verifier_output(r.get("parsed"), mode)
+
             if verifier_out is not None:
                 reward_out = compute_rewards(
                     ground_truth=rollout["ground_truth"],
@@ -139,6 +149,48 @@ def build_preference_pairs(
         logger.info(f"Subsampled to {len(pairs)} pairs")
 
     return pairs
+
+
+def _parsed_to_verifier_output(
+    parsed: dict[str, Any] | None, mode: str = "paper"
+) -> VerifierOutput | None:
+    """Reconstruct a ``VerifierOutput`` (or ``MathVerifierOutput``) from a
+    serialised ``parsed`` dict.
+
+    The dict has the form ``{"claims": [{"step_index": ..., "quoted_text": ...}, ...]}``
+    as produced by ``collect_verifier_rollouts`` in the self-play loop.
+
+    Args:
+        parsed: The serialised dict, or ``None`` if parsing failed.
+        mode: ``"paper"`` or ``"math"``.
+
+    Returns:
+        A ``VerifierOutput`` / ``MathVerifierOutput``, or ``None`` if
+        reconstruction fails.
+    """
+    if parsed is None:
+        return None
+
+    claims_list = parsed.get("claims", [])
+
+    if mode == "math":
+        from arappav.errors.schema_math import MathVerifierClaim, MathVerifierOutput
+
+        try:
+            return MathVerifierOutput(
+                claims=[MathVerifierClaim(**c) for c in claims_list]
+            )
+        except Exception:
+            logger.warning("Failed to reconstruct MathVerifierOutput from parsed dict.")
+            return None
+    else:
+        try:
+            return VerifierOutput(
+                claims=[VerifierClaim(**c) for c in claims_list]
+            )
+        except Exception:
+            logger.warning("Failed to reconstruct VerifierOutput from parsed dict.")
+            return None
 
 
 def pairs_to_dataset(pairs: list[PreferencePair]) -> Dataset:

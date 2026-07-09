@@ -6,9 +6,13 @@ Parse failures are hard-penalized rather than crashing the pipeline.
 
 from __future__ import annotations
 
+import logging
+
 from pydantic import BaseModel, Field, field_validator
 
 from arappav.errors.taxonomy import ErrorType
+
+logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -111,13 +115,15 @@ class VerifierOutput(BaseModel):
 
 
 def validate_perturber_output(
-    data: dict, expected_k: int
+    data: dict, expected_k: int, original_text: str | None = None
 ) -> tuple[PerturberOutput | None, str | None]:
     """Validate and parse Perturber output, enforcing exactly `expected_k` errors.
 
     Args:
         data: Raw parsed JSON from the Perturber.
         expected_k: Required number of injected errors.
+        original_text: If provided, the original paper text.  Used to verify
+            that the perturbed text actually differs from the input.
 
     Returns:
         (PerturberOutput, None) on success, or (None, error_message) on failure.
@@ -137,6 +143,25 @@ def validate_perturber_output(
     ids = [e.error_id for e in output.errors]
     if len(ids) != len(set(ids)):
         return None, f"Duplicate error_ids detected: {ids}"
+
+    # Reject if the perturbed text is identical to the original
+    if original_text is not None and output.perturbed_text == original_text:
+        return None, (
+            "Perturber returned perturbed_text identical to the original — "
+            "no errors were actually injected into the text. "
+            f"The model defined {len(output.errors)} error(s) in JSON but "
+            "did not modify the text."
+        )
+
+    # Soft warning: check each injected_text appears somewhere in the output
+    for error in output.errors:
+        if error.injected_text not in output.perturbed_text:
+            logger.warning(
+                "Injected text for %s not found in perturbed_text — "
+                "the error may not be detectable. Injected: %r",
+                error.error_id,
+                error.injected_text[:120],
+            )
 
     return output, None
 
