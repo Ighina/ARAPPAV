@@ -322,12 +322,12 @@ class SelfPlayLoop:
 
         return [
             {
-                "raw_text": "",  # raw text reconstructed from output
+                "raw_text": raw_text,
                 "claims": [c.model_dump() for c in vout.claims] if vout else [],
                 "parse_valid": vout is not None,
                 "parse_error": err,
             }
-            for (vout, err) in results
+            for (raw_text, vout, err) in results
         ]
 
     # ------------------------------------------------------------------
@@ -386,7 +386,11 @@ class SelfPlayLoop:
         perturber_rollouts: list[dict],
         n_completions: int = 3,
     ) -> list[dict]:
-        """Run Verifier on Perturber-generated texts to collect preference data."""
+        """Run Verifier on Perturber-generated texts to collect preference data.
+
+        Returns JSON-serialisable dicts so the saved JSONL is human-readable
+        for monitoring (no tuples, no raw dataclass objects).
+        """
         verifier_rollouts = []
 
         for rollout in perturber_rollouts:
@@ -400,22 +404,35 @@ class SelfPlayLoop:
                 perturbed_text, problem=problem, n_completions=n_completions,
             )
 
+            # Serialise each response into a plain dict for human-readable JSONL.
+            serialised_responses = []
+            for r in verifier_results:
+                parsed = None
+                if r["parse_valid"]:
+                    vout = _dict_to_verifier_output(r["claims"], self.mode)
+                    if vout is not None:
+                        parsed = {
+                            "claims": [c.model_dump() for c in vout.claims],
+                        }
+
+                serialised_responses.append(
+                    {
+                        "raw_text": r["raw_text"],
+                        "parsed": parsed,
+                        "parse_error": r.get("parse_error"),
+                    }
+                )
+
             verifier_rollouts.append(
                 {
-                    "prompt": perturbed_text,  # used as context for DPO
-                    "responses": [
-                        (r["raw_text"],
-                         None if not r["parse_valid"] else _dict_to_verifier_output(r["claims"], self.mode),
-                         r["parse_error"])
-                        for r in verifier_results
-                    ],
-                    "perturbed_text": perturbed_text,
-                    "ground_truth": [
-                        _dict_to_injected_error(e, self.mode) for e in rollout["ground_truth"]
-                    ],
-                    "k": rollout["k"],
+                    "round": self.round,
                     "paper_id": rollout["paper_id"],
                     "mode": self.mode,
+                    "k": rollout["k"],
+                    "prompt": perturbed_text,
+                    "perturbed_text": perturbed_text,
+                    "ground_truth": rollout.get("ground_truth", []),
+                    "responses": serialised_responses,
                 }
             )
 
@@ -429,37 +446,66 @@ class SelfPlayLoop:
     # ------------------------------------------------------------------
 
     def train_round(self):
-        """Execute one complete self-play round: update P, then update V."""
+        """Execute one complete self-play round: update P, then update V.
+
+        The Verifier **always** scores Perturber outputs so that:
+        - GRPO rewards are always based on real Verifier feedback (never dummy
+          penalties that zero out the advantage).
+        - Verifier outputs are always logged for monitoring, even when the
+          Verifier is frozen.
+        """
         self.round += 1
-        logger.info(f"{'='*60}\n  SELF-PLAY ROUND {self.round} / {self.cfg.self_play.num_rounds}  (mode={self.mode})\n{'='*60}")
+        logger.info(
+            f"{'='*60}\n"
+            f"  SELF-PLAY ROUND {self.round} / {self.cfg.self_play.num_rounds}"
+            f"  (mode={self.mode}, freeze={self.freeze})\n"
+            f"{'='*60}"
+        )
 
-        # --- Phase 1: Perturber update (GRPO) ---
         freeze_perturber = self.freeze == "perturber"
+        freeze_verifier = self.freeze == "verifier"
 
-        if freeze_perturber:
-            logger.info("Phase 1: Collecting Perturber rollouts (GRPO update SKIPPED — perturber frozen)")
-        else:
-            logger.info("Phase 1: Collecting Perturber rollouts + GRPO update")
-
+        # ------------------------------------------------------------------
+        # Phase 1: Perturber rollouts
+        # ------------------------------------------------------------------
+        logger.info("Phase 1a: Collecting Perturber rollouts …")
         p_rollouts = self.collect_perturber_rollouts()
+        self._save_rollouts(p_rollouts, "perturber")
 
-        if not freeze_perturber:
+        # ------------------------------------------------------------------
+        # Phase 2: Verifier scoring (ALWAYS — needed for rewards + monitoring)
+        # ------------------------------------------------------------------
+        logger.info(
+            "Phase 1b: Scoring Perturber rollouts with Verifier "
+            f"(verifier {'frozen' if freeze_verifier else 'trainable'}) …"
+        )
+        v_rollouts = self.collect_verifier_rollouts(p_rollouts)
+        self._save_rollouts(v_rollouts, "verifier")
+
+        # ------------------------------------------------------------------
+        # Phase 3: Perturber GRPO update (only if Perturber is trainable)
+        # ------------------------------------------------------------------
+        if freeze_perturber:
+            logger.info("Phase 1c: Perturber frozen — skipping GRPO update.")
+        else:
+            logger.info("Phase 1c: GRPO update on Perturber …")
             grpo_dataset = self._build_grpo_dataset(p_rollouts)
             if grpo_dataset is not None and len(grpo_dataset) > 0:
                 self._train_perturber(grpo_dataset)
+            else:
+                logger.warning("No valid GRPO prompts — skipping Perturber update.")
 
-        self._save_rollouts(p_rollouts, "perturber")
-
-        # --- Phase 2: Verifier update (DPO) ---
-        freeze_verifier = self.freeze == "verifier"
-
+        # ------------------------------------------------------------------
+        # Phase 4: Verifier DPO update (only if Verifier is trainable)
+        # ------------------------------------------------------------------
         if freeze_verifier:
-            logger.info("Phase 2: Verifier frozen — skipping DPO update")
+            logger.info("Phase 2: Verifier frozen — skipping DPO update.")
         else:
-            logger.info("Phase 2: Collecting Verifier rollouts + DPO update")
-            v_rollouts = self.collect_verifier_rollouts(p_rollouts)
-
-            from arappav.training.preference_builder import build_preference_pairs, pairs_to_dataset
+            logger.info("Phase 2: DPO update on Verifier …")
+            from arappav.training.preference_builder import (
+                build_preference_pairs,
+                pairs_to_dataset,
+            )
 
             pairs = build_preference_pairs(
                 v_rollouts,
@@ -471,8 +517,8 @@ class SelfPlayLoop:
             if pairs:
                 dpo_dataset = pairs_to_dataset(pairs)
                 self._train_verifier(dpo_dataset)
-
-            self._save_rollouts(v_rollouts, "verifier")
+            else:
+                logger.info("No preference pairs built — skipping Verifier update.")
 
         # --- Checkpoint ---
         if self.round % self.cfg.self_play.checkpoint_frequency == 0:
@@ -486,7 +532,10 @@ class SelfPlayLoop:
         for r in p_rollouts:
             if r.get("format_valid"):
                 self._perturbation_history.extend(
-                    [_dict_to_injected_error(e, self.mode) for e in r.get("ground_truth", [])]
+                    [
+                        _dict_to_injected_error(e, self.mode)
+                        for e in r.get("ground_truth", [])
+                    ]
                 )
 
         logger.info(f"Round {self.round} complete.")
@@ -528,75 +577,94 @@ class SelfPlayLoop:
         return Dataset.from_dict({"prompt": prompts})
 
     def _train_perturber(self, dataset):
-        """Run one GRPO update on the Perturber."""
-        if self.perturber_trainer is None:
-            from arappav.training.grpo_trainer import GRPOConfig, GRPOPerturberTrainer
+        """Run one GRPO update on the Perturber.
 
-            grpo_cfg = GRPOConfig(
-                learning_rate=self.cfg.grpo.learning_rate,
-                per_device_batch_size=self.cfg.grpo.per_device_batch_size,
-                gradient_accumulation_steps=self.cfg.grpo.gradient_accumulation_steps,
-                num_epochs=self.cfg.grpo.num_epochs,
-                max_grad_norm=self.cfg.grpo.max_grad_norm,
-                warmup_ratio=self.cfg.grpo.warmup_ratio,
-                lr_scheduler_type=self.cfg.grpo.lr_scheduler_type,
-                optim=self.cfg.grpo.optim,
-                beta=self.cfg.grpo.beta,
-                num_generations=self.cfg.grpo.num_generations,
-                temperature=self.cfg.grpo.temperature,
-                max_prompt_length=self.cfg.grpo.max_prompt_length,
-                use_vllm_for_rollouts=self.cfg.grpo.use_vllm_for_rollouts,
-            )
+        A fresh ``VerifierModel`` wrapper is created each call so the reward
+        function always runs the current Verifier (important when the Verifier
+        is being trained across rounds).
+        """
+        from arappav.training.grpo_trainer import GRPOConfig, GRPOPerturberTrainer
+        from arappav.training.grpo_trainer import make_perturber_reward_fn
+        from arappav.models.verifier import VerifierModel
 
-            from arappav.training.grpo_trainer import make_perturber_reward_fn
+        grpo_cfg = GRPOConfig(
+            learning_rate=self.cfg.grpo.learning_rate,
+            per_device_batch_size=self.cfg.grpo.per_device_batch_size,
+            gradient_accumulation_steps=self.cfg.grpo.gradient_accumulation_steps,
+            num_epochs=self.cfg.grpo.num_epochs,
+            max_grad_norm=self.cfg.grpo.max_grad_norm,
+            warmup_ratio=self.cfg.grpo.warmup_ratio,
+            lr_scheduler_type=self.cfg.grpo.lr_scheduler_type,
+            optim=self.cfg.grpo.optim,
+            beta=self.cfg.grpo.beta,
+            num_generations=self.cfg.grpo.num_generations,
+            temperature=self.cfg.grpo.temperature,
+            max_prompt_length=self.cfg.grpo.max_prompt_length,
+            use_vllm_for_rollouts=self.cfg.grpo.use_vllm_for_rollouts,
+        )
 
-            reward_fn = make_perturber_reward_fn(
-                verifier_model=None,
-                reward_config=OmegaConf.to_container(self.cfg.reward, resolve=True),
-                k_sampler=self._sample_k,
-            )
+        # Build a VerifierModel wrapper so the reward function can actually
+        # run the Verifier on GRPO-generated completions.
+        verifier_wrapper = VerifierModel(
+            model_name_or_path=self.cfg.verifier.model_name_or_path,
+            mode=self.mode,
+            use_vllm=self.vllm_engine is not None and self.vllm_engine.is_loaded(),
+            vllm_engine=self.vllm_engine,
+            generation_kwargs=dict(self.cfg.verifier.generation),
+        )
 
-            self.perturber_trainer = GRPOPerturberTrainer(
-                model=self.perturber_model,
-                tokenizer=self.perturber_tokenizer,
-                config=grpo_cfg,
-                reward_function=reward_fn,
-                output_dir=self.output_dir / f"perturber_round{self.round}",
-                use_peft=self.cfg.perturber.use_peft,
-            )
+        reward_fn = make_perturber_reward_fn(
+            verifier_model=verifier_wrapper,
+            reward_config=OmegaConf.to_container(self.cfg.reward, resolve=True),
+            k_sampler=self._sample_k,
+        )
+
+        # Rebuild the trainer each round so the reward function always
+        # captures the current Verifier.
+        self.perturber_trainer = GRPOPerturberTrainer(
+            model=self.perturber_model,
+            tokenizer=self.perturber_tokenizer,
+            config=grpo_cfg,
+            reward_function=reward_fn,
+            output_dir=self.output_dir / f"perturber_round{self.round}",
+            use_peft=self.cfg.perturber.use_peft,
+        )
 
         metrics = self.perturber_trainer.train(dataset)
         logger.info(f"GRPO metrics: {metrics}")
         return metrics
 
     def _train_verifier(self, dataset):
-        """Run one DPO update on the Verifier."""
-        if self.verifier_trainer is None:
-            from arappav.training.dpo_trainer import DPOConfig, DPOVerifierTrainer
+        """Run one DPO update on the Verifier.
 
-            dpo_cfg = DPOConfig(
-                learning_rate=self.cfg.dpo.learning_rate,
-                per_device_batch_size=self.cfg.dpo.per_device_batch_size,
-                gradient_accumulation_steps=self.cfg.dpo.gradient_accumulation_steps,
-                num_epochs=self.cfg.dpo.num_epochs,
-                max_grad_norm=self.cfg.dpo.max_grad_norm,
-                warmup_ratio=self.cfg.dpo.warmup_ratio,
-                lr_scheduler_type=self.cfg.dpo.lr_scheduler_type,
-                optim=self.cfg.dpo.optim,
-                beta=self.cfg.dpo.beta,
-                max_prompt_length=self.cfg.dpo.max_prompt_length,
-                max_length=self.cfg.dpo.max_length,
-                loss_type=self.cfg.dpo.loss_type,
-            )
+        Rebuilt each round so the trainer always sees the current model state
+        (important when the Verifier has been updated in previous rounds).
+        """
+        from arappav.training.dpo_trainer import DPOConfig, DPOVerifierTrainer
 
-            self.verifier_trainer = DPOVerifierTrainer(
-                model=self.verifier_model,
-                ref_model=None,
-                tokenizer=self.verifier_tokenizer,
-                config=dpo_cfg,
-                output_dir=self.output_dir / f"verifier_round{self.round}",
-                use_peft=self.cfg.verifier.use_peft,
-            )
+        dpo_cfg = DPOConfig(
+            learning_rate=self.cfg.dpo.learning_rate,
+            per_device_batch_size=self.cfg.dpo.per_device_batch_size,
+            gradient_accumulation_steps=self.cfg.dpo.gradient_accumulation_steps,
+            num_epochs=self.cfg.dpo.num_epochs,
+            max_grad_norm=self.cfg.dpo.max_grad_norm,
+            warmup_ratio=self.cfg.dpo.warmup_ratio,
+            lr_scheduler_type=self.cfg.dpo.lr_scheduler_type,
+            optim=self.cfg.dpo.optim,
+            beta=self.cfg.dpo.beta,
+            max_prompt_length=self.cfg.dpo.max_prompt_length,
+            max_length=self.cfg.dpo.max_length,
+            loss_type=self.cfg.dpo.loss_type,
+        )
+
+        self.verifier_trainer = DPOVerifierTrainer(
+            model=self.verifier_model,
+            ref_model=None,
+            tokenizer=self.verifier_tokenizer,
+            config=dpo_cfg,
+            output_dir=self.output_dir / f"verifier_round{self.round}",
+            use_peft=self.cfg.verifier.use_peft,
+        )
 
         metrics = self.verifier_trainer.train(dataset)
         logger.info(f"DPO metrics: {metrics}")
@@ -632,13 +700,34 @@ class SelfPlayLoop:
     def _run_eval(self):
         """Run held-out evaluation."""
         from arappav.eval.evaluate import run_evaluation
+        from arappav.models.perturber import PerturberModel
+        from arappav.models.verifier import VerifierModel
 
         dataset_dict = self._load_corpus()
+
+        # Build model wrappers matching the current training state.
+        # Use the same pattern as _run_perturber_episode / _run_verifier_episode.
+        perturber_wrapper = PerturberModel(
+            model_name_or_path=self.cfg.perturber.model_name_or_path,
+            mode=self.mode,
+            use_vllm=self.vllm_engine is not None and self.vllm_engine.is_loaded(),
+            vllm_engine=self.vllm_engine,
+            generation_kwargs=dict(self.cfg.perturber.generation),
+        )
+        verifier_wrapper = VerifierModel(
+            model_name_or_path=self.cfg.verifier.model_name_or_path,
+            mode=self.mode,
+            use_vllm=self.vllm_engine is not None and self.vllm_engine.is_loaded(),
+            vllm_engine=self.vllm_engine,
+            generation_kwargs=dict(self.cfg.verifier.generation),
+        )
+
         metrics = run_evaluation(
-            perturber_model=None,
-            verifier_model=None,
+            perturber_model=perturber_wrapper,
+            verifier_model=verifier_wrapper,
             eval_dataset=dataset_dict["val"],
             reward_config=OmegaConf.to_container(self.cfg.reward, resolve=True),
+            mode=self.mode,
         )
         logger.info(f"Eval metrics (round {self.round}): {metrics}")
 

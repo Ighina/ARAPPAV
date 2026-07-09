@@ -145,7 +145,7 @@ def main():
     verifier_results = verifier.generate(
         result_text, problem=args.text if args.mode == "math" else None, n_completions=1,
     )
-    verifier_out, v_err = verifier_results[0]
+    raw_verifier, verifier_out, v_err = verifier_results[0]
 
     if verifier_out is None:
         print(f"\n  ❌ Verifier FAILED: {v_err}")

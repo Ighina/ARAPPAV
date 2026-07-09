@@ -30,7 +30,7 @@ class DPOConfig:
     max_grad_norm: float = 1.0
     warmup_ratio: float = 0.1
     lr_scheduler_type: str = "cosine"
-    optim: str = "adamw_8bit"
+    optim: str = "adamw_torch"
     beta: float = 0.1
     max_prompt_length: int = 4096
     max_length: int = 6144

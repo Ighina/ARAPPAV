@@ -195,7 +195,7 @@ class VerifierModel:
         template_name: str | None = None,
         n_completions: int = 1,
         **override_kwargs,
-    ) -> list[tuple[VerifierOutput | MathVerifierOutput | None, str | None]]:
+    ) -> list[tuple[str, VerifierOutput | MathVerifierOutput | None, str | None]]:
         """Generate verifier claims for a given text/solution.
 
         Args:
@@ -207,7 +207,8 @@ class VerifierModel:
             **override_kwargs: Override default generation kwargs.
 
         Returns:
-            List of ``(Output, None)`` or ``(None, error_msg)`` tuples.
+            List of ``(raw_text, Output, None)`` or ``(raw_text, None, error_msg)`` triples.
+            ``raw_text`` is the stripped generated text (prompt removed).
             Output is ``VerifierOutput`` in paper mode, ``MathVerifierOutput`` in math mode.
         """
         # Auto-select template based on mode
@@ -216,7 +217,7 @@ class VerifierModel:
 
         if self.mode == "math":
             if problem is None:
-                return [(None, "Math mode requires a 'problem' argument.")]
+                return [("", None, "Math mode requires a 'problem' argument.")]
             prompt = build_math_verifier_prompt(problem, text, template_name)
         else:
             prompt = build_verifier_prompt(text, template_name)
@@ -237,9 +238,10 @@ class VerifierModel:
 
         parsed = []
         for raw in raw_outputs:
-            if raw.startswith(prompt):
-                raw = raw[len(prompt):].strip()
-            parsed.append(_parse_verifier_response(raw, self.mode))
+            # Strip prompt prefix to get the actual completion
+            stripped = raw[len(prompt):].strip() if raw.startswith(prompt) else raw.strip()
+            vout, err = _parse_verifier_response(stripped, self.mode)
+            parsed.append((stripped, vout, err))
 
         return parsed
 

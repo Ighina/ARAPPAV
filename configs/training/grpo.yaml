@@ -8,7 +8,7 @@ grpo:
   max_grad_norm: 1.0
   warmup_ratio: 0.1
   lr_scheduler_type: "cosine"
-  optim: "adamw_8bit"
+  optim: "adamw_torch"
   beta: 0.04                         # KL penalty coefficient
   epsilon: 0.2                       # clipping epsilon
   use_vllm_for_rollouts: true        # use vLLM during GRPO rollout generation

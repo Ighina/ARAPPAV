@@ -35,7 +35,7 @@ class GRPOConfig:
     max_grad_norm: float = 1.0
     warmup_ratio: float = 0.1
     lr_scheduler_type: str = "cosine"
-    optim: str = "adamw_8bit"
+    optim: str = "adamw_torch"
     beta: float = 0.04
     epsilon: float = 0.2
     num_generations: int = 8  # G
@@ -216,7 +216,7 @@ def make_perturber_reward_fn(
 
             # Run Verifier
             verifier_results = verifier_model.generate(perturber_out.perturbed_text, n_completions=1)
-            verifier_out, _ = verifier_results[0] if verifier_results else (None, "no output")
+            _, verifier_out, _ = verifier_results[0] if verifier_results else ("", None, "no output")
 
             if verifier_out is None:
                 # Verifier failed → Perturber "wins" by default
