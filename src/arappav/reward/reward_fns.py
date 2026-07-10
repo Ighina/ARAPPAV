@@ -48,6 +48,7 @@ class RewardOutput:
     format_violation_reason: str | None = None
     duplicate_penalty: float = 0.0
     spam_penalty: float = 0.0
+    phantom_penalty: float = 0.0
 
     # For logging / debugging
     perturber_base_reward: float = 0.0  # before penalties
@@ -101,6 +102,7 @@ def compute_rewards(
             num_matched=0,
             format_penalty_applied=True,
             format_violation_reason=perturber_format_reason,
+            phantom_penalty=0.0,
         )
 
     # --- Match claims to errors ---
@@ -150,8 +152,32 @@ def compute_rewards(
             ground_truth, historical_perturbations, config["anti_duplicate"]
         )
 
+    # --- Anti-phantom penalty (Perturber) ---
+    # Penalise the Perturber when it claims errors but doesn't actually
+    # modify the text (injected_text == original_text).  A single phantom
+    # error across k errors may be a fluke, but when too many are phantom
+    # the model is reward-hacking.
+    phantom_penalty = 0.0
+    anti_phantom_cfg = config.get("anti_phantom", {})
+    if anti_phantom_cfg.get("enabled", True) and k_actual > 0:
+        phantom_count = sum(
+            1 for e in ground_truth
+            if getattr(e, "injected_text", "").strip() == getattr(e, "original_text", "").strip()
+        )
+        phantom_ratio = phantom_count / k_actual
+        phantom_threshold = anti_phantom_cfg.get("max_phantom_ratio", 0.0)
+        phantom_penalty_per = anti_phantom_cfg.get("penalty", -10.0)
+
+        if phantom_ratio > phantom_threshold:
+            phantom_penalty = phantom_penalty_per
+            logger.warning(
+                "Phantom error penalty applied: %d/%d errors (%.0f%%) are phantom "
+                "(injected_text == original_text). Penalty: %.1f",
+                phantom_count, k_actual, phantom_ratio * 100, phantom_penalty,
+            )
+
     # --- Final rewards ---
-    r_P = r_P_base + dup_penalty
+    r_P = r_P_base + dup_penalty + phantom_penalty
     r_V = r_V_base + spam_penalty
 
     return RewardOutput(
@@ -165,6 +191,7 @@ def compute_rewards(
         num_matched=match_result.num_matched_errors,
         duplicate_penalty=dup_penalty,
         spam_penalty=spam_penalty,
+        phantom_penalty=phantom_penalty,
         perturber_base_reward=r_P_base,
         verifier_base_reward=r_V_base,
     )
@@ -326,4 +353,5 @@ def _default_config() -> dict:
         "use_semantic_match": False,
         "anti_duplicate": {"enabled": True, "similarity_threshold": 0.85, "penalty": -5.0},
         "anti_spam": {"enabled": True, "max_claims_ratio": 3.0, "penalty_per_excess": -0.5},
+        "anti_phantom": {"enabled": True, "max_phantom_ratio": 0.0, "penalty": -10.0},
     }

@@ -172,10 +172,11 @@ def make_perturber_reward_fn(
     verifier_model,
     reward_config: dict,
     k_sampler: callable | None = None,
+    mode: str = "paper",
 ):
     """Build a reward function suitable for TRL's GRPOTrainer.
 
-    The returned function has signature ``(prompts, completions) -> list[float]``
+    The returned function has signature ``(prompts, completions, **kwargs) -> list[float]``
     as expected by TRL. Internally it:
     1. Parses the Perturber's structured output from each completion.
     2. Runs the Verifier on each perturbed text.
@@ -185,6 +186,7 @@ def make_perturber_reward_fn(
         verifier_model: The (currently frozen) Verifier model wrapper.
         reward_config: Reward configuration dict.
         k_sampler: Optional callable ``() -> int`` for sampling k per episode.
+        mode: ``"paper"`` or ``"math"`` — determines which validation schema to use.
 
     Returns:
         A reward function compatible with TRL's GRPOTrainer.
@@ -194,11 +196,13 @@ def make_perturber_reward_fn(
     def reward_fn(prompts: list[str], completions: list[str], **kwargs) -> list[float]:
         import json
 
+        # Extract per-prompt original_solution values from the dataset columns
+        # (passed through by TRL's GRPOTrainer as kwargs).
+        original_solutions = kwargs.get("original_solution", [None] * len(prompts))
+
         rewards = []
-        for prompt, completion in zip(prompts, completions):
+        for i, (prompt, completion) in enumerate(zip(prompts, completions)):
             # Parse perturber output from completion
-            # TRL's GRPOTrainer passes prompt + completion; we need to extract
-            # the generated part.
             try:
                 # The completion should be JSON
                 data = json.loads(completion)
@@ -206,16 +210,39 @@ def make_perturber_reward_fn(
                 rewards.append(reward_config.get("format_penalty", -10.0))
                 continue
 
-            from arappav.errors.schema import validate_perturber_output
-
             k = k_sampler() if k_sampler else 3
-            perturber_out, err = validate_perturber_output(data, k)
+
+            # Use the mode-appropriate validator
+            original = (
+                original_solutions[i]
+                if i < len(original_solutions) and original_solutions[i]
+                else None
+            )
+            if mode == "math":
+                from arappav.errors.schema_math import validate_math_perturber_output
+
+                perturber_out, err = validate_math_perturber_output(
+                    data, k, original_solution=original,
+                )
+            else:
+                from arappav.errors.schema import validate_perturber_output
+
+                perturber_out, err = validate_perturber_output(
+                    data, k, original_text=original,
+                )
+
             if perturber_out is None:
+                logger.debug("GRPO reward: Perturber parse failed: %s", err)
                 rewards.append(reward_config.get("format_penalty", -10.0))
                 continue
 
-            # Run Verifier
-            verifier_results = verifier_model.generate(perturber_out.perturbed_text, n_completions=1)
+            # Run Verifier — math mode uses perturbed_solution, paper mode uses perturbed_text
+            if mode == "math":
+                perturbed_text = perturber_out.perturbed_solution
+            else:
+                perturbed_text = perturber_out.perturbed_text
+
+            verifier_results = verifier_model.generate(perturbed_text, n_completions=1)
             _, verifier_out, _ = verifier_results[0] if verifier_results else ("", None, "no output")
 
             if verifier_out is None:
@@ -223,7 +250,7 @@ def make_perturber_reward_fn(
                 reward_out = compute_rewards(
                     ground_truth=perturber_out.errors,
                     verifier_claims=[],
-                    perturbed_text=perturber_out.perturbed_text,
+                    perturbed_text=perturbed_text,
                     k=k,
                     config=reward_config,
                     perturber_format_valid=True,
@@ -232,7 +259,7 @@ def make_perturber_reward_fn(
                 reward_out = compute_rewards(
                     ground_truth=perturber_out.errors,
                     verifier_claims=verifier_out.claims,
-                    perturbed_text=perturber_out.perturbed_text,
+                    perturbed_text=perturbed_text,
                     k=k,
                     config=reward_config,
                     perturber_format_valid=True,

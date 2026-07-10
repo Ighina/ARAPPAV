@@ -42,6 +42,31 @@ class MatchResult:
     """Per-error dicts with overlap scores and best-match info."""
 
 
+def _normalize_for_matching(text: str) -> str:
+    """Normalize text for fuzzy span matching.
+
+    Handles common formatting mismatches between injected/claimed text and the
+    actual perturbed text, especially LaTeX alignment characters.
+
+    Transformations:
+    - Strip LaTeX alignment markers (``&``) from align/align* environments.
+    - Collapse consecutive whitespace.
+    """
+    import re
+
+    # Remove LaTeX alignment & characters (inside align environments these
+    # are formatting, not content).
+    normalized = text.replace("&=", "=")
+    normalized = normalized.replace("& ", " ")
+    # Also handle standalone & within math mode
+    normalized = re.sub(r"(?<=\s)&(?=\s)", "", normalized)
+
+    # Collapse whitespace
+    normalized = re.sub(r"\s+", " ", normalized)
+
+    return normalized
+
+
 def _compute_char_span_overlap(
     text_a: str, text_b: str, full_text: str
 ) -> float:
@@ -49,6 +74,9 @@ def _compute_char_span_overlap(
 
     Uses the first occurrence of each substring in ``full_text`` to determine
     character spans, then computes **intersection-over-union (IoU)** of the spans.
+
+    Falls back to a normalized text search when exact matching fails, handling
+    LaTeX alignment characters and whitespace differences.
 
     Args:
         text_a: First substring (e.g., injected_text from ground truth).
@@ -58,14 +86,33 @@ def _compute_char_span_overlap(
     Returns:
         IoU overlap in [0, 1]. 0 = no overlap; 1 = perfect span match.
     """
-    def _find_span(sub: str) -> tuple[int, int] | None:
-        idx = full_text.find(sub)
+    def _find_span(sub: str, text: str) -> tuple[int, int] | None:
+        idx = text.find(sub)
         if idx == -1:
             return None
         return (idx, idx + len(sub))
 
-    span_a = _find_span(text_a)
-    span_b = _find_span(text_b)
+    def _find_span_fuzzy(sub: str, text: str) -> tuple[int, int] | None:
+        """Try finding a normalized version of the substring in normalized text."""
+        sub_norm = _normalize_for_matching(sub)
+        text_norm = _normalize_for_matching(text)
+        idx = text_norm.find(sub_norm)
+        if idx == -1:
+            return None
+        # Return span in the *original* text, mapping back approximately.
+        # We map by counting characters up to idx in the normalized text,
+        # then finding the corresponding position in the original.
+        orig_pos = _map_norm_pos_to_original(idx, text_norm, text)
+        return (orig_pos, orig_pos + len(sub_norm))
+
+    # Try exact match first
+    span_a = _find_span(text_a, full_text)
+    if span_a is None:
+        span_a = _find_span_fuzzy(text_a, full_text)
+
+    span_b = _find_span(text_b, full_text)
+    if span_b is None:
+        span_b = _find_span_fuzzy(text_b, full_text)
 
     if span_a is None or span_b is None:
         return 0.0
@@ -86,6 +133,52 @@ def _compute_char_span_overlap(
         return 0.0
 
     return overlap_len / union_len
+
+
+def _map_norm_pos_to_original(norm_pos: int, norm_text: str, orig_text: str) -> int:
+    """Map a character position in normalized text back to the original text.
+
+    Walks through both strings in parallel, skipping whitespace differences and
+    LaTeX alignment characters that were removed during normalization.
+
+    Args:
+        norm_pos: Character index in the normalized text.
+        norm_text: The normalized version of orig_text.
+        orig_text: The original (unnormalized) text.
+
+    Returns:
+        Approximate character index in orig_text corresponding to norm_pos.
+    """
+    import re
+
+    orig_idx = 0
+    norm_idx = 0
+
+    while norm_idx < norm_pos and orig_idx < len(orig_text):
+        # Skip characters in original that were removed during normalization
+        orig_char = orig_text[orig_idx]
+        # LaTeX alignment & before =
+        if orig_text[orig_idx:orig_idx + 2] == "&=":
+            orig_idx += 1  # skip the &
+            continue
+        if orig_char == "&" and (
+            orig_idx + 1 >= len(orig_text) or orig_text[orig_idx + 1].isspace()
+        ):
+            orig_idx += 1
+            continue
+        # Collapsed whitespace: skip extra whitespace in original
+        if orig_char.isspace():
+            # Check if this is part of a collapsed whitespace run
+            if norm_idx > 0 and norm_text[norm_idx - 1] == " ":
+                # Already accounted for one space in normalized; skip extras
+                while orig_idx < len(orig_text) and orig_text[orig_idx].isspace():
+                    orig_idx += 1
+                continue
+
+        norm_idx += 1
+        orig_idx += 1
+
+    return orig_idx
 
 
 def match_claims_to_errors(

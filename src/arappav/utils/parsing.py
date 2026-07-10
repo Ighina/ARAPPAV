@@ -112,8 +112,20 @@ def apply_error_injections(
 
     # --- Step 1: locate each original_text in the text -----------------------
     located: list[dict] = []
+    phantom_count = 0
     for err in errors:
         orig = err["original_text"]
+        injected = err["injected_text"]
+
+        # Skip phantom errors — no actual modification to apply
+        if orig.strip() == injected.strip():
+            phantom_count += 1
+            warnings.append(
+                f"Phantom error {err.get('error_id', '?')}: "
+                f"injected_text equals original_text — skipping (no change to apply)."
+            )
+            continue
+
         pos = perturbed.find(orig)
 
         # Fallback: try with stripped whitespace
@@ -131,9 +143,15 @@ def apply_error_injections(
             {
                 "error_id": err.get("error_id", "?"),
                 "original_text": orig,
-                "injected_text": err["injected_text"],
+                "injected_text": injected,
                 "pos": pos,
             }
+        )
+
+    if phantom_count > 0:
+        logger.warning(
+            "Mechanical injection: %d phantom error(s) skipped (injected == original).",
+            phantom_count,
         )
 
     # --- Step 2: sort descending by position (replace from end to start) -----

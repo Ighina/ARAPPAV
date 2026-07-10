@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import logging
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from arappav.errors.taxonomy_math import MathErrorType
 
@@ -55,6 +55,19 @@ class MathInjectedError(BaseModel):
         if not v.strip():
             raise ValueError("text fields must not be empty")
         return v
+
+    @model_validator(mode="after")
+    def injected_must_differ_from_original(self):
+        """Reject phantom errors where injected_text equals original_text."""
+        inj = self.injected_text.strip()
+        orig = self.original_text.strip()
+        if inj == orig:
+            raise ValueError(
+                f"Phantom error detected for {self.error_id}: "
+                f"injected_text equals original_text — no actual modification was made. "
+                f"Text: {inj[:120]!r}"
+            )
+        return self
 
 
 class MathPerturberOutput(BaseModel):

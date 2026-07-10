@@ -558,6 +558,7 @@ class SelfPlayLoop:
     def _build_grpo_dataset(self, rollouts: list[dict]):
         """Build a HF Dataset for GRPO training from Perturber rollouts."""
         prompts = []
+        original_solutions = []
         for r in rollouts:
             if r.get("format_valid"):
                 if self.mode == "math":
@@ -565,16 +566,21 @@ class SelfPlayLoop:
                     prompt = build_math_perturber_prompt(
                         r["original_text"], r.get("original_solution", ""), r["k"],
                     )
+                    original_solutions.append(r.get("original_solution", ""))
                 else:
                     from arappav.models.perturber import build_perturber_prompt
                     prompt = build_perturber_prompt(r["original_text"], r["k"])
+                    original_solutions.append(r["original_text"])
                 prompts.append(prompt)
 
         if not prompts:
             return None
 
         from datasets import Dataset
-        return Dataset.from_dict({"prompt": prompts})
+        return Dataset.from_dict({
+            "prompt": prompts,
+            "original_solution": original_solutions,
+        })
 
     def _train_perturber(self, dataset):
         """Run one GRPO update on the Perturber.
@@ -617,6 +623,7 @@ class SelfPlayLoop:
             verifier_model=verifier_wrapper,
             reward_config=OmegaConf.to_container(self.cfg.reward, resolve=True),
             k_sampler=self._sample_k,
+            mode=self.mode,
         )
 
         # Rebuild the trainer each round so the reward function always
