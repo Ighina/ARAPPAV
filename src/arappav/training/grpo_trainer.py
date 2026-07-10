@@ -186,31 +186,43 @@ def make_perturber_reward_fn(
         verifier_model: The (currently frozen) Verifier model wrapper.
         reward_config: Reward configuration dict.
         k_sampler: Optional callable ``() -> int`` for sampling k per episode.
+            **Deprecated in favour of per-example k from the dataset column.**
+            Only used as a fallback when the dataset does not include a ``"k"`` column.
         mode: ``"paper"`` or ``"math"`` — determines which validation schema to use.
 
     Returns:
         A reward function compatible with TRL's GRPOTrainer.
     """
     from arappav.reward.reward_fns import compute_rewards
+    from arappav.utils.parsing import extract_first_json_object, strip_json_fences
 
     def reward_fn(prompts: list[str], completions: list[str], **kwargs) -> list[float]:
-        import json
-
-        # Extract per-prompt original_solution values from the dataset columns
-        # (passed through by TRL's GRPOTrainer as kwargs).
+        # Extract per-prompt metadata from the dataset columns (passed through
+        # by TRL's GRPOTrainer as kwargs, one value per prompt×generation).
         original_solutions = kwargs.get("original_solution", [None] * len(prompts))
+        k_values = kwargs.get("k", [None] * len(prompts))
 
         rewards = []
         for i, (prompt, completion) in enumerate(zip(prompts, completions)):
-            # Parse perturber output from completion
-            try:
-                # The completion should be JSON
-                data = json.loads(completion)
-            except json.JSONDecodeError:
+            # -----------------------------------------------------------------
+            # Robust JSON parsing (mirrors the Phase-1a rollout pipeline):
+            #   1. Strip markdown code fences (```json … ```).
+            #   2. Extract the first complete JSON object, ignoring
+            #      preamble / trailing text / second fallback blocks.
+            # -----------------------------------------------------------------
+            cleaned = strip_json_fences(completion)
+            data, _json_err = extract_first_json_object(cleaned)
+            if data is None:
                 rewards.append(reward_config.get("format_penalty", -10.0))
                 continue
 
-            k = k_sampler() if k_sampler else 3
+            # ----- k: prefer the dataset column, fall back to sampler ---------
+            if i < len(k_values) and k_values[i] is not None:
+                k = k_values[i]
+            elif k_sampler is not None:
+                k = k_sampler()
+            else:
+                k = 3
 
             # Use the mode-appropriate validator
             original = (

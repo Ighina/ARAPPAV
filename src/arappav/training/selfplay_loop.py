@@ -559,6 +559,7 @@ class SelfPlayLoop:
         """Build a HF Dataset for GRPO training from Perturber rollouts."""
         prompts = []
         original_solutions = []
+        ks = []
         for r in rollouts:
             if r.get("format_valid"):
                 if self.mode == "math":
@@ -572,6 +573,7 @@ class SelfPlayLoop:
                     prompt = build_perturber_prompt(r["original_text"], r["k"])
                     original_solutions.append(r["original_text"])
                 prompts.append(prompt)
+                ks.append(r["k"])
 
         if not prompts:
             return None
@@ -580,6 +582,7 @@ class SelfPlayLoop:
         return Dataset.from_dict({
             "prompt": prompts,
             "original_solution": original_solutions,
+            "k": ks,
         })
 
     def _train_perturber(self, dataset):
