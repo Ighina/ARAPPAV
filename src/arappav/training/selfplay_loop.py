@@ -272,6 +272,9 @@ class SelfPlayLoop:
                 "k": k,
                 "format_valid": False,
                 "format_reason": parse_err,
+                # Full raw output so failed episodes can be replayed when
+                # parsing/validation improves.
+                "raw_output": perturber_wrapper.last_raw_output,
             }
 
         # Normalize output: paper mode has perturbed_text, math mode has perturbed_solution

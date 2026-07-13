@@ -16,6 +16,7 @@ from typing import Optional
 
 from arappav.errors.schema import VerifierOutput, validate_verifier_output
 from arappav.errors.schema_math import MathVerifierOutput, validate_math_verifier_output
+from arappav.models.generation_utils import prepare_generation_kwargs
 from arappav.utils.parsing import extract_first_json_object, strip_json_fences
 
 logger = logging.getLogger(__name__)
@@ -226,14 +227,18 @@ class VerifierModel:
         gen_kwargs = {**self.generation_kwargs, **override_kwargs}
 
         if self.use_vllm and self.vllm_engine is not None:
+            # stop_after_json ends generation once the first fenced JSON
+            # object closes — bounds repetition collapse at decode time.
             raw_outputs = self.vllm_engine.generate(
-                [prompt] * n_completions, **gen_kwargs
+                [prompt] * n_completions,
+                **prepare_generation_kwargs(gen_kwargs, "vllm", stop_after_json=True),
             )
         else:
             pipeline = self._get_hf_pipeline()
+            hf_kwargs = prepare_generation_kwargs(gen_kwargs, "hf")
             results = []
             for _ in range(n_completions):
-                result = pipeline(prompt, **gen_kwargs)
+                result = pipeline(prompt, **hf_kwargs)
                 results.append(result[0]["generated_text"])
             raw_outputs = results
 

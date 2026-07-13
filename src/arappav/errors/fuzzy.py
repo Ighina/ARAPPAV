@@ -65,8 +65,13 @@ def fuzzy_match_enum(
     enum_cls: type[E],
     max_distance: int = 3,
     relaxed_distance: int = 10,
+    aliases: dict[str, str] | None = None,
 ) -> E | None:
     """Find the enum member closest to *name*, or None if nothing is close.
+
+    ``aliases`` maps known alternative names to enum values, checked before
+    any fuzzy matching. Use it for names models persistently emit that fuzzy
+    matching (correctly) refuses to guess.
 
     Two-tier strategy:
 
@@ -88,6 +93,11 @@ def fuzzy_match_enum(
         The closest enum member, or ``None`` if no match within distance.
     """
     name_lower = name.lower().strip()
+
+    if aliases and name_lower in aliases:
+        member = enum_cls(aliases[name_lower])
+        logger.warning("Aliased error_type %r → %r.", name, member.value)
+        return member
 
     scored = sorted(
         ((levenshtein_distance(name_lower, member.value), member) for member in enum_cls),

@@ -13,5 +13,6 @@ verifier:
     temperature: 0.6
     top_p: 0.95
     do_sample: true
+    repetition_penalty: 1.05       # discourages the repeated-JSON-block collapse
     n_completions: 3               # sample multiple responses for DPO pair construction
   prompt_template: "verifier_default"

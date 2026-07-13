@@ -193,8 +193,8 @@ def make_perturber_reward_fn(
     Returns:
         A reward function compatible with TRL's GRPOTrainer.
     """
+    from arappav.models.perturber import parse_and_backoff
     from arappav.reward.reward_fns import compute_rewards
-    from arappav.utils.parsing import extract_first_json_object, strip_json_fences
 
     def reward_fn(prompts: list[str], completions: list[str], **kwargs) -> list[float]:
         # Extract per-prompt metadata from the dataset columns (passed through
@@ -204,18 +204,6 @@ def make_perturber_reward_fn(
 
         rewards = []
         for i, (prompt, completion) in enumerate(zip(prompts, completions)):
-            # -----------------------------------------------------------------
-            # Robust JSON parsing (mirrors the Phase-1a rollout pipeline):
-            #   1. Strip markdown code fences (```json … ```).
-            #   2. Extract the first complete JSON object, ignoring
-            #      preamble / trailing text / second fallback blocks.
-            # -----------------------------------------------------------------
-            cleaned = strip_json_fences(completion)
-            data, _json_err = extract_first_json_object(cleaned)
-            if data is None:
-                rewards.append(reward_config.get("format_penalty", -10.0))
-                continue
-
             # ----- k: prefer the dataset column, fall back to sampler ---------
             if i < len(k_values) and k_values[i] is not None:
                 k = k_values[i]
@@ -224,28 +212,27 @@ def make_perturber_reward_fn(
             else:
                 k = 3
 
-            # Use the mode-appropriate validator
             original = (
                 original_solutions[i]
                 if i < len(original_solutions) and original_solutions[i]
                 else None
             )
-            if mode == "math":
-                from arappav.errors.schema_math import validate_math_perturber_output
 
-                perturber_out, err = validate_math_perturber_output(
-                    data, k, original_solution=original,
-                )
-            else:
-                from arappav.errors.schema import validate_perturber_output
-
-                perturber_out, err = validate_perturber_output(
-                    data, k, original_text=original,
-                )
+            # Parse + mechanical injection backoff — same pipeline as rollouts,
+            # so the trainer scores exactly what the rollout collector would.
+            perturber_out, err, failure_stage = parse_and_backoff(
+                completion, k, mode=mode, original_text=original,
+            )
 
             if perturber_out is None:
-                logger.debug("GRPO reward: Perturber parse failed: %s", err)
-                rewards.append(reward_config.get("format_penalty", -10.0))
+                logger.debug("GRPO reward: Perturber parse failed (%s): %s", failure_stage, err)
+                # Graded format penalties: unparseable JSON is worse than valid
+                # JSON that fails schema checks, so groups full of format
+                # failures still carry a reward gradient across severities.
+                if failure_stage == "json":
+                    rewards.append(reward_config.get("format_penalty", -10.0))
+                else:
+                    rewards.append(reward_config.get("format_penalty_soft", -5.0))
                 continue
 
             # Run Verifier — math mode uses perturbed_solution, paper mode uses perturbed_text
@@ -281,6 +268,27 @@ def make_perturber_reward_fn(
                 )
 
             rewards.append(reward_out.perturber_reward)
+
+        # --- Diagnostics: GRPO learns ONLY from within-group reward variance.
+        # A group whose completions all score the same (e.g. every one fails
+        # format with the same penalty) contributes zero advantage and zero
+        # gradient, regardless of how the loss looks.
+        groups: dict[str, list[float]] = {}
+        for p, r in zip(prompts, rewards):
+            groups.setdefault(p, []).append(r)
+        multi = [rs for rs in groups.values() if len(rs) > 1]
+        if multi:
+            uniform = sum(1 for rs in multi if max(rs) - min(rs) < 1e-9)
+            logger.info(
+                "GRPO reward batch: mean=%.3f | %d/%d groups with zero "
+                "within-group variance (those groups produce no gradient).",
+                sum(rewards) / len(rewards), uniform, len(multi),
+            )
+            if uniform == len(multi):
+                logger.warning(
+                    "All %d GRPO groups have uniform rewards — this batch "
+                    "produces NO learning signal.", len(multi),
+                )
 
         return rewards
 

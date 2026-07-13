@@ -18,6 +18,7 @@ from arappav.errors.schema import PerturberOutput, validate_perturber_output
 from arappav.errors.schema_math import MathPerturberOutput, validate_math_perturber_output
 from arappav.errors.taxonomy import ErrorType
 from arappav.errors.taxonomy_math import MathErrorType
+from arappav.models.generation_utils import prepare_generation_kwargs
 from arappav.utils.parsing import apply_error_injections, extract_first_json_object, strip_json_fences
 
 logger = logging.getLogger(__name__)
@@ -206,6 +207,10 @@ class PerturberModel:
         self.vllm_engine = vllm_engine
         self.generation_kwargs = generation_kwargs or {}
 
+        #: Raw text of the most recent generation — lets rollout collectors
+        #: record the unparsed output of failed episodes for later replay.
+        self.last_raw_output: str | None = None
+
         # Lazy-loaded HF pipeline (for non-vLLM local inference)
         self._hf_pipeline = None
 
@@ -258,15 +263,19 @@ class PerturberModel:
         gen_kwargs = {**self.generation_kwargs, **override_kwargs}
 
         if self.use_vllm and self.vllm_engine is not None:
-            raw_output = self.vllm_engine.generate_single(prompt, **gen_kwargs)
+            raw_output = self.vllm_engine.generate_single(
+                prompt, **prepare_generation_kwargs(gen_kwargs, "vllm")
+            )
         else:
             pipeline = self._get_hf_pipeline()
-            result = pipeline(prompt, **gen_kwargs)
+            result = pipeline(prompt, **prepare_generation_kwargs(gen_kwargs, "hf"))
             raw_output = result[0]["generated_text"]
 
         # Remove the prompt prefix if echoed back
         if raw_output.startswith(prompt):
             raw_output = raw_output[len(prompt):].strip()
+
+        self.last_raw_output = raw_output
 
         # Determine original text and the target field name
         if self.mode == "math":
@@ -274,78 +283,94 @@ class PerturberModel:
         else:
             original_for_check = text
 
-        parsed, err = _parse_response(raw_output, k, self.mode, original_for_check)
-        if parsed is None:
-            return None, err
-
-        # --- Mechanical backoff: ensure errors are actually in the text -----
-        if self.mode == "math":
-            perturbed = parsed.perturbed_solution
-        else:
-            perturbed = parsed.perturbed_text
-
-        # Count how many injected_text substrings are actually present
-        error_dicts = [
-            {"error_id": e.error_id, "original_text": e.original_text,
-             "injected_text": e.injected_text}
-            for e in parsed.errors
-        ]
-        found = sum(
-            1 for e in error_dicts
-            if e["injected_text"] in perturbed
+        parsed, err, _stage = parse_and_backoff(
+            raw_output, k, self.mode, original_for_check
         )
-
-        if found < len(error_dicts):
-            logger.warning(
-                "Only %d/%d injected_text values found in perturbed output — "
-                "applying mechanical backoff.", found, len(error_dicts),
-            )
-            mechanically_perturbed, warnings = apply_error_injections(
-                perturbed, error_dicts,
-            )
-            for w in warnings:
-                logger.warning("Mechanical injection: %s", w)
-
-            # Update the output object with the mechanically-perturbed text
-            if self.mode == "math":
-                parsed.perturbed_solution = mechanically_perturbed
-            else:
-                parsed.perturbed_text = mechanically_perturbed
-        else:
-            logger.info(
-                "All %d injected_text values found in perturbed output — "
-                "using model output as-is.", len(error_dicts),
-            )
-
-        return parsed, None
+        return parsed, err
 
 
-def _parse_response(
-    raw_output: str, k: int, mode: str = "paper",
+def parse_and_backoff(
+    raw_output: str,
+    k: int,
+    mode: str = "paper",
     original_text: str | None = None,
-) -> tuple[PerturberOutput | MathPerturberOutput | None, str | None]:
-    """Attempt to parse the Perturber's raw string output as JSON.
+) -> tuple[PerturberOutput | MathPerturberOutput | None, str | None, str | None]:
+    """Parse Perturber output, applying the mechanical injection backoff.
 
     Handles common failure modes: markdown code fences (including multiple
-    blocks), extra data after the first JSON object, trailing commas,
-    missing outer braces.
+    blocks), extra data after the first JSON object, invalid LaTeX escapes.
+
+    Crucially, the identical-to-original check runs **after** the mechanical
+    backoff: a model that defines valid errors in JSON but returns the
+    unmodified text is salvaged by injecting the errors mechanically, and is
+    only rejected if the text is still unchanged afterwards (e.g. all errors
+    are phantom or their original_text can't be located).
 
     Args:
         raw_output: Raw model output.
         k: Expected number of errors.
         mode: ``"paper"`` or ``"math"``.
-        original_text: If provided, the original text/solution.  Used to
-            reject outputs where the perturbed text is unchanged.
+        original_text: If provided, the original text/solution. Used to
+            reject outputs whose perturbed text is unchanged after backoff.
+
+    Returns:
+        ``(parsed, None, None)`` on success, or ``(None, error_msg, stage)``
+        on failure, where *stage* is ``"json"`` when no JSON object could be
+        extracted and ``"schema"`` for validation failures. Callers can use
+        the stage to grade format penalties.
     """
-    # Strip all markdown fences (handles multi-block output)
     cleaned = strip_json_fences(raw_output)
 
-    # Extract the first complete JSON object, ignoring trailing data
     data, err = extract_first_json_object(cleaned)
     if data is None:
-        return None, f"{err}\nRaw output (first 500 chars): {raw_output[:500]}"
+        return None, f"{err}\nRaw output (first 500 chars): {raw_output[:500]}", "json"
 
+    # Validate WITHOUT the identical-to-original check — that runs after the
+    # backoff below, which can rescue unmodified-text outputs.
     if mode == "math":
-        return validate_math_perturber_output(data, k, original_text)
+        parsed, err = validate_math_perturber_output(data, k, original_solution=None)
     else:
-        return validate_perturber_output(data, k, original_text)
+        parsed, err = validate_perturber_output(data, k, original_text=None)
+    if parsed is None:
+        return None, err, "schema"
+
+    text_field = "perturbed_solution" if mode == "math" else "perturbed_text"
+    perturbed = getattr(parsed, text_field)
+
+    error_dicts = [
+        {"error_id": e.error_id, "original_text": e.original_text,
+         "injected_text": e.injected_text}
+        for e in parsed.errors
+    ]
+    found = sum(1 for e in error_dicts if e["injected_text"] in perturbed)
+    unchanged = original_text is not None and perturbed == original_text
+
+    if found < len(error_dicts) or unchanged:
+        logger.warning(
+            "Only %d/%d injected_text values found in perturbed output%s — "
+            "applying mechanical backoff.",
+            found, len(error_dicts),
+            " (text unchanged from original)" if unchanged else "",
+        )
+        mechanically_perturbed, warnings = apply_error_injections(
+            perturbed, error_dicts,
+        )
+        for w in warnings:
+            logger.warning("Mechanical injection: %s", w)
+
+        setattr(parsed, text_field, mechanically_perturbed)
+        perturbed = mechanically_perturbed
+    else:
+        logger.info(
+            "All %d injected_text values found in perturbed output — "
+            "using model output as-is.", len(error_dicts),
+        )
+
+    if original_text is not None and perturbed == original_text:
+        return None, (
+            "Perturber returned perturbed text identical to the original, and "
+            f"mechanical injection could not apply any of the {len(error_dicts)} "
+            "declared error(s) — no detectable errors exist in the text."
+        ), "schema"
+
+    return parsed, None, None

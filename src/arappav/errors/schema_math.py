@@ -20,9 +20,16 @@ from arappav.errors.taxonomy_math import MathErrorType
 logger = logging.getLogger(__name__)
 
 
+#: Curated aliases for error-type names models persistently emit that fuzzy
+#: matching (correctly) refuses to guess. Observed in Round 1-2 rollouts.
+MATH_ERROR_TYPE_ALIASES = {
+    "sign_error": "negative_number_error",
+}
+
+
 def _fuzzy_match_math_error_type(name: str) -> MathErrorType | None:
     """Find the closest MathErrorType to *name* (see ``fuzzy.fuzzy_match_enum``)."""
-    return fuzzy_match_enum(name, MathErrorType)
+    return fuzzy_match_enum(name, MathErrorType, aliases=MATH_ERROR_TYPE_ALIASES)
 
 
 # ---------------------------------------------------------------------------

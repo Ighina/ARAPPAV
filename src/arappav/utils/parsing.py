@@ -9,8 +9,31 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 
 logger = logging.getLogger(__name__)
+
+#: Scans escape sequences left-to-right: group 1 captures a VALID JSON escape
+#: (``\\``, ``\"``, ``\/``, ``\b``, ``\f``, ``\n``, ``\r``, ``\t``, ``\u``),
+#: which is consumed unchanged; a lone backslash starting anything else (raw
+#: LaTeX like ``\cdot`` or ``\,``) matches bare and gets doubled. Consuming
+#: valid escapes first is essential so the second backslash of a valid ``\\``
+#: pair is never re-examined (else ``\\phantom`` would be corrupted).
+_JSON_ESCAPE_TOKEN_RE = re.compile(r'(\\["\\/bfnrtu])|\\')
+
+
+def _repair_invalid_json_escapes(text: str) -> str:
+    """Escape backslashes that start an invalid JSON escape sequence.
+
+    Turns raw LaTeX like ``\\cdot`` (invalid JSON) into ``\\\\cdot`` so the
+    string parses; the decoded value then holds the intended single-backslash
+    LaTeX command. LaTeX commands that happen to start with a valid escape
+    letter (``\\frac``, ``\\boxed``, ``\\neq``, ...) are indistinguishable
+    from intentional escapes and are left alone.
+    """
+    return _JSON_ESCAPE_TOKEN_RE.sub(
+        lambda m: m.group(1) if m.group(1) else "\\\\", text
+    )
 
 
 def strip_json_fences(text: str) -> str:
@@ -73,11 +96,24 @@ def extract_first_json_object(text: str) -> tuple[dict | None, str | None]:
 
     # Use raw_decode to parse just the first JSON object — ignores trailing
     # data (e.g. a second JSON block or stray backticks).
+    decoder = json.JSONDecoder()
     try:
-        decoder = json.JSONDecoder()
         data, _ = decoder.raw_decode(cleaned)
         return data, None
     except json.JSONDecodeError as e:
+        # Recovery: models often write raw LaTeX in JSON strings, producing
+        # invalid escapes like "\cdot". Repair those and retry once.
+        repaired = _repair_invalid_json_escapes(cleaned)
+        if repaired != cleaned:
+            try:
+                data, _ = decoder.raw_decode(repaired)
+                logger.warning(
+                    "Recovered JSON output by escaping invalid backslash "
+                    "escapes (raw LaTeX inside JSON strings)."
+                )
+                return data, None
+            except json.JSONDecodeError:
+                pass
         return None, f"JSON parse error after fence stripping: {e}\nFirst 500 chars: {cleaned[:500]}"
 
 
