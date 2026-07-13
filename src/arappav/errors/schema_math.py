@@ -14,9 +14,15 @@ import logging
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
+from arappav.errors.fuzzy import fuzzy_match_enum
 from arappav.errors.taxonomy_math import MathErrorType
 
 logger = logging.getLogger(__name__)
+
+
+def _fuzzy_match_math_error_type(name: str) -> MathErrorType | None:
+    """Find the closest MathErrorType to *name* (see ``fuzzy.fuzzy_match_enum``)."""
+    return fuzzy_match_enum(name, MathErrorType)
 
 
 # ---------------------------------------------------------------------------
@@ -55,6 +61,38 @@ class MathInjectedError(BaseModel):
         if not v.strip():
             raise ValueError("text fields must not be empty")
         return v
+
+    @field_validator("error_type", mode="before")
+    @classmethod
+    def fuzzy_match_error_type(cls, v: str | MathErrorType) -> MathErrorType:
+        """Allow near-miss error type names via fuzzy matching.
+
+        If the exact enum value is not found, auto-correct typos (small edit
+        distance) and alternative wordings that share a non-generic word with
+        a taxonomy member (e.g. ``'addition_across'`` → ``'adding_across'``).
+        See ``arappav.errors.fuzzy.fuzzy_match_enum`` for the exact rules.
+        """
+        if isinstance(v, MathErrorType):
+            return v
+        # Try exact match first
+        try:
+            return MathErrorType(v)
+        except ValueError:
+            pass
+        # Fuzzy match
+        best = _fuzzy_match_math_error_type(v)
+        if best is not None:
+            logger.warning(
+                "Fuzzy-matched error_type %r → %r. "
+                "The Perturber should be encouraged to use exact enum values.",
+                v, best.value,
+            )
+            return best
+        raise ValueError(
+            f"Unknown error_type {v!r} — not in MathErrorType taxonomy and no "
+            f"close match found. "
+            f"Valid types: {[e.value for e in MathErrorType]}"
+        )
 
     @model_validator(mode="after")
     def injected_must_differ_from_original(self):

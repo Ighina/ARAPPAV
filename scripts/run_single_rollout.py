@@ -166,6 +166,7 @@ def main():
         verifier_claims=verifier_out.claims if verifier_out else [],
         perturbed_text=result_text,
         k=args.k,
+        verifier_raw_output=raw_verifier,
     )
 
     print(f"  Verifier recall:    {reward_out.verifier_recall:.4f}")
@@ -175,6 +176,21 @@ def main():
     print(f"  Perturber reward:   {reward_out.perturber_reward:.4f}")
     print(f"  Format penalty:     {reward_out.format_penalty_applied}")
     print(f"  Spam penalty:       {reward_out.spam_penalty:.4f}")
+    print(f"  Repetition penalty: {reward_out.repetition_penalty:.4f}")
+    print(f"  k effective:        {reward_out.k_effective}/{reward_out.k}")
+    print()
+
+    # Per-error match details — distinguishes matcher failures (claim exists
+    # but low overlap) from verifier failures (no plausible claim at all).
+    print("  MATCH DETAILS:")
+    for detail in reward_out.match_details:
+        matched = detail["best_claim_idx"] is not None
+        status = f"claim {detail['best_claim_idx']}" if matched else "UNMATCHED"
+        print(f"    {detail['error_id']} [{detail['error_type']}] -> {status} "
+              f"(overlap={detail['best_overlap']:.3f})")
+        if not matched and detail["all_overlaps"]:
+            for quoted, score in detail["all_overlaps"].items():
+                print(f"      candidate ({score:.3f}): {quoted}")
     print()
 
     # --- Summary ---

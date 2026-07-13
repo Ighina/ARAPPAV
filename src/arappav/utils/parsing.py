@@ -97,6 +97,12 @@ def apply_error_injections(
     **reverse position order** so earlier replacements don't shift the spans
     of later ones.
 
+    When errors target **overlapping spans** (one ``original_text`` contains
+    another), only the longest-span error is applied; the shorter is skipped
+    with a warning, since both modifications cannot coexist in the same text
+    region.  The Perturber is expected to learn to spread errors across
+    disjoint regions through training rewards.
+
     Args:
         text: The text to perturb (original solution or paper text).
         errors: List of error dicts, each with ``"original_text"`` and
@@ -145,6 +151,7 @@ def apply_error_injections(
                 "original_text": orig,
                 "injected_text": injected,
                 "pos": pos,
+                "end": pos + len(orig),
             }
         )
 
@@ -154,27 +161,63 @@ def apply_error_injections(
             phantom_count,
         )
 
-    # --- Step 2: sort descending by position (replace from end to start) -----
-    located.sort(key=lambda e: e["pos"], reverse=True)
+    # --- Step 2: detect overlapping spans and resolve conflicts --------------
+    # Sort by position ascending for overlap detection
+    located.sort(key=lambda e: e["pos"])
 
-    # --- Step 3: apply replacements ------------------------------------------
-    for loc in located:
+    resolved: list[dict] = []
+    skipped_overlap: list[str] = []
+    for i, loc in enumerate(located):
+        # Check overlap with the last accepted replacement
+        if resolved and loc["pos"] < resolved[-1]["end"]:
+            # Overlap detected: keep the one with the longer original_text
+            prev = resolved[-1]
+            prev_len = prev["end"] - prev["pos"]
+            curr_len = loc["end"] - loc["pos"]
+            if curr_len > prev_len:
+                # Current is longer — replace previous
+                skipped_overlap.append(
+                    f"Overlapping error {prev['error_id']}: original_text overlaps "
+                    f"with {loc['error_id']} — skipping shorter replacement. "
+                    f"Prev original: {prev['original_text'][:80]!r}"
+                )
+                resolved[-1] = loc
+            else:
+                skipped_overlap.append(
+                    f"Overlapping error {loc['error_id']}: original_text overlaps "
+                    f"with {prev['error_id']} — skipping shorter replacement. "
+                    f"Current original: {loc['original_text'][:80]!r}"
+                )
+        else:
+            resolved.append(loc)
+
+    if skipped_overlap:
+        for msg in skipped_overlap:
+            warnings.append(msg)
+            logger.warning("Mechanical injection: %s", msg)
+
+    # --- Step 3: sort descending by position (replace from end to start) -----
+    resolved.sort(key=lambda e: e["pos"], reverse=True)
+
+    # --- Step 4: apply replacements ------------------------------------------
+    for loc in resolved:
         pos = loc["pos"]
         orig = loc["original_text"]
         injected = loc["injected_text"]
         perturbed = perturbed[:pos] + injected + perturbed[pos + len(orig):]
 
-    if warnings:
+    total_warnings = len([w for w in warnings if w.startswith("Phantom") or w.startswith("Overlapping") or w.startswith("Could not")])
+    if total_warnings > 0:
         logger.warning(
-            "Mechanical injection: %d/%d errors applied (%d could not be located).",
-            len(located),
+            "Mechanical injection: %d/%d errors applied (%d warning(s)).",
+            len(resolved),
             len(errors),
-            len(warnings),
+            total_warnings,
         )
     else:
         logger.info(
             "Mechanical injection: all %d errors applied successfully.",
-            len(located),
+            len(resolved),
         )
 
     return perturbed, warnings

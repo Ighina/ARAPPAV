@@ -4,19 +4,30 @@ The core matching logic: for each ground-truth error, find the best-matching
 Verifier claim (if any). For each Verifier claim, determine whether it matches
 a real error (true positive) or is a hallucination (false positive).
 
-Matching uses:
+Matching uses (in order of strength):
 1. **Span overlap** (char-level IoU of quoted_text vs injected_text).
-2. **Optional semantic match** via an LLM judge (for fuzzy/near-miss matching).
+2. **Diff-based change coverage** — the claim quotes the region the Perturber
+   actually changed (per the original_text→injected_text diff).
+3. **Substring containment** — quoted_text is a meaningful fragment of
+   injected_text (or vice versa), scaled by length ratio.
+4. **Optional semantic match** via an LLM judge (for fuzzy/near-miss matching).
 """
 
 from __future__ import annotations
 
+import difflib
 import logging
+import re
 from dataclasses import dataclass, field
 
 from arappav.errors.schema import InjectedError, VerifierClaim
 
 logger = logging.getLogger(__name__)
+
+#: Score assigned when a claim demonstrably covers the changed region of an
+#: error (diff-based match). Stronger than a plain substring match, weaker
+#: than a perfect span IoU, so greedy assignment prefers exact spans first.
+CHANGE_COVERAGE_SCORE = 0.9
 
 
 @dataclass
@@ -49,14 +60,21 @@ def _normalize_for_matching(text: str) -> str:
     actual perturbed text, especially LaTeX alignment characters.
 
     Transformations:
+    - Normalise LaTeX backslash escaping (``\\\\`` → ``\\``).
+    - Strip LaTeX math delimiters (``$``, ``$$``) that verifiers often drop.
     - Strip LaTeX alignment markers (``&``) from align/align* environments.
-    - Collapse consecutive whitespace.
+    - Collapse consecutive whitespace and strip leading/trailing whitespace.
     """
-    import re
+    normalized = _normalize_latex_escapes(text)
+
+    # Strip LaTeX math delimiters — verifiers often drop $ signs when quoting
+    # math expressions, so "$x^2$" vs "x^2" should still match.
+    normalized = normalized.replace("$$", "")
+    normalized = normalized.replace("$", "")
 
     # Remove LaTeX alignment & characters (inside align environments these
     # are formatting, not content).
-    normalized = text.replace("&=", "=")
+    normalized = normalized.replace("&=", "=")
     normalized = normalized.replace("& ", " ")
     # Also handle standalone & within math mode
     normalized = re.sub(r"(?<=\s)&(?=\s)", "", normalized)
@@ -64,7 +82,139 @@ def _normalize_for_matching(text: str) -> str:
     # Collapse whitespace
     normalized = re.sub(r"\s+", " ", normalized)
 
-    return normalized
+    return normalized.strip()
+
+
+def _normalize_latex_escapes(text: str) -> str:
+    """Normalise LaTeX backslash escaping mismatches.
+
+    When models double-escape LaTeX commands in their JSON output
+    (``\\\\cdot`` in the raw JSON), the parsed Python string contains two
+    literal backslashes while the reference text contains one. Collapsing
+    any run of 2+ backslashes before a letter down to a single backslash
+    makes both escaping levels compare equal, and is idempotent.
+
+    Caveat: a LaTeX line break (two backslashes) immediately followed by a
+    command with no separating whitespace would also be collapsed. Both sides
+    of a comparison are normalised identically, so matching is unaffected.
+    """
+    return re.sub(r"\\{2,}(?=[a-zA-Z])", "\\\\", text)
+
+
+def _changed_fragments(
+    original_text: str,
+    injected_text: str,
+    min_len: int = 6,
+    context: int = 10,
+) -> list[str]:
+    """Extract the fragments of ``injected_text`` that differ from ``original_text``.
+
+    Uses a character-level diff to isolate what the Perturber actually
+    changed, so matching can target the erroneous region instead of the whole
+    (mostly correct) sentence the error is embedded in.
+
+    Fragments shorter than ``min_len`` are expanded with surrounding context
+    so that trivial edits (a flipped sign, a single digit) don't match
+    anywhere in the text by accident.
+
+    Args:
+        original_text: The correct text before injection.
+        injected_text: The erroneous replacement text.
+        min_len: Minimum fragment length; shorter fragments are expanded.
+        context: Characters of context to add per expansion step.
+
+    Returns:
+        List of changed fragments (possibly empty for pure deletions).
+    """
+    matcher = difflib.SequenceMatcher(None, original_text, injected_text, autojunk=False)
+    fragments: list[str] = []
+    for tag, _i1, _i2, j1, j2 in matcher.get_opcodes():
+        if tag not in ("replace", "insert") or j2 <= j1:
+            continue
+        start, end = j1, j2
+        while end - start < min_len and (start > 0 or end < len(injected_text)):
+            start = max(0, start - context)
+            end = min(len(injected_text), end + context)
+        fragments.append(injected_text[start:end])
+    return fragments
+
+
+def _claim_covers_change(error, claim) -> bool:
+    """Check whether a claim's quoted text covers an error's changed region.
+
+    Two conditions must hold (after normalisation):
+    1. The quoted text is anchored to the error region — one of
+       ``quoted_text`` / ``injected_text`` contains the other.
+    2. The quoted text contains at least one fragment that the diff of
+       ``original_text`` vs ``injected_text`` identifies as changed.
+
+    This is a much stronger signal than plain substring containment: a claim
+    quoting an *unchanged* clause of the injected sentence fails condition 2.
+    """
+    original = getattr(error, "original_text", "") or ""
+    if not original:
+        return False
+
+    quoted_norm = _normalize_for_matching(claim.quoted_text)
+    injected_norm = _normalize_for_matching(error.injected_text)
+    if not quoted_norm or not injected_norm:
+        return False
+    if quoted_norm not in injected_norm and injected_norm not in quoted_norm:
+        return False
+
+    fragments = _changed_fragments(original, error.injected_text)
+    return any(
+        _normalize_for_matching(frag) in quoted_norm for frag in fragments
+    )
+
+
+def _substring_match_score(text_a: str, text_b: str) -> float:
+    """Score how meaningfully one text is a substring of the other.
+
+    Returns the length ratio ``len(shorter) / len(longer)`` in (0, 1] when
+    the shorter (normalized) text is contained in the longer and is
+    meaningful — at least 3 words long or at least 40% the length of the
+    longer text. Returns 0.0 otherwise. The ratio lets callers break ties
+    between multiple substring-matched claims (a longer quoted fragment is
+    better evidence than a shorter one).
+
+    Args:
+        text_a: First substring (e.g., injected_text).
+        text_b: Second substring (e.g., quoted_text).
+    """
+    norm_a = _normalize_for_matching(text_a)
+    norm_b = _normalize_for_matching(text_b)
+
+    shorter = norm_a if len(norm_a) <= len(norm_b) else norm_b
+    longer = norm_b if len(norm_a) <= len(norm_b) else norm_a
+
+    if not shorter or shorter not in longer:
+        return 0.0
+
+    word_count = len(shorter.split())
+    length_ratio = len(shorter) / max(1, len(longer))
+
+    if word_count >= 3 or length_ratio >= 0.4:
+        return length_ratio
+    return 0.0
+
+
+def _is_substring_match(text_a: str, text_b: str) -> bool:
+    """Check if one text is a **meaningful** substring of the other."""
+    return _substring_match_score(text_a, text_b) > 0.0
+
+
+def error_present_in_text(injected_text: str, text: str) -> bool:
+    """Check whether an injected error is actually present in a text.
+
+    Tries exact containment first, then falls back to normalized containment
+    (LaTeX escaping, ``$`` delimiters, alignment markers, whitespace) so that
+    formatting drift between the error record and the perturbed text doesn't
+    count a real error as missing.
+    """
+    if injected_text in text:
+        return True
+    return _normalize_for_matching(injected_text) in _normalize_for_matching(text)
 
 
 def _compute_char_span_overlap(
@@ -93,15 +243,17 @@ def _compute_char_span_overlap(
         return (idx, idx + len(sub))
 
     def _find_span_fuzzy(sub: str, text: str) -> tuple[int, int] | None:
-        """Try finding a normalized version of the substring in normalized text."""
+        """Try finding a normalized version of the substring in normalized text.
+
+        Normalisation includes LaTeX backslash escaping, alignment characters,
+        and whitespace collapsing.
+        """
         sub_norm = _normalize_for_matching(sub)
         text_norm = _normalize_for_matching(text)
         idx = text_norm.find(sub_norm)
         if idx == -1:
             return None
         # Return span in the *original* text, mapping back approximately.
-        # We map by counting characters up to idx in the normalized text,
-        # then finding the corresponding position in the original.
         orig_pos = _map_norm_pos_to_original(idx, text_norm, text)
         return (orig_pos, orig_pos + len(sub_norm))
 
@@ -149,8 +301,6 @@ def _map_norm_pos_to_original(norm_pos: int, norm_text: str, orig_text: str) -> 
     Returns:
         Approximate character index in orig_text corresponding to norm_pos.
     """
-    import re
-
     orig_idx = 0
     norm_idx = 0
 
@@ -226,6 +376,29 @@ def match_claims_to_errors(
             iou = _compute_char_span_overlap(
                 error.injected_text, claim.quoted_text, perturbed_text
             )
+
+            if iou < span_overlap_threshold:
+                # --- Diff-based change coverage (strong) ---
+                # The claim quotes the error region AND includes the text the
+                # Perturber actually changed (per original→injected diff).
+                if _claim_covers_change(error, claim):
+                    iou = max(iou, CHANGE_COVERAGE_SCORE)
+                else:
+                    # --- Substring-containment boost (weak fallback) ---
+                    # Handles the common case where injected_text is a long
+                    # sentence and quoted_text is just a fragment of it. The
+                    # boost scales with the length ratio so that greedy
+                    # assignment prefers claims quoting more of the error.
+                    sub_score = _substring_match_score(
+                        error.injected_text, claim.quoted_text
+                    )
+                    if sub_score > 0:
+                        iou = max(
+                            iou,
+                            span_overlap_threshold + 0.01
+                            + 0.08 * sub_score,
+                        )
+
             # If span overlap is low and semantic matching is enabled, try that
             if iou < span_overlap_threshold and use_semantic_match and semantic_match_fn is not None:
                 semantic_score = semantic_match_fn(error, claim, perturbed_text)

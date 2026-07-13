@@ -10,9 +10,15 @@ import logging
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
+from arappav.errors.fuzzy import fuzzy_match_enum
 from arappav.errors.taxonomy import ErrorType
 
 logger = logging.getLogger(__name__)
+
+
+def _fuzzy_match_error_type(name: str) -> ErrorType | None:
+    """Find the closest ErrorType to *name* (see ``fuzzy.fuzzy_match_enum``)."""
+    return fuzzy_match_enum(name, ErrorType)
 
 
 # ---------------------------------------------------------------------------
@@ -53,6 +59,31 @@ class InjectedError(BaseModel):
         if not v.strip():
             raise ValueError("text fields must not be empty")
         return v
+
+    @field_validator("error_type", mode="before")
+    @classmethod
+    def fuzzy_match_error_type(cls, v: str | ErrorType) -> ErrorType:
+        """Allow near-miss error type names via fuzzy matching.
+
+        If the exact enum value is not found, auto-correct typos and
+        alternative wordings via ``arappav.errors.fuzzy.fuzzy_match_enum``.
+        """
+        if isinstance(v, ErrorType):
+            return v
+        try:
+            return ErrorType(v)
+        except ValueError:
+            pass
+        best = _fuzzy_match_error_type(v)
+        if best is not None:
+            logger.warning(
+                "Fuzzy-matched error_type %r → %r.", v, best.value,
+            )
+            return best
+        raise ValueError(
+            f"Unknown error_type {v!r} — not in ErrorType taxonomy and no "
+            f"close match found. Valid types: {[e.value for e in ErrorType]}"
+        )
 
     @model_validator(mode="after")
     def injected_must_differ_from_original(self):

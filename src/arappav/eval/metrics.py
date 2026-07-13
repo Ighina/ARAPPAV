@@ -80,6 +80,7 @@ def compute_episode_metrics(
     perturber_format_valid: bool,
     verifier_format_valid: bool,
     reward_config: dict | None = None,
+    verifier_raw_output: str | None = None,
 ) -> EpisodeMetrics:
     """Compute metrics for a single evaluation episode.
 
@@ -93,6 +94,7 @@ def compute_episode_metrics(
         perturber_format_valid: Whether Perturber output was valid.
         verifier_format_valid: Whether Verifier output was valid.
         reward_config: Reward configuration.
+        verifier_raw_output: Raw Verifier text, for repetition detection.
 
     Returns:
         EpisodeMetrics dataclass.
@@ -104,6 +106,7 @@ def compute_episode_metrics(
         k=k,
         config=reward_config,
         perturber_format_valid=perturber_format_valid,
+        verifier_raw_output=verifier_raw_output,
     )
 
     # Per-category recall

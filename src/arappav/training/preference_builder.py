@@ -89,6 +89,7 @@ def build_preference_pairs(
                     k=rollout["k"],
                     config=reward_config,
                     perturber_format_valid=True,
+                    verifier_raw_output=raw_text,
                 )
                 r_v = reward_out.verifier_reward
             else:

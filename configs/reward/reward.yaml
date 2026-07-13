@@ -32,5 +32,16 @@ reward:
     penalty: -5.0                     # applied per detected duplicate
   anti_spam:
     enabled: true
-    max_claims_ratio: 3.0             # penalize if verifier claims > ratio * k errors
+    max_claims_ratio: 3.0             # penalize if verifier claims > ratio * k_effective errors (floored at 1)
     penalty_per_excess: -0.5
+  anti_phantom:
+    enabled: true
+    max_phantom_ratio: 0.0            # fraction of errors allowed to be phantom (injected == original)
+    penalty: -10.0                    # applied once if the phantom ratio is exceeded
+  anti_repetition:
+    enabled: true
+    max_json_blocks: 5                # verifier outputs with more JSON blocks are considered collapsed
+    penalty: -0.5                     # mild: perfect-but-repetitive should still beat a total miss
+  anti_missing:
+    enabled: true
+    penalty_per_missing: -0.5         # per error declared by P but not present in the perturbed text

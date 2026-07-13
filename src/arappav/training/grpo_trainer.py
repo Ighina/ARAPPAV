@@ -255,7 +255,9 @@ def make_perturber_reward_fn(
                 perturbed_text = perturber_out.perturbed_text
 
             verifier_results = verifier_model.generate(perturbed_text, n_completions=1)
-            _, verifier_out, _ = verifier_results[0] if verifier_results else ("", None, "no output")
+            verifier_raw, verifier_out, _ = (
+                verifier_results[0] if verifier_results else ("", None, "no output")
+            )
 
             if verifier_out is None:
                 # Verifier failed → Perturber "wins" by default
@@ -275,6 +277,7 @@ def make_perturber_reward_fn(
                     k=k,
                     config=reward_config,
                     perturber_format_valid=True,
+                    verifier_raw_output=verifier_raw,
                 )
 
             rewards.append(reward_out.perturber_reward)

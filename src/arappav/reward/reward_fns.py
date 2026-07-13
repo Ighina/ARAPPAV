@@ -17,11 +17,12 @@ and ``quoted_text`` attributes.
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+import re
+from dataclasses import dataclass, field
 from typing import Any
 
 from arappav.errors.schema import InjectedError, PerturberOutput, VerifierClaim, VerifierOutput
-from arappav.reward.matcher import MatchResult, match_claims_to_errors
+from arappav.reward.matcher import MatchResult, error_present_in_text, match_claims_to_errors
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,7 @@ class RewardOutput:
     k: int
     num_verifier_claims: int
     num_matched: int
+    k_effective: int = 0  # errors actually present in the perturbed text
 
     # Penalties
     format_penalty_applied: bool = False
@@ -49,10 +51,14 @@ class RewardOutput:
     duplicate_penalty: float = 0.0
     spam_penalty: float = 0.0
     phantom_penalty: float = 0.0
+    repetition_penalty: float = 0.0
 
     # For logging / debugging
     perturber_base_reward: float = 0.0  # before penalties
     verifier_base_reward: float = 0.0
+    match_details: list[dict] = field(default_factory=list)
+    """Per-error match info from the matcher (best claim, overlap scores) —
+    lets rollout analyses distinguish matcher failures from verifier failures."""
 
 
 # ---------------------------------------------------------------------------
@@ -69,6 +75,7 @@ def compute_rewards(
     perturber_format_valid: bool = True,
     perturber_format_reason: str | None = None,
     historical_perturbations: list[InjectedError] | None = None,
+    verifier_raw_output: str | None = None,
 ) -> RewardOutput:
     """Compute rewards for one self-play episode.
 
@@ -81,6 +88,7 @@ def compute_rewards(
         perturber_format_valid: Whether the Perturber produced valid output.
         perturber_format_reason: If invalid, why.
         historical_perturbations: Previous errors from this Perturber (for anti-duplicate).
+        verifier_raw_output: Raw Verifier output text (for repetition detection).
 
     Returns:
         ``RewardOutput`` with all reward components.
@@ -105,6 +113,18 @@ def compute_rewards(
             phantom_penalty=0.0,
         )
 
+    # --- Effective k: count errors actually present in the text ---------------
+    # Uses normalized containment so that formatting drift (LaTeX escaping,
+    # whitespace) between the error record and the text doesn't count a real
+    # error as missing.
+    k_actual = len(ground_truth)
+    k_effective = sum(
+        1 for e in ground_truth
+        if error_present_in_text(getattr(e, "injected_text", ""), perturbed_text)
+    )
+    # Use effective k for recall denominator (but never zero)
+    k_for_recall = max(1, k_effective)
+
     # --- Match claims to errors ---
     match_result = match_claims_to_errors(
         ground_truth=ground_truth,
@@ -114,9 +134,8 @@ def compute_rewards(
         use_semantic_match=config.get("use_semantic_match", False),
     )
 
-    # --- Verifier metrics ---
-    k_actual = len(ground_truth)
-    recall = match_result.num_matched_errors / max(1, k_actual)
+    # --- Verifier metrics (using effective k) ---
+    recall = match_result.num_matched_errors / k_for_recall
     precision = match_result.num_true_positives / max(1, len(verifier_claims))
     f_beta = _compute_f_beta(precision, recall, config.get("precision_recall_beta", 1.0))
 
@@ -137,26 +156,46 @@ def compute_rewards(
 
     # --- Anti-spam penalty (Verifier) ---
     spam_penalty = 0.0
-    if config.get("anti_spam", {}).get("enabled", True):
-        max_ratio = config["anti_spam"].get("max_claims_ratio", 3.0)
-        penalty_per = config["anti_spam"].get("penalty_per_excess", -0.5)
-        max_allowed = int(max_ratio * k_actual)
+    anti_spam_cfg = config.get("anti_spam", {})
+    if anti_spam_cfg.get("enabled", True):
+        max_ratio = anti_spam_cfg.get("max_claims_ratio", 3.0)
+        penalty_per = anti_spam_cfg.get("penalty_per_excess", -0.5)
+        # Floor at 1: if every injection was dropped (k_effective == 0) the
+        # Verifier can't know that, and shouldn't be penalized for any claim.
+        max_allowed = int(max_ratio * max(1, k_effective))
         if len(verifier_claims) > max_allowed:
             excess = len(verifier_claims) - max_allowed
             spam_penalty = excess * penalty_per
 
+    # --- Anti-repetition penalty (Verifier) ---
+    # Detect when the Verifier collapses into generating the same JSON block
+    # repeatedly — a known failure mode for smaller LLMs.
+    # The penalty is milder than a full miss (default -0.5) so that a
+    # verifier that detects everything but repeats still ranks between a
+    # clean perfect detection (1.0) and a total miss (0.0) in GRPO groups.
+    repetition_penalty = 0.0
+    anti_repetition_cfg = config.get("anti_repetition", {})
+    if anti_repetition_cfg.get("enabled", True) and verifier_raw_output:
+        json_block_count = _count_json_blocks(verifier_raw_output)
+        max_blocks = anti_repetition_cfg.get("max_json_blocks", 5)
+        repetition_penalty_per = anti_repetition_cfg.get("penalty", -0.5)
+        if json_block_count > max_blocks:
+            repetition_penalty = repetition_penalty_per
+            logger.warning(
+                "Repetition penalty applied: Verifier generated %d JSON blocks "
+                "(max allowed: %d). Penalty: %.1f",
+                json_block_count, max_blocks, repetition_penalty,
+            )
+
     # --- Anti-duplicate penalty (Perturber) ---
     dup_penalty = 0.0
-    if config.get("anti_duplicate", {}).get("enabled", True) and historical_perturbations:
+    anti_duplicate_cfg = config.get("anti_duplicate", {})
+    if anti_duplicate_cfg.get("enabled", True) and historical_perturbations:
         dup_penalty = _compute_duplicate_penalty(
-            ground_truth, historical_perturbations, config["anti_duplicate"]
+            ground_truth, historical_perturbations, anti_duplicate_cfg
         )
 
     # --- Anti-phantom penalty (Perturber) ---
-    # Penalise the Perturber when it claims errors but doesn't actually
-    # modify the text (injected_text == original_text).  A single phantom
-    # error across k errors may be a fluke, but when too many are phantom
-    # the model is reward-hacking.
     phantom_penalty = 0.0
     anti_phantom_cfg = config.get("anti_phantom", {})
     if anti_phantom_cfg.get("enabled", True) and k_actual > 0:
@@ -176,9 +215,24 @@ def compute_rewards(
                 phantom_count, k_actual, phantom_ratio * 100, phantom_penalty,
             )
 
+    # --- Penalise perturber for missing errors (overlapping / not injected) ---
+    # Errors declared but not present in the text count against the Perturber.
+    missing_error_penalty = 0.0
+    anti_missing_cfg = config.get("anti_missing", {})
+    if anti_missing_cfg.get("enabled", True) and k_effective < k_actual:
+        missing_count = k_actual - k_effective
+        missing_penalty_per = anti_missing_cfg.get("penalty_per_missing", -0.5)
+        missing_error_penalty = missing_count * missing_penalty_per
+        if missing_error_penalty != 0:
+            logger.warning(
+                "Missing error penalty: %d/%d errors not found in perturbed text. "
+                "Penalty: %.1f",
+                missing_count, k_actual, missing_error_penalty,
+            )
+
     # --- Final rewards ---
-    r_P = r_P_base + dup_penalty + phantom_penalty
-    r_V = r_V_base + spam_penalty
+    r_P = r_P_base + dup_penalty + phantom_penalty + missing_error_penalty
+    r_V = r_V_base + spam_penalty + repetition_penalty
 
     return RewardOutput(
         perturber_reward=r_P,
@@ -187,13 +241,16 @@ def compute_rewards(
         verifier_precision=precision,
         verifier_f_beta=f_beta,
         k=k_actual,
+        k_effective=k_effective,
         num_verifier_claims=len(verifier_claims),
         num_matched=match_result.num_matched_errors,
         duplicate_penalty=dup_penalty,
         spam_penalty=spam_penalty,
         phantom_penalty=phantom_penalty,
+        repetition_penalty=repetition_penalty,
         perturber_base_reward=r_P_base,
         verifier_base_reward=r_V_base,
+        match_details=match_result.match_details,
     )
 
 
@@ -251,6 +308,14 @@ def _compute_duplicate_penalty(
     return total_penalty
 
 
+def _count_json_blocks(text: str) -> int:
+    """Count the number of ``{"claims": [...]}`` blocks in a Verifier output.
+
+    A high count (>5) indicates the model collapsed into repetition.
+    """
+    return len(re.findall(r'\{\s*"claims"\s*:\s*\[', text))
+
+
 def _jaccard_similarity(text_a: str, text_b: str) -> float:
     """Compute token-level Jaccard similarity between two strings.
 
@@ -284,6 +349,7 @@ def compute_episode_rewards(
     k: int,
     config: dict | None = None,
     historical_perturbations: list[InjectedError] | None = None,
+    verifier_raw_output: str | None = None,
 ) -> RewardOutput:
     """High-level convenience: compute rewards from structured outputs.
 
@@ -293,6 +359,7 @@ def compute_episode_rewards(
         k: Expected number of errors.
         config: Reward configuration dict.
         historical_perturbations: Previous perturbations for anti-duplicate check.
+        verifier_raw_output: Raw Verifier text, for repetition detection.
 
     Returns:
         ``RewardOutput``.
@@ -305,6 +372,7 @@ def compute_episode_rewards(
         config=config,
         perturber_format_valid=True,
         historical_perturbations=historical_perturbations,
+        verifier_raw_output=verifier_raw_output,
     )
 
 
@@ -314,6 +382,7 @@ def compute_math_episode_rewards(
     k: int,
     config: dict | None = None,
     historical_perturbations: list | None = None,
+    verifier_raw_output: str | None = None,
 ) -> RewardOutput:
     """Compute rewards for a math-mode self-play episode.
 
@@ -339,6 +408,7 @@ def compute_math_episode_rewards(
         config=config,
         perturber_format_valid=True,
         historical_perturbations=historical_perturbations,
+        verifier_raw_output=verifier_raw_output,
     )
 
 
@@ -354,4 +424,6 @@ def _default_config() -> dict:
         "anti_duplicate": {"enabled": True, "similarity_threshold": 0.85, "penalty": -5.0},
         "anti_spam": {"enabled": True, "max_claims_ratio": 3.0, "penalty_per_excess": -0.5},
         "anti_phantom": {"enabled": True, "max_phantom_ratio": 0.0, "penalty": -10.0},
+        "anti_repetition": {"enabled": True, "max_json_blocks": 5, "penalty": -0.5},
+        "anti_missing": {"enabled": True, "penalty_per_missing": -0.5},
     }
