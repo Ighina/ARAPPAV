@@ -11,6 +11,7 @@ differ: math mode works with (problem, solution) pairs, not free-form text.
 from __future__ import annotations
 
 import logging
+import re
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -111,6 +112,58 @@ class MathInjectedError(BaseModel):
                 f"Phantom error detected for {self.error_id}: "
                 f"injected_text equals original_text — no actual modification was made. "
                 f"Text: {inj[:120]!r}"
+            )
+        return self
+
+    @model_validator(mode="after")
+    def injected_must_not_be_redundant_restatement(self):
+        """Reject degenerate redundancy injections that are not math errors.
+
+        Two conservative patterns (both observed in Round 3 rollouts, where
+        the Perturber learned to satisfy k with textual redundancy instead of
+        mathematical mistakes):
+
+        1. The same ``\\boxed{X}`` result stated twice in injected_text
+           (e.g. ``b=251+8=\\boxed{259}$ and $b=8+251=\\boxed{259}``) when the
+           original didn't already repeat it.
+        2. An exact ``... and ...``-joined restatement: two normalized
+           segments of injected_text are identical.
+
+        Genuine duplication errors that change the math (e.g. a duplicated
+        term inside an expansion, ``+15\\cdot 2x+15\\cdot 2x``) are unaffected.
+        """
+        def _boxed_counts(text: str) -> dict[str, int]:
+            normalized = re.sub(r"\\{2,}(?=[a-zA-Z])", "\\\\", text)
+            counts: dict[str, int] = {}
+            for m in re.findall(r"\\boxed\{([^{}]*)\}", normalized):
+                key = re.sub(r"\s+", "", m)
+                counts[key] = counts.get(key, 0) + 1
+            return counts
+
+        inj_boxed = _boxed_counts(self.injected_text)
+        orig_boxed = _boxed_counts(self.original_text)
+        for content, count in inj_boxed.items():
+            if count >= 2 and orig_boxed.get(content, 0) < 2:
+                raise ValueError(
+                    f"Redundant restatement detected for {self.error_id}: "
+                    f"injected_text repeats the same \\boxed{{{content}}} result "
+                    f"{count} times — restating an answer is not a mathematical error."
+                )
+
+        def _norm_segment(seg: str) -> str:
+            seg = re.sub(r"\\{2,}(?=[a-zA-Z])", "\\\\", seg)
+            seg = seg.replace("$", "")
+            return re.sub(r"\s+", " ", seg).strip(" .,;")
+
+        segments = [
+            _norm_segment(s) for s in re.split(r"\s+and\s+", self.injected_text)
+        ]
+        segments = [s for s in segments if s]
+        if len(segments) != len(set(segments)):
+            raise ValueError(
+                f"Redundant restatement detected for {self.error_id}: "
+                f"injected_text joins identical statements with 'and' — "
+                f"repeating a statement is not a mathematical error."
             )
         return self
 

@@ -630,6 +630,11 @@ class SelfPlayLoop:
             reward_config=OmegaConf.to_container(self.cfg.reward, resolve=True),
             k_sampler=self._sample_k,
             mode=self.mode,
+            # Persist per-batch reward diagnostics (mean + within-group
+            # variance, the actual GRPO learning signal) next to the rollouts,
+            # so they survive runs whose console logs aren't synced.
+            diagnostics_path=self.rollout_dir
+            / f"grpo_reward_diag_{self.mode}_round{self.round}.jsonl",
         )
 
         # Rebuild the trainer each round so the reward function always

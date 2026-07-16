@@ -148,10 +148,18 @@ following types (derived from the literature on math misconceptions):
 2. Errors should be **subtle and realistic** — they should look like genuine
    student mistakes, not obvious nonsense.
 3. Each error should target a different step of the solution if possible.
-4. Preserve the overall structure and LaTeX formatting of the solution.
-5. The perturbed solution should still read as a coherent (but flawed)
+4. Errors must be **independent mistakes**. Do NOT count the downstream
+   consequence of an earlier error (e.g. a final answer that is wrong only
+   because of a previous mistake, or the same wrong term repeated on later
+   lines) as a separate error — propagated or overlapping errors are scored
+   as ONE error.
+5. Restating existing content is NOT an error: never repeat the same
+   statement or the same \\boxed{{...}} result twice — such outputs are
+   rejected outright.
+6. Preserve the overall structure and LaTeX formatting of the solution.
+7. The perturbed solution should still read as a coherent (but flawed)
    attempt at solving the problem.
-6. Output ONLY the JSON object described below — no preamble, no markdown fences.
+8. Output ONLY the JSON object described below — no preamble, no markdown fences.
 
 ## Required JSON output format
 ```json

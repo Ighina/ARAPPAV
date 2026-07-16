@@ -27,11 +27,24 @@ reward:
   use_semantic_match: false           # if true, use LLM judge for fuzzy semantic matching
   semantic_match_model: null          # model to use for semantic matching (null = same as verifier)
 
+  # --- Error units (anti-stacking) ---
+  # Collapse causally-linked errors (root + propagated boxed answer, overlapping
+  # rewrites, near-duplicates) into one unit before computing recall, so the
+  # Perturber can't cap recall at 1/k by declaring one mistake k times.
+  error_units:
+    enabled: true
+    near_duplicate_threshold: 0.6     # token-Jaccard above which two errors merge
+    merge_overlapping_spans: true     # merge errors occupying overlapping text regions
+    merge_propagated_boxed: true      # merge changed-\boxed{} errors into the nearest upstream error
+    merge_shared_change_fragment: true  # merge errors whose diffs introduce the same text (propagated term)
+
   # --- Degenerate-strategy guards ---
   anti_duplicate:
     enabled: true
     similarity_threshold: 0.85        # embedding cosine-sim threshold for near-duplicate detection
-    penalty: -5.0                     # applied per detected duplicate
+    penalty: -5.0                     # applied per detected duplicate (vs. previous rounds)
+    intra_episode_enabled: true       # also check the current episode's errors against each other
+    intra_episode_penalty: -1.0       # per near-verbatim duplicate within one episode
   anti_spam:
     enabled: true
     max_claims_ratio: 3.0             # penalize if verifier claims > ratio * k_effective errors (floored at 1)

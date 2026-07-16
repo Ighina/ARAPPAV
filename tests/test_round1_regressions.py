@@ -315,10 +315,33 @@ class TestRound1Episodes:
         assert 0.0 < out.verifier_reward < 1.0
 
     def test_ep6_partial_detection(self, round1_episodes):
+        # Round 3 policy update: this episode's three errors are overlapping
+        # declarations over one derivation block (err_003's region contains
+        # the others), so they collapse into ONE error unit. The verifier's
+        # single claim therefore earns full recall — under the original
+        # per-error recall this was pinned at 0.5.
         episode = round1_episodes["algebra_Level 1_6"]
         for response in episode["responses"]:
             out = _score_response(episode, response)
             assert out.k_effective == 2
-            assert out.verifier_recall == pytest.approx(0.5)
+            assert out.num_error_units == 1
+            assert out.verifier_recall == pytest.approx(1.0)
             assert out.verifier_precision == 1.0
-            assert out.verifier_reward == pytest.approx(2 / 3, abs=1e-3)
+            assert out.verifier_reward == pytest.approx(1.0)
+            # Per-error recall is still available with units disabled.
+            ground_truth = [
+                MathInjectedError.model_validate(e) for e in episode["ground_truth"]
+            ]
+            claims = [
+                MathVerifierClaim.model_validate(c)
+                for c in response["parsed"]["claims"]
+            ]
+            out_no_units = compute_rewards(
+                ground_truth,
+                claims,
+                episode["perturbed_text"],
+                k=episode["k"],
+                config={"error_units": {"enabled": False}},
+                verifier_raw_output=response["raw_text"],
+            )
+            assert out_no_units.verifier_recall == pytest.approx(0.5)

@@ -18,6 +18,21 @@ from arappav.errors.taxonomy import ErrorType
 from arappav.reward.reward_fns import compute_rewards
 
 
+# Injected texts must be genuinely distinct: near-identical injections are
+# (correctly) collapsed into one error unit by the anti-stacking merge rules,
+# which is not what these wiring tests exercise.
+_FAKE_ORIGINALS = [
+    "the boiling point of water is 100 degrees",
+    "the arithmetic series sums to 60",
+    "gravitational acceleration equals 9.8 meters per second squared",
+]
+_FAKE_INJECTED = [
+    "the boiling point of water is 50 degrees",
+    "the arithmetic series sums to 75",
+    "gravitational acceleration equals 12.3 meters per second squared",
+]
+
+
 def _make_fake_perturber_output(k: int) -> PerturberOutput:
     """Build a well-formed Perturber output for testing."""
     errors = []
@@ -27,14 +42,16 @@ def _make_fake_perturber_output(k: int) -> PerturberOutput:
             InjectedError(
                 error_id=f"err_{i:03d}",
                 location=f"paragraph {i + 1}",
-                original_text=f"original fact {i}",
-                injected_text=f"injected error {i}",
+                original_text=_FAKE_ORIGINALS[i % len(_FAKE_ORIGINALS)],
+                injected_text=_FAKE_INJECTED[i % len(_FAKE_INJECTED)],
                 error_type=error_types[i % len(error_types)],
                 rationale=f"This is wrong because {i}.",
             )
         )
     return PerturberOutput(
-        perturbed_text="This is a perturbed paper with injected error 0 and injected error 1 and injected error 2.",
+        perturbed_text="This is a perturbed paper claiming "
+        + ", and ".join(_FAKE_INJECTED)
+        + ".",
         errors=errors,
     )
 
@@ -48,7 +65,7 @@ def _make_fake_verifier_output(
         claims.append(
             VerifierClaim(
                 location=f"paragraph {i + 1}",
-                quoted_text=f"injected error {i}",
+                quoted_text=_FAKE_INJECTED[i % len(_FAKE_INJECTED)],
                 explanation=f"Found error {i}.",
             )
         )

@@ -60,12 +60,20 @@ def _normalize_for_matching(text: str) -> str:
     actual perturbed text, especially LaTeX alignment characters.
 
     Transformations:
+    - Repair control characters produced by JSON-valid escapes eating LaTeX
+      commands (``\\b`` → backspace in ``\\boxed``, ``\\f`` → form feed in
+      ``\\frac``).
     - Normalise LaTeX backslash escaping (``\\\\`` → ``\\``).
     - Strip LaTeX math delimiters (``$``, ``$$``) that verifiers often drop.
     - Strip LaTeX alignment markers (``&``) from align/align* environments.
     - Collapse consecutive whitespace and strip leading/trailing whitespace.
     """
-    normalized = _normalize_latex_escapes(text)
+    # A model quoting "\boxed{...}" with a single backslash inside JSON emits
+    # the *valid* JSON escape \b, which parses to a backspace character —
+    # invisible corruption that never appears in real math text, so restoring
+    # the LaTeX backslash is always safe. Same for \f (\frac).
+    normalized = text.replace("\x08", "\\b").replace("\x0c", "\\f")
+    normalized = _normalize_latex_escapes(normalized)
 
     # Strip LaTeX math delimiters — verifiers often drop $ signs when quoting
     # math expressions, so "$x^2$" vs "x^2" should still match.
@@ -217,6 +225,26 @@ def error_present_in_text(injected_text: str, text: str) -> bool:
     return _normalize_for_matching(injected_text) in _normalize_for_matching(text)
 
 
+def _locate_span(sub: str, full_text: str) -> tuple[int, int] | None:
+    """Locate a substring's character span within a full text.
+
+    Tries exact containment first, then a normalized search (LaTeX backslash
+    escaping, alignment characters, whitespace collapsing) mapped back to
+    approximate positions in the original text.
+    """
+    idx = full_text.find(sub)
+    if idx != -1:
+        return (idx, idx + len(sub))
+
+    sub_norm = _normalize_for_matching(sub)
+    text_norm = _normalize_for_matching(full_text)
+    idx = text_norm.find(sub_norm)
+    if idx == -1:
+        return None
+    orig_pos = _map_norm_pos_to_original(idx, text_norm, full_text)
+    return (orig_pos, orig_pos + len(sub_norm))
+
+
 def _compute_char_span_overlap(
     text_a: str, text_b: str, full_text: str
 ) -> float:
@@ -236,35 +264,8 @@ def _compute_char_span_overlap(
     Returns:
         IoU overlap in [0, 1]. 0 = no overlap; 1 = perfect span match.
     """
-    def _find_span(sub: str, text: str) -> tuple[int, int] | None:
-        idx = text.find(sub)
-        if idx == -1:
-            return None
-        return (idx, idx + len(sub))
-
-    def _find_span_fuzzy(sub: str, text: str) -> tuple[int, int] | None:
-        """Try finding a normalized version of the substring in normalized text.
-
-        Normalisation includes LaTeX backslash escaping, alignment characters,
-        and whitespace collapsing.
-        """
-        sub_norm = _normalize_for_matching(sub)
-        text_norm = _normalize_for_matching(text)
-        idx = text_norm.find(sub_norm)
-        if idx == -1:
-            return None
-        # Return span in the *original* text, mapping back approximately.
-        orig_pos = _map_norm_pos_to_original(idx, text_norm, text)
-        return (orig_pos, orig_pos + len(sub_norm))
-
-    # Try exact match first
-    span_a = _find_span(text_a, full_text)
-    if span_a is None:
-        span_a = _find_span_fuzzy(text_a, full_text)
-
-    span_b = _find_span(text_b, full_text)
-    if span_b is None:
-        span_b = _find_span_fuzzy(text_b, full_text)
+    span_a = _locate_span(text_a, full_text)
+    span_b = _locate_span(text_b, full_text)
 
     if span_a is None or span_b is None:
         return 0.0
@@ -450,6 +451,154 @@ def match_claims_to_errors(
     result.num_false_positives = num_claims - result.num_true_positives
 
     return result
+
+
+def _token_jaccard(text_a: str, text_b: str) -> float:
+    """Token-level Jaccard similarity on normalized text, in [0, 1]."""
+    tokens_a = set(_normalize_for_matching(text_a).lower().split())
+    tokens_b = set(_normalize_for_matching(text_b).lower().split())
+    if not tokens_a or not tokens_b:
+        return 0.0
+    return len(tokens_a & tokens_b) / len(tokens_a | tokens_b)
+
+
+_BOXED_RE = re.compile(r"\\boxed\{([^{}]*)\}")
+
+
+def _boxed_contents(text: str) -> list[str]:
+    """Extract the (normalized) contents of every ``\\boxed{...}`` in a text."""
+    normalized = _normalize_latex_escapes(text)
+    return [re.sub(r"\s+", "", m) for m in _BOXED_RE.findall(normalized)]
+
+
+def group_errors_into_units(
+    ground_truth: list[InjectedError],
+    perturbed_text: str,
+    near_duplicate_threshold: float = 0.6,
+    merge_overlapping_spans: bool = True,
+    merge_propagated_boxed: bool = True,
+    merge_shared_change_fragment: bool = True,
+) -> list[list[int]]:
+    """Group injected errors into distinct **error units** for unit-level recall.
+
+    The Perturber can stack a root error plus its downstream consequences (a
+    corrupted final answer, an overlapping rewrite of the same region, a
+    near-duplicate injection) and declare them as separate errors. A Verifier
+    that flags the root line once then caps out at 1/k recall — a reward hack.
+    This collapses causally-linked errors so the Verifier is scored on
+    *distinct* mistakes:
+
+    1. **Overlapping spans** — two errors whose injected_texts occupy
+       overlapping regions of the perturbed text, contain one another, or
+       whose original_texts meaningfully contain one another (two rewrites
+       declared over the same source region) are the same mistake.
+    2. **Near-duplicates** — injected_texts (or original_texts) with token
+       Jaccard above ``near_duplicate_threshold``.
+    3. **Shared changed fragment** — two errors whose original→injected
+       diffs introduce the *same* text (e.g. the same phantom ``+ 2(1)``
+       term appended to three consecutive derivation lines) are one change
+       propagated, not independent mistakes.
+    4. **Propagated final answer** — an error that changes a ``\\boxed{...}``
+       result merges with the nearest earlier error (by step_index, then
+       declaration order): a wrong boxed answer alongside upstream errors is
+       treated as propagation, not an independent mistake.
+
+    Returns:
+        List of units, each a list of indices into ``ground_truth``. Units
+        preserve first-appearance order; indices within a unit are sorted.
+    """
+    n = len(ground_truth)
+    parent = list(range(n))
+
+    def find(x: int) -> int:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a: int, b: int) -> None:
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[rb] = ra
+
+    spans = [
+        _locate_span(getattr(e, "injected_text", ""), perturbed_text)
+        for e in ground_truth
+    ]
+    change_fragments: list[set[str]] = []
+    for e in ground_truth:
+        frags = _changed_fragments(
+            getattr(e, "original_text", "") or "",
+            getattr(e, "injected_text", "") or "",
+        )
+        change_fragments.append(
+            {f for f in (_normalize_for_matching(fr) for fr in frags) if len(f) >= 4}
+        )
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            e_i, e_j = ground_truth[i], ground_truth[j]
+            inj_i = getattr(e_i, "injected_text", "")
+            inj_j = getattr(e_j, "injected_text", "")
+
+            if merge_overlapping_spans:
+                if spans[i] is not None and spans[j] is not None:
+                    lo = max(spans[i][0], spans[j][0])
+                    hi = min(spans[i][1], spans[j][1])
+                    if lo < hi:
+                        union(i, j)
+                        continue
+                # Containment catches overlapping rewrites even when one
+                # variant is no longer locatable in the final text; original
+                # and cross (injected↔original) containment catch two errors
+                # declared over the same source region (e.g. a line plus the
+                # block containing it, or a rewrite that quotes the region
+                # another error separately modified).
+                orig_i = getattr(e_i, "original_text", "") or ""
+                orig_j = getattr(e_j, "original_text", "") or ""
+                if (
+                    _is_substring_match(inj_i, inj_j)
+                    or (orig_i and orig_j and _is_substring_match(orig_i, orig_j))
+                    or (orig_j and _is_substring_match(inj_i, orig_j))
+                    or (orig_i and _is_substring_match(orig_i, inj_j))
+                ):
+                    union(i, j)
+                    continue
+
+            if merge_shared_change_fragment and change_fragments[i] & change_fragments[j]:
+                union(i, j)
+                continue
+
+            if (
+                _token_jaccard(inj_i, inj_j) >= near_duplicate_threshold
+                or _token_jaccard(
+                    getattr(e_i, "original_text", ""),
+                    getattr(e_j, "original_text", ""),
+                )
+                >= near_duplicate_threshold
+            ):
+                union(i, j)
+
+    if merge_propagated_boxed and n > 1:
+        # Paper-mode InjectedError has no step_index — fall back to
+        # declaration order (duck-typing, like the rest of the reward path).
+        order = sorted(
+            range(n), key=lambda i: (getattr(ground_truth[i], "step_index", 0), i)
+        )
+        for pos, i in enumerate(order):
+            if pos == 0:
+                continue
+            boxed_inj = _boxed_contents(getattr(ground_truth[i], "injected_text", ""))
+            boxed_orig = _boxed_contents(getattr(ground_truth[i], "original_text", ""))
+            # Only errors that actually *change* a boxed result are treated as
+            # propagation; quoting an unchanged boxed answer is incidental.
+            if boxed_inj and set(boxed_inj) != set(boxed_orig):
+                union(order[pos - 1], i)
+
+    units: dict[int, list[int]] = {}
+    for i in range(n):
+        units.setdefault(find(i), []).append(i)
+    return [sorted(members) for _, members in sorted(units.items(), key=lambda kv: min(kv[1]))]
 
 
 def exact_text_match(

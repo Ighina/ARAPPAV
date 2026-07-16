@@ -173,6 +173,7 @@ def make_perturber_reward_fn(
     reward_config: dict,
     k_sampler: callable | None = None,
     mode: str = "paper",
+    diagnostics_path: str | Path | None = None,
 ):
     """Build a reward function suitable for TRL's GRPOTrainer.
 
@@ -189,6 +190,10 @@ def make_perturber_reward_fn(
             **Deprecated in favour of per-example k from the dataset column.**
             Only used as a fallback when the dataset does not include a ``"k"`` column.
         mode: ``"paper"`` or ``"math"`` — determines which validation schema to use.
+        diagnostics_path: If set, per-batch reward diagnostics (mean reward,
+            within-group variance — the actual GRPO learning signal) are
+            appended as JSONL, so training-health data survives runs whose
+            console logs aren't synced.
 
     Returns:
         A reward function compatible with TRL's GRPOTrainer.
@@ -277,6 +282,7 @@ def make_perturber_reward_fn(
         for p, r in zip(prompts, rewards):
             groups.setdefault(p, []).append(r)
         multi = [rs for rs in groups.values() if len(rs) > 1]
+        uniform = 0
         if multi:
             uniform = sum(1 for rs in multi if max(rs) - min(rs) < 1e-9)
             logger.info(
@@ -289,6 +295,27 @@ def make_perturber_reward_fn(
                     "All %d GRPO groups have uniform rewards — this batch "
                     "produces NO learning signal.", len(multi),
                 )
+
+        if diagnostics_path is not None and rewards:
+            import json
+            from datetime import datetime
+
+            record = {
+                "timestamp": datetime.now().isoformat(timespec="seconds"),
+                "mean_reward": round(sum(rewards) / len(rewards), 4),
+                "num_completions": len(rewards),
+                "num_groups": len(multi),
+                "num_uniform_groups": uniform,
+                "group_reward_ranges": [round(max(rs) - min(rs), 4) for rs in multi],
+                "rewards": [round(r, 4) for r in rewards],
+            }
+            try:
+                path = Path(diagnostics_path)
+                path.parent.mkdir(parents=True, exist_ok=True)
+                with open(path, "a") as f:
+                    f.write(json.dumps(record) + "\n")
+            except OSError as e:
+                logger.warning("Could not write GRPO reward diagnostics: %s", e)
 
         return rewards
 

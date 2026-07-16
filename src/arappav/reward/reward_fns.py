@@ -22,7 +22,12 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from arappav.errors.schema import InjectedError, PerturberOutput, VerifierClaim, VerifierOutput
-from arappav.reward.matcher import MatchResult, error_present_in_text, match_claims_to_errors
+from arappav.reward.matcher import (
+    MatchResult,
+    error_present_in_text,
+    group_errors_into_units,
+    match_claims_to_errors,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +49,8 @@ class RewardOutput:
     num_verifier_claims: int
     num_matched: int
     k_effective: int = 0  # errors actually present in the perturbed text
+    num_error_units: int = 0  # distinct error units (stacked/propagated errors collapsed)
+    num_matched_units: int = 0  # units with at least one matched member
 
     # Penalties
     format_penalty_applied: bool = False
@@ -118,10 +125,11 @@ def compute_rewards(
     # whitespace) between the error record and the text doesn't count a real
     # error as missing.
     k_actual = len(ground_truth)
-    k_effective = sum(
-        1 for e in ground_truth
-        if error_present_in_text(getattr(e, "injected_text", ""), perturbed_text)
-    )
+    error_present = [
+        error_present_in_text(getattr(e, "injected_text", ""), perturbed_text)
+        for e in ground_truth
+    ]
+    k_effective = sum(error_present)
     # Use effective k for recall denominator (but never zero)
     k_for_recall = max(1, k_effective)
 
@@ -134,8 +142,47 @@ def compute_rewards(
         use_semantic_match=config.get("use_semantic_match", False),
     )
 
-    # --- Verifier metrics (using effective k) ---
-    recall = match_result.num_matched_errors / k_for_recall
+    # --- Error units: collapse stacked/propagated errors for recall ----------
+    # A root error plus its downstream consequences (corrupted boxed answer,
+    # overlapping rewrite, near-duplicate) count as ONE unit, so the Perturber
+    # can't cap the Verifier's recall at 1/k by stacking one mistake k times.
+    error_units_cfg = config.get("error_units", {})
+    num_error_units = 0
+    num_matched_units = 0
+    if error_units_cfg.get("enabled", True) and k_actual > 0:
+        units = group_errors_into_units(
+            ground_truth,
+            perturbed_text,
+            near_duplicate_threshold=error_units_cfg.get("near_duplicate_threshold", 0.6),
+            merge_overlapping_spans=error_units_cfg.get("merge_overlapping_spans", True),
+            merge_propagated_boxed=error_units_cfg.get("merge_propagated_boxed", True),
+            merge_shared_change_fragment=error_units_cfg.get(
+                "merge_shared_change_fragment", True
+            ),
+        )
+        matched_ids = {
+            eid for eid, cidx in match_result.matched_claim_indices.items()
+            if cidx is not None
+        }
+        units_present = [
+            u for u in units if any(error_present[i] for i in u)
+        ]
+        num_error_units = len(units_present)
+        num_matched_units = sum(
+            1 for u in units_present
+            if any(ground_truth[i].error_id in matched_ids for i in u)
+        )
+        recall = num_matched_units / max(1, num_error_units)
+        if len(units_present) < sum(error_present):
+            logger.info(
+                "Error units: %d errors collapsed into %d distinct units "
+                "(stacked/propagated errors merged for recall).",
+                sum(error_present), num_error_units,
+            )
+    else:
+        recall = match_result.num_matched_errors / k_for_recall
+
+    # --- Verifier metrics ---
     precision = match_result.num_true_positives / max(1, len(verifier_claims))
     f_beta = _compute_f_beta(precision, recall, config.get("precision_recall_beta", 1.0))
 
@@ -195,6 +242,27 @@ def compute_rewards(
             ground_truth, historical_perturbations, anti_duplicate_cfg
         )
 
+    # --- Intra-episode duplicate penalty (Perturber) ---
+    # Near-verbatim re-injection of the same error *within* one episode is a
+    # degenerate way to satisfy k. Penalized per redundant error.
+    if anti_duplicate_cfg.get("intra_episode_enabled", True) and k_actual > 1:
+        intra_threshold = anti_duplicate_cfg.get("similarity_threshold", 0.85)
+        intra_penalty_per = anti_duplicate_cfg.get("intra_episode_penalty", -1.0)
+        for j in range(1, k_actual):
+            for i in range(j):
+                sim = _jaccard_similarity(
+                    ground_truth[i].injected_text, ground_truth[j].injected_text
+                )
+                if sim >= intra_threshold:
+                    dup_penalty += intra_penalty_per
+                    logger.warning(
+                        "Intra-episode duplicate: %s ~ %s (jaccard %.2f). "
+                        "Penalty: %.1f",
+                        ground_truth[i].error_id, ground_truth[j].error_id,
+                        sim, intra_penalty_per,
+                    )
+                    break  # one match per redundant error is enough
+
     # --- Anti-phantom penalty (Perturber) ---
     phantom_penalty = 0.0
     anti_phantom_cfg = config.get("anti_phantom", {})
@@ -242,6 +310,8 @@ def compute_rewards(
         verifier_f_beta=f_beta,
         k=k_actual,
         k_effective=k_effective,
+        num_error_units=num_error_units,
+        num_matched_units=num_matched_units,
         num_verifier_claims=len(verifier_claims),
         num_matched=match_result.num_matched_errors,
         duplicate_penalty=dup_penalty,
@@ -421,7 +491,20 @@ def _default_config() -> dict:
         "verifier_reward_formula": "f_beta",
         "perturber_reward_formula": "one_minus_recall",
         "use_semantic_match": False,
-        "anti_duplicate": {"enabled": True, "similarity_threshold": 0.85, "penalty": -5.0},
+        "error_units": {
+            "enabled": True,
+            "near_duplicate_threshold": 0.6,
+            "merge_overlapping_spans": True,
+            "merge_propagated_boxed": True,
+            "merge_shared_change_fragment": True,
+        },
+        "anti_duplicate": {
+            "enabled": True,
+            "similarity_threshold": 0.85,
+            "penalty": -5.0,
+            "intra_episode_enabled": True,
+            "intra_episode_penalty": -1.0,
+        },
         "anti_spam": {"enabled": True, "max_claims_ratio": 3.0, "penalty_per_excess": -0.5},
         "anti_phantom": {"enabled": True, "max_phantom_ratio": 0.0, "penalty": -10.0},
         "anti_repetition": {"enabled": True, "max_json_blocks": 5, "penalty": -0.5},
