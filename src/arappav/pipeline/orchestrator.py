@@ -54,6 +54,7 @@ class PipelineConfig:
     dry_run: bool = False
     timeout: int = 900
     retry_format: int = 0   # extra attempts when a reply fails to parse
+    resume: bool = False    # skip rounds that already have a summary
 
     def freeze_perturber(self) -> bool:
         return self.freeze in ("perturber", "both")
@@ -249,6 +250,7 @@ class Pipeline:
         episodes = sample_episodes(cfg, i, seen)
 
         scores = []
+        round_errors: list = []
         for ep in episodes:
             ed = self.ep_dir(i, ep.episode_id)
             ed.mkdir(parents=True, exist_ok=True)
@@ -314,10 +316,16 @@ class Pipeline:
             _write(ed / "score.json", s)
             scores.append(s)
             if parsed is not None:
-                self.history.extend(parsed.errors)
+                # Buffered, not appended: the anti-duplicate corpus covers
+                # *previous* rounds only, matching the pre-refactor
+                # `_historical_errors(root, up_to_round)`. Folding this round's
+                # own errors in as we go would make episode i duplicate-checked
+                # against episodes 0..i-1, which is not the original semantics.
+                round_errors.extend(parsed.errors)
             print(f"[round {i}] {ep.episode_id}: r_P={s.get('perturber_reward')} "
                   f"r_V={s.get('verifier_reward')}")
 
+        self.history.extend(round_errors)   # visible from the next round on
         metrics = scoring.aggregate(scores)
         findings = scoring.build_findings(i, scores, metrics)
         pb = self.run_processbench(i, vv) if cfg.processbench_enabled else None
@@ -381,10 +389,38 @@ class Pipeline:
         self.root.mkdir(parents=True, exist_ok=True)
         _write(self.root / "run_config.json", asdict(self.cfg))
         for i in range(self.cfg.rounds):
+            done = self.round_dir(i) / "round_summary.json"
+            if self.cfg.resume and done.exists():
+                summary = json.loads(done.read_text())
+                fpath = self.round_dir(i) / "findings.json"
+                summary["findings"] = (json.loads(fpath.read_text())
+                                       if fpath.exists() else {})
+                # Rebuild the anti-duplicate corpus from disk so a resumed run
+                # penalises repeats exactly as an uninterrupted one would.
+                self.history.extend(self._errors_on_disk(i))
+                self.rounds.append(summary)
+                print(f"=== round {i}: already complete, skipping (--resume)")
+                continue
             print(f"\n=== round {i} " + "=" * 50)
             self.rounds.append(self.run_round(i))
         report = self.final_summary()
         return report
+
+    def _errors_on_disk(self, i: int) -> list:
+        """Ground-truth errors persisted for a completed round (for --resume)."""
+        from arappav.errors.schema_math import MathInjectedError
+        out = []
+        eps = self.round_dir(i) / "episodes"
+        for ed in sorted(eps.iterdir()) if eps.is_dir() else []:
+            f = ed / "perturb.json"
+            if not f.exists():
+                continue
+            for e in json.loads(f.read_text()).get("errors", []):
+                try:
+                    out.append(MathInjectedError.model_validate(e))
+                except Exception:
+                    pass
+        return out
 
     # -- final summary (spec 15) -----------------------------------------
     def final_summary(self) -> dict:

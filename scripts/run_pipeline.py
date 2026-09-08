@@ -75,6 +75,8 @@ def build_parser() -> argparse.ArgumentParser:
                         "which preserves the pre-refactor penalty statistics)")
     a.add_argument("--no-context", action="store_true", dest="no_context",
                    help="pass no cross-round history to any agent (spec 21)")
+    a.add_argument("--resume", action="store_true",
+                   help="skip rounds that already have a round_summary.json")
     a.add_argument("--dry-run", action="store_true", dest="dry_run",
                    help="render and persist every prompt, invoke nothing")
     return p
@@ -94,6 +96,7 @@ def main() -> int:
         processbench_seed=args.processbench_seed, no_context=args.no_context,
         overwrite_policies=args.overwrite_policies, dry_run=args.dry_run,
         timeout=args.timeout, retry_format=args.retry_format,
+        resume=args.resume,
     )
     print(f"[pipeline] start={cfg.start} freeze={cfg.freeze} rounds={cfg.rounds} "
           f"episodes={cfg.episodes} k={cfg.k} processbench={cfg.processbench_enabled} "
