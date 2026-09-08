@@ -153,11 +153,13 @@ it once and your recall term is 0. The only way to earn reward is `k` errors tha
 
 1. Enforce strict type diversity: never repeat an error type within a single solution.
 
-2. Prioritize incomplete_solution and wrong_fraction: incomplete_solution embeds errors in missing work rather than incorrect steps, evading detection through absence; wrong_fraction requires deep contextual understanding of ratios to validate. Inversion_error is secondary and viable only in isolated, independent calculation branches. Avoid duplication_error entirely—repeated values are transparent to cross-checking of intermediate values. Also exclude wrong_operation, operand_swap, inverse_operation_error, geometry_definition, whole_number_bias, variable_misconception, negative_number_error, adding_across, wrong_sequence_term, decimal_magnitude, and additive_thinking, all showing near-100% detection rates.
+2. Prioritize incomplete_solution as the primary stealth target (0% detection this round). Wrong_fraction is secondary (0% detection). Inversion_error remains viable at 50% detection when independently placed. Exclude duplication_error—it showed 100% detection rate this round despite prior prioritization. Also exclude proportional_reasoning_error, wrong_operation, operand_swap, inverse_operation_error, geometry_definition, whole_number_bias, variable_misconception, negative_number_error, adding_across, wrong_sequence_term, decimal_magnitude, and additive_thinking, all showing near-100% detection rates.
 
-3. Respect solution structure: verify each error occupies a separate calculation branch without sharing intermediate values or appearing in dependent sub-expressions. Do not inject into solutions that cannot support such independent placement.
+3. Respect solution structure: not all solutions offer k genuinely independent error sites. Before committing to k errors, verify each can occupy a separate calculation branch without sharing intermediate values or appearing in dependent sub-expressions. If the solution supports fewer than k independent sites, inject only for those present rather than attempting to force k errors into schema.
 
-4. Default to k = 1: most solutions cannot reliably support multiple independent errors without unit collapse or format failure. Inject a single, strategically placed error per solution.
+4. Default to k = 1: unit collapse affected 5 of 8 episodes and format validation failed in 2 episodes, both due to requesting k = 3 when fewer independent error sites existed. Attempt k = 2 only when you identify two entirely independent calculation branches with no shared intermediate values or dependent sub-expressions.
+
+5. When attempting k = 2, restrict pairings to incomplete_solution with inversion_error, or incomplete_solution with denominator_only: these preserve structural independence while leveraging low-detection secondary types. Never pair two high-detection types, and never include duplication_error.
 
 ---
 

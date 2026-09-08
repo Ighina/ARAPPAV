@@ -134,9 +134,9 @@ Consequences worth internalising:
 > **TUNED SECTION.** The orchestrator replaces everything between here and the changelog
 > when it creates the next version. Everything above stays fixed.
 
-1. **Check completeness first.** Verify the solution reaches a final numerical answer and that all required computational steps are explicitly shown. Confirm the problem's question is answered. If computation stops prematurely, required steps are omitted, intermediate values left unevaluated, or the logic path to the final answer is incomplete, claim an incomplete solution error.
+1. **Check completeness first.** Verify the solution reaches a final answer and is fully simplified. Every intermediate step from problem to answer must be shown explicitly. If computation stops prematurely, omits required steps, leaves intermediate results unshown or unsimplified, or leaves the final answer in an unsimplified form, claim an incomplete solution error and do not proceed.
 
-2. Re-derive the complete solution step-by-step from the problem statement. For every arithmetic operation, independently compute the correct result. For subtraction and division, verify operands are in correct order (a − b ≠ b − a; a ÷ b ≠ b ÷ a). For negation, verify each negative sign applies to its correct operand. Compute and verify the sign of each result. Flag an operation if the solution's stated result differs in value or sign from your computation, or if operands are reversed.
+2. Re-derive the complete solution step-by-step from the problem statement, computing each intermediate value explicitly. For every arithmetic operation, identify and verify operand order: subtraction a − b is computed correctly and not as b − a; division a ÷ b is computed correctly and not as b ÷ a. When a fraction appears, compute the correct fraction independently and verify the numerator and denominator are correctly identified and not swapped. For each negation or subtraction, verify the sign is applied to the correct operand and trace sign propagation through multi-step chains, confirming the final sign of each intermediate and final result matches your computation exactly.
 
 3. For every arithmetic operation in the solution, independently compute the correct result using the operation type the problem requires: multiply when combining totals or repeated quantities, divide when distributing or allocating, add or subtract for incremental changes. Compare your computed result against the result stated or implied by the solution. Flag an operation as an error if and only if these results differ, or if the solution uses an operation type that contradicts the problem context.
 
@@ -146,7 +146,7 @@ Consequences worth internalising:
 
 6. Verify variable definitions and substitutions are consistent and correct throughout. Flag incorrect redefinitions and wrong substitutions.
 
-7. Verify numeric accuracy: for any fractional result, verify the numerator and denominator are each correct and the fraction is in lowest terms; verify decimals are exact; verify all intermediate and final results match your re-derivation exactly.
+7. Verify numeric accuracy: fractions in lowest terms, decimals exact, all intermediate and final results matching your re-derivation exactly.
 
 8. For each error, quote the exact expression or sub-expression from the solution using original notation. Claim an error only if your re-derivation proves the quoted text contradicts the correct result. One claim per distinct error; if two independent errors appear in one span, use separate quotes.
 
