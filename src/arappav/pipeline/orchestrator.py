@@ -1,0 +1,464 @@
+"""The deterministic pipeline orchestrator (spec 1, 3-6, 10-15).
+
+Python owns the experiment. Skills are invoked as pure functions over inputs
+this module constructs; none of them decides what happens next.
+"""
+
+from __future__ import annotations
+
+import json
+import random
+import subprocess
+import sys
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+
+from arappav.pipeline import agents, policies, scoring
+from arappav.pipeline.agents import ContextLedger, render_context_block, run_claude
+from arappav.pipeline.contracts import (
+    Episode, LeakageError, assert_problem_unchanged,
+    render_perturb_prompt, render_verify_prompt,
+)
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+# ---------------------------------------------------------------------------
+# Configuration — every experiment knob is an explicit field (spec 1)
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class PipelineConfig:
+    rounds: int = 3
+    episodes: int = 8
+    k: int = 3
+    start: str = "cold"                 # "cold" | "warm"  (spec 3)
+    freeze: str = "none"                # none|perturber|verifier|both (spec 5)
+    source: str = "hendrycks"           # hendrycks|local|file
+    problems_file: str | None = None
+    topics: tuple[str, ...] = ("algebra",)
+    per_topic: int = 50
+    seed: int = 42
+    root: str = "data/skill_rollouts"
+    skills_root: str = ".claude/skills"
+    perturb_prefix: str = "perturb"
+    verify_prefix: str = "verify"
+    model: str | None = None
+    processbench_enabled: bool = False  # spec 11
+    processbench_per_subset: int = 5
+    processbench_root: str = "data/skill_evals"
+    processbench_seed: int = 0
+    no_context: bool = False            # spec 21
+    overwrite_policies: bool = False
+    dry_run: bool = False
+    timeout: int = 900
+    retry_format: int = 0   # extra attempts when a reply fails to parse
+
+    def freeze_perturber(self) -> bool:
+        return self.freeze in ("perturber", "both")
+
+    def freeze_verifier(self) -> bool:
+        return self.freeze in ("verifier", "both")
+
+
+# ---------------------------------------------------------------------------
+# Dataset sampling (spec 1, 2)
+# ---------------------------------------------------------------------------
+
+
+def _pool(cfg: PipelineConfig) -> list[dict]:
+    if cfg.source == "file":
+        if not cfg.problems_file:
+            sys.exit("[pipeline] --problems-file is required with --source file")
+        rows = []
+        for i, line in enumerate(Path(cfg.problems_file).read_text().splitlines()):
+            if line.strip():
+                r = json.loads(line)
+                rows.append({"source_id": r.get("source_id", f"item_{i}"),
+                             "problem": r["problem"], "solution": r["solution"],
+                             "topic": r.get("topic"), "level": r.get("level")})
+        return rows
+    if cfg.source == "local":
+        pool: dict[str, dict] = {}
+        for pat in ("data/rollouts_math/*.jsonl", "new_rollouts/*.jsonl"):
+            for path in sorted(REPO_ROOT.glob(pat)):
+                if "verifier" in path.name:
+                    continue
+                for line in path.read_text().splitlines():
+                    if not line.strip():
+                        continue
+                    try:
+                        rec = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    pid = rec.get("paper_id") or rec.get("chunk_id")
+                    if not (rec.get("original_text") and rec.get("original_solution") and pid):
+                        continue
+                    pool.setdefault(pid, {
+                        "source_id": pid, "problem": rec["original_text"],
+                        "solution": rec["original_solution"],
+                        "topic": str(pid).partition("_")[0], "level": None})
+        return list(pool.values())
+
+    from arappav.data.ingest_math import load_math_dataset
+    ds = load_math_dataset(topics=list(cfg.topics), split="train",
+                           max_examples_per_topic=cfg.per_topic, seed=cfg.seed)
+    return [{"source_id": f"{r['topic']}_{r['level']}_{i}", "problem": r["problem"],
+             "solution": r["solution"], "topic": r["topic"], "level": r["level"]}
+            for i, r in enumerate(ds)]
+
+
+def sample_episodes(cfg: PipelineConfig, round_index: int, seen: set[str]) -> list[Episode]:
+    pool = [p for p in _pool(cfg) if p["source_id"] not in seen]
+    if not pool:
+        sys.exit("[pipeline] problem pool exhausted.")
+    rng = random.Random(cfg.seed + round_index)
+    chosen = rng.sample(pool, min(cfg.episodes, len(pool)))
+    return [
+        Episode(episode_id=f"ep{i:02d}", problem=c["problem"], solution=c["solution"],
+                k=cfg.k, source_id=c["source_id"], topic=c.get("topic"),
+                level=c.get("level"), round_index=round_index)
+        for i, c in enumerate(chosen)
+    ]
+
+
+# ---------------------------------------------------------------------------
+# Orchestrator
+# ---------------------------------------------------------------------------
+
+
+class Pipeline:
+    def __init__(self, cfg: PipelineConfig):
+        self.cfg = cfg
+        self.root = Path(cfg.root)
+        self.skills = Path(cfg.skills_root)
+        self.reward_cfg = scoring.load_reward_config()
+        self.history: list = []          # cross-round anti-duplicate corpus
+        self.rounds: list[dict] = []
+
+    # -- paths ------------------------------------------------------------
+    def round_dir(self, i: int) -> Path:
+        return self.root / f"round_{i}"
+
+    def ep_dir(self, i: int, eid: str) -> Path:
+        return self.round_dir(i) / "episodes" / eid
+
+    # -- policies (spec 3, 4, 5) -----------------------------------------
+    def _policy_version(self, i: int) -> int:
+        return i + 1                      # round_0 -> v1
+
+    def init_policies(self, ledger: ContextLedger) -> None:
+        """Round 0: cold (empty policy) or warm (create-policy-* skills)."""
+        cfg, v = self.cfg, self._policy_version(0)
+        for role, prefix, skill in (
+            ("perturb", cfg.perturb_prefix, "create-policy-perturber"),
+            ("verify", cfg.verify_prefix, "create-policy-verifier"),
+        ):
+            if cfg.start == "cold":
+                body, note = "", "cold start — empty policy"
+            else:
+                prompt = (f"/{skill}\n\n"
+                          "Return ONLY the markdown body of the policy section: a short list "
+                          "of numbered strategy rules. No headings, no preamble, no fences.\n")
+                res = run_claude(prompt, step=f"create-policy-{role}",
+                                 round_dir=self.round_dir(0), model=cfg.model,
+                                 timeout=cfg.timeout, dry_run=cfg.dry_run)
+                ledger.record(f"create-policy-{role}", None, {}, prompt, res)
+                body = res.text if res.ok() else ""
+                note = "warm start — policy authored by " + skill
+                if not body:
+                    note += " (empty: the skill returned nothing)"
+            policies.write_version(self.skills, role, prefix, v, body, note,
+                                   parent="—", tuned_from="—",
+                                   overwrite=cfg.overwrite_policies)
+            print(f"[policy] {prefix}-v{v}: {note}")
+
+    def update_policies(self, i: int, findings: dict, ledger: ContextLedger) -> None:
+        """Rounds >= 1: bump each policy unless frozen (spec 4, 5)."""
+        cfg = self.cfg
+        prev, new = self._policy_version(i - 1), self._policy_version(i)
+        for role, prefix, skill, frozen in (
+            ("perturb", cfg.perturb_prefix, "update-perturb", cfg.freeze_perturber()),
+            ("verify", cfg.verify_prefix, "update-verify", cfg.freeze_verifier()),
+        ):
+            old_file = policies.skill_file(self.skills, prefix, prev)
+            old_body = policies.extract_policy(old_file.read_text())
+            if frozen:
+                # Retain the previous policy unchanged, re-published under the
+                # new version so every round has a version of its own.
+                policies.write_version(self.skills, role, prefix, new, old_body,
+                                       f"FROZEN — identical to {prefix}-v{prev}",
+                                       parent=f"{prefix}-v{prev}", tuned_from="—",
+                                       overwrite=cfg.overwrite_policies)
+                print(f"[policy] {prefix}-v{new}: FROZEN (unchanged from v{prev})")
+                continue
+
+            allowed = self._findings_for(role, findings)
+            prompt = (
+                f"/{skill}\n\n"
+                f"{render_context_block(allowed, cfg.no_context)}"
+                "## CURRENT POLICY\n"
+                f"{old_body}\n\n"
+                "Return ONLY the markdown body of the NEXT policy section — the revised "
+                "numbered rules. No headings, no preamble, no fences, no changelog.\n"
+            )
+            res = run_claude(prompt, step=f"{skill}", round_dir=self.round_dir(i),
+                             model=cfg.model, timeout=cfg.timeout, dry_run=cfg.dry_run)
+            ledger.record(skill, None, allowed, prompt, res)
+            body = res.text if res.ok() else old_body
+            if res.ok():
+                note = f"tuned from round {i-1}"
+            elif res.dry_run:
+                note = f"dry run — carried v{prev} forward unchanged"
+            else:
+                note = (f"update produced no policy (rc={res.returncode}); "
+                        f"carried v{prev} forward")
+            policies.write_version(self.skills, role, prefix, new, body, note,
+                                   parent=f"{prefix}-v{prev}", tuned_from=str(i - 1),
+                                   overwrite=cfg.overwrite_policies)
+            print(f"[policy] {prefix}-v{new}: {note}")
+
+    @staticmethod
+    def _findings_for(role: str, f: dict) -> dict:
+        """Slice the findings each updater is entitled to (spec 9.7, 14)."""
+        common = {"round": f["round"], "metrics": f["metrics"],
+                  "error_type_detection": f["error_type_detection"]}
+        if role == "perturb":
+            return {**common, "format_failures": f["format_failures"],
+                    "undetected_errors": f["undetected_errors"],
+                    "detected_errors": f["detected_errors"],
+                    "unit_collapse": f["unit_collapse"]}
+        return {**common, "undetected_errors": f["undetected_errors"],
+                "verifier_false_positives": f["verifier_false_positives"]}
+
+    # -- the two agent passes --------------------------------------------
+    def run_round(self, i: int) -> dict:
+        cfg = self.cfg
+        rdir = self.round_dir(i)
+        rdir.mkdir(parents=True, exist_ok=True)
+        ledger = ContextLedger(rdir, cfg.no_context)
+
+        if i == 0:
+            self.init_policies(ledger)
+        else:
+            self.update_policies(i, self.rounds[-1]["findings"], ledger)
+
+        pv, vv = self._policy_version(i), self._policy_version(i)
+        seen = {e["source_id"] for r in self.rounds for e in r["episodes"]}
+        episodes = sample_episodes(cfg, i, seen)
+
+        scores = []
+        for ep in episodes:
+            ed = self.ep_dir(i, ep.episode_id)
+            ed.mkdir(parents=True, exist_ok=True)
+            _write(ed / "data.json", ep.data())
+            _write(ed / "meta.json", ep.meta())
+
+            # ---- perturbation -------------------------------------------
+            p_prompt = render_perturb_prompt(ep, f"/{cfg.perturb_prefix}-v{pv}",
+                                             render_context_block({}, cfg.no_context))
+            # `retry_format` is an explicit orchestration knob, default 0, so the
+            # reward statistics match the pre-refactor pipeline unless asked
+            # otherwise. Every attempt is recorded.
+            attempts = []
+            for attempt in range(cfg.retry_format + 1):
+                pres = run_claude(p_prompt, step="perturb", round_dir=rdir,
+                                  episode_id=f"{ep.episode_id}_a{attempt}" if attempt
+                                  else ep.episode_id,
+                                  model=cfg.model, timeout=cfg.timeout,
+                                  dry_run=cfg.dry_run)
+                ledger.record("perturb", ep.episode_id, {}, p_prompt, pres)
+                parsed, err, stage = scoring.parse_perturbation(pres.text, ep.k, ep.solution)
+                attempts.append({"attempt": attempt, "format_valid": parsed is not None,
+                                 "failure_stage": stage})
+                if parsed is not None or cfg.dry_run:
+                    break
+                print(f"[round {i}] {ep.episode_id}: unparseable perturbation "
+                      f"({stage}); retrying {attempt + 1}/{cfg.retry_format}")
+            (ed / "perturb_raw.txt").write_text(pres.text)
+            _write(ed / "perturb_attempts.json", attempts)
+            if parsed is not None:
+                try:
+                    assert_problem_unchanged(ep, _maybe_problem(pres.text))
+                except LeakageError as e:
+                    parsed, err, stage = None, str(e), "problem_modified"
+            if parsed is not None:
+                _write(ed / "perturb.json", json.loads(parsed.model_dump_json()))
+            _write(ed / "perturb_status.json",
+                   {"format_valid": parsed is not None, "failure_stage": stage,
+                    "reason": err, "k": ep.k, "attempts": len(attempts)})
+
+            # ---- verification -------------------------------------------
+            vres_text = ""
+            if parsed is not None:
+                v_input = {"problem": ep.problem,
+                           "solution_to_review": parsed.perturbed_solution}
+                _write(ed / "verify_input.json", v_input)
+                v_prompt = render_verify_prompt(
+                    ep, parsed.perturbed_solution, f"/{cfg.verify_prefix}-v{vv}",
+                    render_context_block({}, cfg.no_context))
+                vres = run_claude(v_prompt, step="verify", round_dir=rdir,
+                                  episode_id=ep.episode_id, model=cfg.model,
+                                  timeout=cfg.timeout, dry_run=cfg.dry_run)
+                ledger.record("verify", ep.episode_id, {}, v_prompt, vres)
+                vres_text = vres.text
+                (ed / "verify_raw.txt").write_text(vres_text)
+
+            # ---- reward (spec 10, 13) -----------------------------------
+            s = scoring.score_episode(
+                episode_id=ep.episode_id, k=ep.k, perturbed=parsed,
+                failure_stage=stage, failure_reason=err, verifier_raw=vres_text,
+                config=self.reward_cfg, history=self.history)
+            s["source_id"] = ep.source_id
+            _write(ed / "score.json", s)
+            scores.append(s)
+            if parsed is not None:
+                self.history.extend(parsed.errors)
+            print(f"[round {i}] {ep.episode_id}: r_P={s.get('perturber_reward')} "
+                  f"r_V={s.get('verifier_reward')}")
+
+        metrics = scoring.aggregate(scores)
+        findings = scoring.build_findings(i, scores, metrics)
+        pb = self.run_processbench(i, vv) if cfg.processbench_enabled else None
+
+        summary = {
+            "round": i,
+            "config": {"start": cfg.start, "freeze": cfg.freeze, "k": cfg.k,
+                       "episodes": cfg.episodes, "no_context": cfg.no_context},
+            "policies": {"perturb": f"{cfg.perturb_prefix}-v{pv}",
+                         "verify": f"{cfg.verify_prefix}-v{vv}"},
+            "metrics": metrics,
+            "processbench": pb if pb else {"enabled": False,
+                                           "note": "ProcessBench was not run for this round."},
+            "episodes": [{"episode_id": e.episode_id, "source_id": e.source_id} for e in episodes],
+        }
+        _write(rdir / "round_summary.json", summary)
+        _write(rdir / "findings.json", findings)
+        ledger.flush()
+        summary["findings"] = findings
+        return summary
+
+    # -- ProcessBench (spec 11) ------------------------------------------
+    def run_processbench(self, i: int, vv: int) -> dict:
+        cfg = self.cfg
+        root = Path(cfg.processbench_root)
+        rd = root / f"round_{i:02d}"
+        skill = f"{cfg.verify_prefix}-v{vv}"
+        prep = subprocess.run(
+            [sys.executable, "scripts/processbench_eval.py", "--root", str(root),
+             "prepare", "--round", str(i), "--verify-skill", skill,
+             "--per-subset", str(cfg.processbench_per_subset),
+             "--seed", str(cfg.processbench_seed), "--force"],
+            capture_output=True, text=True)
+        if prep.returncode != 0:
+            return {"enabled": True, "error": prep.stderr[-600:]}
+
+        inbox, outbox = rd / "inbox", rd / "outbox"
+        outbox.mkdir(parents=True, exist_ok=True)
+        for f in sorted(inbox.glob("*.json")):
+            item = json.loads(f.read_text())
+            ep = Episode(episode_id=f.stem, problem=item["problem"],
+                         solution="", k=0)
+            prompt = render_verify_prompt(ep, item["solution_to_review"],
+                                          f"/{skill}", "")
+            r = run_claude(prompt, step="processbench", round_dir=self.round_dir(i),
+                           episode_id=f.stem, model=cfg.model,
+                           timeout=cfg.timeout, dry_run=cfg.dry_run)
+            (outbox / f.name).write_text(r.text or '{"claims": []}')
+        sc = subprocess.run(
+            [sys.executable, "scripts/processbench_eval.py", "--root", str(root),
+             "score", "--round", str(i)], capture_output=True, text=True)
+        summ = rd / "eval_summary.json"
+        out = {"enabled": True, "verify_skill": skill,
+               "stdout": sc.stdout[-800:]}
+        if summ.exists():
+            out["summary"] = json.loads(summ.read_text()).get("overall")
+        return out
+
+    # -- driver -----------------------------------------------------------
+    def run(self) -> dict:
+        self.root.mkdir(parents=True, exist_ok=True)
+        _write(self.root / "run_config.json", asdict(self.cfg))
+        for i in range(self.cfg.rounds):
+            print(f"\n=== round {i} " + "=" * 50)
+            self.rounds.append(self.run_round(i))
+        report = self.final_summary()
+        return report
+
+    # -- final summary (spec 15) -----------------------------------------
+    def final_summary(self) -> dict:
+        cfg = self.cfg
+        payload = {
+            "config": asdict(cfg),
+            "rounds": [{k: v for k, v in r.items() if k != "findings"} for r in self.rounds],
+            "findings_by_round": [r["findings"] for r in self.rounds],
+        }
+        _write(self.root / "final_summary_input.json", payload)
+
+        table = _summary_table(self.rounds, cfg)
+        (self.root / "summary_table.md").write_text(table)
+
+        prompt = (
+            "/final_summary\n\n"
+            "Write the final experiment report from the JSON below. It is the only "
+            "source; do not read any files.\n\n"
+            "## RUN DATA\n" + json.dumps(payload, indent=2, ensure_ascii=False)[:120000] +
+            "\n\n## PRECOMPUTED ROUND TABLE\n" + table + "\n"
+        )
+        res = run_claude(prompt, step="final_summary", round_dir=self.root,
+                         model=cfg.model, timeout=cfg.timeout, dry_run=cfg.dry_run)
+        md = res.text if res.ok() else (
+            "# Final summary\n\n_The `/final_summary` skill did not return a report; "
+            "the deterministic table below is generated from persisted round data._\n\n" + table)
+        (self.root / "final_summary.md").write_text(md + "\n")
+        print(f"\n[final] {self.root / 'final_summary.md'}")
+        return {"table": table, "report_path": str(self.root / "final_summary.md")}
+
+
+def _summary_table(rounds: list[dict], cfg: PipelineConfig) -> str:
+    """Deterministic round-by-round table (spec 15), built without an agent."""
+    head = ("| round | perturb policy | verify policy | format-valid | mean r_P | mean r_V "
+            "| recall | precision | units/ep | penalties | ProcessBench |\n"
+            "|---|---|---|---|---|---|---|---|---|---|---|\n")
+    rows = []
+    for r in rounds:
+        m = r["metrics"]
+        pen = round(sum(m.get(k) or 0 for k in
+                        ("total_duplicate_penalty", "total_spam_penalty",
+                         "total_repetition_penalty", "total_phantom_penalty")), 3)
+        pb = r.get("processbench") or {}
+        if not pb.get("enabled"):
+            pbs = "disabled"
+        elif pb.get("error"):
+            pbs = "error: " + pb["error"][:24]
+        elif pb.get("summary"):
+            f1 = pb["summary"].get("processbench_f1")
+            # The headline metric is a harmonic mean over both classes; it is
+            # undefined when the sample contained no erroneous (or no correct)
+            # chain, which happens at very small --processbench-per-subset.
+            pbs = f"F1 {f1}" if f1 is not None else "F1 n/a (one class absent)"
+        else:
+            pbs = "n/a"
+        rows.append(
+            f"| {r['round']} | {r['policies']['perturb']} | {r['policies']['verify']} "
+            f"| {m['format_valid_rate']} | {m['mean_perturber_reward']} "
+            f"| {m['mean_verifier_reward']} | {m['mean_verifier_recall']} "
+            f"| {m['mean_verifier_precision']} | {m['mean_units_per_episode']} "
+            f"| {pen} | {pbs} |")
+    return head + "\n".join(rows) + "\n"
+
+
+def _write(path: Path, data) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+
+
+def _maybe_problem(raw: str) -> str | None:
+    """If the perturber echoed a `problem` field, return it so it can be checked."""
+    try:
+        from arappav.utils.parsing import extract_first_json_object, strip_json_fences
+        obj, _ = extract_first_json_object(strip_json_fences(raw))
+        return obj.get("problem") if isinstance(obj, dict) else None
+    except Exception:
+        return None

@@ -125,6 +125,35 @@ The math mode error taxonomy is derived from:
 
 ---
 
+
+## Running the self-play experiment
+
+The experiment is orchestrated by a deterministic Python script, not by an agent:
+
+```bash
+# cold start, 3 rounds of 8 episodes, nothing frozen
+python scripts/run_pipeline.py --rounds 3 --episodes 8 --k 3
+
+# warm start, freeze the verifier, evaluate on ProcessBench each round
+python scripts/run_pipeline.py --start warm --freeze verifier --processbench
+
+# render and persist every prompt without invoking anything
+python scripts/run_pipeline.py --rounds 1 --episodes 2 --dry-run
+
+# audit a completed round for information leakage
+python scripts/audit_leakage.py data/skill_rollouts/round_0
+```
+
+Python owns dataset sampling, episode creation, round management, policy
+creation/update/freezing, reward computation, optional ProcessBench, findings and the final
+report. Skills (`perturb-vN`, `verify-vN`, `create-policy-*`, `update-*`, `final_summary`)
+are invoked as pure functions over inputs the orchestrator constructs, with tools denied and
+inputs passed inline — so the information each side receives is explicit and auditable.
+
+See **[docs/REFACTOR.md](docs/REFACTOR.md)** for the architecture, the `problem`/`solution`
+data contract, and the leakage audit.
+
+
 ## Skill-Tuning Mode (no GPU)
 
 Adversarial RL on this task is hard to balance — reward hacking is rampant, and every round
