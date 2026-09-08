@@ -38,6 +38,26 @@ class AgentError(RuntimeError):
     pass
 
 
+class InfrastructureError(RuntimeError):
+    """The CLI never ran the model — quota, auth, network, timeout.
+
+    This is emphatically NOT an experimental result. A model that returns a
+    malformed answer is data; a call that never reached a model is the absence
+    of data, and scoring it as a format failure fabricates measurements. The
+    orchestrator aborts on this rather than recording a reward.
+    """
+
+
+#: stdout/stderr signatures that mean the request never reached a model.
+#: `claude -p` exits non-zero AND prints these to stdout, so a naive reader
+#: mistakes the message for the model's reply.
+FATAL_PATTERNS = (
+    "session limit", "usage limit", "rate limit", "quota",
+    "insufficient credit", "credit balance", "authentication",
+    "invalid api key", "not logged in", "please run /login",
+)
+
+
 @dataclass
 class AgentResult:
     step: str
@@ -51,6 +71,22 @@ class AgentResult:
 
     def ok(self) -> bool:
         return self.returncode == 0 and bool(self.text.strip())
+
+    def infra_failure(self) -> str | None:
+        """Return a reason if the call never reached a model, else None."""
+        if self.dry_run:
+            return None
+        blob = f"{self.text}\n{self.stderr}".lower()
+        for pat in FATAL_PATTERNS:
+            if pat in blob:
+                return pat
+        if self.returncode == 124:
+            return "timeout"
+        if self.returncode != 0:
+            return f"claude exited {self.returncode}"
+        if not self.text.strip():
+            return "empty response"
+        return None
 
 
 @dataclass

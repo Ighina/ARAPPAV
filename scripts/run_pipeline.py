@@ -27,6 +27,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from arappav.pipeline.agents import InfrastructureError  # noqa: E402
 from arappav.pipeline.orchestrator import Pipeline, PipelineConfig  # noqa: E402
 
 
@@ -101,7 +102,13 @@ def main() -> int:
     print(f"[pipeline] start={cfg.start} freeze={cfg.freeze} rounds={cfg.rounds} "
           f"episodes={cfg.episodes} k={cfg.k} processbench={cfg.processbench_enabled} "
           f"no_context={cfg.no_context} dry_run={cfg.dry_run}")
-    result = Pipeline(cfg).run()
+    try:
+        result = Pipeline(cfg).run()
+    except InfrastructureError as e:
+        print(f"\n[pipeline] ABORTED — {e}", file=sys.stderr)
+        print("[pipeline] Completed rounds are on disk and were NOT contaminated.",
+              file=sys.stderr)
+        return 2
     print("\n" + result["table"])
     return 0
 

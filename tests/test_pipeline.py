@@ -222,3 +222,52 @@ class TestReporting:
             "processbench": {"enabled": True, "summary": {"processbench_f1": 0.87}},
         }]
         assert "F1 0.87" in _summary_table(rounds, PipelineConfig())
+
+
+# ------------------------------------------------- infrastructure failures
+class TestInfrastructureFailure:
+    """A call that never reached a model must never become a reward.
+
+    Regression cover for the 10-round haiku run, where a session limit was
+    scored as 171 format failures and produced a fabricated table.
+    """
+
+    def _res(self, text="", rc=0, stderr="", dry=False):
+        from arappav.pipeline.agents import AgentResult
+        return AgentResult("perturb", text, rc, 0.1, 10, "sha", stderr, dry)
+
+    @pytest.mark.parametrize("text", [
+        "You've hit your session limit · resets 5:50pm (Europe/London)",
+        "Usage limit reached",
+        "Rate limit exceeded, try again later",
+        "Insufficient credit balance",
+    ])
+    def test_quota_messages_are_infrastructure_not_data(self, text):
+        assert self._res(text, rc=1).infra_failure() is not None
+
+    def test_timeout_is_infrastructure(self):
+        assert self._res("", rc=124, stderr="timeout after 900s").infra_failure() == "timeout"
+
+    def test_empty_response_is_infrastructure(self):
+        assert self._res("   ", rc=0).infra_failure() == "empty response"
+
+    def test_nonzero_exit_is_infrastructure(self):
+        assert "exited 1" in self._res("something", rc=1).infra_failure()
+
+    def test_a_genuinely_malformed_reply_is_data_not_infrastructure(self):
+        # This one MUST be scored: the model answered, just badly.
+        bad = '{"perturbed_solution": "x", "errors": ['      # truncated JSON
+        assert self._res(bad, rc=0).infra_failure() is None
+
+    def test_dry_run_is_never_infrastructure_failure(self):
+        assert self._res("", rc=0, dry=True).infra_failure() is None
+
+    def test_guard_raises_and_names_the_step(self):
+        from arappav.pipeline.agents import InfrastructureError
+        from arappav.pipeline.orchestrator import _guard
+        with pytest.raises(InfrastructureError, match="session limit"):
+            _guard(self._res("You've hit your session limit", rc=1), "round 3 ep05 perturb")
+
+    def test_guard_passes_a_real_reply_through(self):
+        from arappav.pipeline.orchestrator import _guard
+        _guard(self._res('{"claims": []}', rc=0), "round 0 ep00 verify")   # no raise

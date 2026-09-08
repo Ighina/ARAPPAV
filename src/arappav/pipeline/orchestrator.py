@@ -14,7 +14,9 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from arappav.pipeline import agents, policies, scoring
-from arappav.pipeline.agents import ContextLedger, render_context_block, run_claude
+from arappav.pipeline.agents import (
+    ContextLedger, InfrastructureError, render_context_block, run_claude,
+)
 from arappav.pipeline.contracts import (
     Episode, LeakageError, assert_problem_unchanged,
     render_perturb_prompt, render_verify_prompt,
@@ -166,6 +168,7 @@ class Pipeline:
                                  round_dir=self.round_dir(0), model=cfg.model,
                                  timeout=cfg.timeout, dry_run=cfg.dry_run)
                 ledger.record(f"create-policy-{role}", None, {}, prompt, res)
+                _guard(res, f"create-policy-{role}")
                 body = res.text if res.ok() else ""
                 note = "warm start — policy authored by " + skill
                 if not body:
@@ -207,6 +210,7 @@ class Pipeline:
             res = run_claude(prompt, step=f"{skill}", round_dir=self.round_dir(i),
                              model=cfg.model, timeout=cfg.timeout, dry_run=cfg.dry_run)
             ledger.record(skill, None, allowed, prompt, res)
+            _guard(res, f"round {i} {skill}")
             body = res.text if res.ok() else old_body
             if res.ok():
                 note = f"tuned from round {i-1}"
@@ -271,13 +275,14 @@ class Pipeline:
                                   model=cfg.model, timeout=cfg.timeout,
                                   dry_run=cfg.dry_run)
                 ledger.record("perturb", ep.episode_id, {}, p_prompt, pres)
+                _guard(pres, f"round {i} {ep.episode_id} perturb")
                 parsed, err, stage = scoring.parse_perturbation(pres.text, ep.k, ep.solution)
                 attempts.append({"attempt": attempt, "format_valid": parsed is not None,
                                  "failure_stage": stage})
                 if parsed is not None or cfg.dry_run:
                     break
                 print(f"[round {i}] {ep.episode_id}: unparseable perturbation "
-                      f"({stage}); retrying {attempt + 1}/{cfg.retry_format}")
+                      f"({stage}); retry {attempt + 1} of {cfg.retry_format}")
             (ed / "perturb_raw.txt").write_text(pres.text)
             _write(ed / "perturb_attempts.json", attempts)
             if parsed is not None:
@@ -304,6 +309,7 @@ class Pipeline:
                                   episode_id=ep.episode_id, model=cfg.model,
                                   timeout=cfg.timeout, dry_run=cfg.dry_run)
                 ledger.record("verify", ep.episode_id, {}, v_prompt, vres)
+                _guard(vres, f"round {i} {ep.episode_id} verify")
                 vres_text = vres.text
                 (ed / "verify_raw.txt").write_text(vres_text)
 
@@ -444,6 +450,9 @@ class Pipeline:
         )
         res = run_claude(prompt, step="final_summary", round_dir=self.root,
                          model=cfg.model, timeout=cfg.timeout, dry_run=cfg.dry_run)
+        if res.infra_failure():
+            print(f"[final] narrative summary unavailable ({res.infra_failure()}); "
+                  "writing the deterministic table instead.")
         md = res.text if res.ok() else (
             "# Final summary\n\n_The `/final_summary` skill did not return a report; "
             "the deterministic table below is generated from persisted round data._\n\n" + table)
@@ -483,6 +492,23 @@ def _summary_table(rounds: list[dict], cfg: PipelineConfig) -> str:
             f"| {m['mean_verifier_precision']} | {m['mean_units_per_episode']} "
             f"| {pen} | {pbs} |")
     return head + "\n".join(rows) + "\n"
+
+
+def _guard(res, what: str) -> None:
+    """Abort the run if a call never reached a model.
+
+    Deliberately fail-fast. The alternative — recording a penalty — silently
+    turns an outage into 80 episodes of fabricated data, which is exactly the
+    failure this guard exists to prevent. Completed rounds are already on disk,
+    so `--resume` continues from the last good round once the cause is fixed.
+    """
+    reason = res.infra_failure()
+    if reason:
+        raise InfrastructureError(
+            f"{what}: the model was never reached ({reason}). "
+            f"No reward is recorded for this call. Fix the cause and re-run "
+            f"with --resume to continue from the last completed round."
+        )
 
 
 def _write(path: Path, data) -> None:
