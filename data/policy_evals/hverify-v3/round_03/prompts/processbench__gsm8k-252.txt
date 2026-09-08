@@ -1,0 +1,41 @@
+/hverify-v3
+
+## PROBLEM
+In a candy machine, there are 22 more than four times the number of pink gumballs as there are blue gumballs. If there are 12 blue gumballs how many pink ones are there?
+
+## SOLUTION TO REVIEW
+<step_0>
+To solve this problem, we need to determine the number of pink gumballs in the candy machine given that there are 12 blue gumballs and that the number of pink gumballs is 22 more than four times the number of blue gumballs.
+</step_0>
+
+<step_1>
+First, identify the number of blue gumballs:
+\[ \text{Number of blue gumballs} = 12 \]
+</step_1>
+
+<step_2>
+Next, set up the relationship between the number of pink gumballs and blue gumballs. According to the problem, the number of pink gumballs is 22 more than four times the number of blue gumballs. We can express this relationship with an equation:
+\[ \text{Number of pink gumballs} = 4 \times (\text{Number of blue gumballs}) + 22 \]
+</step_2>
+
+<step_3>
+Substitute the number of blue gumballs into the equation:
+\[ \text{Number of pink gumballs} = 4 \times 12 + 22 \]
+</step_3>
+
+<step_4>
+Perform the multiplication:
+\[ 4 \times 12 = 48 \]
+</step_4>
+
+<step_5>
+Add 22 to the result:
+\[ 48 + 22 = 70 \]
+</step_5>
+
+<step_6>
+Therefore, the number of pink gumballs is:
+\[ \boxed{70} \]
+</step_6>
+
+Return only the JSON object described in your output contract.

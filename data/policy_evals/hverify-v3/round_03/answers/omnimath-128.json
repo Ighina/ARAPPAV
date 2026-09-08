@@ -1,0 +1,8 @@
+{
+  "episode_id": "omnimath-128",
+  "subset": "omnimath",
+  "label": 1,
+  "num_steps": 10,
+  "final_answer_correct": false,
+  "generator": "Qwen2.5-72B-Instruct"
+}

@@ -26,9 +26,11 @@ Design notes:
 from __future__ import annotations
 
 import argparse
+import concurrent.futures as futures
 import json
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -64,10 +66,20 @@ def evaluate(version: int, args) -> dict:
     outbox.mkdir(parents=True, exist_ok=True)
 
     todo = [f for f in sorted(inbox.glob("*.json")) if not (outbox / f.name).exists()]
-    print(f"[{skill}] {len(todo)} item(s) to run "
-          f"({len(list(inbox.glob('*.json'))) - len(todo)} already done)")
+    done_already = len(list(inbox.glob("*.json"))) - len(todo)
+    print(f"[{skill}] {len(todo)} item(s) to run ({done_already} already done), "
+          f"concurrency={args.concurrency}")
 
-    for f in todo:
+    # Items are independent, so they run in parallel. Measured sequentially at
+    # ~26s median / ~57s mean per item, three quarters of the wall clock went to
+    # a rate-limit tail; overlapping the waits is the entire win here.
+    abort: list[str] = []
+    lock = threading.Lock()
+    progress = {"n": 0}
+
+    def one(f: Path) -> None:
+        if abort:                      # a sibling already hit infrastructure
+            return
         item = json.loads(f.read_text())
         ep = Episode(episode_id=f.stem, problem=item["problem"], solution="", k=0)
         prompt = render_verify_prompt(ep, item["solution_to_review"], f"/{skill}", "")
@@ -75,10 +87,24 @@ def evaluate(version: int, args) -> dict:
                          episode_id=f.stem, model=args.model, timeout=args.timeout)
         reason = res.infra_failure()
         if reason:
-            raise InfrastructureError(
-                f"{skill}/{f.stem}: model never reached ({reason}). "
-                f"Nothing scored. Re-run to resume — completed items are kept.")
+            with lock:
+                abort.append(f"{skill}/{f.stem}: {reason}")
+            return
+        # Written only after the guard passes, so a quota error never leaves a
+        # placeholder that a later --resume would mistake for a real answer.
         (outbox / f.name).write_text(res.text)
+        with lock:
+            progress["n"] += 1
+            if progress["n"] % 10 == 0 or progress["n"] == len(todo):
+                print(f"[{skill}] {progress['n']}/{len(todo)}", flush=True)
+
+    if todo:
+        with futures.ThreadPoolExecutor(max_workers=args.concurrency) as pool:
+            list(pool.map(one, todo))
+    if abort:
+        raise InfrastructureError(
+            f"{abort[0]} (+{len(abort) - 1} more). Model never reached; nothing "
+            f"scored for those. Re-run to resume — completed items are kept.")
 
     sc = subprocess.run(
         [sys.executable, "scripts/processbench_eval.py", "--root", str(root / skill),
@@ -104,6 +130,8 @@ def main() -> int:
                    help="fixes the held-out sample; keep constant across versions")
     p.add_argument("--root", default="data/policy_evals")
     p.add_argument("--timeout", type=int, default=600)
+    p.add_argument("--concurrency", type=int, default=4,
+                   help="parallel items per policy (default 4)")
     args = p.parse_args()
 
     results = []

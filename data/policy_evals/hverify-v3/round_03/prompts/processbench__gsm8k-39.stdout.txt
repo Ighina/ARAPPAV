@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "180 minutes (before dinner) + 80 minutes (homework) = 260 minutes",
+      "explanation": "The solution incorrectly adds homework time to the available time before dinner. John has 3 hours (180 minutes) before dinner—this is his total available time for all activities before eating. His homework (80 minutes) is a component of how that time is used, not an additional block of time beyond what's available. The correct operation is subtraction: 180 minutes - 80 minutes = 100 minutes available for napping. Adding these quantities double-counts the homework period and produces an incorrect total.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

@@ -1,0 +1,8 @@
+{
+  "episode_id": "math-920",
+  "subset": "math",
+  "problem": "Let $t=2s-s^2$ and $s=n^2 - 2^n+1$. What is the value of $t$ when $n=3$?",
+  "solution_to_review": "<step_0>\nTo find the value of \\(t\\) when \\(n=3\\), we need to follow these steps: First, find the value of \\(s\\) when \\(n=3\\). Given that \\(s = n^2 - 2^n + 1\\), substitute \\(n = 3\\): \\[ s = 3^2 - 2^3 + 1 = 9 - 8 + 1 = 2 \\]\n</step_0>\n\n<step_1>\nSecond, find the value of \\(t\\) using the value of \\(s\\) from the first step. Given that \\(t = 2s - s^2\\), substitute \\(s = 2\\): \\[ t = 2(2) - (2)^2 = 4 - 4 = 0 \\]\n</step_1>\n\n<step_2>\nThe value of \\(t\\) when \\(n=3\\) is \\(\\boxed{0}\\).\n</step_2>",
+  "step_format": "tagged",
+  "num_steps": 3
+}

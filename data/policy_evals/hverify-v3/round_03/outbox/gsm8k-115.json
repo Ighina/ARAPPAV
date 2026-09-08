@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "We know he bought 4 candies for $3.20 in total.",
+      "explanation": "This misinterprets the problem. The problem states that five lollipops and four candies together cost $3.20, not that the candies alone cost $3.20. The correct cost of the 4 candies must be calculated by subtracting the lollipop cost from the total: 5 lollipops cost 5 × $0.40 = $2.00, so 4 candies cost $3.20 − $2.00 = $1.20. This gives a cost per candy of $1.20 ÷ 4 = $0.30, not $0.80. As a result, the final answer should be (10 × $0.40) + (10 × $0.30) = $4.00 + $3.00 = $7.00, not $12.00.",
+      "error_type": "problem_misinterpretation"
+    }
+  ]
+}
+```

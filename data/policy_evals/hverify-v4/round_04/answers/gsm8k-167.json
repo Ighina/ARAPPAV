@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-167",
+  "subset": "gsm8k",
+  "label": 0,
+  "num_steps": 5,
+  "final_answer_correct": false,
+  "generator": "Llama-3.1-8B-Instruct"
+}

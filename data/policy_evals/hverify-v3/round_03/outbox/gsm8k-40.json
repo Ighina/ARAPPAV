@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "$194/meter × 490 meters = $94,860",
+      "explanation": "The product 194 × 490 is incorrectly calculated as $94,860. The correct calculation is 194 × 490 = $95,060.",
+      "error_type": "arithmetic_error"
+    }
+  ]
+}
+```

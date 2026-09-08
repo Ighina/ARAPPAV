@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "1/4 of the oranges = (1/4) * 240 = 60 oranges",
+      "explanation": "The solution calculates 1/4 of the original 240 oranges, but the problem states 'Then she kept 1/4 of the oranges', which refers to the oranges remaining after giving boxes away. After giving 80 oranges (4 boxes) to mom and sister, Mrs. Harrington has 160 oranges left. She should keep 1/4 of the remaining 160 = 40 oranges. The correct calculation is: sold oranges = 160 - 40 = 120, not 100.",
+      "error_type": "wrong_operand"
+    }
+  ]
+}
+```

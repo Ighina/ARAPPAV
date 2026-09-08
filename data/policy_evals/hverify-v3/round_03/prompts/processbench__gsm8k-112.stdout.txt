@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "This means she slept for 9 hours and 55 minutes instead of 8 hours.",
+      "explanation": "If Kim went to sleep at 10 p.m. and woke up at 5:55 a.m., she slept for 7 hours and 55 minutes (475 minutes), not 9 hours and 55 minutes (595 minutes). The calculation of wake time in this step is correct (5:55 a.m.), but the total sleep duration contradicts it. 10 p.m. to 5:55 a.m. is 7 hours 55 minutes, which is 5 minutes less than her usual 8 hours, not 1 hour 55 minutes more.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

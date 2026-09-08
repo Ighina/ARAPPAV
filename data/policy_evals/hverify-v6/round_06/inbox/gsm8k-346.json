@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-346",
+  "subset": "gsm8k",
+  "problem": "If Martin eats Cheerios every day for breakfast, he'll lose 1.25 pounds/week. If he eats donuts every day for breakfast, he'll gain 1.75 pounds/week. What will be the difference in his weight at the end of 5 weeks between the two breakfast options?",
+  "solution_to_review": "<step_0>\nTo solve this problem, we need to calculate the net change in Martin's weight over a period of 5 weeks for both the Cheerios and donuts breakfast options, and then find the difference between these changes.\n</step_0>\n\n<step_1>\nFirst, calculate the weight change with Cheerios. Martin loses 1.25 pounds per week when he eats Cheerios. Over 5 weeks, the total weight loss is: \\[ 1.25 \\text{ pounds/week} \\times 5 \\text{ weeks} = 6.25 \\text{ pounds} \\]\n</step_1>\n\n<step_2>\nSecond, calculate the weight change with donuts. Martin gains 1.75 pounds per week when he eats donuts. Over 5 weeks, the total weight gain is: \\[ 1.75 \\text{ pounds/week} \\times 5 \\text{ weeks} = 8.75 \\text{ pounds} \\]\n</step_2>\n\n<step_3>\nFinally, find the difference in weight change. The difference in weight change between eating donuts and Cheerios is: \\[ 8.75 \\text{ pounds (donuts)} - (-6.25 \\text{ pounds (Cheerios)}) = 8.75 + 6.25 = 15 \\text{ pounds} \\]\n</step_3>\n\n<step_4>\nThus, the difference in Martin's weight at the end of 5 weeks between eating donuts and Cheerios is \\(\\boxed{15}\\) pounds.\n</step_4>",
+  "step_format": "tagged",
+  "num_steps": 5
+}
