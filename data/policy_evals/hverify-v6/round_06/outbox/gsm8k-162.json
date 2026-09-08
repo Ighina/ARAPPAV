@@ -1,0 +1,18 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "there is no discount on this item",
+      "explanation": "The problem explicitly states that 'everything was 20% off', which includes the mixing bowls. This statement contradicts the requirement that all items receive a discount.",
+      "error_type": null
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "$96 + $20 + $25 = $141",
+      "explanation": "This sum uses $96, the already-discounted price of the pots and pans from step 0. To compute the total cost before discount, the original price $120 must be used. The correct total before any discount is $120 + $20 + $25 = $165. By using the wrong total, the solution applies a discount to an already-discounted value, resulting in an incorrect final answer of $112.80 instead of the correct $132.00.",
+      "error_type": null
+    }
+  ]
+}
+```

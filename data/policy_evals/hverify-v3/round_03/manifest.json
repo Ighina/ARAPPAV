@@ -1,0 +1,98 @@
+{
+  "round": 3,
+  "dataset": "Qwen/ProcessBench",
+  "verify_skill": "hverify-v3",
+  "subsets": [
+    "gsm8k",
+    "math",
+    "olympiadbench",
+    "omnimath"
+  ],
+  "per_subset": 5,
+  "sampling": "balanced",
+  "seed": 0,
+  "max_steps": null,
+  "num_items": 20,
+  "items": [
+    {
+      "id": "gsm8k-89",
+      "subset": "gsm8k"
+    },
+    {
+      "id": "gsm8k-162",
+      "subset": "gsm8k"
+    },
+    {
+      "id": "gsm8k-223",
+      "subset": "gsm8k"
+    },
+    {
+      "id": "gsm8k-251",
+      "subset": "gsm8k"
+    },
+    {
+      "id": "gsm8k-261",
+      "subset": "gsm8k"
+    },
+    {
+      "id": "math-159",
+      "subset": "math"
+    },
+    {
+      "id": "math-609",
+      "subset": "math"
+    },
+    {
+      "id": "math-687",
+      "subset": "math"
+    },
+    {
+      "id": "math-744",
+      "subset": "math"
+    },
+    {
+      "id": "math-927",
+      "subset": "math"
+    },
+    {
+      "id": "olympiadbench-238",
+      "subset": "olympiadbench"
+    },
+    {
+      "id": "olympiadbench-599",
+      "subset": "olympiadbench"
+    },
+    {
+      "id": "olympiadbench-610",
+      "subset": "olympiadbench"
+    },
+    {
+      "id": "olympiadbench-749",
+      "subset": "olympiadbench"
+    },
+    {
+      "id": "olympiadbench-766",
+      "subset": "olympiadbench"
+    },
+    {
+      "id": "omnimath-281",
+      "subset": "omnimath"
+    },
+    {
+      "id": "omnimath-624",
+      "subset": "omnimath"
+    },
+    {
+      "id": "omnimath-700",
+      "subset": "omnimath"
+    },
+    {
+      "id": "omnimath-903",
+      "subset": "omnimath"
+    },
+    {
+      "id": "omnimath-929",
+      "subset": "omnimath"
+    }
+  ]
+}

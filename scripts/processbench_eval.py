@@ -99,11 +99,28 @@ def cmd_prepare(args) -> int:
 
     root = Path(args.root)
     edir = eval_dir(root, args.round)
-    if (edir / "inbox").exists() and not args.force:
-        print(f"[prepare] {edir / 'inbox'} already exists — pass --force to rebuild.")
+    existing_ids: set[str] = set()
+    manifest_items = []
+
+    if (edir / "inbox").exists() and not (args.force or args.extend):
+        print(f"[prepare] {edir / 'inbox'} already exists — pass --force to rebuild "
+              f"or --extend to add items while keeping the current ones.")
         return 1
 
-    manifest_items = []
+    if args.extend and (edir / "manifest.json").exists():
+        # Additive growth. `random.sample(pop, k)` is NOT a prefix extension
+        # across different k once two draws share an RNG (the balanced sampler
+        # draws erroneous then correct), so simply re-preparing at a larger
+        # --per-subset silently DROPS items already answered. Instead keep every
+        # existing item and top up with fresh, non-overlapping draws under a
+        # derived seed. The exclusion set is identical for every policy, so all
+        # of them extend to the same superset and stay comparable.
+        prev = read_json(edir / "manifest.json")
+        manifest_items = list(prev["items"])
+        existing_ids = {it["id"] for it in manifest_items}
+        print(f"[prepare] extending: keeping {len(existing_ids)} existing item(s), "
+              f"topping up to {args.per_subset}/subset")
+
     for subset in args.subsets:
         ds = load_dataset("Qwen/ProcessBench", split=subset)
         erroneous = [i for i, label in enumerate(ds["label"]) if label != -1]
@@ -111,13 +128,29 @@ def cmd_prepare(args) -> int:
 
         # Seeded independently of the round: every round sees the same held-out
         # items, so cross-round deltas measure the policy, not the sample.
-        rng = random.Random(f"{args.seed}:{subset}")
-        if args.sampling == "balanced":
-            half = args.per_subset // 2
-            picks = rng.sample(erroneous, min(half, len(erroneous)))
-            picks += rng.sample(correct, min(args.per_subset - half, len(correct)))
+        have = sum(1 for it in manifest_items if it["subset"] == subset)
+        need = args.per_subset - have
+        if need <= 0:
+            continue
+
+        if existing_ids:
+            # Exclude what is already answered, then draw the shortfall under a
+            # seed derived from the target size, so the extension is
+            # deterministic and identical across policies.
+            ids = ds["id"]
+            erroneous = [i for i in erroneous if ids[i] not in existing_ids]
+            correct = [i for i in correct if ids[i] not in existing_ids]
+            rng = random.Random(f"{args.seed}:{subset}:extend:{args.per_subset}")
         else:
-            picks = rng.sample(range(len(ds)), min(args.per_subset, len(ds)))
+            rng = random.Random(f"{args.seed}:{subset}")
+
+        if args.sampling == "balanced":
+            half = need // 2
+            picks = rng.sample(erroneous, min(half, len(erroneous)))
+            picks += rng.sample(correct, min(need - half, len(correct)))
+        else:
+            pool = [i for i in range(len(ds)) if ds["id"][i] not in existing_ids]
+            picks = rng.sample(pool, min(need, len(pool)))
         picks.sort()
 
         for idx in picks:
@@ -420,6 +453,9 @@ def main() -> int:
     p_prep.add_argument("--verify-skill", default="verify-v1")
     p_prep.add_argument("--seed", type=int, default=0, help="Fixes the held-out sample; keep it constant across rounds.")
     p_prep.add_argument("--force", action="store_true")
+    p_prep.add_argument("--extend", action="store_true",
+                        help="keep existing items and add new ones up to --per-subset, "
+                             "instead of resampling from scratch")
     p_prep.set_defaults(func=cmd_prepare)
 
     p_score = sub.add_parser("score", help="Score verifier outputs with the ProcessBench metric.")

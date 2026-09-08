@@ -1,0 +1,8 @@
+{
+  "episode_id": "math-927",
+  "subset": "math",
+  "problem": "Evaluate $|1-4i|$.",
+  "solution_to_review": "<step_0>\nWe have that\n\\begin{align*}\n|1 - 4i| &= \\sqrt{(1)^2 + (-4)^2} \\\\\n&= \\sqrt{1 + 16} \\\\\n&= \\sqrt{17}.\n\\end{align*}\n</step_0>\n\n<step_1>\nThe final answer is \\(\\sqrt{17}\\). I hope it is correct.\n</step_1>",
+  "step_format": "tagged",
+  "num_steps": 2
+}

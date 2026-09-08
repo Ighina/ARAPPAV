@@ -1,0 +1,186 @@
+{
+  "round": 3,
+  "verify_skill": "hverify-v3",
+  "rows": [
+    {
+      "id": "gsm8k-89",
+      "subset": "gsm8k",
+      "label": 3,
+      "prediction": 4,
+      "match": false,
+      "num_claims": 1,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-162",
+      "subset": "gsm8k",
+      "label": 1,
+      "prediction": 1,
+      "match": true,
+      "num_claims": 3,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-223",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-251",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-261",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "math-159",
+      "subset": "math",
+      "label": 3,
+      "prediction": 3,
+      "match": true,
+      "num_claims": 2,
+      "recovered": 0
+    },
+    {
+      "id": "math-609",
+      "subset": "math",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "math-687",
+      "subset": "math",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "math-744",
+      "subset": "math",
+      "label": 0,
+      "prediction": 0,
+      "match": true,
+      "num_claims": 2,
+      "recovered": 0
+    },
+    {
+      "id": "math-927",
+      "subset": "math",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "olympiadbench-238",
+      "subset": "olympiadbench",
+      "label": 4,
+      "prediction": 4,
+      "match": true,
+      "num_claims": 1,
+      "recovered": 0
+    },
+    {
+      "id": "olympiadbench-599",
+      "subset": "olympiadbench",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "olympiadbench-610",
+      "subset": "olympiadbench",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "olympiadbench-749",
+      "subset": "olympiadbench",
+      "label": 9,
+      "prediction": 9,
+      "match": true,
+      "num_claims": 1,
+      "recovered": 0
+    },
+    {
+      "id": "olympiadbench-766",
+      "subset": "olympiadbench",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "omnimath-281",
+      "subset": "omnimath",
+      "label": 5,
+      "prediction": 5,
+      "match": true,
+      "num_claims": 3,
+      "recovered": 0
+    },
+    {
+      "id": "omnimath-624",
+      "subset": "omnimath",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "omnimath-700",
+      "subset": "omnimath",
+      "label": 2,
+      "prediction": 3,
+      "match": false,
+      "num_claims": 1,
+      "recovered": 0
+    },
+    {
+      "id": "omnimath-903",
+      "subset": "omnimath",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "omnimath-929",
+      "subset": "omnimath",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    }
+  ]
+}

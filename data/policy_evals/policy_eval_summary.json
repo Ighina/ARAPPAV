@@ -2,8 +2,10 @@
   "config": {
     "prefix": "hverify",
     "versions": [
-      1,
-      2
+      3,
+      4,
+      5,
+      6
     ],
     "model": "claude-haiku-4-5",
     "per_subset": 5,
@@ -13,124 +15,246 @@
   },
   "results": [
     {
-      "version": 1,
-      "skill": "hverify-v1",
+      "version": 3,
+      "skill": "hverify-v3",
       "overall": {
         "n": 20,
         "n_erroneous": 8,
         "n_correct": 12,
-        "error_accuracy": 0.0,
-        "correct_accuracy": 0.0,
-        "unresolved_predictions": 20,
+        "error_accuracy": 0.75,
+        "correct_accuracy": 1.0,
+        "unresolved_predictions": 0,
         "recovered_step_indices": 0,
-        "processbench_f1": 0.0,
-        "balanced_accuracy": 0.0
+        "processbench_f1": 0.8571,
+        "balanced_accuracy": 0.875
       },
       "per_subset": {
         "gsm8k": {
           "n": 5,
           "n_erroneous": 2,
           "n_correct": 3,
-          "error_accuracy": 0.0,
-          "correct_accuracy": 0.0,
-          "unresolved_predictions": 5,
+          "error_accuracy": 0.5,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 0.0,
-          "balanced_accuracy": 0.0
+          "processbench_f1": 0.6667,
+          "balanced_accuracy": 0.75
         },
         "math": {
           "n": 5,
           "n_erroneous": 2,
           "n_correct": 3,
-          "error_accuracy": 0.0,
-          "correct_accuracy": 0.0,
-          "unresolved_predictions": 5,
+          "error_accuracy": 1.0,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 0.0,
-          "balanced_accuracy": 0.0
+          "processbench_f1": 1.0,
+          "balanced_accuracy": 1.0
         },
         "olympiadbench": {
           "n": 5,
           "n_erroneous": 2,
           "n_correct": 3,
-          "error_accuracy": 0.0,
-          "correct_accuracy": 0.0,
-          "unresolved_predictions": 5,
+          "error_accuracy": 1.0,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 0.0,
-          "balanced_accuracy": 0.0
+          "processbench_f1": 1.0,
+          "balanced_accuracy": 1.0
         },
         "omnimath": {
           "n": 5,
           "n_erroneous": 2,
           "n_correct": 3,
-          "error_accuracy": 0.0,
-          "correct_accuracy": 0.0,
-          "unresolved_predictions": 5,
+          "error_accuracy": 0.5,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 0.0,
-          "balanced_accuracy": 0.0
+          "processbench_f1": 0.6667,
+          "balanced_accuracy": 0.75
         }
       }
     },
     {
-      "version": 2,
-      "skill": "hverify-v2",
+      "version": 4,
+      "skill": "hverify-v4",
       "overall": {
         "n": 20,
         "n_erroneous": 8,
         "n_correct": 12,
-        "error_accuracy": 0.0,
-        "correct_accuracy": 0.0,
-        "unresolved_predictions": 20,
+        "error_accuracy": 0.875,
+        "correct_accuracy": 0.9167,
+        "unresolved_predictions": 0,
         "recovered_step_indices": 0,
-        "processbench_f1": 0.0,
-        "balanced_accuracy": 0.0
+        "processbench_f1": 0.8954,
+        "balanced_accuracy": 0.8959
       },
       "per_subset": {
         "gsm8k": {
           "n": 5,
           "n_erroneous": 2,
           "n_correct": 3,
-          "error_accuracy": 0.0,
-          "correct_accuracy": 0.0,
-          "unresolved_predictions": 5,
+          "error_accuracy": 1.0,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 0.0,
-          "balanced_accuracy": 0.0
+          "processbench_f1": 1.0,
+          "balanced_accuracy": 1.0
         },
         "math": {
           "n": 5,
           "n_erroneous": 2,
           "n_correct": 3,
-          "error_accuracy": 0.0,
-          "correct_accuracy": 0.0,
-          "unresolved_predictions": 5,
+          "error_accuracy": 1.0,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 0.0,
-          "balanced_accuracy": 0.0
+          "processbench_f1": 1.0,
+          "balanced_accuracy": 1.0
         },
         "olympiadbench": {
           "n": 5,
           "n_erroneous": 2,
           "n_correct": 3,
-          "error_accuracy": 0.0,
-          "correct_accuracy": 0.0,
-          "unresolved_predictions": 5,
+          "error_accuracy": 1.0,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 0.0,
-          "balanced_accuracy": 0.0
+          "processbench_f1": 1.0,
+          "balanced_accuracy": 1.0
         },
         "omnimath": {
           "n": 5,
           "n_erroneous": 2,
           "n_correct": 3,
-          "error_accuracy": 0.0,
-          "correct_accuracy": 0.0,
-          "unresolved_predictions": 5,
+          "error_accuracy": 0.5,
+          "correct_accuracy": 0.6667,
+          "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 0.0,
-          "balanced_accuracy": 0.0
+          "processbench_f1": 0.5714,
+          "balanced_accuracy": 0.5834
+        }
+      }
+    },
+    {
+      "version": 5,
+      "skill": "hverify-v5",
+      "overall": {
+        "n": 20,
+        "n_erroneous": 8,
+        "n_correct": 12,
+        "error_accuracy": 0.875,
+        "correct_accuracy": 1.0,
+        "unresolved_predictions": 0,
+        "recovered_step_indices": 0,
+        "processbench_f1": 0.9333,
+        "balanced_accuracy": 0.9375
+      },
+      "per_subset": {
+        "gsm8k": {
+          "n": 5,
+          "n_erroneous": 2,
+          "n_correct": 3,
+          "error_accuracy": 1.0,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
+          "recovered_step_indices": 0,
+          "processbench_f1": 1.0,
+          "balanced_accuracy": 1.0
+        },
+        "math": {
+          "n": 5,
+          "n_erroneous": 2,
+          "n_correct": 3,
+          "error_accuracy": 1.0,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
+          "recovered_step_indices": 0,
+          "processbench_f1": 1.0,
+          "balanced_accuracy": 1.0
+        },
+        "olympiadbench": {
+          "n": 5,
+          "n_erroneous": 2,
+          "n_correct": 3,
+          "error_accuracy": 1.0,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
+          "recovered_step_indices": 0,
+          "processbench_f1": 1.0,
+          "balanced_accuracy": 1.0
+        },
+        "omnimath": {
+          "n": 5,
+          "n_erroneous": 2,
+          "n_correct": 3,
+          "error_accuracy": 0.5,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
+          "recovered_step_indices": 0,
+          "processbench_f1": 0.6667,
+          "balanced_accuracy": 0.75
+        }
+      }
+    },
+    {
+      "version": 6,
+      "skill": "hverify-v6",
+      "overall": {
+        "n": 20,
+        "n_erroneous": 8,
+        "n_correct": 12,
+        "error_accuracy": 0.875,
+        "correct_accuracy": 1.0,
+        "unresolved_predictions": 0,
+        "recovered_step_indices": 0,
+        "processbench_f1": 0.9333,
+        "balanced_accuracy": 0.9375
+      },
+      "per_subset": {
+        "gsm8k": {
+          "n": 5,
+          "n_erroneous": 2,
+          "n_correct": 3,
+          "error_accuracy": 1.0,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
+          "recovered_step_indices": 0,
+          "processbench_f1": 1.0,
+          "balanced_accuracy": 1.0
+        },
+        "math": {
+          "n": 5,
+          "n_erroneous": 2,
+          "n_correct": 3,
+          "error_accuracy": 1.0,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
+          "recovered_step_indices": 0,
+          "processbench_f1": 1.0,
+          "balanced_accuracy": 1.0
+        },
+        "olympiadbench": {
+          "n": 5,
+          "n_erroneous": 2,
+          "n_correct": 3,
+          "error_accuracy": 1.0,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
+          "recovered_step_indices": 0,
+          "processbench_f1": 1.0,
+          "balanced_accuracy": 1.0
+        },
+        "omnimath": {
+          "n": 5,
+          "n_erroneous": 2,
+          "n_correct": 3,
+          "error_accuracy": 0.5,
+          "correct_accuracy": 1.0,
+          "unresolved_predictions": 0,
+          "recovered_step_indices": 0,
+          "processbench_f1": 0.6667,
+          "balanced_accuracy": 0.75
         }
       }
     }

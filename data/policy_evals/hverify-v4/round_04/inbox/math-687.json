@@ -1,0 +1,8 @@
+{
+  "episode_id": "math-687",
+  "subset": "math",
+  "problem": "At her track meet, Alice ran at a speed of $9\\ \\text{m/s}$ for $12$ seconds. How many meters did she run?",
+  "solution_to_review": "<step_0>\nTo calculate how many meters Alice ran, we use the formula: \\[ \\text{Distance} = \\text{Speed} \\times \\text{Time} \\]\n</step_0>\n\n<step_1>\nGiven that Alice's speed is \\(9 \\text{ m/s}\\) and she ran for \\(12\\) seconds, we substitute these values into the formula: \\[ \\text{Distance} = 9 \\text{ m/s} \\times 12 \\text{ s} \\]\n\\[ \\text{Distance} = 108 \\text{ meters} \\]\n</step_1>\n\n<step_2>\nTherefore, Alice ran 108 meters.\n</step_2>",
+  "step_format": "tagged",
+  "num_steps": 3
+}

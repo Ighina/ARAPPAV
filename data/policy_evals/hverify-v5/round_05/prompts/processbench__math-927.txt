@@ -1,0 +1,20 @@
+/hverify-v5
+
+## PROBLEM
+Evaluate $|1-4i|$.
+
+## SOLUTION TO REVIEW
+<step_0>
+We have that
+\begin{align*}
+|1 - 4i| &= \sqrt{(1)^2 + (-4)^2} \\
+&= \sqrt{1 + 16} \\
+&= \sqrt{17}.
+\end{align*}
+</step_0>
+
+<step_1>
+The final answer is \(\sqrt{17}\). I hope it is correct.
+</step_1>
+
+Return only the JSON object described in your output contract.
