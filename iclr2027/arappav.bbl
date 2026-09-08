@@ -1,0 +1,215 @@
+\begin{thebibliography}{26}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Amodei et~al.(2016)Amodei, Olah, Steinhardt, Christiano, Schulman, and
+  Man{\'e}]{amodei2016concrete}
+Dario Amodei, Chris Olah, Jacob Steinhardt, Paul Christiano, John Schulman, and
+  Dan Man{\'e}.
+\newblock Concrete problems in {AI} safety.
+\newblock \emph{arXiv preprint arXiv:1606.06565}, 2016.
+
+\bibitem[{Anthropic}(2025)]{anthropic2025claudecode}
+{Anthropic}.
+\newblock Claude code.
+\newblock \url{https://claude.com/claude-code}, 2025.
+
+\bibitem[Bowman et~al.(2022)Bowman, Hyun, Perez, Chen, Pettit, Heiner,
+  Luko{\v{s}}i{\=u}t{\.e}, Askell, Jones, Chen, et~al.]{bowman2022measuring}
+Samuel~R. Bowman, Jeeyoon Hyun, Ethan Perez, Edwin Chen, Craig Pettit, Scott
+  Heiner, Kamil{\.e} Luko{\v{s}}i{\=u}t{\.e}, Amanda Askell, Andy Jones, Anna
+  Chen, et~al.
+\newblock Measuring progress on scalable oversight for large language models.
+\newblock \emph{arXiv preprint arXiv:2211.03540}, 2022.
+
+\bibitem[Chen et~al.(2024)Chen, Deng, Yuan, Ji, and Gu]{chen2024selfplay}
+Zixiang Chen, Yihe Deng, Huizhuo Yuan, Kaixuan Ji, and Quanquan Gu.
+\newblock Self-play fine-tuning converts weak language models to strong
+  language models.
+\newblock \emph{arXiv preprint arXiv:2401.01335}, 2024.
+
+\bibitem[Cobbe et~al.(2021)Cobbe, Kosaraju, Bavarian, Chen, Jun, Kaiser,
+  Plappert, Tworek, Hilton, Nakano, Hesse, and Schulman]{cobbe2021training}
+Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz
+  Kaiser, Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano,
+  Christopher Hesse, and John Schulman.
+\newblock Training verifiers to solve math word problems.
+\newblock \emph{arXiv preprint arXiv:2110.14168}, 2021.
+
+\bibitem[Gao et~al.(2024)Gao, Song, Yang, Cai, Miao, Dong, Li, Ma, Chen, Xu,
+  Tang, Wang, Zan, Quan, Zhang, Sha, Zhang, Ren, Liu, and
+  Chang]{gao2024omnimath}
+Bofei Gao, Feifan Song, Zhe Yang, Zefan Cai, Yibo Miao, Qingxiu Dong, Lei Li,
+  Chenghao Ma, Liang Chen, Runxin Xu, Zhengyang Tang, Benyou Wang, Daoguang
+  Zan, Shanghaoran Quan, Ge~Zhang, Lei Sha, Yichang Zhang, Xuancheng Ren,
+  Tianyu Liu, and Baobao Chang.
+\newblock {Omni-MATH}: A universal olympiad level mathematic benchmark for
+  large language models.
+\newblock \emph{arXiv preprint arXiv:2410.07985}, 2024.
+
+\bibitem[Gibney(2025)]{gibney2025errors}
+Elizabeth Gibney.
+\newblock {AI} tools are spotting errors in research papers: inside a growing
+  movement.
+\newblock \emph{Nature}, 639, 2025.
+\newblock News feature; doi:10.1038/d41586-025-00648-5.
+
+\bibitem[Goodfellow et~al.(2014)Goodfellow, Pouget-Abadie, Mirza, Xu,
+  Warde-Farley, Ozair, Courville, and Bengio]{goodfellow2014generative}
+Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley,
+  Sherjil Ozair, Aaron Courville, and Yoshua Bengio.
+\newblock Generative adversarial nets.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2014.
+
+\bibitem[He et~al.(2024)He, Luo, Bai, Hu, Thai, Shen, Hu, Han, Huang, Zhang,
+  Liu, Qi, Liu, and Sun]{he2024olympiadbench}
+Chaoqun He, Renjie Luo, Yuzhuo Bai, Shengding Hu, Zhen~Leng Thai, Junhao Shen,
+  Jinyi Hu, Xu~Han, Yujie Huang, Yuxiang Zhang, Jie Liu, Lei Qi, Zhiyuan Liu,
+  and Maosong Sun.
+\newblock {OlympiadBench}: A challenging benchmark for promoting {AGI} with
+  olympiad-level bilingual multimodal scientific problems.
+\newblock In \emph{Proceedings of the Association for Computational Linguistics
+  (ACL)}, 2024.
+
+\bibitem[Hendrycks et~al.(2021)Hendrycks, Burns, Kadavath, Arora, Basart, Tang,
+  Song, and Steinhardt]{hendrycks2021measuring}
+Dan Hendrycks, Collin Burns, Saurav Kadavath, Akul Arora, Steven Basart, Eric
+  Tang, Dawn Song, and Jacob Steinhardt.
+\newblock Measuring mathematical problem solving with the {MATH} dataset.
+\newblock In \emph{NeurIPS Datasets and Benchmarks Track}, 2021.
+
+\bibitem[Khattab et~al.(2024)Khattab, Singhvi, Maheshwari, Zhang, Santhanam,
+  Vardhamanan, Haq, Sharma, Joshi, Moazam, Miller, Zaharia, and
+  Potts]{khattab2024dspy}
+Omar Khattab, Arnav Singhvi, Paridhi Maheshwari, Zhiyuan Zhang, Keshav
+  Santhanam, Sri Vardhamanan, Saiful Haq, Ashutosh Sharma, Thomas~T. Joshi,
+  Hanna Moazam, Heather Miller, Matei Zaharia, and Christopher Potts.
+\newblock {DSPy}: Compiling declarative language model calls into
+  self-improving pipelines.
+\newblock In \emph{International Conference on Learning Representations
+  (ICLR)}, 2024.
+
+\bibitem[Lightman et~al.(2023)Lightman, Kosaraju, Burda, Edwards, Baker, Lee,
+  Leike, Schulman, Sutskever, and Cobbe]{lightman2023verify}
+Hunter Lightman, Vineet Kosaraju, Yura Burda, Harrison Edwards, Bowen Baker,
+  Teddy Lee, Jan Leike, John Schulman, Ilya Sutskever, and Karl Cobbe.
+\newblock Let's verify step by step.
+\newblock \emph{arXiv preprint arXiv:2305.20050}, 2023.
+
+\bibitem[Madaan et~al.(2023)Madaan, Tandon, Gupta, Hallinan, Gao, Wiegreffe,
+  Alon, Dziri, Prabhumoye, Yang, et~al.]{madaan2023selfrefine}
+Aman Madaan, Niket Tandon, Prakhar Gupta, Skyler Hallinan, Luyu Gao, Sarah
+  Wiegreffe, Uri Alon, Nouha Dziri, Shrimai Prabhumoye, Yiming Yang, et~al.
+\newblock Self-refine: Iterative refinement with self-feedback.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2023.
+
+\bibitem[Pryzant et~al.(2023)Pryzant, Iter, Li, Lee, Zhu, and
+  Zeng]{pryzant2023automatic}
+Reid Pryzant, Dan Iter, Jerry Li, Yin~Tat Lee, Chenguang Zhu, and Michael Zeng.
+\newblock Automatic prompt optimization with ``gradient descent'' and beam
+  search.
+\newblock In \emph{Proceedings of Empirical Methods in Natural Language
+  Processing (EMNLP)}, 2023.
+
+\bibitem[Rafailov et~al.(2023)Rafailov, Sharma, Mitchell, Ermon, Manning, and
+  Finn]{rafailov2023direct}
+Rafael Rafailov, Archit Sharma, Eric Mitchell, Stefano Ermon, Christopher~D.
+  Manning, and Chelsea Finn.
+\newblock Direct preference optimization: Your language model is secretly a
+  reward model.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2023.
+
+\bibitem[Rittle-Johnson et~al.(2025)Rittle-Johnson, Adler, Durkin, Burleigh,
+  King, and Crossley]{rittlejohnson2025detecting}
+Bethany Rittle-Johnson, Rebecca Adler, Kelley Durkin, L.~Burleigh, Jules King,
+  and Scott Crossley.
+\newblock Detecting math misconceptions: An {AI} benchmark dataset.
+\newblock In \emph{Proceedings of the Artificial Intelligence in Measurement
+  and Education Conference (AIME-Con), Volume 2: Works in Progress}, pp.\
+  20--24. National Council on Measurement in Education, 2025.
+
+\bibitem[Saunders et~al.(2022)Saunders, Yeh, Wu, Bills, Ouyang, Ward, and
+  Leike]{saunders2022self}
+William Saunders, Catherine Yeh, Jeff Wu, Steven Bills, Long Ouyang, Jonathan
+  Ward, and Jan Leike.
+\newblock Self-critiquing models for assisting human evaluators.
+\newblock \emph{arXiv preprint arXiv:2206.05802}, 2022.
+
+\bibitem[Shao et~al.(2024)Shao, Wang, Zhu, Xu, Song, Bi, Zhang, Zhang, Li, Wu,
+  and Guo]{shao2024deepseekmath}
+Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei
+  Zhang, Mingchuan Zhang, Y.~K. Li, Y.~Wu, and Daya Guo.
+\newblock {DeepSeekMath}: Pushing the limits of mathematical reasoning in open
+  language models.
+\newblock \emph{arXiv preprint arXiv:2402.03300}, 2024.
+
+\bibitem[Si et~al.(2026)Si, Zhao, Lei, Wang, Chen, Wang, Wang, Luo, Wang, Chen,
+  Qi, Zhang, and Sun]{si2026context}
+Shuzheng Si, Haozhe Zhao, Yu~Lei, Qingyi Wang, Dingwei Chen, Zhitong Wang,
+  Zhenhailong Wang, Kangyang Luo, Zheng Wang, Gang Chen, Fanchao Qi, Minjia
+  Zhang, and Maosong Sun.
+\newblock From context to skills: Can language models learn from context
+  skillfully?
+\newblock \emph{arXiv preprint arXiv:2604.27660}, 2026.
+
+\bibitem[Silver et~al.(2017)Silver, Schrittwieser, Simonyan, Antonoglou, Huang,
+  Guez, Hubert, Baker, Lai, Bolton, et~al.]{silver2017mastering}
+David Silver, Julian Schrittwieser, Karen Simonyan, Ioannis Antonoglou, Aja
+  Huang, Arthur Guez, Thomas Hubert, Lucas Baker, Matthew Lai, Adrian Bolton,
+  et~al.
+\newblock Mastering the game of {Go} without human knowledge.
+\newblock \emph{Nature}, 550:\penalty0 354--359, 2017.
+
+\bibitem[Skalse et~al.(2022)Skalse, Howe, Krasheninnikov, and
+  Krueger]{skalse2022defining}
+Joar Skalse, Nikolaus H.~R. Howe, Dmitrii Krasheninnikov, and David Krueger.
+\newblock Defining and characterizing reward hacking.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2022.
+
+\bibitem[Wang et~al.(2024)Wang, Li, Shao, Xu, Dai, Li, Chen, Wu, and
+  Sui]{wang2024mathshepherd}
+Peiyi Wang, Lei Li, Zhihong Shao, Runxin Xu, Damai Dai, Yifei Li, Deli Chen,
+  Yu~Wu, and Zhifang Sui.
+\newblock {Math-Shepherd}: Verify and reinforce {LLM}s step-by-step without
+  human annotations.
+\newblock In \emph{Proceedings of the Association for Computational Linguistics
+  (ACL)}, 2024.
+
+\bibitem[Yang et~al.(2024)Yang, Wang, Lu, Liu, Le, Zhou, and
+  Chen]{yang2024large}
+Chengrun Yang, Xuezhi Wang, Yifeng Lu, Hanxiao Liu, Quoc~V. Le, Denny Zhou, and
+  Xinyun Chen.
+\newblock Large language models as optimizers.
+\newblock In \emph{International Conference on Learning Representations
+  (ICLR)}, 2024.
+
+\bibitem[Yuan et~al.(2024)Yuan, Pang, Cho, Li, Sukhbaatar, Xu, and
+  Weston]{yuan2024selfrewarding}
+Weizhe Yuan, Richard~Yuanzhe Pang, Kyunghyun Cho, Xian Li, Sainbayar
+  Sukhbaatar, Jing Xu, and Jason Weston.
+\newblock Self-rewarding language models.
+\newblock \emph{arXiv preprint arXiv:2401.10020}, 2024.
+
+\bibitem[Zheng et~al.(2024)Zheng, Zhang, Zhang, Lin, Lu, Yu, Liu, Zhou, and
+  Lin]{zheng2024processbench}
+Chujie Zheng, Zhenru Zhang, Beichen Zhang, Runji Lin, Keming Lu, Bowen Yu,
+  Dayiheng Liu, Jingren Zhou, and Junyang Lin.
+\newblock {ProcessBench}: Identifying process errors in mathematical reasoning.
+\newblock \emph{arXiv preprint arXiv:2412.06559}, 2024.
+
+\bibitem[Zhou et~al.(2023)Zhou, Muresanu, Han, Paster, Pitis, Chan, and
+  Ba]{zhou2023large}
+Yongchao Zhou, Andrei~Ioan Muresanu, Ziwen Han, Keiran Paster, Silviu Pitis,
+  Harris Chan, and Jimmy Ba.
+\newblock Large language models are human-level prompt engineers.
+\newblock In \emph{International Conference on Learning Representations
+  (ICLR)}, 2023.
+
+\end{thebibliography}

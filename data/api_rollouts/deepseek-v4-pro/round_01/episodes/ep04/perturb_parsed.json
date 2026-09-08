@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "The equation implies that either \\[\nx-1 = 2-x\\]or \\[ x-1 = -(x-2).\\]The first equation has solution $x=-1$; the second equation has solution $x= \\boxed{\\frac{3}{4}}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$x= \\boxed{\\frac{3}{2}}$.",
+      "injected_text": "$x= \\boxed{\\frac{3}{4}}$.",
+      "error_type": "denominator_only",
+      "rationale": "Solving x-1=-(x-2) gives x=3/2, so changing the denominator from 2 to 4 while keeping the numerator 3 is incorrect."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "\\[\nx-1 = x-2\\]",
+      "injected_text": "\\[\nx-1 = 2-x\\]",
+      "error_type": "duplication_error",
+      "rationale": "The first branch from |x-1|=|x-2| should be x-1=x-2, not x-1=2-x; this duplicates the second branch instead of keeping the positive case."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "The first equation has no solution",
+      "injected_text": "The first equation has solution $x=-1$",
+      "error_type": "negative_number_error",
+      "rationale": "The equation x-1=x-2 gives -1=-2, so it has no solution; stating x=-1 is a sign-handling mistake."
+    }
+  ]
+}

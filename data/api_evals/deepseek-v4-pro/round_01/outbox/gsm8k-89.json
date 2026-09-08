@@ -1,0 +1,10 @@
+{
+  "claims": [
+    {
+      "step_index": 3,
+      "quoted_text": "Total water = 6 + 9 - 2/3",
+      "explanation": "The 6 liters of orange-drink water are already the amount in the 9 liters remaining after spilling 1 liter, so subtracting the spilled 2/3 liter again double-counts the spill. The correct total is 6 + 9 = 15 liters of water.",
+      "error_type": "double_counting"
+    }
+  ]
+}

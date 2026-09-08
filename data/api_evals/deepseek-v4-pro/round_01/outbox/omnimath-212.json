@@ -1,0 +1,28 @@
+{
+  "claims": [
+    {
+      "step_index": 4,
+      "quoted_text": "The number of distinct powers of 2 up to \\(2^{20}\\) (since \\(2^{20} = 1048576\\)) is 21. Since there are only 21 distinct powers of 2 but 4068289 squares, it is impossible to assign a different power of 2 to each square.",
+      "explanation": "There are infinitely many powers of 2, so 4068289 squares can in principle receive distinct powers \\(2^0,2^1,\\ldots,2^{4068288}\\). The stated 'only 21' bound is false. The correct reason the answer is no is parity: each move increases the total sum by 2, so the total remains even, while any set of distinct powers of 2 includes 1 and has odd total sum.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 6,
+      "quoted_text": "In such a tournament, any set of 2017 players can be dominated by the player ranked immediately higher than the highest-ranked player in the set.",
+      "explanation": "This is false for a transitive ranking: if the set contains the top-ranked player, there is no higher-ranked player, and nobody beats the top-ranked player. So this construction does not show that every set of 2017 players is dominated. The answer is still yes, but requires a different construction.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 10,
+      "quoted_text": "However, the exact form of the bound \\(\\max(|A + A|, |A \\cdot A|) \\geq c|A| \\log^2 |A|\\) is not generally known to hold for all sets \\(A\\).",
+      "explanation": "This is wrong. For finite \\(A\\subset\\mathbb Z\\), sum-product bounds give a much stronger lower bound such as \\(\\max(|A+A|,|A\\cdot A|)\\gg |A|^{5/4}\\), which dominates \\(c|A|\\log^2|A|\\) for large \\(A\\). Small sets can be handled by taking \\(c\\) sufficiently small, so such a positive constant \\(c\\) does exist.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 12,
+      "quoted_text": "It is known that the set \\(\\{1, 2, \\ldots, n\\}\\) can be partitioned into \\(k\\) sum-free subsets if \\(n \\leq 2^k - 1\\). For \\(k = 7\\), \\(2^7 - 1 = 127\\), which is much smaller than 1093.",
+      "explanation": "The stated bound \\(n\\le 2^k-1\\) is false. The correct Schur-type construction partitions \\(\\{1,\\ldots,(3^k-1)/2\\}\\) into \\(k\\) sum-free sets. For \\(k=7\\), this gives \\((3^7-1)/2 = 1093\\), so the set \\(\\{1,\\ldots,1093\\}\\) can indeed be partitioned into 7 sum-free subsets.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "episode_id": "ep07",
+  "format_valid": true,
+  "failure_stage": null,
+  "reason": null,
+  "k": 3,
+  "num_errors": 3,
+  "mechanical_backoff_used": false,
+  "perturbed_solution": "The roots of the equation are given by $\\frac{-7 \\pm \\sqrt{7^2 + 4 \\cdot 3 \\cdot 8}}{2 \\cdot 3}$. This formula uses $a=3$, $b=-7$, and $c=-8$. The product of the roots is $\\frac{8}{3}$. When taking their difference, the term $-7$ in the numerator cancels out, so the difference is $2 \\times \\frac{\\sqrt{7^2 + 4 \\cdot 3 \\cdot 8}}{2 \\cdot 3} = \\frac{\\sqrt{145}}{6}$. Thus, the answer is $145 + 6 = \\boxed{151}$."
+}

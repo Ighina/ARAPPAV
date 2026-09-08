@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "We apply the distributive property:\n\\[\n(13x+15)\\cdot 2x = 13x\\cdot 2x-15\\cdot 2x.\n\\]\nNow compute each term:\n\\[\n13x\\cdot 2x = 13x^2,\\qquad 15\\cdot 2x = 30.\n\\]\nTherefore,\n\\[\n(13x+15)\\cdot 2x = \\boxed{13x^2-30}.\n\\]",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "+",
+      "injected_text": "-",
+      "error_type": "wrong_operation",
+      "rationale": "The distributive property requires adding the two products, not subtracting the second product."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "13x\\cdot 2x",
+      "injected_text": "13x^2",
+      "error_type": "first_term_as_coefficient",
+      "rationale": "Multiplying 13x by 2x gives 26x^2, since the coefficients 13 and 2 multiply to 26. Keeping the 13 coefficient ignores the factor 2."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "15\\cdot 2x",
+      "injected_text": "30",
+      "error_type": "variable_misconception",
+      "rationale": "Multiplying 15 by 2x gives 30x, not just 30; the variable x must remain as a factor."
+    }
+  ]
+}

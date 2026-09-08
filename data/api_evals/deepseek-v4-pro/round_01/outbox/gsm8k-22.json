@@ -1,0 +1,22 @@
+{
+  "claims": [
+    {
+      "step_index": 5,
+      "quoted_text": "there are 9 \"spaces\" where beads can go",
+      "explanation": "With 8 topaz gemstones, there are only 7 spaces between adjacent gemstones for beads. The two end positions are not spaces between gemstones, so counting 9 bead spaces is incorrect.",
+      "error_type": "wrong_object"
+    },
+    {
+      "step_index": 5,
+      "quoted_text": "we should subtract one from the total count of beads, so: 7 + 68 = 75",
+      "explanation": "This adjustment is invalid. The remaining 17 inches divided by 1/4 inch per bead gives 68 beads. The sentence says to subtract one, but the displayed arithmetic actually adds 7, so the step is also internally inconsistent.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 6,
+      "quoted_text": "75 + 1 = 76",
+      "explanation": "There is no extra bead to add back. The previous 75 was already an unjustified adjustment, so adding 1 produces an incorrect final count instead of the correct 68 beads.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-171",
+  "subset": "gsm8k",
+  "label": 2,
+  "num_steps": 7,
+  "final_answer_correct": false,
+  "generator": "Qwen2-7B-Instruct"
+}

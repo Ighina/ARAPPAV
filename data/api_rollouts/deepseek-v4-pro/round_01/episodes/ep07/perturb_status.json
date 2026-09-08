@@ -1,0 +1,10 @@
+{
+  "episode_id": "ep07",
+  "format_valid": true,
+  "failure_stage": null,
+  "reason": null,
+  "k": 3,
+  "num_errors": 3,
+  "mechanical_backoff_used": false,
+  "perturbed_solution": "We apply the distributive property:\n\\[\n(13x+15)\\cdot 2x = 13x\\cdot 2x-15\\cdot 2x.\n\\]\nNow compute each term:\n\\[\n13x\\cdot 2x = 13x^2,\\qquad 15\\cdot 2x = 30.\n\\]\nTherefore,\n\\[\n(13x+15)\\cdot 2x = \\boxed{13x^2-30}.\n\\]"
+}

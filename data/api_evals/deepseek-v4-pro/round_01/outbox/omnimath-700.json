@@ -1,0 +1,16 @@
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "Both caps are portions of cylinders (considering their cross-sections in the \\(xy\\)-plane) that are cut off by planes perpendicular to the \\(z\\)-axis.",
+      "explanation": "The cap surfaces are not portions of cylinders. For each z the cross-section is a disk of radius 1-|z|, so the bounding surfaces z=1-r and z=r-1 are conical, not cylindrical. A cylinder would have constant radius cross-sections.",
+      "error_type": "wrong_geometry"
+    },
+    {
+      "step_index": 3,
+      "quoted_text": "The solid formed is essentially a cylinder with height 2 (from \\(z = -1\\) to \\(z = 1\\)) minus two hemispheres (one at each end).",
+      "explanation": "The actual solid is a double cone, not a cylinder minus two hemispheres. At height z the cross-sectional radius is 1-|z|, so each half is a cone of radius 1 and height 1. The cylinder-minus-hemispheres model is geometrically wrong, even though it coincidentally gives the same volume.",
+      "error_type": "wrong_geometry"
+    }
+  ]
+}

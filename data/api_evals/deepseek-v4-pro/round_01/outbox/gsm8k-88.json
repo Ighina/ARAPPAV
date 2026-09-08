@@ -1,0 +1,16 @@
+{
+  "claims": [
+    {
+      "step_index": 4,
+      "quoted_text": "Solve for A (Adam's age four years ago): A = 26 + 4",
+      "explanation": "A was defined as Adam's current age, so from (A - 4) = 26 solving gives A = 30, which is Adam's current age, not his age four years ago. His age four years ago is 26. This mislabeling sets up the later double addition.",
+      "error_type": "misinterpretation"
+    },
+    {
+      "step_index": 5,
+      "quoted_text": "Adam's current age = A + 4",
+      "explanation": "A = 30 is already Adam's current age, so adding 4 again double-counts the four-year gap. Adam's current age is 30, and his age in 8 years is 30 + 8 = 38, not 42.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

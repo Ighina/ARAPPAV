@@ -1,0 +1,106 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 0.8,
+  "verifier_recall": 1.0,
+  "verifier_precision": 0.6666666666666666,
+  "verifier_f_beta": 0.8,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 2,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 2,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 0.8,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 1.0,
+      "error_type": "negative_number_error",
+      "all_overlaps": {
+        "4(-1)^2 + 1": 1.0,
+        "g(3)": 0.0,
+        "21": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 1,
+      "best_overlap": 0.6,
+      "error_type": "tacking_signs",
+      "all_overlaps": {
+        "4(-1)^2 + 1": 0.0,
+        "g(3)": 0.6,
+        "21": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "4(-1)^2 + 1": 0.0,
+        "g(3)": 0.0,
+        "21": 0.087
+      }
+    }
+  ],
+  "episode_id": "ep02",
+  "source_id": "algebra_Level 2_44",
+  "topic": "algebra",
+  "level": "Level 2",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "negative_number_error",
+      "original_text": "$4(-1)^3 + 1$",
+      "injected_text": "$4(-1)^2 + 1$",
+      "rationale": "The correct computation is $4(-1)^3+1=4(-1)+1=-3$. Changing the exponent to 2 gives $4(-1)^2+1=4(1)+1=5$, so the stated equality to $-3$ is false."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "tacking_signs",
+      "original_text": "$g(-3)$",
+      "injected_text": "$g(3)$",
+      "rationale": "Since $h(-1)=-3$, the next evaluation should be $g(-3)$, not $g(3)$. The sign on the input is dropped."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "$2(-3)^2 - 3 = \\boxed{15}$",
+      "injected_text": "$2(3)^2 - 3 = \\boxed{21}$",
+      "rationale": "Even with $g(3)$, the computation is $2(3)^2-3=2(9)-3=18-3=15$, not 21. The arithmetic operation after multiplication is handled incorrectly."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "4(-1)^2 + 1",
+      "explanation": "Since h(x)=4x^3+1, substituting x=-1 should give 4(-1)^3+1, not 4(-1)^2+1.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "g(3)",
+      "explanation": "h(-1) is -3, so the next evaluation should be g(-3), not g(3).",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "21",
+      "explanation": "Evaluating 2(3)^2 - 3 gives 2(9)-3 = 15, not 21; the correct final value is 15.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

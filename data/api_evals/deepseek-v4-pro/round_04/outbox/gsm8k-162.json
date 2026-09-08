@@ -1,0 +1,16 @@
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "there is no discount on this item",
+      "explanation": "The checkout discount applies to everything, so the mixing bowls are also 20% off. Their discounted price is $20 - 20%·$20 = $16, not $20.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "the total cost of Charlotte's order before the discount is $96 + $20 + $25 = $141",
+      "explanation": "$96 is already the discounted price of the pot/pan set, so this is not the pre-discount total. The correct pre-discount subtotal is $120 + $20 + $25 = $165; applying 20% once gives a discount of $33 and a final total of $132.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "claims": [
+    {
+      "quoted_text": "\\sqrt{3^2 \\cdot 5} = 4\\sqrt{5}",
+      "explanation": "√(3²·5) = 3√5, not 4√5; 4√5 equals √80, not √45.",
+      "error_type": "incorrect_simplification"
+    },
+    {
+      "quoted_text": "\\sqrt{2^3 \\cdot 3^2 \\cdot 5} &= \\sqrt{(2 + 3)^2} \\cdot \\sqrt{2 \\cdot 5}",
+      "explanation": "The factors inside the radical were changed incorrectly: 2³·3² = 72, but (2+3)² = 25. The rewritten radical represents √250, not √360. Correctly, √360 = 6√10.",
+      "error_type": "incorrect_factorization"
+    },
+    {
+      "quoted_text": "4\\sqrt{5} - 2\\sqrt{5} + 5\\sqrt{5} &= 8\\sqrt{5}",
+      "explanation": "Combining like terms gives (4 - 2 + 5)√5 = 7√5, not 8√5.",
+      "error_type": "arithmetic_error"
+    }
+  ]
+}

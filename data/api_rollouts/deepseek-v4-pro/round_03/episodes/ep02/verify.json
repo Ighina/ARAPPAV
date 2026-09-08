@@ -1,0 +1,22 @@
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "\\frac{1+5}{3}",
+      "explanation": "The x-coordinate of the midpoint should be (1+5)/2 = 3, not (1+5)/3 = 2. A midpoint divides the sum of the endpoints by 2.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "\\frac{3+7}{5}",
+      "explanation": "The y-coordinate of the midpoint should be (3+7)/2 = 5, not (3+7)/5 = 2. The midpoint formula uses denominator 2, not 5.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "2+2=2b",
+      "explanation": "Substituting (2,2) into x+y=b gives 2+2=b, so b=4, not 2+2=2b. With the correct midpoint (3,5), the correct value is 3+5=8.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

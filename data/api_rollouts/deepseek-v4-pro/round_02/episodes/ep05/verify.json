@@ -1,0 +1,22 @@
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "\\frac{1}{\\sqrt[3]{2}+2\\sqrt[3]{2}}=\\frac{1}{4\\sqrt[3]{2}}",
+      "explanation": "The denominator simplifies to \\(\\sqrt[3]{2}+2\\sqrt[3]{2}=3\\sqrt[3]{2}\\), not \\(4\\sqrt[3]{2}\\). The coefficients 1 and 2 add to 3.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "\\sqrt[3]{2}\\cdot\\sqrt[3]{4}=2+4=6",
+      "explanation": "The product of the cube roots is \\(\\sqrt[3]{2\\cdot 4}=\\sqrt[3]{8}=2\\), not \\(2+4=6\\).",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "\\frac{\\sqrt[3]{4}}{24}=\\boxed{\\frac{\\sqrt[3]{4}}{6}}",
+      "explanation": "This simplification is invalid: \\(\\frac{\\sqrt[3]{4}}{24}\\) cannot be reduced to \\(\\frac{\\sqrt[3]{4}}{6}\\). Those two quantities are not equal.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "perturber_reward": -1.0,
+  "verifier_reward": 0.5,
+  "verifier_recall": 1.0,
+  "verifier_precision": 0.3333333333333333,
+  "verifier_f_beta": 0.5,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 1,
+  "k_effective": 1,
+  "num_error_units": 1,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 0.5,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "\\sqrt{75x}=\\sqrt{3\\cdot 5\\cdot x}": 0.0,
+        "\\sqrt{2x}=\\sqrt{2\\cdot 2\\cdot 2\\cdot x}": 0.0,
+        "\\sqrt{3\\cdot5\\cdot x \\cdot 2\\cdot2\\cdot2\\cdot x \\cdot 2\\cdot7\\cdot x}\n= \\sqrt{3\\": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "duplication_error",
+      "all_overlaps": {
+        "\\sqrt{75x}=\\sqrt{3\\cdot 5\\cdot x}": 0.0,
+        "\\sqrt{2x}=\\sqrt{2\\cdot 2\\cdot 2\\cdot x}": 0.0,
+        "\\sqrt{3\\cdot5\\cdot x \\cdot 2\\cdot2\\cdot2\\cdot x \\cdot 2\\cdot7\\cdot x}\n= \\sqrt{3\\": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": 2,
+      "best_overlap": 0.9,
+      "error_type": "variable_misconception",
+      "all_overlaps": {
+        "\\sqrt{75x}=\\sqrt{3\\cdot 5\\cdot x}": 0.0,
+        "\\sqrt{2x}=\\sqrt{2\\cdot 2\\cdot 2\\cdot x}": 0.0,
+        "\\sqrt{3\\cdot5\\cdot x \\cdot 2\\cdot2\\cdot2\\cdot x \\cdot 2\\cdot7\\cdot x}\n= \\sqrt{3\\": 0.9
+      }
+    }
+  ],
+  "episode_id": "ep00",
+  "source_id": "algebra_Level 5_26",
+  "topic": "algebra",
+  "level": "Level 5",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "3 \\cdot 5^2",
+      "injected_text": "3 \\cdot 5",
+      "rationale": "The solution drops the exponent in 5^2 when factoring 75x, as if the square operation could be ignored. The correct prime factorization of 75x is 3*5^2*x, not 3*5*x."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "duplication_error",
+      "original_text": "2 \\cdot 2",
+      "injected_text": "2 \\cdot 2 \\cdot 2",
+      "rationale": "The factor 2x contains only one factor of 2, but the solution writes it as 2*2*2*x, duplicating the factor 2 extra times. The correct factorization is 2*x."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "variable_misconception",
+      "original_text": "x^3",
+      "injected_text": "x^2",
+      "rationale": "Multiplying the three factors gives x*x*x = x^3, not x^2. Dropping one power of x misrepresents the variable part and changes the final radical."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "\\sqrt{75x}=\\sqrt{3\\cdot 5\\cdot x}",
+      "explanation": "Since 75 = 3 \\cdot 5^2, the radicand should be 3 \\cdot 5^2 \\cdot x, not 3 \\cdot 5 \\cdot x. This drops a factor of 5 from the product.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "\\sqrt{2x}=\\sqrt{2\\cdot 2\\cdot 2\\cdot x}",
+      "explanation": "The expression 2x equals 2 \\cdot x, not 2 \\cdot 2 \\cdot 2 \\cdot x = 8x. The correct radical is \\sqrt{2 \\cdot x}.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "\\sqrt{3\\cdot5\\cdot x \\cdot 2\\cdot2\\cdot2\\cdot x \\cdot 2\\cdot7\\cdot x}\n= \\sqrt{3\\cdot5\\cdot2^4\\cdot7\\cdot x^2}",
+      "explanation": "There are three factors of x under the radical, so the exponent should be x^3, not x^2. Correctly multiplying gives \\sqrt{2^2 \\cdot 3 \\cdot 5^2 \\cdot 7 \\cdot x^3} = 10x\\sqrt{21x}.",
+      "error_type": null
+    }
+  ]
+}

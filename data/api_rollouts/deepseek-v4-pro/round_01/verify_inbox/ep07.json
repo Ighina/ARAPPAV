@@ -1,0 +1,5 @@
+{
+  "episode_id": "ep07",
+  "problem": "Expand the following expression: $(13x+15)\\cdot 2x$",
+  "solution_to_review": "We apply the distributive property:\n\\[\n(13x+15)\\cdot 2x = 13x\\cdot 2x-15\\cdot 2x.\n\\]\nNow compute each term:\n\\[\n13x\\cdot 2x = 13x^2,\\qquad 15\\cdot 2x = 30.\n\\]\nTherefore,\n\\[\n(13x+15)\\cdot 2x = \\boxed{13x^2-30}.\n\\]"
+}

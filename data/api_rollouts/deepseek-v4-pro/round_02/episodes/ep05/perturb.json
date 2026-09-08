@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "First, simplify $\\sqrt[3]{16}=\\sqrt[3]{2^3\\cdot2}=2\\sqrt[3]{2}$.  Substituting this, the fraction becomes: $$\\frac{1}{\\sqrt[3]{2}+2\\sqrt[3]{2}}=\\frac{1}{4\\sqrt[3]{2}}$$ To rationalize this, we need to multiply the numerator and denominator by something that will eliminate the cube root in the denominator.  If we multiply $\\sqrt[3]{2}$, by $\\sqrt[3]{4}$, then the result will be $\\sqrt[3]{2}\\cdot\\sqrt[3]{4}=2+4=6$.  So, multiply the expression above by $\\dfrac{\\sqrt[3]{4}}{\\sqrt[3]{4}}$. $$\\frac{1}{4\\sqrt[3]{2}}\\cdot\\frac{\\sqrt[3]{4}}{\\sqrt[3]{4}}=\\frac{\\sqrt[3]{4}}{4\\cdot 6}=\\frac{\\sqrt[3]{4}}{24}=\\boxed{\\frac{\\sqrt[3]{4}}{6}}$$",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "=\\frac{1}{3\\sqrt[3]{2}}",
+      "injected_text": "=\\frac{1}{4\\sqrt[3]{2}}",
+      "error_type": "denominator_only",
+      "rationale": "The denominator combines \\(1+2\\) cube roots as \\(4\\sqrt[3]{2}\\) instead of \\(3\\sqrt[3]{2}\\). Only the denominator coefficient is changed incorrectly."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "$\\sqrt[3]{2}\\cdot\\sqrt[3]{4}=\\sqrt[3]{2\\cdot4}=\\sqrt[3]{8}=2$",
+      "injected_text": "$\\sqrt[3]{2}\\cdot\\sqrt[3]{4}=2+4=6$",
+      "error_type": "wrong_operation",
+      "rationale": "The cube roots should be multiplied by multiplying their radicands, giving \\(\\sqrt[3]{8}=2\\), not by adding \\(2+4\\) to get \\(6\\)."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 3,
+      "original_text": "=\\boxed{\\frac{\\sqrt[3]{4}}{6}}",
+      "injected_text": "=\\frac{\\sqrt[3]{4}}{24}=\\boxed{\\frac{\\sqrt[3]{4}}{6}}",
+      "error_type": "whole_number_bias",
+      "rationale": "The step treats the radicand \\(4\\) in \\(\\sqrt[3]{4}\\) as the whole number \\(4\\) and cancels it with the denominator, reducing \\(24\\) to \\(6\\). Since \\(\\sqrt[3]{4}\\) is not \\(4\\), this cancellation is invalid."
+    }
+  ]
+}

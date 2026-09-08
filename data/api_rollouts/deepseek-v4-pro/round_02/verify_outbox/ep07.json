@@ -1,0 +1,19 @@
+{
+  "claims": [
+    {
+      "quoted_text": "\\frac{-7 \\pm \\sqrt{7^2 + 4 \\cdot 3 \\cdot 8}}{2 \\cdot 3}",
+      "explanation": "The quadratic formula gives x = (-b ± sqrt(b^2 - 4ac))/(2a). With a=3, b=-7, c=-8, the numerator should be 7 ± sqrt(145), not -7 ± sqrt(145).",
+      "error_type": "wrong_sign"
+    },
+    {
+      "quoted_text": "The product of the roots is $\\frac{8}{3}$.",
+      "explanation": "For 3x^2 - 7x - 8 = 0, the product of the roots is c/a = -8/3, not 8/3.",
+      "error_type": "wrong_sign"
+    },
+    {
+      "quoted_text": "$2 \\times \\frac{\\sqrt{7^2 + 4 \\cdot 3 \\cdot 8}}{2 \\cdot 3} = \\frac{\\sqrt{145}}{6}$",
+      "explanation": "The left side simplifies to sqrt(145)/3, because 2/(2*3) = 1/3. Therefore the positive difference is sqrt(145)/3, so n=3, not 6.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

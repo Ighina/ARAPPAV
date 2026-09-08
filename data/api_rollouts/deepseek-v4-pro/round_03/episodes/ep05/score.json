@@ -1,0 +1,115 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 0.8571428571428571,
+  "verifier_recall": 1.0,
+  "verifier_precision": 0.75,
+  "verifier_f_beta": 0.8571428571428571,
+  "k": 3,
+  "num_verifier_claims": 4,
+  "num_matched": 3,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 3,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 0.8571428571428571,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 1,
+      "best_overlap": 0.875,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "(f(f(f(f(1)))))": 0.0,
+        "&=f(f(f(f(-2))))": 0.875,
+        "&=f(f(-30))": 0.0,
+        "&=f(-38)": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 2,
+      "best_overlap": 0.8181818181818182,
+      "error_type": "negative_number_error",
+      "all_overlaps": {
+        "(f(f(f(f(1)))))": 0.0,
+        "&=f(f(f(f(-2))))": 0.0,
+        "&=f(f(-30))": 0.818,
+        "&=f(-38)": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": 3,
+      "best_overlap": 0.75,
+      "error_type": "tacking_signs",
+      "all_overlaps": {
+        "(f(f(f(f(1)))))": 0.0,
+        "&=f(f(f(f(-2))))": 0.0,
+        "&=f(f(-30))": 0.0,
+        "&=f(-38)": 0.75
+      }
+    }
+  ],
+  "episode_id": "ep05",
+  "source_id": "algebra_Level 4_13",
+  "topic": "algebra",
+  "level": "Level 4",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "f(f(f(f(-1))))",
+      "injected_text": "f(f(f(f(-2))))",
+      "rationale": "For x=1, the x>=0 branch gives f(1)=-(1)^2=-1, not -2. The student multiplied 1 by 2 instead of squaring it."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "negative_number_error",
+      "original_text": "f(f(-49))",
+      "injected_text": "f(f(-30))",
+      "rationale": "For x=6, f(6)=-6^2=-36, not -30. The squaring of 6 was computed incorrectly."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "tacking_signs",
+      "original_text": "f(-41)",
+      "injected_text": "f(-38)",
+      "rationale": "For x=-30, the x<0 branch gives f(-30)=-30+8=-22, not -38. The student computed 30+8=38 and then tacked on a negative sign, ignoring the sign in the addition."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "(f(f(f(f(1)))))",
+      "explanation": "The problem asks for f applied five times, f(f(f(f(f(1))))), but this expression has only four applications of f.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "&=f(f(f(f(-2))))",
+      "explanation": "This uses -2 as the value of f(1), but since 1 >= 0, f(1) = -(1)^2 = -1, so the first composition should become f(f(f(f(-1)))).",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "&=f(f(-30))",
+      "explanation": "This line asserts f(6) = -30, but since 6 >= 0, f(6) = -(6)^2 = -36, not -30.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "&=f(-38)",
+      "explanation": "This line asserts f(-30) = -38, but since -30 < 0, f(-30) = -30 + 8 = -22, not -38.",
+      "error_type": null
+    }
+  ]
+}

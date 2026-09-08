@@ -1,0 +1,16 @@
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "The total cost of the mixing bowls is $20.00, and there is no discount on this item.",
+      "explanation": "The problem states everything was 20% off, so the mixing bowls also receive a 20% discount. Their discounted cost should be $20 - 0.20 * $20 = $16, not $20.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "the total cost of Charlotte's order before the discount is $96 + $20 + $25 = $141",
+      "explanation": "This is not the pre-discount total. $96 is already the discounted price of the pot/pans, while $20 and $25 are full prices. The correct before-discount total is $120 + $20 + $25 = $165; after a 20% discount the total is $132.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

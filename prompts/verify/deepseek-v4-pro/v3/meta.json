@@ -1,0 +1,3 @@
+{"role": "verify", "model": "deepseek-v4-pro", "version": 3, "parent": 2,
+ "tuned_from_round": 2, "provenance": "update-verify-api",
+ "summary": "quote sizing for alignment, anchor at the producing step, unsimplification in the sweep"}

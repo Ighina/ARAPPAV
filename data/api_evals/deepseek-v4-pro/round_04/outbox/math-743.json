@@ -1,0 +1,10 @@
+{
+  "claims": [
+    {
+      "step_index": 11,
+      "quoted_text": "Therefore, the points to consider are \\((\\pm \\sqrt{5}, \\pm 2\\sqrt{5})\\).",
+      "explanation": "From \\(y=2x\\), the signs of \\(x\\) and \\(y\\) must agree. The actual points on the hyperbola are \\((\\sqrt{5},2\\sqrt{5})\\) and \\((-\\sqrt{5},-2\\sqrt{5})\\), not all four combinations implied by independent \\(\\pm\\) signs.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

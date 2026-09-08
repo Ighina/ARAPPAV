@@ -21,9 +21,13 @@ env/
 data/raw/*
 data/processed/*
 data/rollouts/*
+data/skill_rollouts/*
+data/skill_evals/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/rollouts/.gitkeep
+!data/skill_rollouts/.gitkeep
+!data/skill_evals/.gitkeep
 
 # Models
 checkpoints/

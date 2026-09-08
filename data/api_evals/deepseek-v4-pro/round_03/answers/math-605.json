@@ -1,0 +1,8 @@
+{
+  "episode_id": "math-605",
+  "subset": "math",
+  "label": -1,
+  "num_steps": 4,
+  "final_answer_correct": true,
+  "generator": "Qwen2-7B-Instruct"
+}

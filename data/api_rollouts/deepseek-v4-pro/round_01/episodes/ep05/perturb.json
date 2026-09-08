@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "Completing the square, we add $(12/2)^2=36$ to both sides of the equation to get $x^2+12x+36=109 \\Rightarrow (x+12)^2=109$. Taking the square root of both sides, we get $x+12=\\sqrt{109}$ (we take the positive square root because we want the positive solution), or $x=\\sqrt{109}-11$. Thus, $a=109$ and $b=11$, so $a+b=\\boxed{119}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$x^2+12x+36=109 \\Rightarrow (x+6)^2=109$",
+      "injected_text": "$x^2+12x+36=109 \\Rightarrow (x+12)^2=109$",
+      "error_type": "duplication_error",
+      "rationale": "The binomial should be (x+6)^2 because half of 12 is 6; writing (x+12)^2 uses the full coefficient as the constant."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "$x=\\sqrt{109}-6$",
+      "injected_text": "$x=\\sqrt{109}-11$",
+      "error_type": "inverse_operation_error",
+      "rationale": "From x+12 = sqrt(109), subtract 12 from both sides to get x = sqrt(109)-12, not sqrt(109)-11."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "$a+b=\\boxed{115}$",
+      "injected_text": "$a+b=\\boxed{119}$",
+      "error_type": "wrong_operation",
+      "rationale": "With a=109 and b=11, a+b=120, not 119."
+    }
+  ]
+}

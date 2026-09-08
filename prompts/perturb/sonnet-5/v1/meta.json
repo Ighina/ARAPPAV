@@ -1,0 +1,8 @@
+{
+  "role": "perturb",
+  "model": "claude-sonnet-5",
+  "version": 1,
+  "parent": null,
+  "tuned_from_round": null,
+  "provenance": "seed template (first principles)"
+}

@@ -1,0 +1,22 @@
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "\\[ P(-1) = 1, \\]\n\\[ P(-2) = 2, \\]\n\\[ P(-3) = 3. \\]",
+      "explanation": "For P(x)=(x-a)(x-b)(x-c), P(-1)=(-1-a)(-1-b)(-1-c)=-(a+1)(b+1)(c+1)=-1, and similarly P(-2)=-2, P(-3)=-3. The signs are reversed; the given products are 1,2,3, not the P-values.",
+      "error_type": "sign_error"
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "\\[ Q(-1) = P(-1) - (-1) = 1 + 1 = 0, \\]\n\\[ Q(-2) = P(-2) - (-2) = 2 + 2 = 0, \\]\n\\[ Q(-3) = P(-3) - (-3) = 3 + 3 = 0. \\]",
+      "explanation": "Even using the preceding P-values, P(-1)-(-1)=1+1=2, not 0; likewise 2+2=4 and 3+3=6. Thus Q(-1), Q(-2), Q(-3) are not zero and -1,-2,-3 are not roots of Q.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 10,
+      "quoted_text": "\\[ \\boxed{-10}. \\]",
+      "explanation": "P(-4)=(-4-a)(-4-b)(-4-c)=-(a+4)(b+4)(c+4), so the requested product is -P(-4). Since the computed P(-4) is -10, the correct requested value is 10, not -10.",
+      "error_type": "sign_error"
+    }
+  ]
+}

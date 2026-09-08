@@ -1,0 +1,607 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2027_conference,times}
+
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\title{Adversarial Skill Tuning: Self-Play Between\\ Natural-Language Policies for Mathematical Error Detection}
+
+\author{Anonymous}
+
+%\iclrfinalcopy
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Adversarial self-play is an attractive recipe for training verifiers: a perturber corrupts
+correct reasoning, a verifier hunts for the corruption, and neither needs human error
+annotation. In practice the recipe is brittle --- the game is difficult to balance, and
+reward hacking is endemic. We ask whether the same game can be played at the level of
+\emph{natural-language policies} rather than model weights. We instantiate a perturber and
+a verifier as \emph{agent skills}: versioned prose documents that a coding agent reads and
+follows. After each round of self-play the agent inspects the scored episodes and rewrites
+the losing policy, producing \texttt{perturb-v\{N+1\}} and \texttt{verify-v\{N+1\}}, in
+direct analogy to a policy-gradient step but with the update expressed in text. Rewards are
+computed by the same programmatic reward function an RL implementation would use, so the
+two regimes optimise an identical objective. We separate each skill into an
+\emph{invariant} contract that the updater may not touch and a \emph{tuned} policy segment
+that it rewrites, and we require the updater to file reward-earning behaviours that exploit
+the scorer as bugs rather than lessons. Across three rounds on Hendrycks MATH, self-play
+metrics move as expected, and we evaluate every verifier version on held-out ProcessBench,
+which the tuning loop is structurally prevented from seeing. Transfer is real but not
+monotone: the round-2 policy improves the ProcessBench F1 from $0.869$ to $0.897$, while
+the round-3 policy regresses to $0.874$ --- an over-fit to the current perturber that the
+self-play reward alone reported as a gain. We argue that a mandatory external benchmark is
+not an optional add-on to self-play but the only signal that distinguishes learning to
+verify from learning one's opponent.
+\end{abstract}
+
+\section{Introduction}
+
+Mathematical and statistical errors survive peer review at a rate that has motivated a
+small industry of automated checkers. Recent reporting describes volunteer and commercial
+projects applying large language models to published literature at scale, uncovering
+arithmetic and methodological mistakes that human referees missed, while cautioning that
+the tools themselves produce unverified flags~\citep{gibney2025errors}. The underlying
+capability --- reading a piece of reasoning and locating the step where it first goes wrong
+--- is also the capability that scalable oversight of language models
+requires~\citep{amodei2016concrete,bowman2022measuring,saunders2022self}, and it is
+measured directly by ProcessBench~\citep{zheng2024processbench}.
+
+Training such a verifier is bottlenecked by supervision: annotated process errors are
+expensive, and existing corpora are small relative to the diversity of ways a derivation can
+fail. Adversarial self-play offers an escape. A \emph{perturber} takes a correct solution
+and injects errors, producing ground truth for free; a \emph{verifier} tries to recover
+them; the perturber is rewarded when the verifier fails and vice versa. The structure is
+that of a generative adversarial network~\citep{goodfellow2014generative} transposed onto
+discrete text, and of self-play in games~\citep{silver2017mastering}.
+
+Our own experience implementing this loop with reinforcement learning --- GRPO
+\citep{shao2024deepseekmath} for the perturber, DPO \citep{rafailov2023direct} for the
+verifier --- was that the machinery works and the \emph{game} does not. Across three
+training rounds the perturber found three successive reward hacks: declaring errors it had
+not injected, injecting a single mistake and declaring it $k$ times, and finally producing
+text that was redundant rather than wrong. Each was patched in the reward function, at the
+cost of a round of GPU time to discover it. This is the standard reward-hacking
+pathology~\citep{skalse2022defining}: the agent optimises the measurement, not the task.
+
+This paper asks whether the same adversarial game becomes easier to steer when the policies
+are \emph{prose}. We implement the perturber and verifier as \emph{agent skills} --- markdown
+documents that a coding agent \citep{anthropic2025claudecode} loads and follows as its
+policy for the round. After each round, a static \emph{updater} skill reads the scored
+episodes and rewrites the policy text. The artefact being optimised is human-readable at
+every step: one can see the policy that produced a reward, and see the edit that a round of
+evidence motivated. Our contributions are:
+
+\begin{itemize}
+\item \textbf{A formalisation of adversarial skill tuning} (\S\ref{sec:method}) as
+alternating coordinate ascent over a pair of natural-language policies, with the reward
+computed by exactly the programmatic function an RL implementation would use.
+\item \textbf{Three structural guardrails} that make the loop auditable: an
+invariant/tuned split within each skill, mechanically enforced; a
+\emph{faithfulness filter} requiring the updater to file scorer-exploiting wins as bugs
+rather than convert them to policy; and enforced context isolation between the two players.
+\item \textbf{An external-validity protocol} on ProcessBench that the tuning loop cannot
+read, together with initial results over three rounds (\S\ref{sec:results}) showing that
+self-play gains transfer in round 2 and fail to transfer in round 3.
+\end{itemize}
+
+\section{Related work}
+
+\paragraph{Process supervision and error identification.}
+Outcome-supervised verifiers~\citep{cobbe2021training} were superseded by process
+supervision, where each reasoning step carries a label~\citep{lightman2023verify}, and by
+process reward models trained with automatically synthesised step
+labels~\citep{wang2024mathshepherd}. ProcessBench~\citep{zheng2024processbench} evaluates
+the resulting critics directly: given a problem and a step-segmented solution, a model must
+return the index of the earliest erroneous step or declare the chain correct. Its 3,400
+human-annotated cases span four difficulty tiers built from
+GSM8K~\citep{cobbe2021training}, MATH~\citep{hendrycks2021measuring},
+OlympiadBench~\citep{he2024olympiadbench} and Omni-MATH~\citep{gao2024omnimath}. We adopt
+both its task definition and its metric.
+
+\paragraph{Automated error detection in scientific writing.}
+The applied motivation for verifier research is documented by \citet{gibney2025errors},
+who describes projects screening the published literature with language models --- one
+approaching authors privately after analysing several hundred papers, another publicly
+flagging candidate errors across tens of thousands --- and the attendant risk of unconfirmed
+flags. That risk is precisely a precision problem, and it is why our reward and our
+benchmark metric both penalise false alarms as heavily as misses.
+
+\paragraph{Self-play and self-improvement.}
+Self-play removes the annotation bottleneck by having a model generate its own
+curriculum~\citep{silver2017mastering,chen2024selfplay}, and self-rewarding
+schemes~\citep{yuan2024selfrewarding} and self-refinement~\citep{madaan2023selfrefine} let a
+model supply its own feedback. Our setting differs in that the reward is not model-judged:
+it is a deterministic program over the perturber's declared ground truth, which is what
+makes the perturber's incentive to cheat concrete and detectable.
+
+\paragraph{Optimising prompts and skills instead of weights.}
+A line of work treats the prompt as the parameter, optimising it by search
+\citep{zhou2023large}, by natural-language ``gradients'' \citep{pryzant2023automatic}, by
+using the model as an optimiser over its own instructions \citep{yang2024large}, or by
+compiling declarative pipelines \citep{khattab2024dspy}. Closest to us is
+Ctx2Skill \citep{si2026context}, which extracts natural-language \emph{skills} from long
+contexts through multi-agent self-play: a Challenger poses probing tasks, a Reasoner
+answers, a Judge scores, and Proposer/Generator agents synthesise skill updates from
+failures, with a \emph{Cross-Time Replay} mechanism that re-evaluates historical skill
+candidates against curated probe sets to prevent adversarial collapse.
+
+We share the premise --- that a natural-language skill is a trainable object, and that
+adversarial interaction can produce one without human annotation --- and differ in three
+ways. First, our reward is a programmatic function of a machine-checkable ground truth
+rather than a model judge, so credit assignment is exact and the failure mode we must guard
+against is scorer exploitation rather than judge bias. Second, both of our players are
+skills and both are updated, so the curriculum and the solver co-evolve. Third, where
+Ctx2Skill guards against collapse by replaying historical candidates on curated in-domain
+probes, we guard against it with an external human-annotated benchmark that the update
+mechanism is structurally forbidden to read; as \S\ref{sec:results} shows, that distinction
+is load-bearing, because the round in which our loop over-fits is invisible from inside the
+game.
+
+\section{Method}
+\label{sec:method}
+
+\subsection{The adversarial episode}
+
+Let $\mathcal{D}$ be a corpus of solved problems, and let $(p, s) \sim \mathcal{D}$ be a
+problem with a correct step-by-step solution. Fix a budget $k \in \mathbb{N}$ of errors per
+episode. A \emph{policy} in our setting is a natural-language document $\sigma$; writing
+$\pi(\cdot \mid \cdot\,; \sigma)$ for the behaviour induced when an agent follows $\sigma$,
+one episode is
+
+\begin{align}
+(\hat{s}, E) &\sim \pi_P\!\left(\cdot \mid p, s, k\,;\, \sigma_P\right),
+&& E = \{e_i\}_{i=1}^{k},\quad e_i = (o_i, \iota_i, \tau_i, \rho_i), \label{eq:perturber}\\
+C &\sim \pi_V\!\left(\cdot \mid p, \hat{s}\,;\, \sigma_V\right),
+&& C = \{c_j\}_{j=1}^{m},\quad c_j = (q_j, x_j, \varsigma_j). \label{eq:verifier}
+\end{align}
+
+The perturber returns a corrupted solution $\hat{s}$ together with a machine-readable log
+$E$ in which each error names the original span $o_i$, the injected span $\iota_i$, a type
+$\tau_i$ drawn from a fixed 26-way taxonomy of student misconceptions
+\citep{rittlejohnson2025detecting}, and a rationale $\rho_i$. The verifier sees only $p$
+and $\hat{s}$ --- never $E$ --- and returns claims $c_j$ consisting of a quoted span $q_j$,
+an explanation $x_j$ and an optional type $\varsigma_j$.
+
+\subsection{Matching, error units, and reward}
+
+Scoring requires aligning claims to injected errors. Let $\mathrm{IoU}(\cdot,\cdot)$ be
+character-level intersection-over-union after normalisation (LaTeX escaping, math
+delimiters, alignment characters, whitespace). Define the alignment score
+\begin{equation}
+\mu(e, c) \;=\; \max\Big\{
+\underbrace{\mathrm{IoU}(\iota_e, q_c)}_{\text{span overlap}},\;
+\underbrace{\gamma \cdot \mathbb{1}\!\left[\,q_c \succ \delta(o_e,\iota_e)\,\right]}_{\text{diff coverage}},\;
+\underbrace{\lambda(\iota_e, q_c)}_{\text{containment}}
+\Big\},
+\label{eq:mu}
+\end{equation}
+where $\delta(o_e,\iota_e)$ is the set of fragments a character diff marks as changed,
+$q_c \succ \delta$ holds when the quote is anchored inside the error span \emph{and}
+contains a changed fragment, $\gamma = 0.9$, and $\lambda$ is the length ratio of the
+shorter normalised string when one contains the other. The middle term matters: it
+distinguishes a claim that quotes the actual mistake from one that quotes an untouched
+clause of the same sentence.
+
+A greedy one-to-one assignment $M \subseteq E \times C$ then takes, for each error in turn,
+the highest-scoring unused claim above a threshold $\theta = 0.5$.
+
+\paragraph{Error units.} A perturber can cap the verifier's recall at $1/k$ by injecting one
+mistake and declaring it $k$ times --- as a root error plus its propagated consequences, as
+overlapping rewrites of one region, or as pure restatement. We therefore quotient $E$ before
+computing recall. Let $\sim$ be the reflexive-symmetric-transitive closure of the relation
+that holds between two errors when they occupy overlapping or containing spans, share a
+changed diff fragment, differ by a token-Jaccard below $0.6$, or when one modifies a
+$\backslash\texttt{boxed}\{\}$ answer downstream of the other. The \emph{error units} are the
+quotient $\mathcal{U} = E/\!\sim$, and we restrict to units actually present in $\hat{s}$:
+\begin{equation}
+\mathcal{U}^{\mathrm{eff}} = \{\, U \in \mathcal{U} \;:\; \exists\, e \in U,\; \iota_e \sqsubseteq \hat{s} \,\},
+\qquad
+k_{\mathrm{eff}} = \big|\{ e \in E : \iota_e \sqsubseteq \hat{s}\}\big|,
+\end{equation}
+with $\sqsubseteq$ denoting normalised containment. Recall is measured over units and
+precision over claims:
+\begin{equation}
+\mathrm{rec} \;=\; \frac{\big|\{\,U \in \mathcal{U}^{\mathrm{eff}} : \exists\, e \in U,\ (e,\cdot) \in M \,\}\big|}{\big|\mathcal{U}^{\mathrm{eff}}\big|},
+\qquad
+\mathrm{prec} \;=\; \frac{|M|}{|C|}.
+\label{eq:recprec}
+\end{equation}
+Quotienting only the recall denominator is deliberate: a verifier that flags both a root
+error and its propagation keeps full precision, while a perturber that stacks gains nothing.
+
+\paragraph{Rewards.} With $F_\beta$ the usual harmonic combination of Eqs.~(\ref{eq:recprec}),
+\begin{align}
+r_V &= F_\beta(\mathrm{prec}, \mathrm{rec})
+\;-\; \lambda_{\mathrm{spam}} \max\!\big(0,\ |C| - \varrho\, \max(1,k_{\mathrm{eff}})\big)
+\;-\; \lambda_{\mathrm{rep}} \mathbb{1}[\text{output collapsed}], \label{eq:rv}\\[2pt]
+r_P &= \big(1 - \mathrm{rec}\big)
+\;-\; \lambda_{\mathrm{miss}}\big(k - k_{\mathrm{eff}}\big)
+\;-\; \lambda_{\mathrm{dup}}\, d(E)
+\;-\; \lambda_{\mathrm{hist}}\, d\big(E, E^{<t}\big), \label{eq:rp}
+\end{align}
+where $d(E)$ counts near-verbatim repeats within the episode and $d(E, E^{<t})$ counts
+injections that are $\geq 0.85$ similar to one used in an earlier round. Both are overridden
+by a dominating format penalty when the perturber's output is not a valid instance of the
+schema:
+\begin{equation}
+r_P \;=\;
+\begin{cases}
+\phi_{\mathrm{json}} = -10, & \text{output is not parseable JSON},\\
+\phi_{\mathrm{schema}} = -5, & \text{parses but violates the contract},\\
+\text{Eq.~(\ref{eq:rp})}, & \text{otherwise.}
+\end{cases}
+\label{eq:format}
+\end{equation}
+The two-level penalty exists because a uniform penalty makes every failing episode score
+identically, which in the RL implementation eliminated the within-group reward variance that
+GRPO learns from; it plays the same role here by giving the updater a gradient across
+failure severities.
+
+\subsection{Skill tuning as a textual policy update}
+
+Each policy document is partitioned into two segments,
+\begin{equation}
+\sigma \;=\; \big(\, \underbrace{\iota}_{\text{invariant}} \;,\; \underbrace{\varpi}_{\text{tuned}} \,\big),
+\end{equation}
+where $\iota$ transcribes the I/O contract, the taxonomy and the reward definition from the
+implementation, and $\varpi$ holds the strategy. A round $t$ produces a scored dataset
+\begin{equation}
+\mathcal{E}^t \;=\; \Big\{\big(p_n, s_n, \hat{s}_n, E_n, C_n, M_n, r^P_n, r^V_n\big)\Big\}_{n=1}^{N}.
+\end{equation}
+The update operator $\Lambda$ is a language model that reads $\mathcal{E}^t$ and the current
+policy and emits a new one:
+\begin{equation}
+\varpi^{t+1} \;=\; \Lambda\big(\varpi^{t},\, \mathcal{A}(\mathcal{E}^t)\big),
+\qquad
+\iota^{t+1} = \iota^{t},
+\label{eq:update}
+\end{equation}
+subject to $|\mathrm{edits}| \le 5$, each edit citing at least one episode index. Equation~(\ref{eq:update}) is the textual analogue of a policy-gradient step: $\mathcal{E}^t$ plays
+the role of the sampled batch, the updater's diagnosis plays the role of credit assignment,
+and the edit budget plays the role of a trust region. Alternating the two updates,
+\begin{equation}
+\varpi_P^{t+1} = \Lambda_P\big(\varpi_P^{t}, \mathcal{A}(\mathcal{E}^t)\big),
+\qquad
+\varpi_V^{t+1} = \Lambda_V\big(\varpi_V^{t}, \mathcal{A}(\mathcal{E}^t)\big),
+\end{equation}
+is coordinate ascent on the pair of objectives
+$J_P(\sigma_P,\sigma_V) = \mathbb{E}[r_P]$ and $J_V(\sigma_P,\sigma_V) = \mathbb{E}[r_V]$
+of the underlying min-max game. A \texttt{freeze} flag disables either updater, recovering
+the ablation in which one player is held fixed.
+
+\paragraph{The faithfulness filter.} The operator $\mathcal{A}$ in Eq.~(\ref{eq:update}) is the
+crux. Let $X^t \subseteq \mathcal{E}^t$ be the episodes whose reward was earned by
+exploiting the scorer rather than the task --- for the perturber, stacking, restatement, or
+burying a small change inside a long declared span; for the verifier, quoting broadly to
+maximise overlap, shotgunning claims, or keying on the opponent's habits. Then
+\begin{equation}
+\mathcal{A}(\mathcal{E}^t) \;=\; \mathcal{E}^t \setminus X^t,
+\end{equation}
+and $X^t$ is written to a report as a set of candidate defects in the reward implementation.
+Without $\mathcal{A}$, skill tuning would rediscover in prose exactly the hacks that RL
+found in weights, and would do so faster, because a language model is better at reading a
+reward function than a gradient is. The test the updater is instructed to apply is not
+``did this score well'' but ``would a competent mathematician call this a real mistake, and
+a hard one''.
+
+\paragraph{Enforced isolation.} Because a single agent plays both roles, leakage is the
+default failure. The harness makes it structural: after the perturber writes its output, a
+program validates it and emits a file containing only $(p, \hat{s})$; the verifier pass runs
+in a fresh agent context scoped to a directory holding nothing else. A round in which the
+isolation cannot be established is discarded rather than scored.
+
+\paragraph{Convergence.} The loop halts when the round budget is exhausted, or when every
+active updater reports that $\mathcal{A}(\mathcal{E}^t)$ contains no admissible edit, or
+when the round-over-round change in the relevant metric stays inside a band
+($|\Delta r_P| < 0.05$, $|\Delta F_1^{\text{self-play}}| < 0.05$) for two consecutive
+rounds.
+
+\section{Experimental setup}
+\label{sec:setup}
+
+\paragraph{Implementation.} Both players and both updaters are skills in the Claude Code
+agent harness \citep{anthropic2025claudecode}, executed by Claude Opus 5. Episode sampling,
+perturbation validation, reward computation and aggregation are a Python harness that shares
+its reward module with the repository's RL trainers, so a skill-tuning episode and an RL
+episode are scored by identical code.
+
+\paragraph{Self-play rounds.} Each round draws $N = 8$ problems from the Hendrycks MATH
+training split \citep{hendrycks2021measuring} with $k = 3$ errors per episode, sampling
+without reuse across rounds. Neither player is frozen. We report three completed rounds; a
+fourth is in progress and is not analysed here.
+
+\paragraph{External evaluation.} After each round the newly produced verifier is evaluated
+on ProcessBench \citep{zheng2024processbench}. We sample $20$ items per subset, balanced
+between erroneous and correct chains, fixed by a seed that does not depend on the round, so
+all versions are scored on the same $80$ held-out items. Each item is presented as a single
+text with explicit boundaries,
+\begin{equation*}
+\texttt{<step\_0>}\, s_0 \,\texttt{</step\_0>} \;\cdots\; \texttt{<step\_{n-1}>}\, s_{n-1} \,\texttt{</step\_{n-1}>},
+\end{equation*}
+so the whole chain is judged in context while every claim remains addressable to a step. The
+verifier's claim set is reduced to a ProcessBench prediction by
+\begin{equation}
+\widehat{y} \;=\;
+\begin{cases}
+-1, & C = \emptyset,\\
+\min_{c \in C} \mathrm{step}(c), & \text{otherwise},
+\end{cases}
+\label{eq:pred}
+\end{equation}
+where $\mathrm{step}(c)$ is the claim's declared index, or the index of the block containing
+its quoted span when the declaration is missing or out of range. A claim set that resolves
+to no step is scored wrong against both classes: accusing something unlocatable is not a
+detection. Following \citet{zheng2024processbench} we report the accuracies on erroneous and
+correct chains and their harmonic mean,
+\begin{equation}
+\mathrm{Acc}_{\mathrm{err}} = \frac{1}{|\mathcal{I}_{-}|}\sum_{i \in \mathcal{I}_{-}} \mathbb{1}[\widehat{y}_i = y_i],
+\quad
+\mathrm{Acc}_{\mathrm{cor}} = \frac{1}{|\mathcal{I}_{+}|}\sum_{i \in \mathcal{I}_{+}} \mathbb{1}[\widehat{y}_i = -1],
+\quad
+F_1 = \frac{2\,\mathrm{Acc}_{\mathrm{err}}\mathrm{Acc}_{\mathrm{cor}}}{\mathrm{Acc}_{\mathrm{err}} + \mathrm{Acc}_{\mathrm{cor}}}.
+\label{eq:pbf1}
+\end{equation}
+The harmonic mean is essential rather than cosmetic: a verifier that never claims anything
+attains $\mathrm{Acc}_{\mathrm{cor}} = 1$ and a balanced accuracy of $0.5$, but $F_1 = 0$.
+
+\paragraph{Leakage control.} ProcessBench is a test set for this loop and is never read by
+it. Items and gold labels live in separate directories; the evaluation runs in a fresh agent
+scoped to the items; the summary artefact contains identifiers, hit/miss flags and
+aggregates but no item text and no labels; and both updaters are explicitly forbidden from
+reading the evaluation tree. No ProcessBench content enters a skill, a rollout log, or the
+orchestrating context at any point.
+
+\section{Results}
+\label{sec:results}
+
+\subsection{Self-play dynamics}
+
+Table~\ref{tab:selfplay} reports the three completed rounds. Format validity is perfect
+throughout --- the contract segment of the perturber skill states the schema constraints
+explicitly, and unlike the RL perturber, which failed the schema in $71\%$ of round-1
+episodes, the skill perturber never violates it. The adversarial pressure is visible in the
+trend: mean $r_P$ rises from $0.125$ to $0.313$ while verifier recall falls from $0.875$ to
+$0.688$, i.e.\ the perturber is winning ground over the three rounds.
+
+\begin{table}[t]
+\caption{Self-play rounds. Each round is 8 episodes with $k = 3$ on Hendrycks MATH; both
+players update after every round. Recall is over error units, Eq.~(\ref{eq:recprec}).
+FP counts verifier claims matching no injected error.}
+\label{tab:selfplay}
+\begin{center}
+\small
+\begin{tabular}{lccccccccc}
+\toprule
+Round & Perturber & Verifier & Fmt.\ valid & $r_P$ & $r_V$ & Recall & Prec. & Units/ep & FP \\
+\midrule
+1 & \texttt{v1} & \texttt{v1} & 8/8 & 0.125 & 0.900 & 0.875 & 0.938 & 2.75 & 1 \\
+2 & \texttt{v2} & \texttt{v2} & 8/8 & 0.167 & 0.833 & 0.833 & 0.833 & 3.00 & 4 \\
+3 & \texttt{v3} & \texttt{v3} & 8/8 & 0.313 & 0.750 & 0.688 & 0.875 & 2.88 & 2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+The qualitative record is more informative than the aggregates. Round 1 produced five
+perturber edits and five verifier edits, all traceable to specific episodes: the verifier's
+anti-propagation rule had been over-applied, skipping two independently invalid lines
+because they \emph{looked} like consequences of an earlier error, and was rewritten to
+demand an explicit re-derivation test. Round 2's perturber update shifted strategy from
+arithmetic to \emph{definitional} errors --- corrupting which quantity a symbol denotes or
+what a ratio compares --- on the observation that these leave every later line internally
+consistent, so re-derivation alone cannot surface them. Round 3's verifier update responded
+by promoting a ``model audit against the problem statement'' to equal standing with
+re-derivation. That edit is the one that fails to transfer.
+
+\subsection{Transfer to ProcessBench}
+
+Table~\ref{tab:processbench} reports each verifier version on the same 80 held-out items.
+
+\begin{table}[t]
+\caption{ProcessBench, all three tuned verifier versions, $n = 80$ (20 per subset, balanced
+erroneous/correct, identical items across versions). $F_1$ is Eq.~(\ref{eq:pbf1}); ``Pooled''
+computes it over all 80 items, ``Macro'' averages the four subset $F_1$ values as in
+\citet{zheng2024processbench}.}
+\label{tab:processbench}
+\begin{center}
+\begin{tabular}{lcccccc}
+\toprule
+Verifier & GSM8K & MATH & Olympiad. & Omni-MATH & Macro & Pooled \\
+\midrule
+\texttt{verify-v2} (after R1) & 0.889 & 0.889 & 0.889 & 0.800 & 0.867 & 0.869 \\
+\texttt{verify-v3} (after R2) & 0.889 & \textbf{0.947} & \textbf{0.947} & 0.800 & \textbf{0.896} & \textbf{0.897} \\
+\texttt{verify-v4} (after R3) & 0.889 & \textbf{0.947} & 0.847 & 0.800 & 0.871 & 0.874 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+Round 2's edits transfer cleanly: pooled $F_1$ rises $0.869 \rightarrow 0.897$. Round 3's do
+not: $0.897 \rightarrow 0.874$. At the item level the movement is unusually clean in both
+directions. From \texttt{v2} to \texttt{v3}, exactly two items change and both change from
+wrong to right (one MATH, one OlympiadBench), with no regressions. From \texttt{v3} to
+\texttt{v4}, exactly two items change and both change from right to wrong, both on
+OlympiadBench, with no gains.
+
+\subsection{Anatomy of the round-3 regression}
+
+The loss is confined to a single cell. Error detection does not move between \texttt{v3} and
+\texttt{v4} ($\mathrm{Acc}_{\mathrm{err}} = 0.85$ for both); OlympiadBench
+$\mathrm{Acc}_{\mathrm{cor}}$ falls from $1.00$ to $0.80$. The v4 policy kept every detection
+v3 had and added two false alarms on clean chains.
+
+This is the predictable consequence of the two v3$\rightarrow$v4 edits, which pushed in the
+same direction: one gave the definitional audit equal weight with re-derivation, the other
+asked for more separately-anchored claims. The verifier's own round report describes the
+mechanism without knowing it was being measured on it --- it flagged chains that ``reach a
+correct final answer through an invalid step\ldots\ following the rule that a chain can be
+arithmetically fine and still be wrong about the model''. Against the perturber, that rule
+earned recall: it was written from an episode in which two genuine definitional errors went
+unclaimed. Against human-annotated chains, ProcessBench's labels disagree with enough of
+those judgements to cost more than the rule gains.
+
+This is the outcome the external evaluation exists to detect, and the self-play reward could
+not have detected it: from inside the game, round 3 looked like a verifier that had closed a
+real gap. Note the shape of the failure. It is not that skill tuning does not work --- round
+2's edits produced a genuine $+0.029$ --- but that the round in which the perturber shifted
+strategy is the round in which the verifier over-fit to that strategy.
+
+\subsection{Context: published ProcessBench baselines}
+
+Table~\ref{tab:baselines} reproduces reference points from \citet{zheng2024processbench}.
+These are \emph{not} directly comparable to Table~\ref{tab:processbench} and we do not claim
+a state-of-the-art result: the published figures use the full 3,400-case benchmark with its
+natural class balance, our figures use 80 balanced items; the baselines are 2024-era models
+prompted as single-pass critics, while our verifier is a 2026 frontier model following a
+tuned multi-step policy inside an agent harness. The table establishes only the scale of the
+task and the difficulty gradient across subsets.
+
+\begin{table}[t]
+\caption{Published ProcessBench $F_1$ (\%) from \citet{zheng2024processbench}, Table 3, on
+the full benchmark. Shown for scale only; see the caveats in the text.}
+\label{tab:baselines}
+\begin{center}
+\small
+\begin{tabular}{lccccc}
+\toprule
+Model & GSM8K & MATH & Olympiad. & Omni-MATH & Average \\
+\midrule
+Qwen2.5-Math-7B-PRM800K (PRM) & 68.2 & 62.6 & 50.7 & 44.3 & 56.5 \\
+GPT-4o-0806 (critic) & 79.2 & 63.6 & 51.4 & 53.5 & 61.9 \\
+QwQ-32B-Preview (critic) & 88.0 & 78.7 & 57.8 & 61.3 & 71.5 \\
+o1-mini (critic) & 93.2 & 88.9 & 87.2 & 82.4 & 87.9 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+Two observations survive the caveats. First, the difficulty gradient reported for every
+model in \citet{zheng2024processbench} --- monotone decline from GSM8K to Omni-MATH --- is
+only weakly present in our runs, where Omni-MATH is the weakest subset ($0.800$ throughout)
+but MATH and OlympiadBench are not separated from GSM8K. Second, Omni-MATH is the one subset
+that no round moved at all, which is consistent with its errors being of a kind the
+perturber never produces.
+
+\subsection{Reward-implementation defects surfaced by the filter}
+
+The faithfulness filter $\mathcal{A}$ logged 18 candidate scorer defects across the six
+update reports of three rounds --- about ten distinct issues, since the two updaters
+independently flag the same matcher artifacts --- none of which entered a policy. The dominant class is span-alignment brittleness: in three
+round-2 episodes a correct detection failed to match its ground truth by a one- or
+two-character margin (a trailing period, a closing bracket) that normalisation does not
+strip, and in one round-3 episode a claim that correctly diagnosed a false identity scored
+$0.441$ and $0.467$ against the two errors it spanned --- both just under the $\theta = 0.5$
+gate. The aggregate effect is material: round 2's recorded $-0.067$ verifier regression is,
+on the updater's corrected reading, approximately $+0.058$. We report the uncorrected numbers
+in Table~\ref{tab:selfplay} and treat the discrepancy as a measurement limitation rather than
+adjusting the results. The methodological point is that the filter converts what would have
+been silent reward-hacking pressure into an auditable list of bugs.
+
+\section{Limitations}
+
+The evaluation is small. Eighty items, ten per class per subset, means each subset accuracy
+moves in increments of $0.1$ and each reported transition is a two-item change; Wilson
+intervals on the pooled accuracies span roughly $\pm 0.12$, so neither the $+0.029$ nor the
+$-0.023$ is individually significant. We report them because the item-level direction is
+unanimous in both cases, not because the sample supports a statistical claim. Scaling to the
+full 3,400 cases is the obvious next step.
+
+We have no measurement of the untuned seed policy. The first evaluation was run after round
+1, so \texttt{verify-v1} has no ProcessBench score, and we cannot separate the quality of the
+hand-written seed from the contribution of tuning. Self-play rounds are likewise small (8
+episodes), and only one seed and one problem source were used.
+
+Finally, the perturber's error distribution is not the distribution ProcessBench samples
+from. Injected misconceptions in Hendrycks MATH solutions are, by construction, localised and
+of known type; ProcessBench errors arise naturally in model-generated chains and include
+omissions and invalid framings that our taxonomy does not generate. Transfer across that gap
+is precisely what we measure, and the round-3 result shows the gap is wide enough to punish
+a policy that specialises.
+
+\section{Conclusion}
+
+We formulated adversarial self-play over natural-language policies, in which a perturber and
+a verifier are versioned skills read by an agent, scored by the same programmatic reward an
+RL implementation would use, and rewritten between rounds by a static updater. Three
+structural choices --- an invariant contract the updater cannot edit, a filter that converts
+scorer-exploiting wins into bug reports, and enforced context isolation between the players
+--- make the loop auditable in a way that a weight-space implementation of the same game is
+not: every policy, every edit, and every rejected lesson is a readable artefact tied to the
+episodes that motivated it.
+
+Our initial results are two rounds of transfer and one round of over-fitting. We regard the
+second as the more useful finding. Self-play produced a verifier that was measurably better
+at beating its own opponent and measurably worse at the task, and no quantity available
+inside the game distinguished the two. Held-out human-annotated evaluation is therefore not
+a reporting convenience for adversarial skill tuning; it is the only available definition of
+success.
+
+\bibliography{arappav}
+\bibliographystyle{iclr2027_conference}
+
+\appendix
+\section{Appendix: the edit that did not transfer}
+\label{app:diff}
+
+The verifier policy is a numbered list of rules in the tuned segment $\varpi_V$. Below is
+rule \textbf{V3} as it stood in \texttt{verify-v3} (ProcessBench $F_1 = 0.897$) and after the
+round-3 update produced \texttt{verify-v4} ($F_1 = 0.874$). The update was motivated by an
+episode in which two genuine definitional errors went unclaimed; it is reproduced verbatim
+except for line wrapping.
+
+\paragraph{\texttt{verify-v3}.}
+\begin{quote}\small
+\textbf{V3 --- Sweep for the standard misconceptions, then check the model itself.} Sign
+handling across a move between sides; numerator/denominator or dividend/divisor order; common
+denominators; additive reasoning where the relation is multiplicative; off-by-one in sequence
+indices; probability outside $[0,1]$; a step that quietly stops short of what the problem
+asked. Add the ones that hide best: an inverse operation applied in the wrong direction, and
+an identity or factorisation whose \emph{form} is invalid while its constants look plausible.
+Then do a pass that arithmetic cannot do for you --- read every definition against the
+problem statement. \ldots\ An error planted in a definition leaves every later line
+consistent with it, so re-derivation returns nothing; it is invisible except by comparison
+with the problem.
+\end{quote}
+
+\paragraph{\texttt{verify-v4}.}
+\begin{quote}\small
+\textbf{V3 --- Sweep the misconceptions, then audit the model against the problem statement.}
+\ldots\ Then do the pass that arithmetic cannot do for you, \textbf{and give it the same
+weight as the re-derivation, because it is where the errors you miss actually live}. Go back
+to the problem statement and check the solution's model against it line by line: what each
+symbol denotes, what a named ratio compares, which set or range a stated condition actually
+picks out, which quantity is being minimised or maximised, and whether the thing finally
+reported is the thing that was asked for. A wrong \emph{set membership} or a wrong
+\emph{objective} leaves every subsequent computation internally flawless, so no amount of
+re-derivation will surface it --- a solution can be arithmetically perfect and still answer
+the wrong question. \ldots
+\end{quote}
+
+The promotion from ``also check the model'' to ``give it the same weight'' is the whole
+regression. Against the round-3 perturber, which had itself just specialised in definitional
+corruption, the rule recovered exactly the errors the previous version missed. On
+ProcessBench it produced two false alarms on OlympiadBench chains that are arithmetically
+sound and whose framing the annotators accepted, and no compensating detections: error
+accuracy is unchanged at $0.85$, correct-chain accuracy on that subset falls from $1.00$ to
+$0.80$.
+
+Two properties of this failure are worth noting for the design of such loops. First, it is
+\emph{legible}: the responsible edit is a single paragraph in a versioned text file, cited to
+the episode that motivated it, which is not true of the corresponding weight update in an RL
+implementation. Second, it is \emph{invisible from inside the game} --- the same edit raised
+self-play recall on the round that motivated it, and the faithfulness filter did not catch it
+because the behaviour is not scorer exploitation at all. It is a correct generalisation from
+the opponent's distribution to a policy, and the opponent's distribution was simply not the
+world's.
+
+\end{document}

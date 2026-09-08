@@ -1,0 +1,10 @@
+{
+  "claims": [
+    {
+      "step_index": 6,
+      "quoted_text": "\\[n^2 - 5n + 2 = 0 \\implies (n - 1)(n - 4) = 0 \\implies n = 1 \\text{ or } n = 4.\\]",
+      "explanation": "This factorization is false: (n-1)(n-4)=n^2-5n+4, not n^2-5n+2. The equation n^2-5n+2=0 has roots (5±√17)/2, not integers, so the case n^2-5n+3=1 actually gives no integer n. The value n=4 is valid only because it satisfies the later case n^2-5n+3=-1.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "episode_id": "ep00",
+  "problem": "What value of $x$ makes the equation below true: $$2x + 4 = |{-17 + 3}|$$",
+  "solution_to_review": "Note that $|{-17 - 3}| = |{-20}| = 14$.  Thus we must solve $2x + 4 = 14$, which is the same as $2x = 18$, or $x = \\boxed{9}$."
+}

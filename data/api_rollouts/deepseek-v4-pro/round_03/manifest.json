@@ -1,0 +1,24 @@
+{
+  "round": 3,
+  "mode": "math",
+  "freeze": null,
+  "perturb_skill": "perturb-deepseek-v4-pro-v3",
+  "verify_skill": "verify-deepseek-v4-pro-v3",
+  "k_fixed": 3,
+  "k_range": [
+    2,
+    3
+  ],
+  "seed": 42,
+  "source": "hendrycks",
+  "episodes": [
+    "ep00",
+    "ep01",
+    "ep02",
+    "ep03",
+    "ep04",
+    "ep05",
+    "ep06",
+    "ep07"
+  ]
+}

@@ -1,0 +1,737 @@
+{
+  "role": "verify",
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "prompt_version": 1,
+  "effort": "low",
+  "max_tokens": 65536,
+  "episodes": {
+    "gsm8k-124": {
+      "stop_reason": "stop",
+      "input_tokens": 2042,
+      "output_tokens": 6030,
+      "cost_usd": null,
+      "latency_s": 111.64,
+      "request_id": "2105b491-b324-4cce-b207-3e4c14e61ce4",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-151": {
+      "stop_reason": "stop",
+      "input_tokens": 2109,
+      "output_tokens": 473,
+      "cost_usd": null,
+      "latency_s": 7.3,
+      "request_id": "60be238b-5f1b-4819-a8aa-44fc143405f5",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-162": {
+      "stop_reason": "stop",
+      "input_tokens": 1997,
+      "output_tokens": 2847,
+      "cost_usd": null,
+      "latency_s": 48.5,
+      "request_id": "1cc22233-c17a-4e0e-b058-663d17f3d357",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-171": {
+      "stop_reason": "stop",
+      "input_tokens": 2246,
+      "output_tokens": 4596,
+      "cost_usd": null,
+      "latency_s": 84.73,
+      "request_id": "99c2767f-f650-4327-b20c-a3d572e4d4ab",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-22": {
+      "stop_reason": "stop",
+      "input_tokens": 2279,
+      "output_tokens": 8466,
+      "cost_usd": null,
+      "latency_s": 167.56,
+      "request_id": "adb8c0b6-fad9-4959-b3e5-76ed28cbd7a3",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-222": {
+      "stop_reason": "stop",
+      "input_tokens": 2007,
+      "output_tokens": 59,
+      "cost_usd": null,
+      "latency_s": 2.1,
+      "request_id": "8dbdfa90-3f3f-4014-b6f9-6dac354ad64e",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-228": {
+      "stop_reason": "stop",
+      "input_tokens": 2112,
+      "output_tokens": 63,
+      "cost_usd": null,
+      "latency_s": 2.39,
+      "request_id": "baa5d0c5-495a-4bcc-ba77-06db373a98cf",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-275": {
+      "stop_reason": "stop",
+      "input_tokens": 1921,
+      "output_tokens": 86,
+      "cost_usd": null,
+      "latency_s": 1.9,
+      "request_id": "3f4ae217-4c85-44fb-9d22-f4a15a62654d",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-278": {
+      "stop_reason": "stop",
+      "input_tokens": 2189,
+      "output_tokens": 96,
+      "cost_usd": null,
+      "latency_s": 2.35,
+      "request_id": "985d5b58-e404-4c3a-88aa-616502b1b874",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-287": {
+      "stop_reason": "stop",
+      "input_tokens": 2328,
+      "output_tokens": 106,
+      "cost_usd": null,
+      "latency_s": 2.81,
+      "request_id": "8bf41664-4196-4ea3-8e0c-fd1e40a8b58e",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-325": {
+      "stop_reason": "stop",
+      "input_tokens": 1959,
+      "output_tokens": 57,
+      "cost_usd": null,
+      "latency_s": 1.91,
+      "request_id": "2cb5b58f-e9fa-4b99-bd7c-bc2bc8c45d70",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-332": {
+      "stop_reason": "stop",
+      "input_tokens": 1960,
+      "output_tokens": 58,
+      "cost_usd": null,
+      "latency_s": 1.85,
+      "request_id": "c012b4ac-4d3d-4369-8548-40b3f700c1aa",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-366": {
+      "stop_reason": "stop",
+      "input_tokens": 1937,
+      "output_tokens": 79,
+      "cost_usd": null,
+      "latency_s": 2.39,
+      "request_id": "de391599-f0f2-45de-a72c-c381d87f1296",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-373": {
+      "stop_reason": "stop",
+      "input_tokens": 2040,
+      "output_tokens": 88,
+      "cost_usd": null,
+      "latency_s": 2.55,
+      "request_id": "39fd463d-ffa6-4cd7-bdb2-a0c8f9cc9bab",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-391": {
+      "stop_reason": "stop",
+      "input_tokens": 2031,
+      "output_tokens": 86,
+      "cost_usd": null,
+      "latency_s": 2.4,
+      "request_id": "31401406-6ff0-4ba8-af25-2b5aa8e4a154",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-50": {
+      "stop_reason": "stop",
+      "input_tokens": 1973,
+      "output_tokens": 537,
+      "cost_usd": null,
+      "latency_s": 9.59,
+      "request_id": "ebd4262f-5825-4baa-b97b-50353af23f0c",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-58": {
+      "stop_reason": "stop",
+      "input_tokens": 2157,
+      "output_tokens": 937,
+      "cost_usd": null,
+      "latency_s": 16.64,
+      "request_id": "84976af8-463e-4ffd-b172-9f4c0df24cdd",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-60": {
+      "stop_reason": "stop",
+      "input_tokens": 2322,
+      "output_tokens": 13017,
+      "cost_usd": null,
+      "latency_s": 247.42,
+      "request_id": "6b4c310b-deeb-486d-bbd6-2825af9f2008",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-88": {
+      "stop_reason": "stop",
+      "input_tokens": 2227,
+      "output_tokens": 7249,
+      "cost_usd": null,
+      "latency_s": 146.35,
+      "request_id": "2a1f4ec4-3e5b-4ed0-a667-6866657d8974",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-89": {
+      "stop_reason": "stop",
+      "input_tokens": 2523,
+      "output_tokens": 1289,
+      "cost_usd": null,
+      "latency_s": 26.52,
+      "request_id": "a34978b9-62c6-451e-baa5-3d08601697eb",
+      "model": "deepseek-v4-pro"
+    },
+    "math-154": {
+      "stop_reason": "stop",
+      "input_tokens": 1971,
+      "output_tokens": 872,
+      "cost_usd": null,
+      "latency_s": 18.98,
+      "request_id": "125e27d7-f47b-4980-adad-d0c615385546",
+      "model": "deepseek-v4-pro"
+    },
+    "math-159": {
+      "stop_reason": "stop",
+      "input_tokens": 2564,
+      "output_tokens": 10232,
+      "cost_usd": null,
+      "latency_s": 198.7,
+      "request_id": "ca3c0a2f-038b-4ca8-a668-05c6d045e0b1",
+      "model": "deepseek-v4-pro"
+    },
+    "math-164": {
+      "stop_reason": "stop",
+      "input_tokens": 2973,
+      "output_tokens": 14962,
+      "cost_usd": null,
+      "latency_s": 279.25,
+      "request_id": "5c045d8e-5197-4736-919d-6c59a09a4d6a",
+      "model": "deepseek-v4-pro"
+    },
+    "math-226": {
+      "stop_reason": "stop",
+      "input_tokens": 2371,
+      "output_tokens": 3143,
+      "cost_usd": null,
+      "latency_s": 60.62,
+      "request_id": "1d165b21-c23f-4dcc-bcfe-740fc897bad9",
+      "model": "deepseek-v4-pro"
+    },
+    "math-291": {
+      "stop_reason": "stop",
+      "input_tokens": 3202,
+      "output_tokens": 12095,
+      "cost_usd": null,
+      "latency_s": 227.47,
+      "request_id": "1acd6f11-748e-4991-8c72-f63ee58f77e6",
+      "model": "deepseek-v4-pro"
+    },
+    "math-295": {
+      "stop_reason": "stop",
+      "input_tokens": 1995,
+      "output_tokens": 3182,
+      "cost_usd": null,
+      "latency_s": 56.84,
+      "request_id": "2f5233bb-f980-44a7-a642-b63b427e044e",
+      "model": "deepseek-v4-pro"
+    },
+    "math-41": {
+      "stop_reason": "stop",
+      "input_tokens": 2244,
+      "output_tokens": 4818,
+      "cost_usd": null,
+      "latency_s": 90.51,
+      "request_id": "5b0af6c4-398f-48df-a3f3-4bf62689ce48",
+      "model": "deepseek-v4-pro"
+    },
+    "math-455": {
+      "stop_reason": "stop",
+      "input_tokens": 2673,
+      "output_tokens": 9529,
+      "cost_usd": null,
+      "latency_s": 151.64,
+      "request_id": "58419855-124a-4910-b0da-a572e6b52c80",
+      "model": "deepseek-v4-pro"
+    },
+    "math-551": {
+      "stop_reason": "stop",
+      "input_tokens": 2357,
+      "output_tokens": 618,
+      "cost_usd": null,
+      "latency_s": 9.64,
+      "request_id": "06842a28-dca9-4183-a8ce-8df4303e5833",
+      "model": "deepseek-v4-pro"
+    },
+    "math-605": {
+      "stop_reason": "stop",
+      "input_tokens": 2013,
+      "output_tokens": 104,
+      "cost_usd": null,
+      "latency_s": 2.72,
+      "request_id": "f4a1e590-541c-43d6-972b-c3d7df4460e6",
+      "model": "deepseek-v4-pro"
+    },
+    "math-668": {
+      "stop_reason": "stop",
+      "input_tokens": 2452,
+      "output_tokens": 233,
+      "cost_usd": null,
+      "latency_s": 4.0,
+      "request_id": "5c9723d0-b04c-4132-aa80-4d2063481498",
+      "model": "deepseek-v4-pro"
+    },
+    "math-743": {
+      "stop_reason": "stop",
+      "input_tokens": 2821,
+      "output_tokens": 8858,
+      "cost_usd": null,
+      "latency_s": 147.76,
+      "request_id": "938cbb41-eaca-4589-8850-c91600de7960",
+      "model": "deepseek-v4-pro"
+    },
+    "math-744": {
+      "stop_reason": "stop",
+      "input_tokens": 2050,
+      "output_tokens": 4840,
+      "cost_usd": null,
+      "latency_s": 74.26,
+      "request_id": "a41864f3-0e77-4cb0-a8a6-d001cf82e000",
+      "model": "deepseek-v4-pro"
+    },
+    "math-765": {
+      "stop_reason": "stop",
+      "input_tokens": 2204,
+      "output_tokens": 2141,
+      "cost_usd": null,
+      "latency_s": 33.62,
+      "request_id": "456b925d-1db0-4421-bfea-460895ff8bfe",
+      "model": "deepseek-v4-pro"
+    },
+    "math-812": {
+      "stop_reason": "stop",
+      "input_tokens": 2173,
+      "output_tokens": 97,
+      "cost_usd": null,
+      "latency_s": 2.12,
+      "request_id": "df7e93f0-8c6a-4ccf-907e-14e4a4fe9302",
+      "model": "deepseek-v4-pro"
+    },
+    "math-815": {
+      "stop_reason": "stop",
+      "input_tokens": 2178,
+      "output_tokens": 2463,
+      "cost_usd": null,
+      "latency_s": 41.79,
+      "request_id": "8c9e7925-3f7f-4734-bc34-f301b53dafd3",
+      "model": "deepseek-v4-pro"
+    },
+    "math-848": {
+      "stop_reason": "stop",
+      "input_tokens": 2144,
+      "output_tokens": 103,
+      "cost_usd": null,
+      "latency_s": 2.55,
+      "request_id": "14651c6a-3ea3-4479-be55-6161dbbcd522",
+      "model": "deepseek-v4-pro"
+    },
+    "math-854": {
+      "stop_reason": "stop",
+      "input_tokens": 2441,
+      "output_tokens": 449,
+      "cost_usd": null,
+      "latency_s": 6.84,
+      "request_id": "df405ace-3d96-4b34-bb45-1b3be7134abd",
+      "model": "deepseek-v4-pro"
+    },
+    "math-893": {
+      "stop_reason": "stop",
+      "input_tokens": 2082,
+      "output_tokens": 1739,
+      "cost_usd": null,
+      "latency_s": 29.79,
+      "request_id": "62dd887b-305d-4e60-94cb-a9bf46103ea0",
+      "model": "deepseek-v4-pro"
+    },
+    "math-94": {
+      "stop_reason": "stop",
+      "input_tokens": 2768,
+      "output_tokens": 15061,
+      "cost_usd": null,
+      "latency_s": 257.21,
+      "request_id": "85cdbb37-d473-49bb-adf2-aa415cf7cf07",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-132": {
+      "stop_reason": "stop",
+      "input_tokens": 2704,
+      "output_tokens": 14518,
+      "cost_usd": null,
+      "latency_s": 220.49,
+      "request_id": "3c8442f7-5217-4868-b473-6f5acda39e38",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-145": {
+      "stop_reason": "stop",
+      "input_tokens": 2167,
+      "output_tokens": 4928,
+      "cost_usd": null,
+      "latency_s": 88.26,
+      "request_id": "2ca53030-f899-4f1b-8e08-d498c9b54e48",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-238": {
+      "stop_reason": "stop",
+      "input_tokens": 2431,
+      "output_tokens": 1426,
+      "cost_usd": null,
+      "latency_s": 25.79,
+      "request_id": "b3659bda-8da2-4d0e-9f25-820e5d6bcd0c",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-297": {
+      "stop_reason": "stop",
+      "input_tokens": 2737,
+      "output_tokens": 15210,
+      "cost_usd": null,
+      "latency_s": 245.94,
+      "request_id": "a5fb88ad-6d84-4d19-a735-605f4f0fde0c",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-303": {
+      "stop_reason": "stop",
+      "input_tokens": 2373,
+      "output_tokens": 2276,
+      "cost_usd": null,
+      "latency_s": 36.86,
+      "request_id": "c4294973-f7cd-4e1b-934b-5e7dc703fe12",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-355": {
+      "stop_reason": "stop",
+      "input_tokens": 2501,
+      "output_tokens": 2620,
+      "cost_usd": null,
+      "latency_s": 45.82,
+      "request_id": "6f922a3a-3c91-4926-b472-7558cf2a3f51",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-448": {
+      "stop_reason": "stop",
+      "input_tokens": 2279,
+      "output_tokens": 6218,
+      "cost_usd": null,
+      "latency_s": 95.59,
+      "request_id": "0164a638-af2e-4c29-aae8-2b68b7dda189",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-485": {
+      "stop_reason": "stop",
+      "input_tokens": 2756,
+      "output_tokens": 10527,
+      "cost_usd": null,
+      "latency_s": 114.06,
+      "request_id": "d99db2c2-d4bb-45ea-9f8b-857b8423c53a",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-577": {
+      "stop_reason": "stop",
+      "input_tokens": 2514,
+      "output_tokens": 2296,
+      "cost_usd": null,
+      "latency_s": 40.26,
+      "request_id": "9e7ce5d5-5c51-49e8-adc9-b98f099a16e6",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-581": {
+      "stop_reason": "stop",
+      "input_tokens": 2414,
+      "output_tokens": 2001,
+      "cost_usd": null,
+      "latency_s": 36.56,
+      "request_id": "5766c476-6000-4100-a255-f43edc0a6612",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-586": {
+      "stop_reason": "stop",
+      "input_tokens": 2809,
+      "output_tokens": 591,
+      "cost_usd": null,
+      "latency_s": 9.09,
+      "request_id": "b17fe86b-3ab0-45a1-8699-4102640c3a26",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-684": {
+      "stop_reason": "stop",
+      "input_tokens": 2324,
+      "output_tokens": 420,
+      "cost_usd": null,
+      "latency_s": 7.6,
+      "request_id": "8cacad93-7006-4f27-b921-0dc748bd4095",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-737": {
+      "stop_reason": "stop",
+      "input_tokens": 2941,
+      "output_tokens": 3433,
+      "cost_usd": null,
+      "latency_s": 55.39,
+      "request_id": "54d16a01-76db-4f33-85b0-293608c01139",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-740": {
+      "stop_reason": "stop",
+      "input_tokens": 2948,
+      "output_tokens": 1129,
+      "cost_usd": null,
+      "latency_s": 17.33,
+      "request_id": "e1ffe0a3-1aa9-497f-86b5-446279e63daf",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-742": {
+      "stop_reason": "stop",
+      "input_tokens": 2418,
+      "output_tokens": 600,
+      "cost_usd": null,
+      "latency_s": 10.51,
+      "request_id": "0d32f192-9da4-4723-9932-94afc16023ff",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-743": {
+      "stop_reason": "stop",
+      "input_tokens": 2543,
+      "output_tokens": 318,
+      "cost_usd": null,
+      "latency_s": 5.91,
+      "request_id": "4926475e-b0bd-417b-a953-0ecd5e48761c",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-749": {
+      "stop_reason": "stop",
+      "input_tokens": 3118,
+      "output_tokens": 5025,
+      "cost_usd": null,
+      "latency_s": 92.88,
+      "request_id": "6e1c2312-b7a4-46b5-812f-cfc716bb1a3c",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-823": {
+      "stop_reason": "stop",
+      "input_tokens": 2694,
+      "output_tokens": 2068,
+      "cost_usd": null,
+      "latency_s": 37.86,
+      "request_id": "36a4daf8-99dc-4c55-81fc-5ea49d126a43",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-869": {
+      "stop_reason": "stop",
+      "input_tokens": 2709,
+      "output_tokens": 886,
+      "cost_usd": null,
+      "latency_s": 14.54,
+      "request_id": "5a147181-ae90-4475-af0f-2574c014115d",
+      "model": "deepseek-v4-pro"
+    },
+    "olympiadbench-897": {
+      "stop_reason": "stop",
+      "input_tokens": 2343,
+      "output_tokens": 5241,
+      "cost_usd": null,
+      "latency_s": 89.42,
+      "request_id": "2523ca3d-8494-4ad2-847a-455e39333469",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-121": {
+      "stop_reason": "stop",
+      "input_tokens": 2386,
+      "output_tokens": 29043,
+      "cost_usd": null,
+      "latency_s": 514.07,
+      "request_id": "4c1ead91-85c4-4d3f-9d29-f667e086023e",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-212": {
+      "stop_reason": "stop",
+      "input_tokens": 3566,
+      "output_tokens": 17011,
+      "cost_usd": null,
+      "latency_s": 313.01,
+      "request_id": "819ea909-1426-4681-ad72-b2da11b9ec5c",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-243": {
+      "stop_reason": "stop",
+      "input_tokens": 2615,
+      "output_tokens": 14922,
+      "cost_usd": null,
+      "latency_s": 259.63,
+      "request_id": "d44fa39e-a184-4a66-a0cc-4c2abe1cf04d",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-281": {
+      "stop_reason": "stop",
+      "input_tokens": 2705,
+      "output_tokens": 14271,
+      "cost_usd": null,
+      "latency_s": 251.86,
+      "request_id": "05e63feb-eade-4305-b6e1-a3fe011b60b1",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-367": {
+      "stop_reason": "stop",
+      "input_tokens": 2133,
+      "output_tokens": 2102,
+      "cost_usd": null,
+      "latency_s": 36.51,
+      "request_id": "030b578c-1178-4e1b-aeca-5bbfb010e8e9",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-523": {
+      "stop_reason": "stop",
+      "input_tokens": 2577,
+      "output_tokens": 23175,
+      "cost_usd": null,
+      "latency_s": 449.39,
+      "request_id": "644a13c5-56af-401a-b33e-f451edd27243",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-525": {
+      "stop_reason": "stop",
+      "input_tokens": 2159,
+      "output_tokens": 966,
+      "cost_usd": null,
+      "latency_s": 17.45,
+      "request_id": "02fdda11-782f-4fd4-8980-29023c505757",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-552": {
+      "stop_reason": "stop",
+      "input_tokens": 1988,
+      "output_tokens": 80,
+      "cost_usd": null,
+      "latency_s": 2.15,
+      "request_id": "84294322-ae58-4de6-916c-d026eac74f5b",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-629": {
+      "stop_reason": "stop",
+      "input_tokens": 2037,
+      "output_tokens": 130,
+      "cost_usd": null,
+      "latency_s": 2.85,
+      "request_id": "81b31f36-06c8-465b-ba5e-2da4b714886f",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-632": {
+      "stop_reason": "stop",
+      "input_tokens": 2265,
+      "output_tokens": 8539,
+      "cost_usd": null,
+      "latency_s": 166.7,
+      "request_id": "7c563c3b-3e6f-4007-8353-aa9df0bf167e",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-676": {
+      "stop_reason": "stop",
+      "input_tokens": 2864,
+      "output_tokens": 547,
+      "cost_usd": null,
+      "latency_s": 9.51,
+      "request_id": "72a18e51-687b-4bc1-a409-40efa0bf9fa6",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-699": {
+      "stop_reason": "stop",
+      "input_tokens": 2341,
+      "output_tokens": 8334,
+      "cost_usd": null,
+      "latency_s": 153.16,
+      "request_id": "895ab80b-e155-47c0-b731-83fda9b6b70b",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-700": {
+      "stop_reason": "stop",
+      "input_tokens": 2415,
+      "output_tokens": 2673,
+      "cost_usd": null,
+      "latency_s": 45.62,
+      "request_id": "5663181a-3485-449b-a603-6b7ea380f3bb",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-716": {
+      "stop_reason": "stop",
+      "input_tokens": 2135,
+      "output_tokens": 180,
+      "cost_usd": null,
+      "latency_s": 4.15,
+      "request_id": "87a8ee1c-ec1f-48c2-83bc-882b9ea9664b",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-730": {
+      "stop_reason": "stop",
+      "input_tokens": 2281,
+      "output_tokens": 7617,
+      "cost_usd": null,
+      "latency_s": 140.66,
+      "request_id": "3825f4ee-a9c6-4695-9c7a-b32631e10a57",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-748": {
+      "stop_reason": "stop",
+      "input_tokens": 2220,
+      "output_tokens": 304,
+      "cost_usd": null,
+      "latency_s": 5.02,
+      "request_id": "057860ca-8c8e-4c5d-a438-a86f262cf62c",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-839": {
+      "stop_reason": "stop",
+      "input_tokens": 2917,
+      "output_tokens": 22699,
+      "cost_usd": null,
+      "latency_s": 346.15,
+      "request_id": "16b6a38b-3c37-48f2-88fb-36e7eeeb8de3",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-856": {
+      "stop_reason": "stop",
+      "input_tokens": 2242,
+      "output_tokens": 476,
+      "cost_usd": null,
+      "latency_s": 10.97,
+      "request_id": "27db779e-2bdc-4e65-861e-3ecea45d34a6",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-947": {
+      "stop_reason": "stop",
+      "input_tokens": 2024,
+      "output_tokens": 65,
+      "cost_usd": null,
+      "latency_s": 1.99,
+      "request_id": "caa7e0a7-8d98-4ed1-afce-46f253bcd83b",
+      "model": "deepseek-v4-pro"
+    },
+    "omnimath-996": {
+      "stop_reason": "stop",
+      "input_tokens": 2396,
+      "output_tokens": 6967,
+      "cost_usd": null,
+      "latency_s": 114.73,
+      "request_id": "3efbf1c6-1010-4fbb-b4ab-28b38e02f06c",
+      "model": "deepseek-v4-pro"
+    }
+  },
+  "totals": {
+    "ok": 80,
+    "errors": 0,
+    "input_tokens": 190024,
+    "output_tokens": 383590,
+    "cost_usd": null
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "perturber_reward": 0.6666666666666667,
+  "verifier_reward": 0.4,
+  "verifier_recall": 0.3333333333333333,
+  "verifier_precision": 0.5,
+  "verifier_f_beta": 0.4,
+  "k": 3,
+  "num_verifier_claims": 2,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.6666666666666667,
+  "verifier_base_reward": 0.4,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "incomplete_solution",
+      "all_overlaps": {
+        "to obtain $(3x+1)(x+2)$": 0.0,
+        "the sum of the roots of $ax^2 + bx + c = 0$ is $b/a$": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 0,
+      "best_overlap": 0.5389655172413793,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "to obtain $(3x+1)(x+2)$": 0.539,
+        "the sum of the roots of $ax^2 + bx + c = 0$ is $b/a$": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "negative_number_error",
+      "all_overlaps": {
+        "to obtain $(3x+1)(x+2)$": 0.0,
+        "the sum of the roots of $ax^2 + bx + c = 0$ is $b/a$": 0.096
+      }
+    }
+  ],
+  "episode_id": "ep00",
+  "source_id": "algebra_Level 4_32",
+  "topic": "algebra",
+  "level": "Level 4",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "incomplete_solution",
+      "original_text": "a simplified rational expression",
+      "injected_text": "an unsimplified rational expression",
+      "rationale": "Vertical asymptotes are found from the denominator after simplifying the rational expression. Using the unsimplified denominator can incorrectly include removable discontinuities as asymptotes; the correct step is to simplify first."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "original_text": "We factor the denominator $3x^2+5x+2$ to obtain $(3x+2)(x+1)$.",
+      "injected_text": "We factor the denominator $3x^2+5x+2$ to obtain $(3x+1)(x+2)$.",
+      "rationale": "$(3x+1)(x+2)=3x^2+7x+2$, not $3x^2+5x+2$. The correct factorization is $(3x+2)(x+1)$."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "negative_number_error",
+      "original_text": "$-b/a$",
+      "injected_text": "$b/a$",
+      "rationale": "Vieta's formula states the sum of roots of $ax^2+bx+c=0$ is $-b/a$, not $b/a$; the negative sign is required."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "to obtain $(3x+1)(x+2)$",
+      "explanation": "This factorization is incorrect: $(3x+1)(x+2)=3x^2+7x+2$, not $3x^2+5x+2$. The correct factorization is $(3x+2)(x+1)$.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "the sum of the roots of $ax^2 + bx + c = 0$ is $b/a$",
+      "explanation": "Vieta's formula gives the sum of the roots as $-b/a$, not $b/a$.",
+      "error_type": null
+    }
+  ]
+}

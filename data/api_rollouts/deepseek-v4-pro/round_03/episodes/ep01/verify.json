@@ -1,0 +1,24 @@
+{
+  "claims": [
+    {
+      "quoted_text": "2\\left(16-8-m\\right)",
+      "explanation": "f(4) is 4^2 - 2(4) + m = 16 - 8 + m, so the factor should be 16-8+m, not 16-8-m. The sign of m is wrong.",
+      "error_type": "sign_error"
+    },
+    {
+      "quoted_text": "16-4+4m",
+      "explanation": "For g(4), -2x at x=4 is -8, not -4, so g(4) = 16-8+4m. The constant -4 should be -8.",
+      "error_type": "arithmetic_error"
+    },
+    {
+      "quoted_text": "16+2m",
+      "explanation": "Expanding the left side of the preceding line gives 2(16-8-m)=2(8-m)=16-2m, not 16+2m.",
+      "error_type": "sign_error"
+    },
+    {
+      "quoted_text": "8-4m",
+      "explanation": "Simplifying the right side of the preceding line gives 16-4+4m=12+4m, not 8-4m. The constant is wrong and the 4m term should remain positive.",
+      "error_type": "arithmetic_error"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "round": 2,
+  "verify_skill": "verify-deepseek-v4-pro-v2",
+  "rows": [
+    {
+      "id": "gsm8k-22",
+      "subset": "gsm8k",
+      "label": 5,
+      "prediction": 5,
+      "match": true,
+      "num_claims": 3,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-50",
+      "subset": "gsm8k",
+      "label": 2,
+      "prediction": 2,
+      "match": true,
+      "num_claims": 1,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-58",
+      "subset": "gsm8k",
+      "label": 0,
+      "prediction": 0,
+      "match": true,
+      "num_claims": 1,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-60",
+      "subset": "gsm8k",
+      "label": 1,
+      "prediction": 1,
+      "match": true,
+      "num_claims": 5,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-88",
+      "subset": "gsm8k",
+      "label": 5,
+      "prediction": 5,
+      "match": true,
+      "num_claims": 1,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-89",
+      "subset": "gsm8k",
+      "label": 3,
+      "prediction": 3,
+      "match": true,
+      "num_claims": 1,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-124",
+      "subset": "gsm8k",
+      "label": 0,
+      "prediction": 0,
+      "match": true,
+      "num_claims": 1,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-151",
+      "subset": "gsm8k",
+      "label": 5,
+      "prediction": 5,
+      "match": true,
+      "num_claims": 1,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-162",
+      "subset": "gsm8k",
+      "label": 1,
+      "prediction": 1,
+      "match": true,
+      "num_claims": 2,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-171",
+      "subset": "gsm8k",
+      "label": 2,
+      "prediction": 2,
+      "match": true,
+      "num_claims": 1,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-222",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-228",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-275",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-278",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-287",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-325",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-332",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-366",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-373",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    },
+    {
+      "id": "gsm8k-391",
+      "subset": "gsm8k",
+      "label": -1,
+      "prediction": -1,
+      "match": true,
+      "num_claims": 0,
+      "recovered": 0
+    }
+  ]
+}

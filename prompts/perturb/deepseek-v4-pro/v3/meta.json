@@ -1,0 +1,3 @@
+{"role": "perturb", "model": "deepseek-v4-pro", "version": 3, "parent": 2,
+ "tuned_from_round": 2, "provenance": "update-perturb-api",
+ "summary": "push misconception families with internal structure, retire saturated plays, complete-statement span floor"}

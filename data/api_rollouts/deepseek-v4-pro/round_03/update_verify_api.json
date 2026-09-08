@@ -1,0 +1,25 @@
+{
+  "round": 3, "role": "verifier", "model": "deepseek-v4-pro",
+  "from_version": 3, "to_version": 4, "skipped": false, "skip_reason": null,
+  "metrics": {"mean_verifier_f1": 0.8351, "mean_verifier_recall": 0.9167,
+              "mean_verifier_precision": 0.8125, "delta_f1": 0.128,
+              "api_cost_usd": null, "truncated_replies": 0, "api_errors": 0},
+  "miss_breakdown": {"reasoning": 1, "quoting": 1, "reporting": 0, "structural": 3},
+  "diagnosis": [
+    {"observation": "The v3 edits landed: recall recovered 0.708 -> 0.917 and the round-2 classes (producing-step anchoring, quote sizing, unsimplification) produced no recurrences at error level — the remaining misses are different failures.", "episodes": ["ep00", "ep01", "ep02", "ep03", "ep04", "ep05", "ep06", "ep07"], "bucket": "win"},
+    {"observation": "Precision is now the binding constraint (0.8125). The 5 false positives: ep00 x2 containment-floor detections of real errors against micro ground-truth spans; ep01 '8-4m' — a fragment stopping short of the false equality's computed value (V5 violation); ep05 '(f(f(f(f(1)))))' — a quote that does not appear in the solution at all, a hallucinated anchor (new failure mode); ep06 '$f(2)=2\\times 2=4$' — anchored at the consequence, not the producing prose transition (V4 violation).", "episodes": ["ep00", "ep01", "ep05", "ep06"], "bucket": "false_positive"},
+    {"observation": "ep07 err_001: the perturber swapped a variable name in words ('substitute this value for $b$' -> 'for $a$'), and no claim came near it — a prose-level reasoning miss the symbol-level sweep does not cover.", "episodes": ["ep07"], "bucket": "reasoning"},
+    {"observation": "ep06 err_003: the error is a prose transition ('Thus' -> 'Also, since the input is now 2, $f(2)=2\\times$...'); the claim quoted the arithmetic consequence and could not align with the prose span.", "episodes": ["ep06"], "bucket": "quoting"},
+    {"observation": "ep00 err_001/err_002 and ep03 err_002 are structural: two spans failed the presence check (k_effective 1/3) and one sat inside a unit matched through a sibling. No verifier fix applies to any of the three.", "episodes": ["ep00", "ep03"], "bucket": "structural"}
+  ],
+  "policy_edits": [
+    {"rule": "V3", "action": "revised", "change": "Extended the sweep to the prose layer: changed logical connectors (Thus/Also/since), variable names swapped in words rather than symbols, restated conditions or ranges.", "evidence": ["ep06", "ep07"]},
+    {"rule": "V7", "action": "revised", "change": "Added a verbatim pre-answer check: every quoted_text must appear verbatim in the solution under review (a quote not in the text is a hallucination and a guaranteed miss), and a quote must reach the false statement's computed value.", "evidence": ["ep01", "ep05"]}
+  ],
+  "scorer_issues": [
+    {"episode": "ep00", "pattern": "Containment floor, third round running: both claims quote the complete equalities that contain the declared spans verbatim ('\\sqrt{75x}=\\sqrt{3\\cdot 5\\cdot x}', '\\sqrt{2x}=\\sqrt{2\\cdot 2\\cdot 2\\cdot x}') and both fail the 40% floor against 6-10 char truth spans. Two of the five round-3 FPs are correct detections the matcher cannot credit. Same root as rounds 1-2: the floor penalises length-asymmetric true detections.", "component": "matcher", "action": "reported, not learned"},
+    {"episode": "ep03", "pattern": "Unit-credit inflation, second occurrence: err_002 was never claimed yet its unit matched via a sibling, so the verifier received unit recall credit for an error it did not find.", "component": "matcher", "action": "reported, not learned"}
+  ],
+  "converged": false,
+  "convergence_reason": "f1 moved +0.128 with precision the new binding constraint; a new miss class (prose-layer reasoning) and a new FP mode (hallucinated quotes) each have admissible edits. Not flattened."
+}

@@ -1,0 +1,10 @@
+{
+  "episode_id": "ep04",
+  "round": 1,
+  "source_id": "algebra_Level 4_29",
+  "topic": "algebra",
+  "level": "Level 4",
+  "k": 3,
+  "problem": "What is the value of $x$ if $|x-1| = |x-2|$? Express your answer as a common fraction.",
+  "solution": "The equation implies that either \\[\nx-1 = x-2\\]or \\[ x-1 = -(x-2).\\]The first equation has no solution; the second equation has solution $x= \\boxed{\\frac{3}{2}}$."
+}

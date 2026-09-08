@@ -1,0 +1,24 @@
+{
+  "round": 1, "role": "verifier", "model": "deepseek-v4-pro",
+  "from_version": 1, "to_version": 2, "skipped": false, "skip_reason": null,
+  "metrics": {"mean_verifier_f1": 0.9333, "mean_verifier_recall": 0.9583,
+              "mean_verifier_precision": 0.9167, "delta_f1": null,
+              "api_cost_usd": null, "truncated_replies": 0, "api_errors": 0},
+  "miss_breakdown": {"reasoning": 1, "quoting": 2, "reporting": 0, "structural": 0},
+  "diagnosis": [
+    {"observation": "ep02 err_003: the claim '21' has a correct explanation (2(3)^2-3 should be 15) but quotes a bare number; overlap 0.087, no match. ep03 err_001: the claim '(x-3)(x+2)' has a correct explanation but quotes a bare factor; overlap 0.25, no match. Both misses are quote-discipline failures, not reasoning failures.", "episodes": ["ep02", "ep03"], "bucket": "quoting"},
+    {"observation": "ep05 err_003 (a+b=115 -> 119): the verifier filed exactly 2 claims, both on mid-chain steps, and never examined the final answer line. The boxed sum 119 is computed from correct ingredients (a=109, b=11) and is independently wrong.", "episodes": ["ep05"], "bucket": "reasoning"},
+    {"observation": "The 2 unmatched claims (ep02 '21', ep03 '(x-3)(x+2)') are both true errors with too-narrow quotes — the same root cause as the quoting misses, not hallucinations. No new precision rule needed beyond the V5 fix.", "episodes": ["ep02", "ep03"], "bucket": "false_positive"},
+    {"observation": "Claims in ep03/ep05/ep06 used error_type strings outside the taxonomy (wrong_factorization, wrong_case, wrong_solution, wrong_value). The output contract explicitly says error_type is optional and coerced to null — tolerated by design, and matching is span-based, so no lesson and no scorer issue taken.", "episodes": ["ep03", "ep05", "ep06"], "bucket": "penalty"},
+    {"observation": "8/8 replies parsed, zero spam/repetition penalties, no truncation, no API errors. The wide-sentence quotes in ep06 matched cleanly at precision 1.0; within bounds, not exploited.", "episodes": ["ep06"], "bucket": "false_positive"}
+  ],
+  "policy_edits": [
+    {"rule": "V5", "action": "revised", "change": "Anchored the rule on complete expressions: quote the smallest wrong thing that is still a whole equality, fraction or clause; explicitly forbids bare numbers and bare factors, which do not locate the error and never match.", "evidence": ["ep02", "ep03"]},
+    {"rule": "V2", "action": "revised", "change": "Added an explicit closing pass on the final answer line: recompute the boxed value from the quantities derived above even after claims are filed — a wrong final sum/product from correct ingredients is a separate error and the most common stopping point.", "evidence": ["ep05"]}
+  ],
+  "scorer_issues": [
+    {"episode": "ep05", "pattern": "The verifier found 2 of 3 errors (err_003 unclaimed, best_overlap 0.0) yet received recall 1.0 and r_V 1.0: error-unit semantics count a unit detected when any member is matched, so the unclaimed member's miss evaporates. Unit-level recall systematically inflates verifier credit inside merged units.", "component": "matcher", "action": "reported, not learned"}
+  ],
+  "converged": false,
+  "convergence_reason": "Three misses with two distinct fixable classes (2 quoting, 1 reasoning) and both matched by concrete policy edits. Neither convergence condition holds."
+}

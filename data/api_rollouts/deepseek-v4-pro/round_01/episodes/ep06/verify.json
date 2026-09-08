@@ -1,0 +1,22 @@
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "$x^2 - 80x + 1551$ factors as $(x - 49)(x - 33)$",
+      "explanation": "This factorization is false: (x-49)(x-33)=x^2-82x+1617, not x^2-80x+1551. The correct factorization is (x-47)(x-33), so alpha=47, not 49.",
+      "error_type": "wrong_factorization"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "$x^2 + 57x - 2970$ factors as $(x - 33)(x + 89)$",
+      "explanation": "This factorization is false: (x-33)(x+89)=x^2+56x-2937, not x^2+57x-2970. The correct factorization is (x-33)(x+90), so beta=90, not 89.",
+      "error_type": "wrong_factorization"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "$-\\beta + \\gamma = -58$",
+      "explanation": "Vieta's formula for x^2+57x-2970 gives the sum of roots as -57/1=-57, not -58. The correct equation is -beta+gamma=-57, leading to alpha+beta=80-(-57)=137.",
+      "error_type": "wrong_value"
+    }
+  ]
+}

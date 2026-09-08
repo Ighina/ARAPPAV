@@ -1,0 +1,16 @@
+{
+  "claims": [
+    {
+      "step_index": 3,
+      "quoted_text": "6084 * 6084 = 36,997,536",
+      "explanation": "6084^2 is 37,015,056, not 36,997,536. The total number of joint outcomes is therefore 37,015,056.",
+      "error_type": "wrong_calculation"
+    },
+    {
+      "step_index": 5,
+      "quoted_text": "6084 / 36,997,536 = 1/6084",
+      "explanation": "This equality is false even using the stated denominator: 6084/36,997,536 does not reduce to 1/6084. The correct simplification is 6084/37,015,056 = 1/6084.",
+      "error_type": "wrong_calculation"
+    }
+  ]
+}

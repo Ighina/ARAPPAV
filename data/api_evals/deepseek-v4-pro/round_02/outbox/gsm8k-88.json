@@ -1,0 +1,10 @@
+{
+  "claims": [
+    {
+      "step_index": 5,
+      "quoted_text": "Adam's current age = 30 + 4. Adam's current age = 34.",
+      "explanation": "A = 30 was already Adam's current age, obtained from A - 4 = 26. Adding 4 again treats 30 as Adam's age four years ago, which double-counts. Adam's current age is 30, so in 8 years he will be 38, not 42.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

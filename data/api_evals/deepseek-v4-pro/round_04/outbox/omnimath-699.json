@@ -1,0 +1,9 @@
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "Therefore, we should minimize \\( r \\) and maximize \\( b \\) and \\( y \\).",
+      "explanation": "This conclusion does not follow from the score formula \\( S = r + 2rb + 3by \\). Increasing \\( r \\) also increases the \\( 2rb \\) term and reduces the number of slots available for \\( y \\), so the choice \\( r=0 \\) must be justified. A correct argument fixes \\( b \\): replacing one red card by one yellow card changes the score by \\( b-1 \\), so \\( r=0 \\) is optimal for \\( b \\ge 1 \\), while \\( b=0 \\) gives at most \\( 15 \\)."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "The value of \\(\\frac{y}{x}\\) is maximized when \\(y\\) is the largest possible and \\(x\\) is the smallest possible. Therefore, we choose \\(y = 4\\) and \\(x = -4\\):",
+      "explanation": "Since \\(x<0\\) and \\(y>0\\), the fraction \\(y/x\\) is negative, so increasing \\(y\\) makes \\(y/x\\) more negative, not closer to zero. To maximize \\(y/x\\) we should choose the smallest possible \\(y\\), namely \\(y=2\\), while \\(x=-4\\) is correct as the least negative \\(1/x\\). This gives \\(y/x=2/(-4)=-1/2\\), and the maximum expression value is \\(1-1/2=1/2\\), not \\(0\\).",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

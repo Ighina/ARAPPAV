@@ -1,0 +1,10 @@
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "Subtract the cost of the computer from the total amount spent: \\[ 2400 - 1100 = 1300 \\] So, the combined cost of the two monitors is $1,300.",
+      "explanation": "This omits the cost of the printer. Since the printer cost $400 less than the $1,100 computer, it cost $1,100 - $400 = $700. Therefore the two monitors cost $2,400 - $1,100 - $700 = $600, not $1,300.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "$x^2+12x+36=109 \\Rightarrow (x+12)^2=109$",
+      "explanation": "Completing the square for $x^2+12x$ gives $(x+6)^2$, not $(x+12)^2$, because half the coefficient of $x$ is $12/2=6$. The correct line is $(x+6)^2=109$.",
+      "error_type": "wrong_factorization"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "$x=\\sqrt{109}-11$",
+      "explanation": "From $x+12=\\sqrt{109}$, subtracting 12 gives $x=\\sqrt{109}-12$, not $\\sqrt{109}-11$. Using the corrected factorization, the positive solution is actually $\\sqrt{109}-6$.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

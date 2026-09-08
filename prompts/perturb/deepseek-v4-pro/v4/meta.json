@@ -1,0 +1,3 @@
+{"role": "perturb", "model": "deepseek-v4-pro", "version": 4, "parent": 3,
+ "tuned_from_round": 3, "provenance": "update-perturb-api",
+ "summary": "cross-family diversity per episode, reasoning-layer preference, byte-exact span copying"}

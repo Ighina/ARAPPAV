@@ -1,0 +1,5 @@
+{
+  "episode_id": "ep03",
+  "problem": "Let $p$ and $q$ be the two distinct solutions to the equation $$\\frac{4x-12}{x^2+2x-15}=x+2.$$If $p > q$, what is the value of $p - q$?",
+  "solution_to_review": "First we try factoring the left side to simplify it: $$\\frac{4x-12}{x^2+2x-15}=\\frac{4(x-3)}{(x-3)(x+2)}=\\frac{4}{x+2}.$$Now we can multiply both sides by $(x+2)$ and solve for $x$: \\begin{align*}\n\\frac{4}{x+2}&=x+2\\quad\\Rightarrow\\\\\n4&=(x+2)(x+2)\\quad\\Rightarrow\\\\\n&=x^2+5x+4\\quad\\Rightarrow\\\\\n0&=x^2+5x\\quad\\Rightarrow\\\\\n&=x(x-5).\n\\end{align*}So $p=5$ and $q=0$, making $p-q=\\boxed{5}$."
+}

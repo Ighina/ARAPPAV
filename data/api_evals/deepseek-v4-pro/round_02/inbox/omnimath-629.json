@@ -1,0 +1,8 @@
+{
+  "episode_id": "omnimath-629",
+  "subset": "omnimath",
+  "problem": "If $3^{x}=5$, what is the value of $3^{x+2}$?",
+  "solution_to_review": "<step_0>\nTo find the value of $3^{x+2}$ given that $3^{x}=5$, we can use the properties of exponents. First, we are given $3^{x}=5$.\n</step_0>\n\n<step_1>\nThe problem asks for $3^{x+2}$. To find this, we need to apply the exponent rule for multiplication, which states that $a^{m+n} = a^m \\cdot a^n$.\n</step_1>\n\n<step_2>\nUsing this rule, we can express $3^{x+2}$ as $3^x \\cdot 3^2$.\n</step_2>\n\n<step_3>\nNow, we know that $3^x=5$. So, we substitute this into our expression: $3^x \\cdot 3^2 = 5 \\cdot 3^2$.\n</step_3>\n\n<step_4>\nNext, we calculate $3^2$, which is equal to $9$.\n</step_4>\n\n<step_5>\nTherefore, the expression becomes $5 \\cdot 9$.\n</step_5>\n\n<step_6>\nMultiplying these numbers together, we get the result $45$.\n</step_6>\n\n<step_7>\nHence, the value of $3^{x+2}$ is $\\boxed{45}$.\n</step_7>",
+  "step_format": "tagged",
+  "num_steps": 8
+}

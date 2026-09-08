@@ -1,0 +1,115 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 0.8571428571428571,
+  "verifier_recall": 1.0,
+  "verifier_precision": 0.75,
+  "verifier_f_beta": 0.8571428571428571,
+  "k": 3,
+  "num_verifier_claims": 4,
+  "num_matched": 3,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 3,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 0.8571428571428571,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 1,
+      "best_overlap": 0.7142857142857143,
+      "error_type": "wrong_fraction",
+      "all_overlaps": {
+        "the ratio of students receiving an $A$ to students not receiving an $A$ is $\\fra": 0.093,
+        "The fraction of students not receiving an $A$ is $\\frac{10}{15}$.": 0.714,
+        "Cross-multiplying yields $x = \\frac{24}{3}$": 0.0,
+        "$24 - 8 = 10$": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 2,
+      "best_overlap": 0.541219512195122,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "the ratio of students receiving an $A$ to students not receiving an $A$ is $\\fra": 0.0,
+        "The fraction of students not receiving an $A$ is $\\frac{10}{15}$.": 0.0,
+        "Cross-multiplying yields $x = \\frac{24}{3}$": 0.541,
+        "$24 - 8 = 10$": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": 3,
+      "best_overlap": 0.5220547945205479,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "the ratio of students receiving an $A$ to students not receiving an $A$ is $\\fra": 0.0,
+        "The fraction of students not receiving an $A$ is $\\frac{10}{15}$.": 0.0,
+        "Cross-multiplying yields $x = \\frac{24}{3}$": 0.0,
+        "$24 - 8 = 10$": 0.522
+      }
+    }
+  ],
+  "episode_id": "ep06",
+  "source_id": "algebra_Level 1_17",
+  "topic": "algebra",
+  "level": "Level 1",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_fraction",
+      "original_text": "or $\\frac{2}{3}$. Let $x$",
+      "injected_text": "or $\\frac{2}{3}$. The fraction of students not receiving an $A$ is $\\frac{10}{15}$. Let $x$",
+      "rationale": "The fraction of students not receiving an A in Mr. Abraham's class is $\\frac{15-10}{15} = \\frac{5}{15}$, not $\\frac{10}{15}$."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "original_text": "$x = \\frac{24\\cdot 2}{3}$",
+      "injected_text": "$x = \\frac{24}{3}$",
+      "rationale": "From $\\frac{2}{3} = \\frac{x}{24}$, cross multiplication gives $x = \\frac{24\\cdot 2}{3} = 16$, not $\\frac{24}{3} = 8$. The factor of 2 is omitted."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "must have received an $A$.",
+      "injected_text": "must have received an $A$. Thus, $24 - 8 = 10$ students did not receive an $A$.",
+      "rationale": "The subtraction is incorrect: $24 - 8 = 16$, not $10$."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "the ratio of students receiving an $A$ to students not receiving an $A$ is $\\frac{10}{15}$, or $\\frac{2}{3}$.",
+      "explanation": "The ratio of students receiving an A to students not receiving an A is 10:5, or 2, not 10/15. The fraction 10/15 = 2/3 is the fraction of all students who received an A, not the ratio of A-receivers to non-A-receivers.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "The fraction of students not receiving an $A$ is $\\frac{10}{15}$.",
+      "explanation": "Since 10 of 15 students received an A, 5 of 15 students did not, so the fraction not receiving an A is 5/15 = 1/3, not 10/15.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "Cross-multiplying yields $x = \\frac{24}{3}$",
+      "explanation": "From 2/3 = x/24, cross-multiplying gives 2*24 = 3x, so x = 48/3 = 16. The solution dropped the factor of 2 and incorrectly got x = 24/3.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "$24 - 8 = 10$",
+      "explanation": "24 - 8 = 16, not 10. This subtraction is arithmetically incorrect.",
+      "error_type": null
+    }
+  ]
+}

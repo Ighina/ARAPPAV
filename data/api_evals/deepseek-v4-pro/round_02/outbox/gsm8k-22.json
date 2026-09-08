@@ -1,0 +1,22 @@
+{
+  "claims": [
+    {
+      "step_index": 5,
+      "quoted_text": "Since Katerina uses 8 topaz gemstones, and there are 9 \"spaces\" where beads can go, this means there are 9 spaces in total. But because the first and last of these spaces do not contain beads, that leaves 7 more spaces after accounting for the topaz gemstones.",
+      "explanation": "This invents an incorrect gap count and empty end spaces. With 8 topaz gemstones there are 7 gaps between consecutive stones in a straight layout, or 8 gaps in a closed necklace, not 9. Also, the 17-inch remainder is the length filled by sterling silver beads, so excluding end spaces would leave part of the 25-inch necklace unaccounted for.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 5,
+      "quoted_text": "Therefore, we should subtract one from the total count of beads, so: 7 + 68 = 75.",
+      "explanation": "This adjustment is invalid. The number of spaces, 7, is not added to the bead count. The correct calculation from the remaining length is 17 / (1/4) = 68 beads. Subtracting one from 68 would give 67, not 75.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 6,
+      "quoted_text": "But then, add back one, since the extra bead was subtracted from the 8 spaces. 75 + 1 = 76.",
+      "explanation": "No extra bead was subtracted, and 75 is already an invalid bead count. The correct final number of sterling silver beads remains 68, not 76.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "Let the sides perpendicular to the barn be of length $x$. Notice that there are a total of $1200/5=200$ feet of fencing. Therefore, the side parallel to the barn has length $200-2x$, so the area to be maximized is $200x-2x^2+100$. Completing the square results in $-2(x-50)^2+720$, which is maximized when $x=50$. Therefore, the side parallel to the barn has length $200-2(50)=\\boxed{100}$ feet.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "1200/5=240",
+      "injected_text": "1200/5=200",
+      "error_type": "wrong_operation",
+      "rationale": "Dividing 1200 by 5 gives 240, not 200; this arithmetic error changes the total available fencing."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "-2x^2",
+      "injected_text": "-2x^2+100",
+      "error_type": "additive_thinking",
+      "rationale": "The area should be x(200-2x)=200x-2x^2; adding an extra 100 square feet is an unjustified additive constant and changes the objective function."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 3,
+      "original_text": "7200",
+      "injected_text": "720",
+      "error_type": "decimal_magnitude",
+      "rationale": "The constant 720 drops a zero and makes the completed-square form incorrect; completing the square of the stated area would produce a much larger constant."
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 1.0,
+  "verifier_recall": 1.0,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 1.0,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 3,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 3,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 1.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.8181818181818182,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "|{-17 - 3}|": 0.818,
+        "|{-20}| = 14": 0.0,
+        "2x = 18": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 1,
+      "best_overlap": 1.0,
+      "error_type": "negative_number_error",
+      "all_overlaps": {
+        "|{-17 - 3}|": 0.0,
+        "|{-20}| = 14": 1.0,
+        "2x = 18": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": 2,
+      "best_overlap": 1.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "|{-17 - 3}|": 0.0,
+        "|{-20}| = 14": 0.0,
+        "2x = 18": 1.0
+      }
+    }
+  ],
+  "episode_id": "ep00",
+  "source_id": "algebra_Level 1_2",
+  "topic": "algebra",
+  "level": "Level 1",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "{-17 + 3}",
+      "injected_text": "{-17 - 3}",
+      "rationale": "The expression inside the absolute value is -17 + 3 = -14, not -17 - 3 = -20; the operation sign was changed incorrectly."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "negative_number_error",
+      "original_text": "|{-14}| = 14",
+      "injected_text": "|{-20}| = 14",
+      "rationale": "After changing the inside to -20, the absolute value should be 20, not 14; this misapplies the rule that absolute value makes a negative number positive."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "2x = 10",
+      "injected_text": "2x = 18",
+      "rationale": "From 2x + 4 = 14 one must subtract 4 from both sides to get 2x = 10, not add 4 to get 2x = 18."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "|{-17 - 3}|",
+      "explanation": "The original problem has $-17 + 3$ inside the absolute value, not $-17 - 3$. Changing the $+3$ to $-3$ alters the quantity being evaluated.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "|{-20}| = 14",
+      "explanation": "The absolute value of $-20$ is $20$, not $14$. If the expression really were $-17 - 3$, the right side would be $20$.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "2x = 18",
+      "explanation": "From $2x + 4 = 14$, subtracting $4$ from both sides gives $2x = 10$, not $2x = 18$.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

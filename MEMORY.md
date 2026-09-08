@@ -1,0 +1,1 @@
+- [Freeze mechanism](freeze-mechanism.md) — selectivity freeze perturber or verifier during self-play training

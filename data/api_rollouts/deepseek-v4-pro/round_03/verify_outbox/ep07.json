@@ -1,0 +1,16 @@
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "3a&=12+5a",
+      "explanation": "Substituting b=3a into b=12-5a should give 3a=12-5a, not 3a=12+5a. The sign of the 5a term was changed incorrectly.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "\\Rightarrow \\quad a &= 6",
+      "explanation": "From -2a=12, dividing both sides by -2 gives a=-6, not a=6. The negative sign was dropped.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

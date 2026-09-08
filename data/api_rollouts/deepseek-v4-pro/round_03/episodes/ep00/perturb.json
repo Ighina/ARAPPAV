@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "Writing each factor in terms of prime factorizations,\n\\[\n\\sqrt{75x}=\\sqrt{3\\cdot 5\\cdot x}, \\quad\n\\sqrt{2x}=\\sqrt{2\\cdot 2\\cdot 2\\cdot x}, \\quad\n\\sqrt{14x}=\\sqrt{2\\cdot 7\\cdot x}.\n\\]\nMultiplying gives\n\\[\n\\sqrt{3\\cdot5\\cdot x \\cdot 2\\cdot2\\cdot2\\cdot x \\cdot 2\\cdot7\\cdot x}\n= \\sqrt{3\\cdot5\\cdot2^4\\cdot7\\cdot x^2}\n=\\sqrt{(2^2\\cdot x^2)(2^2\\cdot3\\cdot5\\cdot7)}\n= \\boxed{4x\\sqrt{105}}.\n\\]",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "3 \\cdot 5^2",
+      "injected_text": "3 \\cdot 5",
+      "error_type": "wrong_operation",
+      "rationale": "The solution drops the exponent in 5^2 when factoring 75x, as if the square operation could be ignored. The correct prime factorization of 75x is 3*5^2*x, not 3*5*x."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "2 \\cdot 2",
+      "injected_text": "2 \\cdot 2 \\cdot 2",
+      "error_type": "duplication_error",
+      "rationale": "The factor 2x contains only one factor of 2, but the solution writes it as 2*2*2*x, duplicating the factor 2 extra times. The correct factorization is 2*x."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "x^3",
+      "injected_text": "x^2",
+      "error_type": "variable_misconception",
+      "rationale": "Multiplying the three factors gives x*x*x = x^3, not x^2. Dropping one power of x misrepresents the variable part and changes the final radical."
+    }
+  ]
+}

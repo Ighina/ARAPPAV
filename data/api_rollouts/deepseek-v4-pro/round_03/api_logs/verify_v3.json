@@ -1,0 +1,89 @@
+{
+  "role": "verify",
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "prompt_version": 3,
+  "effort": "low",
+  "max_tokens": 65536,
+  "episodes": {
+    "ep00": {
+      "stop_reason": "stop",
+      "input_tokens": 2145,
+      "output_tokens": 4667,
+      "cost_usd": null,
+      "latency_s": 73.68,
+      "request_id": "d17b2f99-cb60-46b0-abe9-d74b1ba0ed60",
+      "model": "deepseek-v4-pro"
+    },
+    "ep01": {
+      "stop_reason": "stop",
+      "input_tokens": 2088,
+      "output_tokens": 7276,
+      "cost_usd": null,
+      "latency_s": 106.7,
+      "request_id": "f07e9aa2-4f6e-49ee-9c5b-9339caf46932",
+      "model": "deepseek-v4-pro"
+    },
+    "ep02": {
+      "stop_reason": "stop",
+      "input_tokens": 2097,
+      "output_tokens": 3907,
+      "cost_usd": null,
+      "latency_s": 60.75,
+      "request_id": "399232d8-d76e-4cc8-b549-1abcd51f3590",
+      "model": "deepseek-v4-pro"
+    },
+    "ep03": {
+      "stop_reason": "stop",
+      "input_tokens": 2222,
+      "output_tokens": 11205,
+      "cost_usd": null,
+      "latency_s": 177.37,
+      "request_id": "e8586b23-4aaa-4b5f-9521-f50086b9f96d",
+      "model": "deepseek-v4-pro"
+    },
+    "ep04": {
+      "stop_reason": "stop",
+      "input_tokens": 2167,
+      "output_tokens": 3962,
+      "cost_usd": null,
+      "latency_s": 62.41,
+      "request_id": "5eb7dbb6-826d-4ce0-9eed-39d22af33da7",
+      "model": "deepseek-v4-pro"
+    },
+    "ep05": {
+      "stop_reason": "stop",
+      "input_tokens": 2078,
+      "output_tokens": 9922,
+      "cost_usd": null,
+      "latency_s": 150.54,
+      "request_id": "f4e48c3f-e042-41b2-9dc0-e437eba75d56",
+      "model": "deepseek-v4-pro"
+    },
+    "ep06": {
+      "stop_reason": "stop",
+      "input_tokens": 2085,
+      "output_tokens": 5321,
+      "cost_usd": null,
+      "latency_s": 79.86,
+      "request_id": "2ac5dc43-4b73-42cb-b6b8-924c88ecdfc7",
+      "model": "deepseek-v4-pro"
+    },
+    "ep07": {
+      "stop_reason": "stop",
+      "input_tokens": 2081,
+      "output_tokens": 1586,
+      "cost_usd": null,
+      "latency_s": 24.01,
+      "request_id": "40a5c22c-d77a-4bed-bfe9-9b0b2beb6815",
+      "model": "deepseek-v4-pro"
+    }
+  },
+  "totals": {
+    "ok": 8,
+    "errors": 0,
+    "input_tokens": 16963,
+    "output_tokens": 47846,
+    "cost_usd": null
+  }
+}

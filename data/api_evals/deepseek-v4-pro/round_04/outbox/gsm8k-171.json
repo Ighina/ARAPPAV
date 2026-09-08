@@ -1,0 +1,10 @@
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "He lost \\(5 \\times 2 = 10\\) dollars on this bet",
+      "explanation": "This is wrong: in the second race he won $11, not lost $10. A win should reduce the total loss, so the second race contributes -$11 rather than +$10. The correct total net loss is 5 - 11 + 16.5 = 10.5 dollars, giving an average loss of 10.5 / 3 = 3.5 dollars per race.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

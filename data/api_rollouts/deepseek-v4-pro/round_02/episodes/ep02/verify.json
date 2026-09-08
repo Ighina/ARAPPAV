@@ -1,0 +1,19 @@
+{
+  "claims": [
+    {
+      "quoted_text": "The graph of this expression is a parabola facing upwards.",
+      "explanation": "The quadratic is -\\frac{5}{3}x^2 + \\frac{100}{3}x, so the leading coefficient is negative and the parabola opens downward. Thus the vertex gives a maximum, not a minimum.",
+      "error_type": "wrong_sign"
+    },
+    {
+      "quoted_text": "xy = 10 + \\frac{50}{3} = \\frac{80}{3}",
+      "explanation": "At x=10, y=(100-5(10))/3=50/3. The product is xy=10*(50/3)=500/3, not the sum 10+50/3.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "quoted_text": "y=\\frac{55}{4}",
+      "explanation": "For x=9, y=(100-5(9))/3=(100-45)/3=55/3, not 55/4; the denominator should be 3.",
+      "error_type": "arithmetic_error"
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 1.0,
+  "verifier_recall": 1.0,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 1.0,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 3,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 3,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 1.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.9,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "(13x+15)\\cdot 2x = 13x\\cdot 2x-15\\cdot 2x": 0.9,
+        "13x\\cdot 2x = 13x^2": 0.0,
+        "15\\cdot 2x = 30": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 1,
+      "best_overlap": 0.9,
+      "error_type": "first_term_as_coefficient",
+      "all_overlaps": {
+        "(13x+15)\\cdot 2x = 13x\\cdot 2x-15\\cdot 2x": 0.0,
+        "13x\\cdot 2x = 13x^2": 0.9,
+        "15\\cdot 2x = 30": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": 2,
+      "best_overlap": 0.9,
+      "error_type": "variable_misconception",
+      "all_overlaps": {
+        "(13x+15)\\cdot 2x = 13x\\cdot 2x-15\\cdot 2x": 0.0,
+        "13x\\cdot 2x = 13x^2": 0.0,
+        "15\\cdot 2x = 30": 0.9
+      }
+    }
+  ],
+  "episode_id": "ep07",
+  "source_id": "algebra_Level 1_6",
+  "topic": "algebra",
+  "level": "Level 1",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "+",
+      "injected_text": "-",
+      "rationale": "The distributive property requires adding the two products, not subtracting the second product."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "first_term_as_coefficient",
+      "original_text": "13x\\cdot 2x",
+      "injected_text": "13x^2",
+      "rationale": "Multiplying 13x by 2x gives 26x^2, since the coefficients 13 and 2 multiply to 26. Keeping the 13 coefficient ignores the factor 2."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "variable_misconception",
+      "original_text": "15\\cdot 2x",
+      "injected_text": "30",
+      "rationale": "Multiplying 15 by 2x gives 30x, not just 30; the variable x must remain as a factor."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "(13x+15)\\cdot 2x = 13x\\cdot 2x-15\\cdot 2x",
+      "explanation": "The distributive property gives a plus between the two products, not a minus: (13x+15)\\cdot 2x = 13x\\cdot 2x + 15\\cdot 2x.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "13x\\cdot 2x = 13x^2",
+      "explanation": "Multiplying 13x by 2x gives 26x^2, not 13x^2, because 13\\cdot 2 = 26 and x\\cdot x = x^2.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "15\\cdot 2x = 30",
+      "explanation": "Multiplying 15 by 2x gives 30x, not 30; the factor x must remain.",
+      "error_type": null
+    }
+  ]
+}

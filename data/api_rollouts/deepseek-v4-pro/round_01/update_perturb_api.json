@@ -1,0 +1,25 @@
+{
+  "round": 1, "role": "perturber", "model": "deepseek-v4-pro",
+  "from_version": 1, "to_version": 2, "skipped": false, "skip_reason": null,
+  "metrics": {"mean_perturber_reward_valid_only": 0.0417, "format_valid_rate": 1.0,
+              "delta_reward": null, "delta_format_valid_rate": null,
+              "api_cost_usd": null, "truncated_replies": 0, "api_errors": 0},
+  "diagnosis": [
+    {"observation": "Three verifier misses, but only one paid out: ep02 err_003 and ep05 err_003 were clean misses (best_overlap 0.0) inside units matched through a sibling member, so unit recall was 1.0 and r_P = 0. ep02 crammed 3 errors into a 2-sentence solution; ep05 placed errors in the final two adjacent lines.", "episodes": ["ep02", "ep05"], "bucket": "collapse"},
+    {"observation": "The v1 playbook was single-number/sign swaps: wrong_operation 8x, negative_number_error 5x, and the verifier caught 21/24 errors overall, with perfect detection on 7 of 9 used types. The only rewarded miss was ep03 err_001, a structural root change (denominator_only).", "episodes": ["ep00", "ep01", "ep02", "ep03", "ep04", "ep05", "ep06", "ep07"], "bucket": "loss"},
+    {"observation": "ep03 declared the silently re-derived downstream terms (err_002, err_003) as separate errors from the root change (err_001) — the exact P2 violation. The matcher did not merge them, but the verifier found both, so nothing was gained.", "episodes": ["ep03"], "bucket": "collapse"},
+    {"observation": "The round's first perturb pass truncated all 8 replies at max_tokens=16000 (thinking mode on, finish_reason=length, empty content) and was discarded as no-signal; the scored pass used the patched runner at max_tokens=65536, reasoning_effort=low, with 0 truncated replies. No policy lesson taken from the dead pass.", "episodes": ["ep00", "ep01", "ep02", "ep03", "ep04", "ep05", "ep06", "ep07"], "bucket": "api"},
+    {"observation": "8/8 format-valid, k_effective ratio 1.0, zero penalties — the v1 format discipline (P5/P6 span anchoring, taxonomy copying, JSON escaping) held. No format edits warranted.", "episodes": ["ep00", "ep01", "ep02", "ep03", "ep04", "ep05", "ep06", "ep07"], "bucket": "win"}
+  ],
+  "policy_edits": [
+    {"rule": "P1", "action": "revised", "change": "Added adjacency rule: never two errors in adjacent lines without untouched text between them, even when causally independent — neighbouring declarations merge and a merged unit pays only if every member is missed. Added short-solution guidance: if the solution has fewer positions than k, space out and accept the cap, never cram.", "evidence": ["ep02", "ep05"]},
+    {"rule": "P2", "action": "revised", "change": "Extended the downstream-consequence ban to 'a step silently re-derived to stay consistent' — the ep03 pattern where the recomputed terms read naturally but are the same root mistake re-expressed.", "evidence": ["ep03"]},
+    {"rule": "P4", "action": "revised", "change": "Added explicit preference for structural misconceptions (wrong factorization structure, dropped factor, misapplied identity, buried sign error) over single-number/sign/term swaps, which re-derivation catches almost every time.", "evidence": ["ep00", "ep01", "ep02", "ep03", "ep04", "ep05", "ep06", "ep07"]}
+  ],
+  "scorer_issues": [
+    {"episode": "ep02", "pattern": "prepare-verify's mechanical-injection locator warned that all 3 declared spans were unfindable (0/3 backoff applied) even though original_text and injected_text are literal substrings of the correct solution and the raw perturbed_solution respectively; scoring then matched 2 claims at overlap 1.0 against the same spans. The two stages disagree on normalization.", "guard": "arappav.utils.parsing / mechanical injection backoff", "action": "reported, not learned"},
+    {"episode": "ep05", "pattern": "err_003 (a+b=115 -> 119) merged into a unit with err_002 (x=sqrt(109)-6 -> x=sqrt(109)-11) despite being a causally independent arithmetic slip on a separate quantity — possibly over-merging by line adjacency in group_errors_into_units.", "guard": "error_units", "action": "reported, not learned"}
+  ],
+  "converged": false,
+  "convergence_reason": "r_P collapsed to 0.04 with clear actionable lessons: unit spacing (2 missed rewards eaten by merging) and error difficulty (21/24 detected; only the structural miss paid). Neither convergence condition holds."
+}

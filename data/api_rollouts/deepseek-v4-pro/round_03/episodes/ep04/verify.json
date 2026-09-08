@@ -1,0 +1,19 @@
+{
+  "claims": [
+    {
+      "quoted_text": "Since both $b$ and 2008 are positive, it is clear that $r$ and $s$ need not be positive.",
+      "explanation": "This is false. Since rs=2008>0, r and s have the same sign, and since r+s=b>0, they must both be positive. They cannot include a negative factor with the product still positive and the sum positive.",
+      "error_type": "wrong_reasoning"
+    },
+    {
+      "quoted_text": "2008=2\\cdot 2\\cdot 502",
+      "explanation": "This is not a prime factorization because 502 is not prime: 502=2*251. The correct prime factorization is 2008=2^3*251.",
+      "error_type": "wrong_factorization"
+    },
+    {
+      "quoted_text": "b=251-8=\\boxed{243}",
+      "explanation": "Since b=r+s, with r=251 and s=8, the correct value is b=251+8=259, not 251-8=243. Subtraction is the wrong operation here.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

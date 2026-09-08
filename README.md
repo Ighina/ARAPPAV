@@ -125,12 +125,111 @@ The math mode error taxonomy is derived from:
 
 ---
 
+## Skill-Tuning Mode (no GPU)
+
+Adversarial RL on this task is hard to balance — reward hacking is rampant, and every round
+costs GPU hours (see `rollout_analysis.md`). **Skill tuning** plays the same game with the
+same reward, but the policies are prose: two Claude Code skills that are rewritten from the
+episodes they generate, instead of two sets of weights updated by GRPO/DPO.
+
+```
+  perturb-vN ─┐                                  ┌─ update-perturb ─→ perturb-v(N+1)
+              ├─→ episodes ─→ compute_rewards ─→ ┤
+  verify-vN  ─┘        (scripts/skill_selfplay.py) └─ update-verify  ─→ verify-v(N+1)
+```
+
+| Skill | Kind | Role |
+|-------|------|------|
+| `perturb-v1` | versioned policy | Perturber — injects exactly `k` errors and declares the ground truth |
+| `verify-v1` | versioned policy | Verifier — finds the errors and quotes them for the matcher |
+| `update-perturb` | static | reads a scored round, writes `perturb-v{N+1}` |
+| `update-verify` | static | reads a scored round, writes `verify-v{N+1}` |
+| `selfplay` | static | orchestrates rounds, honours `freeze`, stops on convergence |
+| `eval-processbench` | static | scores `verify-vN` on held-out ProcessBench after each round |
+
+Run it from Claude Code:
+
+```
+/selfplay rounds=3 episodes=8 k=3 freeze=none
+```
+
+Or drive a round by hand:
+
+```bash
+python scripts/skill_selfplay.py init --round 1 --episodes 8 --k 3   # sample problems
+# → run perturb-vN on each episodes/*/problem.json
+python scripts/skill_selfplay.py prepare-verify --round 1            # validate + build verifier inputs
+# → run verify-vN on verify_inbox/ (isolated context), answers to verify_outbox/
+python scripts/skill_selfplay.py score --round 1                     # repo reward functions
+python scripts/skill_selfplay.py summarize --round 1                 # metrics + learning signal
+```
+
+Design points that keep this honest:
+
+- **The reward is the real one.** `score` calls `arappav.reward.reward_fns.compute_rewards`
+  with `configs/reward/reward.yaml` — error units, graded format penalties, anti-spam,
+  cross-round anti-duplicate — and parses Perturber output through the same
+  `parse_and_backoff` the GRPO path uses. Skill scores are comparable to RL episode scores.
+- **The Verifier cannot see the ground truth.** `prepare-verify` writes `verify_inbox/`,
+  containing only the problem and the perturbed solution; the verifier pass runs in a fresh
+  agent that never opens `episodes/`.
+- **Contract and policy are separate.** Each policy skill has an invariant region (schema,
+  taxonomy, reward rules — transcribed from the code) and a tuned `## Policy` section. Only
+  the latter may change; `skill_selfplay.py check-skill` enforces it.
+- **Exploitation is reported, not learned.** The updaters must reject high-reward episodes
+  that won by stacking, restatement, or matcher games — those go to `scorer_issues` as
+  candidate repo bugs, so skill tuning can't rediscover the round-3 hack.
+- **`freeze` works as in the RL loop.** `freeze=perturber` runs `update-verify` only;
+  `freeze=verifier` runs `update-perturb` only.
+
+Rounds land in `data/skill_rollouts/round_NN/` (gitignored); the skill versions themselves
+are tracked under `.claude/skills/`, so the policy lineage lives in git history.
+
+**Default problem source.** `--source local` (the default) replays the Hendrycks MATH
+problems already stored verbatim in past rollout logs (`data/rollouts_math/`,
+`new_rollouts/`) — 8 algebra problems, levels 1–4, no network needed. `--source hendrycks`
+pulls fresh problems from `EleutherAI/hendrycks_math` (default topic: `algebra`), and
+`--problems-file` accepts any JSONL with `problem`/`solution` fields. Problems are never
+reused across rounds.
+
+### External validation — ProcessBench
+
+Self-play only proves a Verifier beats *this* Perturber. After each round, the
+`eval-processbench` skill scores the current `verify-vN` on held-out
+[`Qwen/ProcessBench`](https://huggingface.co/datasets/Qwen/ProcessBench) — human-annotated
+first-error positions in real model reasoning, across four difficulty tiers (`gsm8k`,
+`math`, `olympiadbench`, `omnimath`).
+
+```bash
+python scripts/processbench_eval.py prepare --round 1 --per-subset 20 --seed 0
+# → fresh agent runs verify-vN over inbox/ (tagged steps), answers to outbox/
+python scripts/processbench_eval.py score --round 1
+python scripts/processbench_eval.py report          # F1 per subset, across rounds
+```
+
+The whole reasoning chain is passed at once with explicit `<step_i>…</step_i>` boundaries;
+the prediction for an item is the **earliest** step index across the Verifier's claims, or
+`-1` when it returns no claims — so the official ProcessBench metric (accuracy on erroneous
+chains and on correct chains, combined by their **harmonic** mean) applies directly. Balanced
+accuracy is reported alongside, but the harmonic mean is the number to quote: a verifier that
+never claims anything scores 0.5 balanced accuracy and 0.0 F1.
+
+Leakage is structural, not advisory: items live in `inbox/` and gold labels in `answers/`;
+the verifier pass runs in a fresh agent scoped to the inbox; `eval_summary.json` holds ids,
+hit/miss flags and aggregates only — no item text, no labels (those go to
+`eval_details.json`); the sample is fixed by `--seed` alone so every round is scored on the
+same items; and `update-perturb` / `update-verify` are forbidden from reading
+`data/skill_evals/` at all. The benchmark monitors transfer — it never steers a policy edit.
+
+---
+
 ## Repository Structure
 
 ```
 arappav/
 ├── README.md
 ├── pyproject.toml
+├── .claude/skills/                   # skill-tuning policies (perturb-vN, verify-vN) + updaters
 ├── mathematical-errors.pdf           # Reference paper for math error taxonomy
 ├── configs/                          # Hydra YAML configs
 │   ├── default.yaml                  # Top-level (includes mode flag)
@@ -141,7 +240,9 @@ arappav/
 ├── data/
 │   ├── raw/                          # source papers (gitignored)
 │   ├── processed/                    # chunked/cleaned JSON or parquet
-│   └── rollouts/                     # self-play episode logs (gitignored)
+│   ├── rollouts/                     # self-play episode logs (gitignored)
+│   ├── skill_rollouts/               # skill-tuning round logs (gitignored)
+│   └── skill_evals/                  # held-out ProcessBench eval artifacts (gitignored)
 ├── src/arappav/
 │   ├── data/                         # ingest, ingest_math, chunking, HF dataset wrappers
 │   ├── models/                       # Perturber & Verifier wrappers (paper + math prompts)
@@ -152,11 +253,13 @@ arappav/
 │   ├── eval/                         # Metrics + evaluation harness
 │   └── utils/                        # Logging, seeding
 ├── scripts/                          # Entry points (all support --mode)
+│   ├── skill_selfplay.py             # skill-tuning loop harness (sample/validate/score)
+│   ├── processbench_eval.py          # held-out ProcessBench evaluation of verify-vN
 │   ├── run_ingest.py
 │   ├── run_selfplay.py
 │   ├── run_eval.py
 │   └── run_single_rollout.py
-├── tests/                            # pytest suite (49 tests)
+├── tests/                            # pytest suite (133 tests)
 └── notebooks/
     ├── explore_rollouts.ipynb        # Paper mode exploration
     └── end_to_end_math.ipynb         # Math mode end-to-end training

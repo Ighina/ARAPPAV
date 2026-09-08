@@ -1,0 +1,10 @@
+{
+  "episode_id": "ep01",
+  "format_valid": true,
+  "failure_stage": null,
+  "reason": null,
+  "k": 3,
+  "num_errors": 3,
+  "mechanical_backoff_used": false,
+  "perturbed_solution": "Let the first term of the arithmetic sequence be $a$, and let the common difference be $d$.  Then the third term is $a + 2d = 16$, and the fifth term is $a + 4d = 37$.  Subtracting these equations, we get $2d = 20$.\n\nThen the seventh term is $a + 6d = (a + 4d) + 2d = 37 + 20 = \\boxed{57}$."
+}

@@ -1,0 +1,16 @@
+{
+  "claims": [
+    {
+      "quoted_text": "\\sqrt{75x}=\\sqrt{3\\cdot 5\\cdot x}",
+      "explanation": "Since 75 = 3 \\cdot 5^2, the radicand should be 3 \\cdot 5^2 \\cdot x, not 3 \\cdot 5 \\cdot x. This drops a factor of 5 from the product."
+    },
+    {
+      "quoted_text": "\\sqrt{2x}=\\sqrt{2\\cdot 2\\cdot 2\\cdot x}",
+      "explanation": "The expression 2x equals 2 \\cdot x, not 2 \\cdot 2 \\cdot 2 \\cdot x = 8x. The correct radical is \\sqrt{2 \\cdot x}."
+    },
+    {
+      "quoted_text": "\\sqrt{3\\cdot5\\cdot x \\cdot 2\\cdot2\\cdot2\\cdot x \\cdot 2\\cdot7\\cdot x}\n= \\sqrt{3\\cdot5\\cdot2^4\\cdot7\\cdot x^2}",
+      "explanation": "There are three factors of x under the radical, so the exponent should be x^3, not x^2. Correctly multiplying gives \\sqrt{2^2 \\cdot 3 \\cdot 5^2 \\cdot 7 \\cdot x^3} = 10x\\sqrt{21x}."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "then \\(3 \\times 5 = 15\\), and finally \\(2 \\times 11 = 22\\)",
+      "explanation": "After 3*5=15, the next product of two distinct primes is 3*7=21, not 2*11=22. Also, the list of products of two distinct primes continues indefinitely, so 22 is not the final such number.",
+      "error_type": "wrong_order"
+    }
+  ]
+}

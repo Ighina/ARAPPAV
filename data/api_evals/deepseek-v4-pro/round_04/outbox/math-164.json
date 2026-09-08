@@ -1,0 +1,16 @@
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "exactly two, exactly three, or all three of the top three students are chosen.",
+      "explanation": "\"Exactly three of the top three\" and \"all three of the top three\" are the same event, not two different scenarios. Listing both causes the case with all three top students to be double-counted.",
+      "error_type": "double_counting"
+    },
+    {
+      "step_index": 4,
+      "quoted_text": "\\frac{28 \\times 27 \\times 26 \\times 25}{4 \\times 3 \\times 2 \\times 1} = \\frac{28 \\times 27 \\times 13 \\times 25}{4}",
+      "explanation": "After canceling the factor 2 from 26 and 2, the denominator should be 4*3 = 12, not 4. The correct simplification is (28*27*13*25)/(4*3) = 7*9*13*25 = 20475.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

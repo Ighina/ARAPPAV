@@ -1,0 +1,10 @@
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "He lost \\(5 \\times 2 = 10\\) dollars on this bet",
+      "explanation": "The second race was a win of $11, so in a net-loss calculation it should reduce the loss by $11, not add a $10 loss. Also, the amount bet is not given and cannot be assumed to be $5. Correct total net loss is 5 - 11 + 16.5 = 10.5, giving an average loss of 10.5 / 3 = 3.5.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

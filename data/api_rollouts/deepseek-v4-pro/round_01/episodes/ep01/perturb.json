@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "Let the first term of the arithmetic sequence be $a$, and let the common difference be $d$.  Then the third term is $a + 2d = 16$, and the fifth term is $a + 4d = 37$.  Subtracting these equations, we get $2d = 20$.\n\nThen the seventh term is $a + 6d = (a + 4d) + 2d = 37 + 20 = \\boxed{57}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$a + 2d = 17$",
+      "injected_text": "$a + 2d = 16$",
+      "error_type": "wrong_sequence_term",
+      "rationale": "The third term is given as 17, so the equation should be $a + 2d = 17$, not 16."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "$a + 4d = 39$",
+      "injected_text": "$a + 4d = 37$",
+      "error_type": "wrong_sequence_term",
+      "rationale": "The fifth term is given as 39, so the equation should be $a + 4d = 39$, not 37."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "Subtracting these equations, we get $2d = 22$.",
+      "injected_text": "Subtracting these equations, we get $2d = 20$.",
+      "error_type": "wrong_operation",
+      "rationale": "Subtracting the correct equations gives $2d = 39 - 17 = 22$, not 20; this is an incorrect subtraction result."
+    }
+  ]
+}

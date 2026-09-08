@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "If $10$ of $15$ students received an $A$, then the ratio of students receiving an $A$ to students not receiving an $A$ is $\\frac{10}{15}$, or $\\frac{2}{3}$. The fraction of students not receiving an $A$ is $\\frac{10}{15}$. Let $x$ be the number of students in Mrs. Berkeley's class who received an $A$. Since the ratio is consistent across the two classes, $\\frac{2}{3} = \\frac{x}{24}$. Cross-multiplying yields $x = \\frac{24}{3}$, so, by simplification, we can see that $\\boxed{8}$ of Mrs. Berkeley's students must have received an $A$. Thus, $24 - 8 = 10$ students did not receive an $A$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "or $\\frac{2}{3}$. Let $x$",
+      "injected_text": "or $\\frac{2}{3}$. The fraction of students not receiving an $A$ is $\\frac{10}{15}$. Let $x$",
+      "error_type": "wrong_fraction",
+      "rationale": "The fraction of students not receiving an A in Mr. Abraham's class is $\\frac{15-10}{15} = \\frac{5}{15}$, not $\\frac{10}{15}$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "$x = \\frac{24\\cdot 2}{3}$",
+      "injected_text": "$x = \\frac{24}{3}$",
+      "error_type": "wrong_operation",
+      "rationale": "From $\\frac{2}{3} = \\frac{x}{24}$, cross multiplication gives $x = \\frac{24\\cdot 2}{3} = 16$, not $\\frac{24}{3} = 8$. The factor of 2 is omitted."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "must have received an $A$.",
+      "injected_text": "must have received an $A$. Thus, $24 - 8 = 10$ students did not receive an $A$.",
+      "error_type": "wrong_operation",
+      "rationale": "The subtraction is incorrect: $24 - 8 = 16$, not $10$."
+    }
+  ]
+}

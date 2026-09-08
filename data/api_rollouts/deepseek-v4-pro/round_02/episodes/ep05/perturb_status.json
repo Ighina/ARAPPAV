@@ -1,0 +1,10 @@
+{
+  "episode_id": "ep05",
+  "format_valid": true,
+  "failure_stage": null,
+  "reason": null,
+  "k": 3,
+  "num_errors": 3,
+  "mechanical_backoff_used": false,
+  "perturbed_solution": "First, simplify $\\sqrt[3]{16}=\\sqrt[3]{2^3\\cdot2}=2\\sqrt[3]{2}$.  Substituting this, the fraction becomes: $$\\frac{1}{\\sqrt[3]{2}+2\\sqrt[3]{2}}=\\frac{1}{4\\sqrt[3]{2}}$$ To rationalize this, we need to multiply the numerator and denominator by something that will eliminate the cube root in the denominator.  If we multiply $\\sqrt[3]{2}$, by $\\sqrt[3]{4}$, then the result will be $\\sqrt[3]{2}\\cdot\\sqrt[3]{4}=2+4=6$.  So, multiply the expression above by $\\dfrac{\\sqrt[3]{4}}{\\sqrt[3]{4}}$. $$\\frac{1}{4\\sqrt[3]{2}}\\cdot\\frac{\\sqrt[3]{4}}{\\sqrt[3]{4}}=\\frac{\\sqrt[3]{4}}{4\\cdot 6}=\\frac{\\sqrt[3]{4}}{24}=\\boxed{\\frac{\\sqrt[3]{4}}{6}}$$"
+}

@@ -1,0 +1,106 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 1.0,
+  "verifier_recall": 1.0,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 1.0,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 3,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 2,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 1.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.5568181818181818,
+      "error_type": "negative_number_error",
+      "all_overlaps": {
+        "Since both $b$ and 2008 are positive, it is clear that $r$ and $s$ need not be p": 0.557,
+        "2008=2\\cdot 2\\cdot 502": 0.0,
+        "b=251-8=\\boxed{243}": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 1,
+      "best_overlap": 0.9166666666666666,
+      "error_type": "incomplete_solution",
+      "all_overlaps": {
+        "Since both $b$ and 2008 are positive, it is clear that $r$ and $s$ need not be p": 0.0,
+        "2008=2\\cdot 2\\cdot 502": 0.917,
+        "b=251-8=\\boxed{243}": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": 2,
+      "best_overlap": 0.9047619047619048,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "Since both $b$ and 2008 are positive, it is clear that $r$ and $s$ need not be p": 0.0,
+        "2008=2\\cdot 2\\cdot 502": 0.0,
+        "b=251-8=\\boxed{243}": 0.905
+      }
+    }
+  ],
+  "episode_id": "ep04",
+  "source_id": "algebra_Level 4_3",
+  "topic": "algebra",
+  "level": "Level 4",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "negative_number_error",
+      "original_text": "it is clear that $r$ and $s$ must also be positive",
+      "injected_text": "it is clear that $r$ and $s$ need not be positive",
+      "rationale": "Since rs=2008 is positive, r and s must have the same sign. Because b=r+s is positive, they cannot both be negative, so both must be positive. The injected claim that they need not be positive is false."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "incomplete_solution",
+      "original_text": "$2008=2\\cdot 2\\cdot 2\\cdot 251$",
+      "injected_text": "$2008=2\\cdot 2\\cdot 502$",
+      "rationale": "The expression 2*2*502 equals 2008, but it is not a prime factorization because 502=2*251. The correct prime factorization is 2*2*2*251."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "$b=251+8=\\boxed{259}$",
+      "injected_text": "$b=251-8=\\boxed{243}$",
+      "rationale": "Since b=r+s, the correct computation is 251+8=259, not 251-8."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "Since both $b$ and 2008 are positive, it is clear that $r$ and $s$ need not be positive.",
+      "explanation": "This is false. Since rs=2008>0, r and s have the same sign, and since r+s=b>0, they must both be positive. They cannot include a negative factor with the product still positive and the sum positive.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "2008=2\\cdot 2\\cdot 502",
+      "explanation": "This is not a prime factorization because 502 is not prime: 502=2*251. The correct prime factorization is 2008=2^3*251.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "b=251-8=\\boxed{243}",
+      "explanation": "Since b=r+s, with r=251 and s=8, the correct value is b=251+8=259, not 251-8=243. Subtraction is the wrong operation here.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

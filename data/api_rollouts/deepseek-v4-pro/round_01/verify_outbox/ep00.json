@@ -1,0 +1,19 @@
+{
+  "claims": [
+    {
+      "quoted_text": "|{-17 - 3}|",
+      "explanation": "The original problem has $-17 + 3$ inside the absolute value, not $-17 - 3$. Changing the $+3$ to $-3$ alters the quantity being evaluated.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "quoted_text": "|{-20}| = 14",
+      "explanation": "The absolute value of $-20$ is $20$, not $14$. If the expression really were $-17 - 3$, the right side would be $20$.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "quoted_text": "2x = 18",
+      "explanation": "From $2x + 4 = 14$, subtracting $4$ from both sides gives $2x = 10$, not $2x = 18$.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

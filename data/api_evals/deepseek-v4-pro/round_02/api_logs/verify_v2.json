@@ -1,0 +1,377 @@
+{
+  "role": "verify",
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "prompt_version": 2,
+  "effort": "low",
+  "max_tokens": 65536,
+  "episodes": {
+    "gsm8k-124": {
+      "stop_reason": "stop",
+      "input_tokens": 2203,
+      "output_tokens": 3436,
+      "cost_usd": null,
+      "latency_s": 61.12,
+      "request_id": "1ccf69d5-6044-458a-a720-c01d5a7ef796",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-151": {
+      "stop_reason": "stop",
+      "input_tokens": 2270,
+      "output_tokens": 457,
+      "cost_usd": null,
+      "latency_s": 7.9,
+      "request_id": "fa4649e3-3f0a-4211-b2b4-d0f0fa85aadd",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-162": {
+      "stop_reason": "stop",
+      "input_tokens": 2158,
+      "output_tokens": 6688,
+      "cost_usd": null,
+      "latency_s": 116.67,
+      "request_id": "713dcfc8-2dfd-4498-8802-f0b59c86f967",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-171": {
+      "stop_reason": "stop",
+      "input_tokens": 2407,
+      "output_tokens": 5186,
+      "cost_usd": null,
+      "latency_s": 88.13,
+      "request_id": "f880c40a-23a9-412b-949c-d7a04880ac18",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-22": {
+      "stop_reason": "stop",
+      "input_tokens": 2440,
+      "output_tokens": 10994,
+      "cost_usd": null,
+      "latency_s": 198.74,
+      "request_id": "01a9e5c1-9a8f-4d4f-9bc7-c6cbe4e0c553",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-222": {
+      "stop_reason": "stop",
+      "input_tokens": 2168,
+      "output_tokens": 127,
+      "cost_usd": null,
+      "latency_s": 3.16,
+      "request_id": "335c4173-d8d9-4694-bc00-9bd9c047e724",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-228": {
+      "stop_reason": "stop",
+      "input_tokens": 2273,
+      "output_tokens": 61,
+      "cost_usd": null,
+      "latency_s": 2.15,
+      "request_id": "bb3af9a3-7ca2-47af-823e-2261e6d3597a",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-275": {
+      "stop_reason": "stop",
+      "input_tokens": 2082,
+      "output_tokens": 65,
+      "cost_usd": null,
+      "latency_s": 2.15,
+      "request_id": "63887d42-c208-4d42-ad99-3c9f6ef06ebb",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-278": {
+      "stop_reason": "stop",
+      "input_tokens": 2350,
+      "output_tokens": 123,
+      "cost_usd": null,
+      "latency_s": 2.97,
+      "request_id": "8c1e089b-4188-4017-b36c-51099e77e9be",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-287": {
+      "stop_reason": "stop",
+      "input_tokens": 2489,
+      "output_tokens": 182,
+      "cost_usd": null,
+      "latency_s": 4.5,
+      "request_id": "1c7d3322-a7f7-46b5-bba9-952c6a5fca6f",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-325": {
+      "stop_reason": "stop",
+      "input_tokens": 2120,
+      "output_tokens": 61,
+      "cost_usd": null,
+      "latency_s": 2.03,
+      "request_id": "20c0deca-9fb3-40b4-a08b-612ea23e1327",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-332": {
+      "stop_reason": "stop",
+      "input_tokens": 2121,
+      "output_tokens": 54,
+      "cost_usd": null,
+      "latency_s": 2.86,
+      "request_id": "480555cc-6278-4746-b2ed-6ef9c6a18287",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-366": {
+      "stop_reason": "stop",
+      "input_tokens": 2098,
+      "output_tokens": 74,
+      "cost_usd": null,
+      "latency_s": 2.27,
+      "request_id": "489a418c-d91a-4320-8e2a-fe26c540d46f",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-373": {
+      "stop_reason": "stop",
+      "input_tokens": 2201,
+      "output_tokens": 64,
+      "cost_usd": null,
+      "latency_s": 2.15,
+      "request_id": "dcba12d0-0eac-41e0-b291-2129b088a7d8",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-391": {
+      "stop_reason": "stop",
+      "input_tokens": 2192,
+      "output_tokens": 134,
+      "cost_usd": null,
+      "latency_s": 3.38,
+      "request_id": "bef6fe60-9f11-4466-9d19-914ec198b739",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-50": {
+      "stop_reason": "stop",
+      "input_tokens": 2134,
+      "output_tokens": 2013,
+      "cost_usd": null,
+      "latency_s": 35.85,
+      "request_id": "a25495b2-c7e7-4388-ae1f-d0cc27a00218",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-58": {
+      "stop_reason": "stop",
+      "input_tokens": 2318,
+      "output_tokens": 1700,
+      "cost_usd": null,
+      "latency_s": 30.11,
+      "request_id": "307ec4df-6c9c-4338-9817-df2c3a36801c",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-60": {
+      "stop_reason": "stop",
+      "input_tokens": 2483,
+      "output_tokens": 10550,
+      "cost_usd": null,
+      "latency_s": 178.1,
+      "request_id": "1af21a0d-09ff-4259-869e-a84fe7b0ba5e",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-88": {
+      "stop_reason": "stop",
+      "input_tokens": 2388,
+      "output_tokens": 6609,
+      "cost_usd": null,
+      "latency_s": 121.65,
+      "request_id": "8a63e908-9489-4475-8729-8b8e7f97e711",
+      "model": "deepseek-v4-pro"
+    },
+    "gsm8k-89": {
+      "stop_reason": "stop",
+      "input_tokens": 2684,
+      "output_tokens": 951,
+      "cost_usd": null,
+      "latency_s": 17.72,
+      "request_id": "f5ba3ada-d3df-449b-aed0-c1b79f4086a9",
+      "model": "deepseek-v4-pro"
+    },
+    "math-154": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-159": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-164": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-226": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-291": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-295": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-41": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-455": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-551": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-605": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-668": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-743": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-744": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-765": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-812": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-815": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-848": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-854": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-893": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "math-94": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-132": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-145": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-238": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-297": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-303": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-355": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-448": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-485": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-577": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-581": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-586": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-684": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-737": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-740": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-742": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-743": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-749": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-823": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-869": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "olympiadbench-897": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-121": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-212": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-243": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-281": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-367": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-523": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-525": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-552": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-629": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-632": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-676": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-699": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-700": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-716": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-730": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-748": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-839": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-856": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-947": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    "omnimath-996": {
+      "error": "APIStatusError: Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    }
+  },
+  "totals": {
+    "ok": 20,
+    "errors": 60,
+    "input_tokens": 45579,
+    "output_tokens": 49529,
+    "cost_usd": null
+  }
+}

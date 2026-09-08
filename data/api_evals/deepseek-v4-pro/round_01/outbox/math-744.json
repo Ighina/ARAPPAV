@@ -1,0 +1,16 @@
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "The side length of each triangle is the same as the side length of the hexagon, which is 4 inches.",
+      "explanation": "This misidentifies the triangle side. Joining alternate vertices of a regular hexagon with side 4 connects vertices separated by a central angle of 120°, so the chord length is \\(4\\sqrt{3}\\), not 4. Thus each equilateral triangle has area \\(\\frac{(4\\sqrt{3})^2\\sqrt{3}}{4}=12\\sqrt{3}\\), not \\(4\\sqrt{3}\\).",
+      "error_type": "wrong_value"
+    },
+    {
+      "step_index": 1,
+      "quoted_text": "Since there are two triangles, the total area of the common region is \\( 2 \\times 4\\sqrt{3} = 8\\sqrt{3} \\) square inches.",
+      "explanation": "The common region is the intersection of the two triangles, not the sum of their areas. Doubling one triangle's area does not compute the overlap. The actual common region is a central regular hexagon whose area is \\(8\\sqrt{3}\\), but this step reaches that number for an invalid reason.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

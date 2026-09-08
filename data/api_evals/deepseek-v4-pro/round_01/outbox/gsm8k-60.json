@@ -1,0 +1,22 @@
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "the amount of money George spent is 99% of $5, or 0.99 * $5 = $4.95",
+      "explanation": "$5 is already the amount George spent, not his original money. Since $5 is 99% of his original money, 0.99M = $5, so M ≈ $5.0505 and the amount spent remains $5, not $4.95.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "Number of bags of chips = $4.95 / $0.40 = 12.375",
+      "explanation": "The amount spent on chips is not $4.95. The problem states he bought 3 bags, so the chip spending is 3 × $0.40 = $1.20. Dividing $4.95 by $0.40 gives 12.375 bags, contradicting the given 3 bags.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 3,
+      "quoted_text": "considering he bought 3 bags of chips for $4.95, this means the remaining amount he spent is $5 - $4.95 = $0.05",
+      "explanation": "Three bags of chips cost 3 × $0.40 = $1.20, not $4.95. Therefore the remaining amount spent on candy bars should be $5 - $1.20 = $3.80, not $0.05.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}

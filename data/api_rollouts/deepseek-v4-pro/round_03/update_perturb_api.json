@@ -1,0 +1,25 @@
+{
+  "round": 3, "role": "perturber", "model": "deepseek-v4-pro",
+  "from_version": 3, "to_version": 4, "skipped": false, "skip_reason": null,
+  "metrics": {"mean_perturber_reward_valid_only": -0.0417, "format_valid_rate": 1.0,
+              "delta_reward": -0.3334, "delta_format_valid_rate": 0.0,
+              "api_cost_usd": null, "truncated_replies": 0, "api_errors": 0},
+  "diagnosis": [
+    {"observation": "ep00 paid the round's only hard penalty: two declared spans ('3 \\cdot 5', '2 \\cdot 2 \\cdot 2') differ from the emitted text ('3\\cdot 5', '2\\cdot 2\\cdot 2') only in spacing around \\cdot, so literal presence search failed, k_effective fell to 1/3, and the missing-error penalty charged -0.5 x 2 = -1.0. A pure span-fidelity failure — the mistakes themselves were real and the verifier quoted the right equalities.", "episodes": ["ep00"], "bucket": "penalty"},
+    {"observation": "Unit merging returned after the round-2 clean sheet: ep00 3->1 unit (three factor/exponent slips in one radical segment), ep03 3->2, ep04 3->2 (two errors in the same factorization segment). Same-family errors in the same derivation segment merge even across different steps.", "episodes": ["ep00", "ep03", "ep04"], "bucket": "collapse"},
+    {"observation": "The two clean paid misses are both reasoning-layer errors: ep06 err_003 (logical-connector change 'Thus' -> 'Also, since the input is now 2, f(2)=2x...') and ep07 err_001 (word-level variable swap 'substitute this value for $b$' -> 'for $a$'). The verifier flagged the arithmetic consequence of ep06's error but could not anchor the prose transition.", "episodes": ["ep06", "ep07"], "bucket": "win"},
+    {"observation": "The verifier's counter-update recovered: 19/24 errors detected this round. Arithmetic-layer single-value changes remain the most-detected plays.", "episodes": ["ep00", "ep01", "ep02", "ep03", "ep04", "ep05", "ep06", "ep07"], "bucket": "loss"}
+  ],
+  "policy_edits": [
+    {"rule": "P1", "action": "revised", "change": "Added the cross-family rule: two errors of the same misconception family in the same derivation segment merge even in different steps — take the three errors from three different families.", "evidence": ["ep00", "ep03", "ep04"]},
+    {"rule": "P4", "action": "revised", "change": "Added the reasoning-layer preference: a changed logical connector, a swapped variable name in prose, or a restated condition is harder to spot than any changed value.", "evidence": ["ep06", "ep07"]},
+    {"rule": "P5", "action": "revised", "change": "Added the byte-exact copying requirement: spans must match the emitted text character for character including LaTeX-internal spacing; any character difference counts as an error not placed.", "evidence": ["ep00"]},
+    {"rule": "P6", "action": "revised", "change": "Self-check now requires character-by-character comparison of each declared span against the text, spaces included; a semantic match is not enough.", "evidence": ["ep00"]}
+  ],
+  "scorer_issues": [
+    {"episode": "ep00", "pattern": "Containment floor, third occurrence: the verifier's claims quote the full equalities ('\\sqrt{75x}=\\sqrt{3\\cdot 5\\cdot x}', '\\sqrt{2x}=\\sqrt{2\\cdot 2\\cdot 2\\cdot x}') that contain the declared spans verbatim, yet both fail the 40% floor (truth spans 6-10 chars) and land as misses for the verifier and false positives for the perturber. Micro-spans continue to make correct detections unmatchable.", "guard": "matcher containment rule", "action": "reported, not learned"},
+    {"episode": "ep00", "pattern": "Spacing-only span mismatch ('3 \\cdot 5' vs emitted '3\\cdot 5') triggers the missing-error penalty at -0.5 each with no leniency. This is the contract's verbatim rule working as written, not a bug — but the strictness bites on semantically identical spans; a normalization that treats intra-LaTeX spacing as equivalent would align the two stages.", "guard": "presence locator / normalization", "action": "reported, not learned"}
+  ],
+  "converged": false,
+  "convergence_reason": "r_P moved -0.33 under the verifier's recovery with two fixable failure classes (byte-exact spans, cross-family diversity) and one genuine new win class (reasoning-layer errors). Not flattened."
+}

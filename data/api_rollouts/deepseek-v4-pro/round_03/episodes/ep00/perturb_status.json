@@ -1,0 +1,10 @@
+{
+  "episode_id": "ep00",
+  "format_valid": true,
+  "failure_stage": null,
+  "reason": null,
+  "k": 3,
+  "num_errors": 3,
+  "mechanical_backoff_used": false,
+  "perturbed_solution": "Writing each factor in terms of prime factorizations,\n\\[\n\\sqrt{75x}=\\sqrt{3\\cdot 5\\cdot x}, \\quad\n\\sqrt{2x}=\\sqrt{2\\cdot 2\\cdot 2\\cdot x}, \\quad\n\\sqrt{14x}=\\sqrt{2\\cdot 7\\cdot x}.\n\\]\nMultiplying gives\n\\[\n\\sqrt{3\\cdot5\\cdot x \\cdot 2\\cdot2\\cdot2\\cdot x \\cdot 2\\cdot7\\cdot x}\n= \\sqrt{3\\cdot5\\cdot2^4\\cdot7\\cdot x^2}\n=\\sqrt{(2^2\\cdot x^2)(2^2\\cdot3\\cdot5\\cdot7)}\n= \\boxed{4x\\sqrt{105}}.\n\\]"
+}

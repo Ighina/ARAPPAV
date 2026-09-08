@@ -1,0 +1,3 @@
+{"role": "perturb", "model": "deepseek-v4-pro", "version": 2, "parent": 1,
+ "tuned_from_round": 1, "provenance": "update-perturb-api",
+ "summary": "spacing/independence rules, downstream-consequence ban extended, prefer structural misconceptions over number swaps"}

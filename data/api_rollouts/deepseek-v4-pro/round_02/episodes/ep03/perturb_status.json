@@ -1,0 +1,10 @@
+{
+  "episode_id": "ep03",
+  "format_valid": true,
+  "failure_stage": null,
+  "reason": null,
+  "k": 3,
+  "num_errors": 3,
+  "mechanical_backoff_used": false,
+  "perturbed_solution": "First, we try to simplify like terms. We find the prime factorizations of $45$ and $360$: $45 = 3^2 \\cdot 5$ and $360 = 2^3 \\cdot 3^2 \\cdot 5$. Hence, $$\\sqrt{45} = \\sqrt{3^2 \\cdot 5} = 4\\sqrt{5}$$and \\begin{align*}\n\\sqrt{360} &= \\sqrt{2^3 \\cdot 3^2 \\cdot 5}\\\\\n&= \\sqrt{(2 + 3)^2} \\cdot \\sqrt{2 \\cdot 5} = 5 \\sqrt{2 \\cdot 5}.\n\\end{align*}Returning to the given expression,  \\begin{align*}\n4\\sqrt{5} - 2\\sqrt{5} + \\frac{5 \\sqrt{2} \\cdot \\sqrt{5}}{\\sqrt{2}} &= 4\\sqrt{5} - 2\\sqrt{5} + 5\\sqrt{5}\\\\\n&= 8\\sqrt{5} = \\sqrt{8^2 \\cdot 5} = \\sqrt{320}.\n\\end{align*}Thus, $N = \\boxed{320}$."
+}

@@ -1,0 +1,3 @@
+{"role": "verify", "model": "deepseek-v4-pro", "version": 2, "parent": 1,
+ "tuned_from_round": 1, "provenance": "update-verify-api",
+ "summary": "complete-expression quote anchoring, explicit final-answer-line re-derivation"}

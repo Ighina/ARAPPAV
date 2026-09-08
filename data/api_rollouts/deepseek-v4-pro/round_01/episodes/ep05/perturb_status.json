@@ -1,0 +1,10 @@
+{
+  "episode_id": "ep05",
+  "format_valid": true,
+  "failure_stage": null,
+  "reason": null,
+  "k": 3,
+  "num_errors": 3,
+  "mechanical_backoff_used": false,
+  "perturbed_solution": "Completing the square, we add $(12/2)^2=36$ to both sides of the equation to get $x^2+12x+36=109 \\Rightarrow (x+12)^2=109$. Taking the square root of both sides, we get $x+12=\\sqrt{109}$ (we take the positive square root because we want the positive solution), or $x=\\sqrt{109}-11$. Thus, $a=109$ and $b=11$, so $a+b=\\boxed{119}$."
+}

@@ -1,0 +1,49 @@
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "since \"HTHT...HT\" requires us to keep track of 5 flips",
+      "explanation": "The target pattern has length 2012, not 5, so tracking only 5 previous flips cannot determine progress toward the required sequence."
+    },
+    {
+      "step_index": 0,
+      "quoted_text": "The goal is to reach the state where the sequence of the last 5 flips is \"HTHTH\"",
+      "explanation": "The desired sequence is the 2012-flip alternating pattern HTHT...HT, not HTHTH. Even the last five symbols of the desired pattern would be THTHT, not HTHTH."
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "From T, after getting back to H again, we need one more flip of H to reach HTHTH.",
+      "explanation": "The described path T -> H -> T -> H -> H gives the final block THTHH, not HTHTH. More fundamentally, the model does not track the required 2012-long alternating pattern."
+    },
+    {
+      "step_index": 3,
+      "quoted_text": "Therefore, from S, we expect 1 (initial flip) + 2 (expected flips from either H or T) = 3 flips to potentially transition to H or T.",
+      "explanation": "Starting from S, one coin flip always lands in either H or T, so the expected number of flips to reach H or T is exactly 1, not 3."
+    },
+    {
+      "step_index": 4,
+      "quoted_text": "From H, we expect 1 (current flip) + 1 (expected flips to return to S) = 2 flips to potentially transition to T or stay in H.",
+      "explanation": "There is no return to S in this model, and one flip from H leads to either H or T. The expected number of flips for this transition is 1, not 2."
+    },
+    {
+      "step_index": 5,
+      "quoted_text": "From T, we expect 1 (current flip) + 1 (expected flips to return to S) = 2 flips to potentially transition to H or stay in T.",
+      "explanation": "There is no return to S, and one flip from T leads to either H or T. The expected number of flips for this transition is 1, not 2."
+    },
+    {
+      "step_index": 6,
+      "quoted_text": "If we move to H, we expect 1 (current flip) + 1 (expected flips to get back to T) + 1 (additional flip for the final H) = 3 flips.",
+      "explanation": "The extra flips counted here are not justified by the stated transitions. In particular, flipping H from state H does not require an additional expected flip to get back to T and then another H."
+    },
+    {
+      "step_index": 7,
+      "quoted_text": "This requires 3 flips to get to H from T",
+      "explanation": "A transition from T to H requires only one coin flip, not three flips."
+    },
+    {
+      "step_index": 7,
+      "quoted_text": "Thus, the expected number of flips to reach the goal state is \\(3 + 3 = 6\\) flips.",
+      "explanation": "This final expectation is wrong. The correct expected waiting time for the alternating pattern of length 2012 is (2^2014 - 4)/3, not 6."
+    }
+  ]
+}

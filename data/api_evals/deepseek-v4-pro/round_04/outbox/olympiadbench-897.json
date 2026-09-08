@@ -1,0 +1,16 @@
+{
+  "claims": [
+    {
+      "step_index": 3,
+      "quoted_text": "6084 * 6084 = 36,997,536",
+      "explanation": "The multiplication is incorrect: 6084^2 = 37,015,056, not 36,997,536.",
+      "error_type": "arithmetic_error"
+    },
+    {
+      "step_index": 5,
+      "quoted_text": "6084 / 36,997,536 = 1/6084",
+      "explanation": "This simplification does not follow from the written denominator: 6084/36,997,536 is about 1/6081.126, not 1/6084. The final 1/6084 would be correct only with the correct denominator 37,015,056.",
+      "error_type": "incorrect_simplification"
+    }
+  ]
+}

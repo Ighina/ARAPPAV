@@ -1,0 +1,106 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 1.0,
+  "verifier_recall": 1.0,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 1.0,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 3,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 3,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 1.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 1.0,
+      "error_type": "geometry_definition",
+      "all_overlaps": {
+        "The graph of this expression is a parabola facing upwards.": 1.0,
+        "xy = 10 + \\frac{50}{3} = \\frac{80}{3}": 0.0,
+        "y=\\frac{55}{4}": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 1,
+      "best_overlap": 0.9736842105263158,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "The graph of this expression is a parabola facing upwards.": 0.0,
+        "xy = 10 + \\frac{50}{3} = \\frac{80}{3}": 0.974,
+        "y=\\frac{55}{4}": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": 2,
+      "best_overlap": 1.0,
+      "error_type": "denominator_only",
+      "all_overlaps": {
+        "The graph of this expression is a parabola facing upwards.": 0.0,
+        "xy = 10 + \\frac{50}{3} = \\frac{80}{3}": 0.0,
+        "y=\\frac{55}{4}": 1.0
+      }
+    }
+  ],
+  "episode_id": "ep02",
+  "source_id": "algebra_Level 5_40",
+  "topic": "algebra",
+  "level": "Level 5",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "geometry_definition",
+      "original_text": "The graph of this expression is a parabola facing downwards.",
+      "injected_text": "The graph of this expression is a parabola facing upwards.",
+      "rationale": "The coefficient of x^2 is -5/3, so the parabola opens downward. Changing this to upward misstates the shape and would make the vertex a minimum, not a maximum."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "original_text": "xy = 10\\cdot \\frac{50}{3} = \\frac{500}{3}.",
+      "injected_text": "xy = 10 + \\frac{50}{3} = \\frac{80}{3}.",
+      "rationale": "The solution replaces multiplication by addition. Since xy is a product, at x=10 and y=50/3 it should be 10*(50/3)=500/3, not 80/3."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "denominator_only",
+      "original_text": "y=\\frac{55}{3}",
+      "injected_text": "y=\\frac{55}{4}",
+      "rationale": "When x=9, 100-5*9=55, so y=55/3. The denominator was incorrectly changed from 3 to 4."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "The graph of this expression is a parabola facing upwards.",
+      "explanation": "The quadratic is -\\frac{5}{3}x^2 + \\frac{100}{3}x, so the leading coefficient is negative and the parabola opens downward. Thus the vertex gives a maximum, not a minimum.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "xy = 10 + \\frac{50}{3} = \\frac{80}{3}",
+      "explanation": "At x=10, y=(100-5(10))/3=50/3. The product is xy=10*(50/3)=500/3, not the sum 10+50/3.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "y=\\frac{55}{4}",
+      "explanation": "For x=9, y=(100-5(9))/3=(100-45)/3=55/3, not 55/4; the denominator should be 3.",
+      "error_type": null
+    }
+  ]
+}

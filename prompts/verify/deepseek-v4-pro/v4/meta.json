@@ -1,0 +1,3 @@
+{"role": "verify", "model": "deepseek-v4-pro", "version": 4, "parent": 3,
+ "tuned_from_round": 3, "provenance": "update-verify-api",
+ "summary": "prose-layer sweep additions, verbatim-quote self-check in V7"}

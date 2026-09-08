@@ -1,0 +1,10 @@
+{
+  "claims": [
+    {
+      "step_index": 9,
+      "quoted_text": "Thus, \\(x = \\pm \\sqrt{5}\\) and \\(y = \\pm 2\\sqrt{5}\\).",
+      "explanation": "Since this branch came from \\(y=2x\\), the signs of \\(x\\) and \\(y\\) must match. The only valid points are \\((\\sqrt{5},2\\sqrt{5})\\) and \\((-\\sqrt{5},-2\\sqrt{5})\\), not all four sign combinations suggested by the independent \\(\\pm\\) notation.",
+      "error_type": "wrong_sign"
+    }
+  ]
+}

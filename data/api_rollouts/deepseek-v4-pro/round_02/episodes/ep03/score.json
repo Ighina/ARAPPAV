@@ -1,0 +1,106 @@
+{
+  "perturber_reward": 0.6666666666666667,
+  "verifier_reward": 0.3333333333333333,
+  "verifier_recall": 0.3333333333333333,
+  "verifier_precision": 0.3333333333333333,
+  "verifier_f_beta": 0.3333333333333333,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.6666666666666667,
+  "verifier_base_reward": 0.3333333333333333,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.7142857142857143,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "\\sqrt{3^2 \\cdot 5} = 4\\sqrt{5}": 0.714,
+        "\\sqrt{2^3 \\cdot 3^2 \\cdot 5} &= \\sqrt{(2 + 3)^2} \\cdot \\sqrt{2 \\cdot 5}": 0.0,
+        "4\\sqrt{5} - 2\\sqrt{5} + 5\\sqrt{5} &= 8\\sqrt{5}": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "\\sqrt{3^2 \\cdot 5} = 4\\sqrt{5}": 0.0,
+        "\\sqrt{2^3 \\cdot 3^2 \\cdot 5} &= \\sqrt{(2 + 3)^2} \\cdot \\sqrt{2 \\cdot 5}": 0.0,
+        "4\\sqrt{5} - 2\\sqrt{5} + 5\\sqrt{5} &= 8\\sqrt{5}": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "\\sqrt{3^2 \\cdot 5} = 4\\sqrt{5}": 0.0,
+        "\\sqrt{2^3 \\cdot 3^2 \\cdot 5} &= \\sqrt{(2 + 3)^2} \\cdot \\sqrt{2 \\cdot 5}": 0.0,
+        "4\\sqrt{5} - 2\\sqrt{5} + 5\\sqrt{5} &= 8\\sqrt{5}": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep03",
+  "source_id": "algebra_Level 4_10",
+  "topic": "algebra",
+  "level": "Level 4",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "\\sqrt{45} = \\sqrt{3^2 \\cdot 5} = 3\\sqrt{5}",
+      "injected_text": "\\sqrt{45} = \\sqrt{3^2 \\cdot 5} = 4\\sqrt{5}",
+      "rationale": "The square root of 3^2 times 5 is 3 times sqrt(5), not 4 times sqrt(5). The coefficient was changed incorrectly."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "original_text": "\\sqrt{(2 \\cdot 3)^2} \\cdot \\sqrt{2 \\cdot 5} = 6 \\sqrt{2 \\cdot 5}.",
+      "injected_text": "\\sqrt{(2 + 3)^2} \\cdot \\sqrt{2 \\cdot 5} = 5 \\sqrt{2 \\cdot 5}.",
+      "rationale": "The perfect-square factor inside sqrt(360) is (2 times 3)^2, not (2 plus 3)^2. Using addition instead of multiplication gives the wrong coefficient 5 instead of 6."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "= 7\\sqrt{5} = \\sqrt{7^2 \\cdot 5} = \\sqrt{245}.",
+      "injected_text": "= 8\\sqrt{5} = \\sqrt{8^2 \\cdot 5} = \\sqrt{320}.",
+      "rationale": "With the preceding coefficients, 4 - 2 + 5 equals 7, not 8. Therefore the combined radical should be 7 sqrt(5), not 8 sqrt(5)."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "\\sqrt{3^2 \\cdot 5} = 4\\sqrt{5}",
+      "explanation": "√(3²·5) = 3√5, not 4√5; 4√5 equals √80, not √45.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "\\sqrt{2^3 \\cdot 3^2 \\cdot 5} &= \\sqrt{(2 + 3)^2} \\cdot \\sqrt{2 \\cdot 5}",
+      "explanation": "The factors inside the radical were changed incorrectly: 2³·3² = 72, but (2+3)² = 25. The rewritten radical represents √250, not √360. Correctly, √360 = 6√10.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "4\\sqrt{5} - 2\\sqrt{5} + 5\\sqrt{5} &= 8\\sqrt{5}",
+      "explanation": "Combining like terms gives (4 - 2 + 5)√5 = 7√5, not 8√5.",
+      "error_type": null
+    }
+  ]
+}
