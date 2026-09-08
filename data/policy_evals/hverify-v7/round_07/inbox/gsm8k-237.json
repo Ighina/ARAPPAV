@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-237",
+  "subset": "gsm8k",
+  "problem": "Six years ago, when Noah was half as old as Cera, the population of Chile was half what it is now. Currently, Cera is 46 years old. If the population of Chile six years ago was 3000 times the age of Noah, calculate the population of Chile now.",
+  "solution_to_review": "<step_0>\nLet's break down the problem step by step. First, six years ago, Noah was half as old as Cera. This means that if Cera's current age is 46, then six years ago she was 46 - 6 = 40 years old. Since Noah was half her age, Noah was 20 years old six years ago.\n</step_0>\n\n<step_1>\nNext, the population of Chile six years ago was 3000 times the age of Noah at that time. Since Noah was 20 years old, the population of Chile six years ago was 3000 x 20 = 60,000.\n</step_1>\n\n<step_2>\nFinally, the problem states that the population of Chile six years ago was half what it is now. This means that the current population of Chile is twice the population six years ago: 2 x 60,000 = 120,000. Therefore, the population of Chile now is \\boxed{120,000}.\n</step_2>",
+  "step_format": "tagged",
+  "num_steps": 3
+}

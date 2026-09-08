@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-337",
+  "subset": "gsm8k",
+  "problem": "John plans to save money from working.  He gets paid $2 per hour and works 5 hours a day for 4 days a week.  If he wants to save $80 how many weeks will it take him?",
+  "solution_to_review": "<step_0>\nJohn earns $2 per hour and works 5 hours a day, so he earns $2 x 5 = $10 per day.\n</step_0>\n\n<step_1>\nHe works 4 days a week, so he earns $10 x 4 = $40 per week.\n</step_1>\n\n<step_2>\nIf he wants to save $80, we need to divide the total amount he wants to save by the amount he earns per week. So, $80 / $40 = 2 weeks.\n</step_2>\n\n<step_3>\nIt will take John 2 weeks to save $80. The answer is: $\\boxed{2}$\n</step_3>",
+  "step_format": "tagged",
+  "num_steps": 4
+}

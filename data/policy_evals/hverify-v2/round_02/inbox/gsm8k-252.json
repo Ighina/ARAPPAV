@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-252",
+  "subset": "gsm8k",
+  "problem": "In a candy machine, there are 22 more than four times the number of pink gumballs as there are blue gumballs. If there are 12 blue gumballs how many pink ones are there?",
+  "solution_to_review": "<step_0>\nTo solve this problem, we need to determine the number of pink gumballs in the candy machine given that there are 12 blue gumballs and that the number of pink gumballs is 22 more than four times the number of blue gumballs.\n</step_0>\n\n<step_1>\nFirst, identify the number of blue gumballs:\n\\[ \\text{Number of blue gumballs} = 12 \\]\n</step_1>\n\n<step_2>\nNext, set up the relationship between the number of pink gumballs and blue gumballs. According to the problem, the number of pink gumballs is 22 more than four times the number of blue gumballs. We can express this relationship with an equation:\n\\[ \\text{Number of pink gumballs} = 4 \\times (\\text{Number of blue gumballs}) + 22 \\]\n</step_2>\n\n<step_3>\nSubstitute the number of blue gumballs into the equation:\n\\[ \\text{Number of pink gumballs} = 4 \\times 12 + 22 \\]\n</step_3>\n\n<step_4>\nPerform the multiplication:\n\\[ 4 \\times 12 = 48 \\]\n</step_4>\n\n<step_5>\nAdd 22 to the result:\n\\[ 48 + 22 = 70 \\]\n</step_5>\n\n<step_6>\nTherefore, the number of pink gumballs is:\n\\[ \\boxed{70} \\]\n</step_6>",
+  "step_format": "tagged",
+  "num_steps": 7
+}

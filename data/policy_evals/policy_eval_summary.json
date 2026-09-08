@@ -2,109 +2,48 @@
   "config": {
     "prefix": "hverify",
     "versions": [
-      3,
       4,
       5,
       6
     ],
     "model": "claude-haiku-4-5",
-    "per_subset": 5,
+    "per_subset": 20,
     "seed": 0,
     "root": "data/policy_evals",
-    "timeout": 600
+    "timeout": 600,
+    "concurrency": 3
   },
   "results": [
-    {
-      "version": 3,
-      "skill": "hverify-v3",
-      "overall": {
-        "n": 20,
-        "n_erroneous": 8,
-        "n_correct": 12,
-        "error_accuracy": 0.75,
-        "correct_accuracy": 1.0,
-        "unresolved_predictions": 0,
-        "recovered_step_indices": 0,
-        "processbench_f1": 0.8571,
-        "balanced_accuracy": 0.875
-      },
-      "per_subset": {
-        "gsm8k": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 0.5,
-          "correct_accuracy": 1.0,
-          "unresolved_predictions": 0,
-          "recovered_step_indices": 0,
-          "processbench_f1": 0.6667,
-          "balanced_accuracy": 0.75
-        },
-        "math": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 1.0,
-          "correct_accuracy": 1.0,
-          "unresolved_predictions": 0,
-          "recovered_step_indices": 0,
-          "processbench_f1": 1.0,
-          "balanced_accuracy": 1.0
-        },
-        "olympiadbench": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 1.0,
-          "correct_accuracy": 1.0,
-          "unresolved_predictions": 0,
-          "recovered_step_indices": 0,
-          "processbench_f1": 1.0,
-          "balanced_accuracy": 1.0
-        },
-        "omnimath": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 0.5,
-          "correct_accuracy": 1.0,
-          "unresolved_predictions": 0,
-          "recovered_step_indices": 0,
-          "processbench_f1": 0.6667,
-          "balanced_accuracy": 0.75
-        }
-      }
-    },
     {
       "version": 4,
       "skill": "hverify-v4",
       "overall": {
-        "n": 20,
-        "n_erroneous": 8,
-        "n_correct": 12,
-        "error_accuracy": 0.875,
-        "correct_accuracy": 0.9167,
+        "n": 80,
+        "n_erroneous": 36,
+        "n_correct": 44,
+        "error_accuracy": 0.8056,
+        "correct_accuracy": 0.9545,
         "unresolved_predictions": 0,
         "recovered_step_indices": 0,
-        "processbench_f1": 0.8954,
-        "balanced_accuracy": 0.8959
+        "processbench_f1": 0.8738,
+        "balanced_accuracy": 0.88
       },
       "per_subset": {
         "gsm8k": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 1.0,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
+          "error_accuracy": 0.8889,
           "correct_accuracy": 1.0,
           "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 1.0,
-          "balanced_accuracy": 1.0
+          "processbench_f1": 0.9412,
+          "balanced_accuracy": 0.9445
         },
         "math": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
           "error_accuracy": 1.0,
           "correct_accuracy": 1.0,
           "unresolved_predictions": 0,
@@ -113,26 +52,26 @@
           "balanced_accuracy": 1.0
         },
         "olympiadbench": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 1.0,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
+          "error_accuracy": 0.7778,
           "correct_accuracy": 1.0,
           "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 1.0,
-          "balanced_accuracy": 1.0
+          "processbench_f1": 0.875,
+          "balanced_accuracy": 0.8889
         },
         "omnimath": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 0.5,
-          "correct_accuracy": 0.6667,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
+          "error_accuracy": 0.5556,
+          "correct_accuracy": 0.8182,
           "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 0.5714,
-          "balanced_accuracy": 0.5834
+          "processbench_f1": 0.6618,
+          "balanced_accuracy": 0.6869
         }
       }
     },
@@ -140,60 +79,60 @@
       "version": 5,
       "skill": "hverify-v5",
       "overall": {
-        "n": 20,
-        "n_erroneous": 8,
-        "n_correct": 12,
-        "error_accuracy": 0.875,
-        "correct_accuracy": 1.0,
+        "n": 80,
+        "n_erroneous": 36,
+        "n_correct": 44,
+        "error_accuracy": 0.75,
+        "correct_accuracy": 0.9773,
         "unresolved_predictions": 0,
         "recovered_step_indices": 0,
-        "processbench_f1": 0.9333,
-        "balanced_accuracy": 0.9375
+        "processbench_f1": 0.8487,
+        "balanced_accuracy": 0.8637
       },
       "per_subset": {
         "gsm8k": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 1.0,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
+          "error_accuracy": 0.8889,
           "correct_accuracy": 1.0,
           "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 1.0,
-          "balanced_accuracy": 1.0
+          "processbench_f1": 0.9412,
+          "balanced_accuracy": 0.9445
         },
         "math": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 1.0,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
+          "error_accuracy": 0.8889,
           "correct_accuracy": 1.0,
           "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 1.0,
-          "balanced_accuracy": 1.0
+          "processbench_f1": 0.9412,
+          "balanced_accuracy": 0.9445
         },
         "olympiadbench": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 1.0,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
+          "error_accuracy": 0.7778,
           "correct_accuracy": 1.0,
           "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 1.0,
-          "balanced_accuracy": 1.0
+          "processbench_f1": 0.875,
+          "balanced_accuracy": 0.8889
         },
         "omnimath": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 0.5,
-          "correct_accuracy": 1.0,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
+          "error_accuracy": 0.4444,
+          "correct_accuracy": 0.9091,
           "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 0.6667,
-          "balanced_accuracy": 0.75
+          "processbench_f1": 0.597,
+          "balanced_accuracy": 0.6767
         }
       }
     },
@@ -201,60 +140,60 @@
       "version": 6,
       "skill": "hverify-v6",
       "overall": {
-        "n": 20,
-        "n_erroneous": 8,
-        "n_correct": 12,
-        "error_accuracy": 0.875,
-        "correct_accuracy": 1.0,
+        "n": 80,
+        "n_erroneous": 36,
+        "n_correct": 44,
+        "error_accuracy": 0.7222,
+        "correct_accuracy": 0.9545,
         "unresolved_predictions": 0,
         "recovered_step_indices": 0,
-        "processbench_f1": 0.9333,
-        "balanced_accuracy": 0.9375
+        "processbench_f1": 0.8223,
+        "balanced_accuracy": 0.8383
       },
       "per_subset": {
         "gsm8k": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 1.0,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
+          "error_accuracy": 0.8889,
           "correct_accuracy": 1.0,
           "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 1.0,
-          "balanced_accuracy": 1.0
+          "processbench_f1": 0.9412,
+          "balanced_accuracy": 0.9445
         },
         "math": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 1.0,
-          "correct_accuracy": 1.0,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
+          "error_accuracy": 0.7778,
+          "correct_accuracy": 0.9091,
           "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 1.0,
-          "balanced_accuracy": 1.0
+          "processbench_f1": 0.8383,
+          "balanced_accuracy": 0.8435
         },
         "olympiadbench": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 1.0,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
+          "error_accuracy": 0.7778,
           "correct_accuracy": 1.0,
           "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 1.0,
-          "balanced_accuracy": 1.0
+          "processbench_f1": 0.875,
+          "balanced_accuracy": 0.8889
         },
         "omnimath": {
-          "n": 5,
-          "n_erroneous": 2,
-          "n_correct": 3,
-          "error_accuracy": 0.5,
-          "correct_accuracy": 1.0,
+          "n": 20,
+          "n_erroneous": 9,
+          "n_correct": 11,
+          "error_accuracy": 0.4444,
+          "correct_accuracy": 0.9091,
           "unresolved_predictions": 0,
           "recovered_step_indices": 0,
-          "processbench_f1": 0.6667,
-          "balanced_accuracy": 0.75
+          "processbench_f1": 0.597,
+          "balanced_accuracy": 0.6767
         }
       }
     }
