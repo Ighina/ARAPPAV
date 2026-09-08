@@ -162,3 +162,35 @@ def test_unparseable_verifier_output_counts_as_a_miss(tmp_path: Path):
     overall = json.loads((edir / "eval_summary.json").read_text())["overall"]
     assert overall["correct_accuracy"] == 0.0
     assert overall["unresolved_predictions"] == 1
+
+
+class TestFencedOutputParsing:
+    """The scorer must read a reply the way the self-play scorer does.
+
+    Regression: a bare json.loads() scored a whole haiku run as 0.000 because
+    the model wrapped every answer in ```json fences — a formatting habit, not
+    a wrong answer. Correct `{"claims": []}` verdicts were counted as
+    unresolved.
+    """
+
+    def _claims(self, raw: str):
+        from arappav.utils.parsing import extract_first_json_object, strip_json_fences
+        parsed, _ = extract_first_json_object(strip_json_fences(raw))
+        return parsed.get("claims") if isinstance(parsed, dict) else None
+
+    def test_bare_json_still_parses(self):
+        assert self._claims('{"claims": [{"step_index": 1}]}') == [{"step_index": 1}]
+
+    def test_fenced_json_parses(self):
+        assert self._claims('```json\n{"claims": [{"step_index": 2}]}\n```') == [{"step_index": 2}]
+
+    def test_fenced_empty_verdict_is_a_real_answer(self):
+        # The costly case: a correct "chain is clean" answer must not be
+        # mistaken for an unparseable one.
+        assert self._claims('```json\n{"claims": []}\n```') == []
+
+    def test_unfenced_empty_verdict(self):
+        assert self._claims('{"claims": []}') == []
+
+    def test_genuine_garbage_still_fails(self):
+        assert self._claims("I could not analyse this problem.") is None

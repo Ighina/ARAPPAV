@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 3,
+      "quoted_text": "Total water = 6 + 9 - 2/3.",
+      "explanation": "This subtracts the spilled water after already accounting for it. The value 6 liters is the water in the 9 remaining liters of orange drink (calculated as 9 × (2/3)), which already reflects the 1-liter spill. Subtracting the spilled water (2/3 liters) again results in double-counting the spill. The correct calculation is: water from orange (6 liters) + water from pineapple (9 liters) = 15 liters total, not 15 - 2/3 = 43/3.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

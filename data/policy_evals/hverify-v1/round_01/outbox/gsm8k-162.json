@@ -1,0 +1,18 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "there is no discount on this item",
+      "explanation": "The problem explicitly states 'everything was 20% off'. The mixing bowls should receive the 20% discount just like all other items. The correct discounted price for the bowls should be $20 × 0.8 = $16, not $20.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "the total cost of Charlotte's order before the discount is $96 + $20 + $25 = $141",
+      "explanation": "This statement is contradictory. The $96 is the pot and pans AFTER the 20% discount was already applied in step 0. When added with the undiscounted prices ($20 and $25), this sum does not represent 'before the discount'. The correct approach is to sum all original undiscounted prices ($120 + $20 + $25 = $165), then apply 20% discount to get $132. The current methodology double-discounts the pot and pans.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

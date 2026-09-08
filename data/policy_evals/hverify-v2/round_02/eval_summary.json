@@ -1,0 +1,168 @@
+{
+  "round": 2,
+  "dataset": "Qwen/ProcessBench",
+  "verify_skill": "hverify-v2",
+  "sampling": "balanced",
+  "seed": 0,
+  "num_scored": 20,
+  "num_missing": 0,
+  "overall": {
+    "n": 20,
+    "n_erroneous": 8,
+    "n_correct": 12,
+    "error_accuracy": 0.875,
+    "correct_accuracy": 0.9167,
+    "unresolved_predictions": 0,
+    "recovered_step_indices": 0,
+    "processbench_f1": 0.8954,
+    "balanced_accuracy": 0.8959
+  },
+  "per_subset": {
+    "gsm8k": {
+      "n": 5,
+      "n_erroneous": 2,
+      "n_correct": 3,
+      "error_accuracy": 1.0,
+      "correct_accuracy": 1.0,
+      "unresolved_predictions": 0,
+      "recovered_step_indices": 0,
+      "processbench_f1": 1.0,
+      "balanced_accuracy": 1.0
+    },
+    "math": {
+      "n": 5,
+      "n_erroneous": 2,
+      "n_correct": 3,
+      "error_accuracy": 1.0,
+      "correct_accuracy": 1.0,
+      "unresolved_predictions": 0,
+      "recovered_step_indices": 0,
+      "processbench_f1": 1.0,
+      "balanced_accuracy": 1.0
+    },
+    "olympiadbench": {
+      "n": 5,
+      "n_erroneous": 2,
+      "n_correct": 3,
+      "error_accuracy": 1.0,
+      "correct_accuracy": 0.6667,
+      "unresolved_predictions": 0,
+      "recovered_step_indices": 0,
+      "processbench_f1": 0.8,
+      "balanced_accuracy": 0.8334
+    },
+    "omnimath": {
+      "n": 5,
+      "n_erroneous": 2,
+      "n_correct": 3,
+      "error_accuracy": 0.5,
+      "correct_accuracy": 1.0,
+      "unresolved_predictions": 0,
+      "recovered_step_indices": 0,
+      "processbench_f1": 0.6667,
+      "balanced_accuracy": 0.75
+    }
+  },
+  "items": [
+    {
+      "id": "gsm8k-89",
+      "subset": "gsm8k",
+      "match": true
+    },
+    {
+      "id": "gsm8k-162",
+      "subset": "gsm8k",
+      "match": true
+    },
+    {
+      "id": "gsm8k-223",
+      "subset": "gsm8k",
+      "match": true
+    },
+    {
+      "id": "gsm8k-251",
+      "subset": "gsm8k",
+      "match": true
+    },
+    {
+      "id": "gsm8k-261",
+      "subset": "gsm8k",
+      "match": true
+    },
+    {
+      "id": "math-159",
+      "subset": "math",
+      "match": true
+    },
+    {
+      "id": "math-609",
+      "subset": "math",
+      "match": true
+    },
+    {
+      "id": "math-687",
+      "subset": "math",
+      "match": true
+    },
+    {
+      "id": "math-744",
+      "subset": "math",
+      "match": true
+    },
+    {
+      "id": "math-927",
+      "subset": "math",
+      "match": true
+    },
+    {
+      "id": "olympiadbench-238",
+      "subset": "olympiadbench",
+      "match": true
+    },
+    {
+      "id": "olympiadbench-599",
+      "subset": "olympiadbench",
+      "match": true
+    },
+    {
+      "id": "olympiadbench-610",
+      "subset": "olympiadbench",
+      "match": false
+    },
+    {
+      "id": "olympiadbench-749",
+      "subset": "olympiadbench",
+      "match": true
+    },
+    {
+      "id": "olympiadbench-766",
+      "subset": "olympiadbench",
+      "match": true
+    },
+    {
+      "id": "omnimath-281",
+      "subset": "omnimath",
+      "match": true
+    },
+    {
+      "id": "omnimath-624",
+      "subset": "omnimath",
+      "match": true
+    },
+    {
+      "id": "omnimath-700",
+      "subset": "omnimath",
+      "match": false
+    },
+    {
+      "id": "omnimath-903",
+      "subset": "omnimath",
+      "match": true
+    },
+    {
+      "id": "omnimath-929",
+      "subset": "omnimath",
+      "match": true
+    }
+  ]
+}

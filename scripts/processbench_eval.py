@@ -276,10 +276,19 @@ def cmd_score(args) -> int:
             missing.append(item_id)
             continue
 
-        try:
-            claims = json.loads(out_path.read_text()).get("claims", [])
-        except json.JSONDecodeError as e:
-            print(f"[score] {item_id}: unparseable verifier output ({e}) — counted as unresolved.")
+        # Parse the reply exactly as the self-play scorer does. A bare
+        # json.loads() here silently failed on any model that wraps its answer
+        # in ```json fences — a formatting habit, not a wrong answer — and
+        # scored a whole run as 0.000, including correct `{"claims": []}`
+        # verdicts. Both paths now normalise identically.
+        from arappav.utils.parsing import extract_first_json_object, strip_json_fences
+
+        parsed, perr = extract_first_json_object(strip_json_fences(out_path.read_text()))
+        if isinstance(parsed, dict):
+            claims = parsed.get("claims", [])
+        else:
+            print(f"[score] {item_id}: unparseable verifier output "
+                  f"({perr or 'no JSON object found'}) — counted as unresolved.")
             claims = [{"step_index": None, "quoted_text": ""}]
 
         prediction, recovered = resolve_prediction(
