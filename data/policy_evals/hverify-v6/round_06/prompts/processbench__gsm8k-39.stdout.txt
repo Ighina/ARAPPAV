@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "180 minutes (before dinner) + 80 minutes (homework) = 260 minutes",
+      "explanation": "The operation is wrong. To find time available for napping, homework time must be subtracted from the time before dinner, not added. The correct calculation is 180 minutes - 80 minutes = 100 minutes. John has only 100 minutes for napping, not 180.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

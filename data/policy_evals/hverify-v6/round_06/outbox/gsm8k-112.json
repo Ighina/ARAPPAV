@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "This means she slept for 9 hours and 55 minutes instead of 8 hours.",
+      "explanation": "This is backwards. If Kim woke up 5 minutes earlier than usual, she slept 5 minutes LESS, not more. Normally she sleeps from 10 p.m. to 6 a.m. (8 hours = 480 minutes). Waking at 5:55 a.m. instead means she slept from 10 p.m. to 5:55 a.m., which is 7 hours 55 minutes (475 minutes), not 9 hours 55 minutes. This error propagates downstream, inflating the total sleep time to 595 minutes and the final answer to 572 minutes when the correct answer should be 475 - 23 = 452 minutes.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

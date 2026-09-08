@@ -1,0 +1,11 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "Stays: 15 minutes (half of the first train's duration)",
+      "explanation": "The problem states the second train stays for 'a quarter of the amount of time that the first train stayed in the station.' The first train stayed 20 minutes, so a quarter of that is 20 ÷ 4 = 5 minutes, not 15 minutes. The solution mischaracterizes the required fraction as 'half' when the problem clearly specifies 'a quarter.'"
+    }
+  ]
+}
+```

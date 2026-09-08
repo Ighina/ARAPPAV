@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "$194/meter × 490 meters = $94,860",
+      "explanation": "The multiplication is incorrect. $194 × 490 = $95,060, not $94,860. The correct calculation: 194 × 490 = 194 × (500 − 10) = 97,000 − 1,940 = 95,060. This error propagates to the final answer, which should be $95,060 − $29,100 = $65,960.",
+      "error_type": "arithmetic_error"
+    }
+  ]
+}
+```

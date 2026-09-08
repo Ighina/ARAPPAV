@@ -1,0 +1,27 @@
+/hverify-v6
+
+## PROBLEM
+Mrs. Harrington bought 12 boxes of oranges at the market. She gave her mom and her sister 2 boxes of oranges each. Then she kept 1/4 of the oranges and sold the rest. How many oranges did Mrs. Harrington sell if each box contains 20 oranges?
+
+## SOLUTION TO REVIEW
+<step_0>
+To find out how many oranges Mrs. Harrington sold, we need to follow these steps: First, calculate the total number of boxes Mrs. Harrington had left after giving some to her mom and sister. Total boxes initially = 12. Boxes given away = 2 (to mom) + 2 (to sister) = 4. Remaining boxes = 12 - 4 = 8.
+</step_0>
+
+<step_1>
+Second, determine the number of oranges in the remaining boxes. Each box contains 20 oranges. Total oranges in 8 boxes = 8 * 20 = 160 oranges.
+</step_1>
+
+<step_2>
+Third, since Mrs. Harrington kept 1/4 of the oranges, let's first find out how many oranges that is. Total oranges initially = 12 * 20 = 240 oranges. 1/4 of the oranges = (1/4) * 240 = 60 oranges.
+</step_2>
+
+<step_3>
+Fourth, now subtract the number of oranges Mrs. Harrington kept from the total number of oranges in the remaining boxes to find out how many she sold. Oranges sold = Total oranges in 8 boxes - Oranges kept. Oranges sold = 160 - 60. Oranges sold = 100.
+</step_3>
+
+<step_4>
+Therefore, Mrs. Harrington sold 100 oranges. \boxed{100}
+</step_4>
+
+Return only the JSON object described in your output contract.

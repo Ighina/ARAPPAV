@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "\\[ \\text{Cost per candy} = \\frac{\\$3.20}{4} = \\$0.80 \\]",
+      "explanation": "The $3.20 is the combined cost of 5 lollipops and 4 candies together, not the cost of candies alone. First, the cost of 5 lollipops is 5 × $0.40 = $2.00. Therefore, the cost of 4 candies is $3.20 - $2.00 = $1.20, making the cost per candy $1.20 / 4 = $0.30, not $0.80. This error propagates to all subsequent steps, making the final answer incorrect.",
+      "error_type": "wrong_operand"
+    }
+  ]
+}
+```
