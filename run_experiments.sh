@@ -70,7 +70,17 @@ key_for() {
 
 # Claude models can go through the local CLI, which needs no API key; everything
 # else must use the direct API.
-backend_for() { case "$1" in claude-*) echo claude-code ;; *) echo api ;; esac; }
+# Claude models can go through the local CLI (no key) or the API (~19x cheaper
+# per call, since `claude -p` re-sends the whole harness every time). Everything
+# else must use the API. SELFPLAY_BACKEND overrides the choice.
+#
+# Note: batch is deliberately not an option here. Round N+1's policy depends on
+# round N's results, so the loop is sequential; batch suits the evaluation phase
+# (PB_BACKEND), where items are independent.
+backend_for() {
+  if [ -n "${SELFPLAY_BACKEND:-}" ]; then echo "$SELFPLAY_BACKEND"; return; fi
+  case "$1" in claude-*) echo claude-code ;; *) echo api ;; esac
+}
 
 run_experiment() {   # name players updater
   local name=$1 players=$2 updater=$3
@@ -101,7 +111,7 @@ run_experiment() {   # name players updater
     done
   fi
 
-  local dry=(); [ "$DRY_RUN" = "1" ] && dry=(--dry-run)
+  local dry=""; [ "$DRY_RUN" = "1" ] && dry="--dry-run"
   # Each experiment gets its own policy namespace so versions never collide.
   python scripts/run_pipeline.py \
       --rounds "$ROUNDS" --episodes "$EPISODES" --k "$K" --seed "$SEED" \
@@ -110,7 +120,7 @@ run_experiment() {   # name players updater
       --backend "$backend" \
       --perturb-prefix "${tag}_perturb" --verify-prefix "${tag}_verify" \
       --root "$root" --retry-format 1 --resume \
-      "${dry[@]}" >"$log" 2>&1
+      $dry >"$log" 2>&1
   local rc=$?
 
   if [ $rc -ne 0 ]; then
@@ -156,7 +166,10 @@ Environment overrides (defaults in brackets)
   START [cold]         cold | warm  initial policies
   EVAL [1]             0 skips the held-out ProcessBench evaluation
   PB_PER_SUBSET [20]   ProcessBench items per subset, per policy
-  PB_BACKEND [api]     api | batch | claude-code
+  SELFPLAY_BACKEND     force the self-play transport (api | claude-code).
+                       Claude models default to claude-code, which needs no key
+                       but costs ~19x more per call than api.
+  PB_BACKEND [api]     api | batch | claude-code  (evaluation only)
   DRY_RUN [0]          1 renders every prompt and calls nothing
   A_PLAYERS/A_UPDATER  ... D_PLAYERS/D_UPDATER  override any model id
 
