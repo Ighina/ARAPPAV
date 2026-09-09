@@ -99,6 +99,11 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("--retry-format", type=int, default=0, dest="retry_format",
                    help="extra attempts when a reply fails to parse (default 0, "
                         "which preserves the pre-refactor penalty statistics)")
+    a.add_argument("--rich-context", action="store_true", dest="rich_context",
+                   help="insert a summarise-context-* step before each policy "
+                        "update, so the updater receives the TEXT of the episodes "
+                        "and a legend for the metrics rather than counts, ids and "
+                        "taxonomy labels")
     a.add_argument("--no-context", action="store_true", dest="no_context",
                    help="pass no cross-round history to any agent (spec 21)")
     a.add_argument("--resume", action="store_true",
@@ -126,6 +131,7 @@ def main() -> int:
         overwrite_policies=args.overwrite_policies, dry_run=args.dry_run,
         timeout=args.timeout, retry_format=args.retry_format,
         max_tokens=args.max_tokens, taxonomy_free=args.taxonomy_free,
+        rich_context=args.rich_context,
         resume=args.resume,
     )
     print(f"[pipeline] backend={cfg.backend} players={cfg.model or 'default'} "

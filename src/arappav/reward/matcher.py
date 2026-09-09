@@ -432,7 +432,16 @@ def match_claims_to_errors(
                 "error_id": error_id,
                 "best_claim_idx": best_claim_idx,
                 "best_overlap": best_score,
-                "error_type": ground_truth[err_idx].error_type.value,
+                "error_type": getattr(ground_truth[err_idx].error_type, "value",
+                                      ground_truth[err_idx].error_type),
+                # The closest claim regardless of the threshold. `best_overlap`
+                # above is 0.0 whenever nothing matched, which made a "quoting
+                # miss" (flagged the right region, misaligned span) impossible
+                # to tell from a "reasoning miss" (never noticed it) — a
+                # distinction the policy updaters are explicitly asked to make.
+                "closest_overlap": round(max(row) if row else 0.0, 3),
+                "closest_claim_idx": (int(max(range(len(row)), key=lambda i: row[i]))
+                                      if row else None),
                 "all_overlaps": {
                     verifier_claims[i].quoted_text[:80]: round(row[i], 3)
                     for i in range(num_claims)

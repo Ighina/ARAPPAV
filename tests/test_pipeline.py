@@ -893,3 +893,77 @@ class TestThinkingOnlyReplies:
 
     def test_a_real_reply_is_unaffected(self):
         assert self._res('{"claims": []}', had_content=True).infra_failure() is None
+
+
+class TestRichContext:
+    """The updater must receive the text of the episodes, not just counts."""
+
+    def _scores(self):
+        return [{
+            "episode_id": "ep00", "perturber_format_valid": True, "scored": True,
+            "k": 2, "num_error_units": 2,
+            "verifier_recall": 0.5, "verifier_precision": 1.0,
+            "errors": [
+                {"error_id": "err_001", "error_type": "wrong_operation",
+                 "original_text": "2+2 = 4", "injected_text": "2+2 = 5",
+                 "rationale": "4 not 5"},
+                {"error_id": "err_002", "error_type": "operand_swap",
+                 "original_text": "a/b", "injected_text": "b/a",
+                 "rationale": "swapped"}],
+            "claims": [{"quoted_text": "2+2 = 5", "explanation": "should be 4"}],
+            "match_details": [
+                {"error_id": "err_001", "best_claim_idx": 0, "closest_overlap": 1.0},
+                {"error_id": "err_002", "best_claim_idx": None,
+                 "closest_overlap": 0.37, "closest_claim_idx": 0}],
+        }]
+
+    def test_missed_errors_carry_their_text(self):
+        ev = scoring.episode_evidence(self._scores(), "verify")[0]
+        missed = [e for e in ev["errors"] if not e["detected"]][0]
+        # the whole point: previously this was id + type + a constant 0.0
+        assert missed["injected_text"] == "b/a"
+        assert missed["original_text"] == "a/b"
+        assert missed["closest_overlap"] == 0.37
+
+    def test_a_quoting_miss_is_now_distinguishable(self):
+        ev = scoring.episode_evidence(self._scores(), "verify")[0]
+        missed = [e for e in ev["errors"] if not e["detected"]][0]
+        # positive-but-below-threshold, and the claim that nearly matched
+        assert 0 < missed["closest_overlap"] < 0.5
+        assert missed["closest_claim"] == "2+2 = 5"
+
+    def test_the_verifier_is_not_shown_the_perturbers_rationale(self):
+        v = scoring.episode_evidence(self._scores(), "verify")[0]["errors"]
+        p = scoring.episode_evidence(self._scores(), "perturb")[0]["errors"]
+        assert all("rationale" not in e for e in v)
+        assert all("rationale" in e for e in p)
+
+    def test_unmatched_claims_are_reported(self):
+        s = self._scores()
+        s[0]["match_details"][0]["best_claim_idx"] = None
+        ev = scoring.episode_evidence(s, "verify")[0]
+        assert ev["unmatched_claims"][0]["quoted_text"] == "2+2 = 5"
+
+    def test_format_failures_keep_their_reason(self):
+        ev = scoring.episode_evidence([{
+            "episode_id": "ep01", "perturber_format_valid": False,
+            "failure_stage": "schema", "format_violation_reason": "phantom error"}],
+            "perturb")[0]
+        assert ev["format_valid"] is False and "phantom" in ev["reason"]
+
+    def test_every_reported_metric_has_a_legend_entry(self):
+        # A bare scalar is not interpretable; the updater must be told what it
+        # means and which direction is good.
+        m = scoring.aggregate([{
+            "perturber_format_valid": True, "scored": True, "k": 3,
+            "perturber_reward": 0.1, "verifier_reward": 0.9,
+            "verifier_recall": 0.9, "verifier_precision": 0.9,
+            "num_error_units": 3}])
+        legended = set(scoring.METRIC_LEGEND)
+        for key in ("mean_verifier_reward", "mean_verifier_recall",
+                    "mean_verifier_precision", "format_valid_rate",
+                    "mean_units_per_episode"):
+            assert key in m and key in legended
+
+    def test_rich_context_is_opt_in(self):
+        assert PipelineConfig().rich_context is False

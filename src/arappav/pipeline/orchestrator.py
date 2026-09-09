@@ -70,6 +70,9 @@ class PipelineConfig:
     max_tokens: int = 16000
     taxonomy_free: bool = False
     infra_retries: int = 2
+    # Insert a summarise-context-* step before each policy update, so the
+    # updater receives the text of the episodes rather than counts and ids.
+    rich_context: bool = False
     retry_format: int = 0   # extra attempts when a reply fails to parse
     resume: bool = False    # skip rounds that already have a summary
 
@@ -165,6 +168,7 @@ class Pipeline:
         self._players = None
         self._author = None
         self._retrying = False
+        self._briefings: dict[str, dict] = {}
 
     def _backend(self, which: str):
         """Lazily build the play / policy-authoring backend.
@@ -274,7 +278,8 @@ class Pipeline:
                 print(f"[policy] {prefix}-v{new}: FROZEN (unchanged from v{prev})")
                 continue
 
-            allowed = self._findings_for(role, findings)
+            brief = self._briefings.get(role) if cfg.rich_context else None
+            allowed = brief if brief else self._findings_for(role, findings)
             prompt = (
                 f"/{skill}\n\n"
                 f"{render_context_block(allowed, cfg.no_context)}"
@@ -300,6 +305,58 @@ class Pipeline:
                                    overwrite=cfg.overwrite_policies
                                    or getattr(self, "_retrying", False))
             print(f"[policy] {prefix}-v{new}: {note}")
+
+    def summarise_context(self, i: int, role: str, scores: list[dict],
+                          metrics: dict, ledger: ContextLedger) -> dict | None:
+        """Compress the round into a text-grounded briefing for the updater.
+
+        Without this the updater receives counts, identifiers and taxonomy
+        labels — never the text of the errors it is being asked to reason
+        about. The briefing is written to disk so the next round can carry it
+        forward and so it is auditable after the fact.
+        """
+        cfg = self.cfg
+        skill = f"summarise-context-{'perturber' if role == 'perturb' else 'verifier'}"
+        prev_path = self.round_dir(i - 1) / f"summarised_context_{role}.json" if i else None
+        prev = (json.loads(prev_path.read_text())
+                if prev_path and prev_path.exists() else None)
+        policy = policies.extract_policy(policies.skill_file(
+            self.skills,
+            cfg.perturb_prefix if role == "perturb" else cfg.verify_prefix,
+            self._policy_version(i)).read_text())
+
+        payload = {
+            "round": i,
+            "metric_legend": scoring.METRIC_LEGEND,
+            "metrics": metrics,
+            "episodes": scoring.episode_evidence(scores, role),
+        }
+        prompt = (
+            f"/{skill}\n\n"
+            "## METRICS (with a legend for what each number means)\n"
+            + json.dumps({"metric_legend": payload["metric_legend"],
+                          "metrics": payload["metrics"]}, indent=2, ensure_ascii=False)
+            + "\n\n## EPISODES\n"
+            + json.dumps(payload["episodes"], indent=2, ensure_ascii=False)[:60000]
+            + "\n\n## PREVIOUS CONTEXT\n"
+            + json.dumps(prev, indent=2, ensure_ascii=False)
+            + "\n\n## CURRENT POLICY\n" + policy
+            + "\n\nReturn only the JSON object.\n"
+        )
+        res = self._call("author", skill=None, user=prompt,
+                         step=f"summarise-context-{role}", round_dir=self.round_dir(i))
+        ledger.record(skill, None, {"round": i, "role": role}, prompt, res)
+        if not res.ok():
+            print(f"[context] {skill}: no briefing produced "
+                  f"({res.infra_failure() or 'empty'}); the updater falls back to findings")
+            return None
+        from arappav.utils.parsing import extract_first_json_object, strip_json_fences
+        obj, err = extract_first_json_object(strip_json_fences(res.text))
+        if not isinstance(obj, dict):
+            print(f"[context] {skill}: unparseable briefing ({err}); falling back")
+            return None
+        _write(self.round_dir(i) / f"summarised_context_{role}.json", obj)
+        return obj
 
     @staticmethod
     def _findings_for(role: str, f: dict) -> dict:
@@ -418,6 +475,15 @@ class Pipeline:
         self.history.extend(round_errors)   # visible from the next round on
         metrics = scoring.aggregate(scores)
         findings = scoring.build_findings(i, scores, metrics)
+        if cfg.rich_context:
+            self._briefings = {}
+            for role, frozen in (("perturb", cfg.freeze_perturber()),
+                                 ("verify", cfg.freeze_verifier())):
+                if frozen:
+                    continue          # a frozen side gets no update, so no briefing
+                b = self.summarise_context(i, role, scores, metrics, ledger)
+                if b:
+                    self._briefings[role] = b
         pb = self.run_processbench(i, vv) if cfg.processbench_enabled else None
 
         summary = {

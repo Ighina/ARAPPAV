@@ -191,3 +191,85 @@ def build_findings(round_index: int, scores: list[dict], metrics: dict) -> dict:
             if s.get("scored") and s.get("num_error_units", s["k"]) < s["k"]
         ],
     }
+
+
+# ---------------------------------------------------------------------------
+# Text-grounded evidence for the policy updaters
+# ---------------------------------------------------------------------------
+#
+# The findings above are counts and identifiers. An updater reading
+# `{"error_id": "err_002", "error_type": "whole_number_bias",
+#   "best_overlap": 0.0}` is told an error was missed but not what the error
+# *was*, and is then asked to write a better verification procedure. The
+# functions here carry the actual text.
+
+#: What each number means and which direction is good. Shipped with the
+#: evidence because a bare scalar is not interpretable: an updater seeing
+#: "0.42" cannot know whether that is good, for whom, or against what.
+METRIC_LEGEND = {
+    "mean_verifier_reward": "verifier F1 in [0,1]; higher is better for the verifier",
+    "mean_verifier_recall": "share of distinct error units the verifier found; higher is better for the verifier",
+    "mean_verifier_precision": "share of verifier claims that matched a real error; higher is better for the verifier",
+    "mean_perturber_reward_valid_only": "1 - verifier recall, plus penalties; higher is better for the perturber",
+    "format_valid_rate": "share of episodes whose perturbation parsed; below 1.0 means output was malformed and scored -5 or -10",
+    "mean_units_per_episode": "distinct error units after causally-linked errors were merged; below k means declarations collapsed into one mistake",
+    "closest_overlap": "how nearly the closest verifier claim aligned with the error span; 0 means nothing was claimed near it, and >=0.5 would have matched",
+}
+
+
+def _clip(s: str | None, n: int = 400) -> str:
+    s = s or ""
+    return s if len(s) <= n else s[:n] + " …"
+
+
+def episode_evidence(scores: list[dict], role: str) -> list[dict]:
+    """Per-episode evidence *with text*, sliced for one role.
+
+    The perturber sees its own rationales; the verifier does not. A verifier
+    tuned on the adversary's stated intent learns this adversary rather than
+    verification, which is the overfitting its own updater is warned against.
+    """
+    out = []
+    for s in scores:
+        if not s.get("perturber_format_valid"):
+            out.append({"episode_id": s["episode_id"], "format_valid": False,
+                        "failure_stage": s.get("failure_stage"),
+                        "reason": _clip(s.get("format_violation_reason"), 300)})
+            continue
+        claims = s.get("claims") or []
+        errors = s.get("errors") or []
+        matched_claim_idx = {m.get("best_claim_idx") for m in (s.get("match_details") or [])}
+        items = []
+        for m, e in zip(s.get("match_details") or [], errors):
+            rec = {
+                "error_id": e.get("error_id"),
+                "original_text": _clip(e.get("original_text")),
+                "injected_text": _clip(e.get("injected_text")),
+                "detected": m.get("best_claim_idx") is not None,
+                "closest_overlap": m.get("closest_overlap", 0.0),
+            }
+            idx = m.get("best_claim_idx")
+            if idx is None:
+                idx = m.get("closest_claim_idx")
+            if idx is not None and idx < len(claims):
+                rec["closest_claim"] = _clip(claims[idx].get("quoted_text"))
+                rec["closest_claim_explanation"] = _clip(
+                    claims[idx].get("explanation"), 300)
+            if role == "perturb":
+                rec["rationale"] = _clip(e.get("rationale"), 300)
+            items.append(rec)
+        out.append({
+            "episode_id": s["episode_id"],
+            "format_valid": True,
+            "k": s.get("k"),
+            "num_error_units": s.get("num_error_units"),
+            "verifier_recall": s.get("verifier_recall"),
+            "verifier_precision": s.get("verifier_precision"),
+            "errors": items,
+            "unmatched_claims": [
+                {"quoted_text": _clip(c.get("quoted_text")),
+                 "explanation": _clip(c.get("explanation"), 300)}
+                for i, c in enumerate(claims) if i not in matched_claim_idx
+            ],
+        })
+    return out
