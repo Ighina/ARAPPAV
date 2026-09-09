@@ -76,7 +76,10 @@ def evaluate(version: int, args, backend) -> dict:
     # ~26s median / ~57s mean per item, three quarters of the wall clock went to
     # a rate-limit tail; overlapping the waits is the entire win here.
     if args.backend == "batch":
-        _run_batch(backend, skill, rd, todo, outbox, args)
+        # Submitted by the caller in an earlier pass; just wait for it here.
+        bid = (rd / "batch_id.txt").read_text().strip() if (rd / "batch_id.txt").exists() else None
+        if bid:
+            _batch_collect(backend, skill, rd, outbox, bid, args)
     else:
         _run_each(backend, skill, rd, todo, outbox, args)
 
@@ -109,23 +112,34 @@ def _prompt_for(f: Path, skill: str, args) -> str:
     return render_verify_prompt(ep, item["solution_to_review"], ref, "").lstrip()
 
 
-def _run_batch(backend, skill: str, rd: Path, todo: list, outbox: Path, args) -> None:
-    """Submit every outstanding item as one batch, then poll and collect.
+def _batch_submit(backend, skill: str, rd: Path, todo: list, args) -> str | None:
+    """Put one policy's batch in flight and return its id, without waiting.
 
-    The batch id is written to disk before polling starts, so a killed or
-    interrupted run reattaches to the in-flight batch instead of submitting a
-    second copy and paying twice.
+    Batches for different policies are independent, so they are all submitted
+    before any is polled — waiting for each in turn would serialise ten jobs
+    that the server is happy to run at once, which is most of the point of
+    using the batch API.
+
+    The id is written to disk before anything else, so an interrupted run
+    reattaches instead of submitting a second copy and paying twice.
     """
     marker = rd / "batch_id.txt"
     if marker.exists():
-        batch_id = marker.read_text().strip()
-        print(f"[{skill}] reattaching to in-flight batch {batch_id}")
-    else:
-        items = [(f.stem, _prompt_for(f, skill, args)) for f in todo]
-        batch_id = backend.submit(skill, items)
-        marker.write_text(batch_id + "\n")
-        print(f"[{skill}] submitted {len(items)} item(s) as batch {batch_id}")
+        bid = marker.read_text().strip()
+        print(f"[{skill}] reattaching to in-flight batch {bid}")
+        return bid
+    if not todo:
+        return None
+    items = [(f.stem, _prompt_for(f, skill, args)) for f in todo]
+    bid = backend.submit(skill, items)
+    marker.write_text(bid + "\n")
+    print(f"[{skill}] submitted {len(items)} item(s) as batch {bid}")
+    return bid
 
+
+def _batch_collect(backend, skill: str, rd: Path, outbox: Path,
+                   batch_id: str, args) -> None:
+    """Wait for one already-submitted batch, then write its results."""
     waited = 0
     while True:
         status, counts = backend.status(batch_id)
@@ -135,10 +149,12 @@ def _run_batch(backend, skill: str, rd: Path, todo: list, outbox: Path, args) ->
             raise InfrastructureError(
                 f"{skill}: batch {batch_id} still {status} after {waited}s. "
                 f"Nothing scored. Re-run to reattach — the batch keeps working.")
-        print(f"[{skill}] {status} {counts} ({waited}s)", flush=True)
+        if waited % (args.poll_interval * 10) == 0:
+            print(f"[{skill}] {status} {counts} ({waited}s)", flush=True)
         time.sleep(args.poll_interval)
         waited += args.poll_interval
 
+    marker = rd / "batch_id.txt"
     texts, failed, usage = backend.collect(skill, batch_id)
     for iid, text in texts.items():
         (outbox / f"{iid}.json").write_text(text)
@@ -236,6 +252,19 @@ def main() -> int:
           f"model={args.model} concurrency={args.concurrency}")
     results = []
     try:
+        if args.backend == "batch":
+            # Phase 1: every batch into flight before any is awaited.
+            print(f"[eval] submitting {len(args.versions)} batch(es) up front")
+            for v in args.versions:
+                skill = f"{args.prefix}-v{v}"
+                if not (REPO / ".claude" / "skills" / skill / "SKILL.md").exists():
+                    continue
+                rd = prepare(Path(args.root) / skill, v, skill, args.per_subset, args.seed)
+                (rd / "outbox").mkdir(parents=True, exist_ok=True)
+                todo = [f for f in sorted((rd / "inbox").glob("*.json"))
+                        if not (rd / "outbox" / f.name).exists()]
+                _batch_submit(backend, skill, rd, todo, args)
+        # Phase 2: wait, collect and score each in turn.
         for v in args.versions:
             results.append(evaluate(v, args, backend))
     except InfrastructureError as e:
