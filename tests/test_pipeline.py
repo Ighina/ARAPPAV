@@ -1149,3 +1149,36 @@ class TestClaudeCodeCredentialIsolation:
         A.run_claude("x", step="s", round_dir=tmp_path)
         assert "ANTHROPIC_API_KEY" not in seen
         assert "PATH" in seen          # the rest of the environment survives
+
+
+class TestAcceptanceGateItems:
+    """The gate is only meaningful on items that carry ground truth."""
+
+    def test_clean_items_cannot_discriminate(self):
+        # Why the gate must perturb: with no ground truth, a perfect verifier
+        # and a spamming one both score 0.0, so every revision is accepted.
+        from arappav.errors.schema_math import MathVerifierClaim
+        from arappav.reward.reward_fns import compute_rewards
+        silent = compute_rewards(ground_truth=[], verifier_claims=[],
+                                 perturbed_text="2+2 = 4.", k=0).verifier_reward
+        noisy = compute_rewards(
+            ground_truth=[],
+            verifier_claims=[MathVerifierClaim(quoted_text="2+2 = 4",
+                                               explanation="wrong")],
+            perturbed_text="2+2 = 4.", k=0).verifier_reward
+        assert silent == noisy == 0.0
+
+    def test_perturbed_items_do_discriminate(self):
+        from arappav.errors.schema_math import MathInjectedError, MathVerifierClaim
+        from arappav.reward.reward_fns import compute_rewards
+        gt = [MathInjectedError(error_id="e1", step_index=0,
+                                original_text="2+2 = 4", injected_text="2+2 = 5",
+                                error_type="wrong_operation", rationale="x")]
+        found = compute_rewards(
+            ground_truth=gt,
+            verifier_claims=[MathVerifierClaim(quoted_text="2+2 = 5",
+                                               explanation="should be 4")],
+            perturbed_text="2+2 = 5.", k=1).verifier_reward
+        missed = compute_rewards(ground_truth=gt, verifier_claims=[],
+                                 perturbed_text="2+2 = 5.", k=1).verifier_reward
+        assert found > missed

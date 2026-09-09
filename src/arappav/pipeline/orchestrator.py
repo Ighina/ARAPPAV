@@ -423,13 +423,39 @@ class Pipeline:
         pool = filter_math500(ds, self.cfg.category)
         rng = random.Random(0)
         picked = rng.sample(pool, min(n, len(pool)))
+
+        # The items must be PERTURBED, with known ground truth. compute_rewards
+        # returns 0.0 for both correct silence and a false alarm when there is
+        # no ground truth, so a set of clean solutions makes the gate compare
+        # 0.0 against 0.0 and accept every revision unconditionally.
+        from arappav.pipeline.backends import make_backend
+        pinned = f"{self.cfg.perturb_prefix}-v1"      # frozen: fixed difficulty
+        bk = make_backend(self.cfg.backend, model=self.cfg.model,
+                          timeout=self.cfg.timeout, skills_root=self.skills,
+                          max_tokens=self.cfg.max_tokens,
+                          **({"provider": self.cfg.provider}
+                             if self.cfg.backend != "claude-code" else {}))
+        k = self.cfg.k
         out = []
         for idx in picked:
             row = ds[idx]
-            out.append({"episode_id": row["unique_id"].replace("/", "_"),
-                        "problem": row["problem"],
-                        "solution_to_review": row["solution"], "k": 0, "errors": []})
+            eid = row["unique_id"].replace("/", "_").replace(".json", "")
+            ep = Episode(episode_id=eid, problem=row["problem"],
+                         solution=row["solution"], k=k)
+            res = bk.run(skill=pinned,
+                         user=render_perturb_prompt(ep, "", "").lstrip(),
+                         step="accept-prepare", round_dir=self.root, episode_id=eid)
+            parsed, _, _ = scoring.parse_perturbation(res.text, k, row["solution"])
+            if parsed is None:
+                continue
+            out.append({"episode_id": eid, "problem": row["problem"],
+                        "solution_to_review": parsed.perturbed_solution, "k": k,
+                        "errors": [e.model_dump(mode="json") for e in parsed.errors]})
+        if not out:
+            raise RuntimeError("could not build an acceptance validation set")
         _write(cached, out)
+        print(f"[accept] built a {len(out)}-item validation set "
+              f"(MATH-500 {self.cfg.category or 'all'}, perturbed by {pinned})")
         return out
 
     # -- evolve mode -------------------------------------------------------
