@@ -39,6 +39,45 @@ FATAL_PATTERNS = (
 #: Models that reject `thinking` / `output_config.effort` on the Messages API.
 NO_THINKING = {"claude-haiku-4-5"}
 
+# ---------------------------------------------------------------------------
+# Providers
+# ---------------------------------------------------------------------------
+#
+# Claude goes through the official Anthropic SDK. OpenAI and DeepSeek both go
+# through the official OpenAI SDK — DeepSeek's own documented integration path
+# is that SDK pointed at their base URL — so they share one code path and
+# differ only in credentials, base URL and capabilities.
+
+PROVIDERS = {
+    "anthropic": {"sdk": "anthropic", "env": "ANTHROPIC_API_KEY", "base_url": None},
+    "openai":    {"sdk": "openai",    "env": "OPENAI_API_KEY",    "base_url": None},
+    "deepseek":  {"sdk": "openai",    "env": "DEEPSEEK_API_KEY",
+                  "base_url": "https://api.deepseek.com"},
+}
+
+#: Model-id prefixes -> provider. Override with an explicit `provider`.
+_PREFIXES = (
+    ("claude-", "anthropic"),
+    ("deepseek", "deepseek"),
+    ("gpt-", "openai"), ("o1", "openai"), ("o3", "openai"), ("o4", "openai"),
+    ("chatgpt", "openai"),
+)
+
+#: OpenAI reasoning families that accept `reasoning_effort`. Sending it to a
+#: non-reasoning model is an error, so it is opt-in by prefix.
+_OPENAI_REASONING = ("gpt-5", "o1", "o3", "o4")
+
+
+def infer_provider(model: str | None) -> str:
+    """Map a model id to its provider; unknown ids must be named explicitly."""
+    low = (model or "").lower()
+    for prefix, prov in _PREFIXES:
+        if low.startswith(prefix):
+            return prov
+    raise SystemExit(
+        f"[backend] cannot infer a provider for {model!r} — pass --provider "
+        f"({'/'.join(PROVIDERS)}).")
+
 
 def skill_text(skills_root: Path, skill: str) -> str:
     """The policy file, minus its YAML frontmatter, as a system prompt.
@@ -82,33 +121,56 @@ class ClaudeCodeBackend(Backend):
 
 @dataclass
 class ApiBackend(Backend):
-    """Anthropic Messages API — policy as a cached system prompt, item as the turn."""
+    """Direct API — policy as a (cached) system prompt, item as the turn.
+
+    Anthropic, OpenAI and DeepSeek are all supported. On Anthropic the policy is
+    marked with `cache_control` explicitly; OpenAI and DeepSeek cache long
+    prompt prefixes automatically, so the same saving applies without a flag.
+    """
+
+    provider: str | None = None
 
     def __post_init__(self):
-        try:
-            import anthropic
-        except ImportError:
-            raise SystemExit("[api] `pip install anthropic` first.")
-        if not (os.environ.get("ANTHROPIC_API_KEY")
-                or os.environ.get("ANTHROPIC_AUTH_TOKEN")):
-            raise SystemExit(
-                "[api] ANTHROPIC_API_KEY is not set. Export a key, or use "
-                "--backend claude-code to go through the CLI instead.")
-        self._client = anthropic.Anthropic(max_retries=4)
+        self.provider = self.provider or infer_provider(self.model)
+        spec = PROVIDERS.get(self.provider)
+        if spec is None:
+            raise SystemExit(f"[api] unknown provider {self.provider!r} "
+                             f"({'/'.join(PROVIDERS)})")
         self._cache: dict[str, str] = {}
 
-    def run(self, *, skill, user, step, round_dir, episode_id=None) -> AgentResult:
-        system = self._cache.setdefault(skill, skill_text(self.skills_root, skill))
-        tag = f"{step}__{episode_id}" if episode_id else step
-        pdir = round_dir / "prompts"
-        pdir.mkdir(parents=True, exist_ok=True)
-        (pdir / f"{tag}.txt").write_text(f"[system: {skill}]\n\n{user}")
+        if spec["sdk"] == "anthropic":
+            try:
+                import anthropic
+            except ImportError:
+                raise SystemExit("[api] `pip install anthropic` first.")
+            if not (os.environ.get("ANTHROPIC_API_KEY")
+                    or os.environ.get("ANTHROPIC_AUTH_TOKEN")):
+                raise SystemExit(
+                    "[api] ANTHROPIC_API_KEY is not set. Export a key, or use "
+                    "--backend claude-code to go through the CLI instead.")
+            self._client = anthropic.Anthropic(max_retries=4)
+            return
 
-        # The policy is identical for every item of a run, so it is cached; only
-        # the item is charged at the full input rate after the first call.
+        try:
+            import openai
+        except ImportError:
+            raise SystemExit(
+                f"[api] the {self.provider} backend needs the OpenAI SDK: "
+                f"`pip install openai`.")
+        key = os.environ.get(spec["env"])
+        if not key:
+            raise SystemExit(
+                f"[api] {spec['env']} is not set — required for provider "
+                f"{self.provider!r}.")
+        self._client = openai.OpenAI(api_key=key, base_url=spec["base_url"],
+                                     max_retries=4)
+
+    def anthropic_kwargs(self, system: str, user: str) -> dict:
         kwargs = dict(
             model=self.model or "claude-haiku-4-5",
             max_tokens=self.max_tokens,
+            # The policy is identical for every item of a run, so it is cached;
+            # only the item is charged at the full input rate after the first.
             system=[{"type": "text", "text": system,
                      "cache_control": {"type": "ephemeral"}}],
             messages=[{"role": "user", "content": user}],
@@ -116,27 +178,72 @@ class ApiBackend(Backend):
         if (self.model or "") not in NO_THINKING:
             kwargs["thinking"] = {"type": "adaptive"}
             kwargs["output_config"] = {"effort": self.effort}
+        return kwargs
+
+    def openai_kwargs(self, system: str, user: str) -> dict:
+        kwargs = dict(
+            model=self.model,
+            messages=[{"role": "system", "content": system},
+                      {"role": "user", "content": user}],
+        )
+        # OpenAI reasoning models reject max_tokens and take
+        # max_completion_tokens; DeepSeek takes max_tokens.
+        if self.provider == "openai":
+            kwargs["max_completion_tokens"] = self.max_tokens
+            if any((self.model or "").lower().startswith(f) for f in _OPENAI_REASONING):
+                # OpenAI's effort scale has no xhigh/max; clamp onto its top.
+                kwargs["reasoning_effort"] = {"xhigh": "high",
+                                              "max": "high"}.get(self.effort, self.effort)
+        else:
+            kwargs["max_tokens"] = self.max_tokens
+        return kwargs
+
+    def run(self, *, skill, user, step, round_dir, episode_id=None) -> AgentResult:
+        system = self._cache.setdefault(skill, skill_text(self.skills_root, skill))
+        tag = f"{step}__{episode_id}" if episode_id else step
+        pdir = round_dir / "prompts"
+        pdir.mkdir(parents=True, exist_ok=True)
+        (pdir / f"{tag}.txt").write_text(f"[system: {skill}]\n\n{user}")
+        anthropic_path = PROVIDERS[self.provider]["sdk"] == "anthropic"
 
         t0 = time.time()
         try:
-            resp = self._client.messages.create(**kwargs)
+            if anthropic_path:
+                resp = self._client.messages.create(
+                    **self.anthropic_kwargs(system, user))
+            else:
+                resp = self._client.chat.completions.create(
+                    **self.openai_kwargs(system, user))
         except Exception as e:
             msg = f"{type(e).__name__}: {e}"
             rc = 1 if any(p in msg.lower() for p in FATAL_PATTERNS) else 2
             return AgentResult(step, "", rc, round(time.time() - t0, 2),
                                len(user), "", stderr=msg)
 
-        text = "".join(b.text for b in resp.content if b.type == "text")
+        if anthropic_path:
+            text = "".join(b.text for b in resp.content if b.type == "text")
+            u = resp.usage
+            usage = {"input_tokens": u.input_tokens, "output_tokens": u.output_tokens,
+                     "cache_read": getattr(u, "cache_read_input_tokens", 0),
+                     "cache_write": getattr(u, "cache_creation_input_tokens", 0)}
+        else:
+            text = resp.choices[0].message.content or ""
+            u = resp.usage
+            # OpenAI and DeepSeek cache long prefixes automatically and report
+            # the hit under different names; normalise onto ours.
+            cached = 0
+            details = getattr(u, "prompt_tokens_details", None)
+            if details is not None:
+                cached = getattr(details, "cached_tokens", 0) or 0
+            cached = cached or getattr(u, "prompt_cache_hit_tokens", 0) or 0
+            usage = {"input_tokens": getattr(u, "prompt_tokens", 0) or 0,
+                     "output_tokens": getattr(u, "completion_tokens", 0) or 0,
+                     "cache_read": cached, "cache_write": 0}
+
         (pdir / f"{tag}.stdout.txt").write_text(text)
         r = AgentResult(step, text.strip(), 0, round(time.time() - t0, 2),
                         len(system) + len(user), "")
-        u = resp.usage
-        r.usage = {                                    # type: ignore[attr-defined]
-            "input_tokens": u.input_tokens,
-            "output_tokens": u.output_tokens,
-            "cache_read": getattr(u, "cache_read_input_tokens", 0),
-            "cache_write": getattr(u, "cache_creation_input_tokens", 0),
-        }
+        r.usage = usage                                # type: ignore[attr-defined]
         return r
 
 
@@ -171,6 +278,15 @@ class BatchBackend(ApiBackend):
 
     poll_interval: int = 20
     max_wait: int = 24 * 3600
+
+    def __post_init__(self):
+        super().__post_init__()
+        if PROVIDERS[self.provider]["sdk"] != "anthropic":
+            # OpenAI's batch API is a different, file-upload shape and DeepSeek
+            # has none, so this backend does not pretend to cover them.
+            raise SystemExit(
+                f"[batch] the batch backend is Anthropic-only; {self.provider!r} "
+                f"has no compatible Message Batches API. Use --backend api.")
 
     def build_requests(self, skill: str, items: list[tuple[str, str]]) -> list[dict]:
         """One request per (item_id, user_prompt), sharing a cached system prompt."""

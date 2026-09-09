@@ -217,17 +217,23 @@ def main() -> int:
     p.add_argument("--max-wait", type=int, default=24 * 3600, dest="max_wait",
                    help="batch backend: give up polling after this many seconds "
                         "(the batch keeps running; re-run to reattach)")
+    p.add_argument("--provider", default=None, choices=["anthropic", "openai", "deepseek"],
+                   help="api backend: override the provider inferred from --model "
+                        "(claude-* anthropic, gpt-/o1/o3/o4 openai, deepseek* deepseek)")
     p.add_argument("--max-tokens", type=int, default=8000, dest="max_tokens")
     p.add_argument("--skills-root", default=".claude/skills", dest="skills_root")
     args = p.parse_args()
 
     kw = dict(model=args.model, timeout=args.timeout, max_tokens=args.max_tokens,
               skills_root=Path(args.skills_root))
+    if args.backend in ("api", "batch"):
+        kw["provider"] = args.provider
     if args.backend == "batch":
         kw.update(poll_interval=args.poll_interval, max_wait=args.max_wait)
     backend = make_backend(args.backend, **kw)
-    print(f"[eval] backend={args.backend} model={args.model} "
-          f"concurrency={args.concurrency}")
+    prov = getattr(backend, "provider", None)
+    print(f"[eval] backend={args.backend}{f' provider={prov}' if prov else ''} "
+          f"model={args.model} concurrency={args.concurrency}")
     results = []
     try:
         for v in args.versions:

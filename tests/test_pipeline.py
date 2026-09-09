@@ -459,3 +459,73 @@ class TestBatchBackend:
         b.submit("verify-v1", [("a", "A")])
         assert b.status("msgbatch_test")[0] == "in_progress"
         assert b.status("msgbatch_test")[0] == "ended"
+
+
+class TestApiProviders:
+    """The api backend covers Anthropic, OpenAI and DeepSeek."""
+
+    def _openai_stub(self, monkeypatch, model, env):
+        import types
+        import openai
+        from arappav.pipeline import backends as B
+
+        class Cli:
+            def __init__(self, **kw):
+                self.chat = types.SimpleNamespace(completions=self)
+                self.seen = None
+            def create(self, **kw):
+                self.seen = kw
+                raise RuntimeError("stop-after-capture")
+
+        monkeypatch.setenv(env, "sk-test")
+        monkeypatch.setattr(openai, "OpenAI", lambda **kw: Cli())
+        b = B.make_backend("api", model=model, skills_root=Path(".claude/skills"))
+        b.run(skill="verify-v1", user="item", step="s", round_dir=Path("/tmp"))
+        return b
+
+    @pytest.mark.parametrize("model,expected", [
+        ("claude-haiku-4-5", "anthropic"), ("claude-opus-5", "anthropic"),
+        ("gpt-5", "openai"), ("o3", "openai"), ("chatgpt-4o-latest", "openai"),
+        ("deepseek-chat", "deepseek"), ("deepseek-reasoner", "deepseek")])
+    def test_provider_inferred_from_model_id(self, model, expected):
+        from arappav.pipeline.backends import infer_provider
+        assert infer_provider(model) == expected
+
+    def test_unknown_model_must_be_named_explicitly(self):
+        from arappav.pipeline.backends import infer_provider
+        with pytest.raises(SystemExit, match="cannot infer a provider"):
+            infer_provider("llama-3")
+
+    def test_openai_reasoning_model_gets_effort_and_completion_tokens(self, monkeypatch):
+        kw = self._openai_stub(monkeypatch, "gpt-5", "OPENAI_API_KEY")._client.seen
+        assert kw["max_completion_tokens"] == 8000
+        assert kw["reasoning_effort"] == "high"
+
+    def test_openai_non_reasoning_model_gets_no_effort(self, monkeypatch):
+        # reasoning_effort on a non-reasoning model is an API error.
+        kw = self._openai_stub(monkeypatch, "gpt-4o", "OPENAI_API_KEY")._client.seen
+        assert "reasoning_effort" not in kw
+
+    def test_deepseek_uses_max_tokens_and_its_own_key(self, monkeypatch):
+        b = self._openai_stub(monkeypatch, "deepseek-chat", "DEEPSEEK_API_KEY")
+        assert b.provider == "deepseek"
+        assert b._client.seen["max_tokens"] == 8000
+        assert "max_completion_tokens" not in b._client.seen
+
+    def test_policy_travels_as_a_system_message(self, monkeypatch):
+        kw = self._openai_stub(monkeypatch, "gpt-4o", "OPENAI_API_KEY")._client.seen
+        assert [m["role"] for m in kw["messages"]] == ["system", "user"]
+        assert "Output contract" in kw["messages"][0]["content"]
+        assert kw["messages"][1]["content"] == "item"
+
+    def test_missing_key_names_the_right_variable(self, monkeypatch):
+        from arappav.pipeline import backends as B
+        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+        with pytest.raises(SystemExit, match="DEEPSEEK_API_KEY"):
+            B.make_backend("api", model="deepseek-chat")
+
+    def test_batch_is_anthropic_only(self, monkeypatch):
+        from arappav.pipeline import backends as B
+        monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+        with pytest.raises(SystemExit, match="Anthropic-only"):
+            B.make_backend("batch", model="gpt-5")

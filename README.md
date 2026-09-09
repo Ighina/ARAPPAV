@@ -150,8 +150,40 @@ report. Skills (`perturb-vN`, `verify-vN`, `create-policy-*`, `update-*`, `final
 are invoked as pure functions over inputs the orchestrator constructs, with tools denied and
 inputs passed inline — so the information each side receives is explicit and auditable.
 
-See **[docs/REFACTOR.md](docs/REFACTOR.md)** for the architecture, the `problem`/`solution`
-data contract, and the leakage audit.
+### Evaluating policies on held-out ProcessBench
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# default: Messages API, policy sent as a cached system prompt
+python scripts/eval_policies_processbench.py --prefix hverify --versions 1 10 \
+    --model claude-haiku-4-5 --per-subset 20 --concurrency 8
+
+# cheapest: Message Batches API (asynchronous, resumable)
+python scripts/eval_policies_processbench.py ... --backend batch
+
+# no API key needed; the parity reference
+python scripts/eval_policies_processbench.py ... --backend claude-code
+```
+
+Three backends, selected with `--backend`. Going through `claude -p` costs
+~$0.048 per item because 76% of every call is Claude Code harness overhead
+re-sent each time; the API backends send only the policy and the item, at
+~$0.002 (`api`) or ~$0.001 (`batch`). Full ProcessBench on one policy is ~$163,
+~$6 and ~$3 respectively — and the API paths bill to the key rather than the
+interactive session limit.
+
+The `api` backend supports **Anthropic, OpenAI and DeepSeek**, inferred from the
+model id or set with `--provider`. See **[NEW_BACKENDS.md](NEW_BACKENDS.md)**.
+
+### Documentation
+
+- **[NEW_BACKENDS.md](NEW_BACKENDS.md)** — the three backends, providers, costs.
+- **[docs/REFACTOR.md](docs/REFACTOR.md)** — orchestration architecture, the
+  `problem`/`solution` data contract, and the leakage audit.
+- **[HAIKU_FAILURE.md](HAIKU_FAILURE.md)** — a negative result: ten rounds of
+  self-play with Haiku 4.5 as both player and policy writer produced no
+  improvement on held-out data, and why.
 
 
 ## Skill-Tuning Mode (no GPU)
