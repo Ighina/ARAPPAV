@@ -258,14 +258,21 @@ untouched (spec 10, 13, 17). `scoring.py` calls the same functions; only ownersh
 
 `scripts/eval_policies_processbench.py` can reach a model two ways.
 
-| | `claude-code` | `api` (default) |
-|---|---|---|
-| transport | `claude -p` per item | Messages API |
-| policy delivered as | `/skill` slash command | cached system prompt |
-| input tokens/item | ~17,200 | ~2,600 (policy cached after the first) |
-| cost/item (haiku, measured) | $0.048 | ~$0.002 |
-| quota | consumes the interactive session limit | billed to the API key |
-| needs | nothing | `ANTHROPIC_API_KEY` |
+| | `claude-code` | `api` (default) | `batch` |
+|---|---|---|---|
+| transport | `claude -p` per item | Messages API | Message Batches API |
+| policy delivered as | `/skill` slash command | cached system prompt | cached system prompt |
+| input tokens/item | ~17,200 | ~2,600 | ~2,600 |
+| cost/item (haiku) | $0.048 | ~$0.002 | ~$0.001 |
+| latency | ~45s/item | ~26s/item | minutes to 24h, all items at once |
+| quota | interactive session limit | API key | API key |
+| needs | nothing | `ANTHROPIC_API_KEY` | `ANTHROPIC_API_KEY` |
+
+`batch` submits every outstanding item as one job at 50% of the standard rate,
+which stacks with caching. It writes the batch id to `batch_id.txt` in the round
+directory before polling, so an interrupted run reattaches to the in-flight
+batch instead of submitting a second copy. Items the batch reports as errored,
+expired or cancelled get no output file, so a re-run retries exactly those.
 
 Roughly 76% of a `claude -p` call is the Claude Code harness system prompt and
 tool definitions, re-sent every invocation; measured at 17,209 input and 6,263

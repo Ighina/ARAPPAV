@@ -372,3 +372,90 @@ class TestBackends:
         b = self._stub(monkeypatch)
         r = b.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
         assert r.usage["cache_read"] == 2100 and r.usage["output_tokens"] == 40
+
+
+class TestBatchBackend:
+    """Batch mode: submit all, poll, collect by custom_id."""
+
+    def _stub(self, monkeypatch, fail_one=False):
+        import types
+        import anthropic
+        from arappav.pipeline import backends as B
+
+        def res(cid, ok=True):
+            u = types.SimpleNamespace(input_tokens=400, output_tokens=30,
+                                      cache_read_input_tokens=2100,
+                                      cache_creation_input_tokens=0)
+            msg = types.SimpleNamespace(
+                content=[types.SimpleNamespace(type="text", text='{"claims": []}')],
+                usage=u)
+            return types.SimpleNamespace(
+                custom_id=cid,
+                result=types.SimpleNamespace(
+                    type="succeeded" if ok else "expired", message=msg))
+
+        class Batches:
+            def __init__(self): self.submitted = None; self.polls = 0
+            def create(self, requests):
+                self.submitted = requests
+                return types.SimpleNamespace(id="msgbatch_test")
+            def retrieve(self, bid):
+                self.polls += 1
+                return types.SimpleNamespace(
+                    processing_status="ended" if self.polls > 1 else "in_progress",
+                    request_counts=types.SimpleNamespace(
+                        processing=0, succeeded=2, errored=0, canceled=0, expired=0))
+            def results(self, bid):
+                ids = [r["custom_id"] for r in self.submitted]
+                out = [res(i) for i in ids]
+                if fail_one:
+                    out[-1] = res(ids[-1], ok=False)
+                return out
+
+        class Client:
+            def __init__(self, **kw):
+                self.messages = types.SimpleNamespace(batches=Batches())
+
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test")
+        monkeypatch.setattr(anthropic, "Anthropic", Client)
+        return B.make_backend("batch", model="claude-haiku-4-5",
+                              skills_root=Path(".claude/skills"),
+                              poll_interval=0, max_wait=10)
+
+    def test_custom_ids_are_legal_and_bounded(self):
+        from arappav.pipeline.backends import _custom_id
+        cid = _custom_id("hverify-v10", "gsm8k-89")
+        assert cid == "hverify-v10__gsm8k-89"
+        assert len(_custom_id("x" * 60, "y" * 60)) == 64
+        assert _custom_id("a/b", "c d").replace("-", "").replace("_", "").isalnum()
+
+    def test_one_request_per_item_sharing_a_cached_system_prompt(self, monkeypatch):
+        b = self._stub(monkeypatch)
+        b.submit("verify-v1", [("a", "A"), ("b", "B")])
+        reqs = b._client.messages.batches.submitted
+        assert len(reqs) == 2
+        assert reqs[0]["params"]["system"][0]["cache_control"] == {"type": "ephemeral"}
+        # the same system text object is reused, so the cache actually hits
+        assert reqs[0]["params"]["system"][0]["text"] is reqs[1]["params"]["system"][0]["text"]
+        assert reqs[0]["params"]["messages"][0]["content"] == "A"
+
+    def test_results_are_keyed_by_id_not_position(self, monkeypatch):
+        b = self._stub(monkeypatch)
+        b.submit("verify-v1", [("gsm8k-89", "A"), ("math-159", "B")])
+        texts, failed, usage = b.collect("verify-v1", "msgbatch_test")
+        assert set(texts) == {"gsm8k-89", "math-159"} and not failed
+        assert usage["cache_read"] == 4200
+
+    def test_failed_items_are_not_returned_as_text(self, monkeypatch):
+        # An expired/errored request must yield no output file, so a re-run
+        # retries it rather than scoring an empty answer.
+        b = self._stub(monkeypatch, fail_one=True)
+        b.submit("verify-v1", [("a", "A"), ("b", "B")])
+        texts, failed, _ = b.collect("verify-v1", "msgbatch_test")
+        assert set(texts) == {"a"} and failed == {"b": "expired"}
+
+    def test_status_reports_terminal_state(self, monkeypatch):
+        b = self._stub(monkeypatch)
+        b.submit("verify-v1", [("a", "A")])
+        assert b.status("msgbatch_test")[0] == "in_progress"
+        assert b.status("msgbatch_test")[0] == "ended"

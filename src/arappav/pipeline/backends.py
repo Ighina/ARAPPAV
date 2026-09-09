@@ -140,7 +140,100 @@ class ApiBackend(Backend):
         return r
 
 
+# ---------------------------------------------------------------------------
+# Batch submission (Message Batches API)
+# ---------------------------------------------------------------------------
+#
+# Batching is a different shape from the per-item backends above: you submit
+# every request at once, the server works through them asynchronously, and you
+# collect results later. It bills at 50% of the standard rate, which stacks with
+# the prompt caching the API backend already does.
+#
+# The trade is latency — a batch can take up to 24h, though small ones usually
+# finish in minutes — so it suits a full-benchmark sweep and not an interactive
+# check. The batch id is persisted, so a killed poll resumes instead of
+# resubmitting and paying twice.
+
+#: A batch is terminal when the server stops working on it.
+_BATCH_DONE = "ended"
+
+
+def _custom_id(prefix: str, item_id: str) -> str:
+    """Batch custom_ids allow [a-zA-Z0-9_-] and at most 64 chars."""
+    raw = f"{prefix}__{item_id}"
+    safe = re.sub(r"[^A-Za-z0-9_-]", "-", raw)
+    return safe[:64]
+
+
+@dataclass
+class BatchBackend(ApiBackend):
+    """Messages API in batch mode: 50% cheaper, asynchronous."""
+
+    poll_interval: int = 20
+    max_wait: int = 24 * 3600
+
+    def build_requests(self, skill: str, items: list[tuple[str, str]]) -> list[dict]:
+        """One request per (item_id, user_prompt), sharing a cached system prompt."""
+        system = self._cache.setdefault(skill, skill_text(self.skills_root, skill))
+        params_common = {
+            "model": self.model or "claude-haiku-4-5",
+            "max_tokens": self.max_tokens,
+            "system": [{"type": "text", "text": system,
+                        "cache_control": {"type": "ephemeral"}}],
+        }
+        if (self.model or "") not in NO_THINKING:
+            params_common["thinking"] = {"type": "adaptive"}
+            params_common["output_config"] = {"effort": self.effort}
+        return [
+            {"custom_id": _custom_id(skill, iid),
+             "params": {**params_common,
+                        "messages": [{"role": "user", "content": user}]}}
+            for iid, user in items
+        ]
+
+    def submit(self, skill: str, items: list[tuple[str, str]]) -> str:
+        batch = self._client.messages.batches.create(
+            requests=self.build_requests(skill, items))
+        return batch.id
+
+    def status(self, batch_id: str) -> tuple[str, dict]:
+        b = self._client.messages.batches.retrieve(batch_id)
+        counts = getattr(b, "request_counts", None)
+        return b.processing_status, {
+            k: getattr(counts, k, 0) for k in
+            ("processing", "succeeded", "errored", "canceled", "expired")
+        } if counts else (b.processing_status, {})
+
+    def collect(self, skill: str, batch_id: str) -> tuple[dict[str, str], dict[str, str], dict]:
+        """Return (texts by item id, failures by item id, summed usage).
+
+        Results arrive in arbitrary order, so everything is keyed by custom_id
+        and never by position.
+        """
+        texts: dict[str, str] = {}
+        failed: dict[str, str] = {}
+        usage: dict[str, int] = {}
+        prefix = _custom_id(skill, "")
+        for r in self._client.messages.batches.results(batch_id):
+            iid = r.custom_id[len(prefix):] if r.custom_id.startswith(prefix) else r.custom_id
+            kind = r.result.type
+            if kind != "succeeded":
+                failed[iid] = kind        # errored | canceled | expired
+                continue
+            msg = r.result.message
+            texts[iid] = "".join(b.text for b in msg.content if b.type == "text").strip()
+            u = msg.usage
+            for key, val in (("input_tokens", u.input_tokens),
+                             ("output_tokens", u.output_tokens),
+                             ("cache_read", getattr(u, "cache_read_input_tokens", 0)),
+                             ("cache_write", getattr(u, "cache_creation_input_tokens", 0))):
+                usage[key] = usage.get(key, 0) + (val or 0)
+        return texts, failed, usage
+
+
 def make_backend(kind: str, **kw) -> Backend:
+    if kind == "batch":
+        return BatchBackend(name="batch", **kw)
     if kind == "api":
         return ApiBackend(name="api", **kw)
     if kind == "claude-code":
