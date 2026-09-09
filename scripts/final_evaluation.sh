@@ -75,8 +75,40 @@ python scripts/eval_policies_processbench.py --prefix "$PREFIX" --versions "$VER
     --model "$MODEL" --backend "$BACKEND" --concurrency "$CONCURRENCY" \
     --root "$TEST_ROOT" --skills-root .claude/skills || exit 2
 
+# --- 5-7. the perturber, same protocol mirrored -----------------------------
+# Scored as 1 - recall against a FROZEN round-0 verifier, so the number reflects
+# the perturber rather than a co-evolved opponent.
+PPREFIX=${PPREFIX:-${PREFIX%verify}perturb}
+FROZEN=${FROZEN:-${PREFIX}-v1}
+PEV_ROOT=${PEV_ROOT:-data/perturber_evals/${PPREFIX}}
+
+if [ "${SKIP_PERTURBER:-0}" != "1" ]; then
+  echo
+  echo "── 5/7  perturber validation (MATH-500, frozen verifier=$FROZEN)"
+  python scripts/eval_perturber.py --root "$PEV_ROOT" --prefix "$PPREFIX" \
+      --source math500 --n "${PEV_N:-80}" --backend "$BACKEND" --model "$MODEL" \
+      --concurrency "$CONCURRENCY" \
+      run --versions $VERSIONS --k "$VAL_K" --frozen-verifier "$FROZEN" || exit 2
+
+  echo
+  echo "── 6/7  selecting the best perturber"
+  python scripts/eval_perturber.py --root "$PEV_ROOT" --prefix "$PPREFIX" \
+      --source math500 --n "${PEV_N:-80}" select || exit 2
+  PSEL=$(python -c "import json;print(json.load(open('$PEV_ROOT/math500_n${PEV_N:-80}_seed0/selected.json'))['selected'])")
+  PVER=${PSEL##*-v}
+
+  echo
+  echo "── 7/7  perturber TEST: ProcessBench correct chains, perturbed by $PSEL"
+  python scripts/eval_perturber.py --root "$PEV_ROOT" --prefix "$PPREFIX" \
+      --source processbench-correct --n "${PEV_TEST_N:-80}" --backend "$BACKEND" \
+      --model "$MODEL" --concurrency "$CONCURRENCY" \
+      run --versions "$PVER" --k "$VAL_K" --frozen-verifier "$FROZEN" || exit 2
+fi
+
 echo
 echo "──────────────────────────────────────────────────────────────"
 echo "validation (selection) : $VAL_ROOT/selected.json"
 echo "test (reported result) : $TEST_ROOT"
 echo "analysis (all rounds)  : scripts/eval_policies_processbench.py, 80-item sample"
+echo "perturber test         : $PEV_ROOT/processbench-correct_n${PEV_TEST_N:-80}_seed0/scores"
+echo "perturber analysis     : eval_perturber.py --source hendrycks (training distribution)"

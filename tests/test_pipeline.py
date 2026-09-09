@@ -602,3 +602,67 @@ class TestValidationProtocol:
         assert set(VERIFY_INPUT_FIELDS) == {"problem", "solution_to_review"}
         for forbidden in ("original_solution", "errors", "k", "clean"):
             assert forbidden not in VERIFY_INPUT_FIELDS
+
+
+class TestPerturberEvaluation:
+    """1 - recall against a frozen verifier, with guards on how it is won."""
+
+    def _mod(self):
+        from importlib.machinery import SourceFileLoader
+        return SourceFileLoader("epmod", "scripts/eval_perturber.py").load_module()
+
+    def _score(self, tmp_path, episodes, source="math500"):
+        import json
+        import types
+        m = self._mod()
+        vdir = tmp_path / f"{source}_n2_seed0" / "hp-v1"
+        (vdir / "episodes").mkdir(parents=True)
+        for i, e in enumerate(episodes):
+            (vdir / "episodes" / f"e{i}.json").write_text(json.dumps(e))
+        args = types.SimpleNamespace(source=source)
+        return m._score(vdir, "hp-v1", "hv-v1", args)
+
+    def test_score_is_one_minus_recall(self, tmp_path):
+        r = self._score(tmp_path, [
+            {"format_valid": True, "verifier_recall": 0.25, "num_error_units": 3, "k": 3},
+            {"format_valid": True, "verifier_recall": 0.75, "num_error_units": 3, "k": 3}])
+        assert r["mean_verifier_recall"] == 0.5
+        assert r["perturber_score_1_minus_recall"] == 0.5
+
+    def test_a_perturber_the_verifier_never_catches_scores_one(self, tmp_path):
+        r = self._score(tmp_path, [
+            {"format_valid": True, "verifier_recall": 0.0, "num_error_units": 3, "k": 3}])
+        assert r["perturber_score_1_minus_recall"] == 1.0
+
+    def test_format_failures_are_counted_not_silently_dropped(self, tmp_path):
+        r = self._score(tmp_path, [
+            {"format_valid": True, "verifier_recall": 0.0, "num_error_units": 3, "k": 3},
+            {"format_valid": False, "failure_stage": "json"}])
+        assert r["n_format_invalid"] == 1 and r["format_valid_rate"] == 0.5
+        # the invalid episode must not inflate the headline score
+        assert r["n_scored"] == 1
+
+    def test_unit_collapse_is_reported(self, tmp_path):
+        r = self._score(tmp_path, [
+            {"format_valid": True, "verifier_recall": 0.0, "num_error_units": 1, "k": 3},
+            {"format_valid": True, "verifier_recall": 0.0, "num_error_units": 3, "k": 3}])
+        assert r["unit_collapse_rate"] == 0.5
+
+    def test_pool_is_stable_for_a_given_source_seed_and_n(self, tmp_path, monkeypatch):
+        # Every perturber version must attack byte-identical problems, so the
+        # cached pool has to round-trip exactly.
+        m = self._mod()
+        calls = {"n": 0}
+        fake = [{"episode_id": "x", "problem": "p", "solution": "s", "meta": {}}]
+
+        def build(source, n, seed):
+            calls["n"] += 1
+            return fake
+        monkeypatch.setattr(m, "build_pool", build)
+        a = m.get_pool(tmp_path, "math500", 1, 0)
+        b = m.get_pool(tmp_path, "math500", 1, 0)
+        assert a == b == fake and calls["n"] == 1      # built once, then cached
+
+    def test_sources_cover_analysis_validation_and_test(self):
+        assert set(self._mod().SOURCES) == {
+            "hendrycks", "math500", "processbench-correct"}

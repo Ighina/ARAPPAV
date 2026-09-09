@@ -257,6 +257,47 @@ makes the reported figure a training score.
 round — remains available and unchanged, but it is an **analysis** tool for
 reading the trajectory. It must not be used to pick a policy.
 
+### Evaluating the perturber
+
+The mirror protocol, in `scripts/eval_perturber.py`. A perturber is good when
+its injected errors survive, so it is scored by what a **frozen** verifier fails
+to find:
+
+```
+perturber score = 1 − unit_recall(frozen round-0 verifier)
+```
+
+The verifier is pinned at `<prefix>-v1` — the cold-start, zero-shot policy — so
+the score reflects the perturber and not a co-evolved opponent, exactly as the
+pinned perturber does for verifier validation. The problem set is fixed per
+(source, seed, n) and cached, so every version attacks identical problems.
+
+| `--source` | role | drawn from |
+|---|---|---|
+| `hendrycks` | analysis | the training distribution |
+| `math500` | validation — selects the round | `HuggingFaceH4/MATH-500` |
+| `processbench-correct` | **test** | ProcessBench chains annotators marked correct |
+
+The test set is the pointed one: real model-generated solutions that humans
+verified as error-free, so perturbing them asks whether the policy can plant an
+error a verifier misses *in text it did not write*. The reported figure is
+1 − recall on that set, for the selected round only.
+
+```bash
+# analysis across every round, on the training distribution
+python scripts/eval_perturber.py --prefix hperturb --source hendrycks \
+    run --versions 1 2 3 --k 3
+# validation, then selection
+python scripts/eval_perturber.py --prefix hperturb --source math500 \
+    run --versions 1 2 3 --k 3
+python scripts/eval_perturber.py --prefix hperturb --source math500 select
+```
+
+`select` refuses any version below `--min-format-valid` (default 0.8) and warns
+on heavy unit collapse — a policy that emits unparseable JSON or stacks one
+mistake as several can otherwise post a high 1 − recall for the wrong reason.
+`scripts/final_evaluation.sh` runs both protocols end to end.
+
 ### Documentation
 
 - **[NEW_BACKENDS.md](NEW_BACKENDS.md)** — the three backends, providers, costs.
