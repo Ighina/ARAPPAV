@@ -286,3 +286,89 @@ class TestUpdaterModel:
 
     def test_both_unset_is_none(self):
         assert PipelineConfig().policy_model() is None
+
+
+class TestBackends:
+    """Both transports must deliver the same policy and fail the same way."""
+
+    def _stub(self, monkeypatch, model="claude-haiku-4-5"):
+        import types
+        import anthropic
+        from arappav.pipeline import backends as B
+
+        class Resp:
+            content = [types.SimpleNamespace(type="text", text='{"claims": []}')]
+            usage = types.SimpleNamespace(input_tokens=500, output_tokens=40,
+                                          cache_read_input_tokens=2100,
+                                          cache_creation_input_tokens=0)
+
+        class Msgs:
+            def __init__(self): self.calls = []
+            def create(self, **kw): self.calls.append(kw); return Resp()
+
+        class Client:
+            def __init__(self, **kw): self.messages = Msgs()
+
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test")
+        monkeypatch.setattr(anthropic, "Anthropic", Client)
+        return B.make_backend("api", model=model,
+                              skills_root=Path(".claude/skills"))
+
+    def test_api_requires_a_key(self, monkeypatch):
+        from arappav.pipeline import backends as B
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        monkeypatch.delenv("ANTHROPIC_AUTH_TOKEN", raising=False)
+        with pytest.raises(SystemExit, match="ANTHROPIC_API_KEY"):
+            B.make_backend("api", model="claude-haiku-4-5")
+
+    def test_cli_backend_needs_no_key(self, monkeypatch):
+        from arappav.pipeline import backends as B
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        assert B.make_backend("claude-code").name == "claude-code"
+
+    def test_unknown_backend_rejected(self):
+        from arappav.pipeline import backends as B
+        with pytest.raises(SystemExit, match="unknown backend"):
+            B.make_backend("grpc")
+
+    def test_skill_text_strips_frontmatter_and_keeps_policy(self):
+        from arappav.pipeline.backends import skill_text
+        t = skill_text(Path(".claude/skills"), "verify-v1")
+        assert not t.startswith("---") and "Output contract" in t
+
+    def test_policy_is_sent_as_a_cached_system_prompt(self, monkeypatch, tmp_path):
+        b = self._stub(monkeypatch)
+        b.run(skill="verify-v1", user="item", step="s", round_dir=tmp_path)
+        kw = b._client.messages.calls[0]
+        assert kw["system"][0]["cache_control"] == {"type": "ephemeral"}
+        assert "Output contract" in kw["system"][0]["text"]
+        # the per-item turn carries only the item, never the policy
+        assert kw["messages"][0]["content"] == "item"
+
+    def test_policy_read_once_across_items(self, monkeypatch, tmp_path):
+        b = self._stub(monkeypatch)
+        for i in range(3):
+            b.run(skill="verify-v1", user=f"item{i}", step="s", round_dir=tmp_path)
+        assert len(b._cache) == 1 and len(b._client.messages.calls) == 3
+
+    def test_haiku_omits_thinking_but_opus_gets_it(self, monkeypatch, tmp_path):
+        h = self._stub(monkeypatch)
+        h.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
+        assert "thinking" not in h._client.messages.calls[0]
+        o = self._stub(monkeypatch, model="claude-opus-5")
+        o.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
+        assert o._client.messages.calls[0]["thinking"] == {"type": "adaptive"}
+
+    def test_quota_error_is_infrastructure_not_data(self, monkeypatch, tmp_path):
+        b = self._stub(monkeypatch)
+
+        class Boom:
+            def create(self, **kw): raise RuntimeError("You've hit your session limit")
+        b._client.messages = Boom()
+        r = b.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
+        assert r.returncode == 1 and r.infra_failure() is not None
+
+    def test_usage_is_reported_for_costing(self, monkeypatch, tmp_path):
+        b = self._stub(monkeypatch)
+        r = b.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
+        assert r.usage["cache_read"] == 2100 and r.usage["output_tokens"] == 40

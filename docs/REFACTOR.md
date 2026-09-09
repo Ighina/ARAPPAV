@@ -250,3 +250,29 @@ untouched (spec 10, 13, 17). `scoring.py` calls the same functions; only ownersh
    place.** The orchestrator refuses to overwrite an existing version directory unless
    `--overwrite-policies` is passed; use `--perturb-prefix` / `--verify-prefix` to run in a
    separate namespace.
+
+
+---
+
+## 11. Evaluation backends (`--backend`)
+
+`scripts/eval_policies_processbench.py` can reach a model two ways.
+
+| | `claude-code` | `api` (default) |
+|---|---|---|
+| transport | `claude -p` per item | Messages API |
+| policy delivered as | `/skill` slash command | cached system prompt |
+| input tokens/item | ~17,200 | ~2,600 (policy cached after the first) |
+| cost/item (haiku, measured) | $0.048 | ~$0.002 |
+| quota | consumes the interactive session limit | billed to the API key |
+| needs | nothing | `ANTHROPIC_API_KEY` |
+
+Roughly 76% of a `claude -p` call is the Claude Code harness system prompt and
+tool definitions, re-sent every invocation; measured at 17,209 input and 6,263
+output tokens to produce a 30-byte answer. Full ProcessBench on one policy is
+~$163 through the CLI and ~$6 through the API.
+
+Both paths use the same renderer, the same leak guard and the same fail-fast
+infrastructure check, and write the same artefacts, so results are comparable.
+Keep `claude-code` for parity checks and for running without a key; use `api`
+for volume.
