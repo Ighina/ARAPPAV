@@ -41,6 +41,10 @@ class PipelineConfig:
     source: str = "hendrycks"           # hendrycks|local|file
     problems_file: str | None = None
     topics: tuple[str, ...] = ("algebra",)
+    # Restrict the whole experiment to one MATH subject. Training draws only
+    # that topic and evaluation filters MATH-500 to the matching subject, so
+    # "restricted" means the same thing on both sides.
+    category: str | None = None
     per_topic: int = 50
     seed: int = 42
     root: str = "data/skill_rollouts"
@@ -130,8 +134,10 @@ def _pool(cfg: PipelineConfig) -> list[dict]:
                         "topic": str(pid).partition("_")[0], "level": None})
         return list(pool.values())
 
+    from arappav.data.categories import train_topics
     from arappav.data.ingest_math import load_math_dataset
-    ds = load_math_dataset(topics=list(cfg.topics), split="train",
+    topics = train_topics(cfg.category) if cfg.category else list(cfg.topics)
+    ds = load_math_dataset(topics=topics, split="train",
                            max_examples_per_topic=cfg.per_topic, seed=cfg.seed)
     return [{"source_id": f"{r['topic']}_{r['level']}_{i}", "problem": r["problem"],
              "solution": r["solution"], "topic": r["topic"], "level": r["level"]}

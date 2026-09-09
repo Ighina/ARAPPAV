@@ -76,12 +76,14 @@ def _w(p: Path, o) -> None:
 # ---------------------------------------------------------------------------
 
 
-def build_pool(source: str, n: int, seed: int) -> list[dict]:
+def build_pool(source: str, n: int, seed: int,
+               category: str | None = None) -> list[dict]:
     rng = random.Random(seed)
 
     if source == "hendrycks":
+        from arappav.data.categories import train_topics
         from arappav.data.ingest_math import load_math_dataset
-        ds = load_math_dataset(topics=["algebra"], split="train",
+        ds = load_math_dataset(topics=train_topics(category), split="train",
                                max_examples_per_topic=400, seed=seed)
         idx = rng.sample(range(len(ds)), min(n, len(ds)))
         return [{"episode_id": f"hendrycks-{i}", "problem": ds[i]["problem"],
@@ -90,8 +92,9 @@ def build_pool(source: str, n: int, seed: int) -> list[dict]:
 
     if source == "math500":
         from datasets import load_dataset
+        from arappav.data.categories import filter_math500
         ds = load_dataset("HuggingFaceH4/MATH-500", split="test")
-        idx = rng.sample(range(len(ds)), min(n, len(ds)))
+        idx = rng.sample(filter_math500(ds, category), min(n, len(ds)))
         return [{"episode_id": ds[i]["unique_id"].replace("/", "_").replace(".json", ""),
                  "problem": ds[i]["problem"], "solution": ds[i]["solution"],
                  "meta": {"subject": ds[i].get("subject"), "level": ds[i].get("level")}}
@@ -114,15 +117,22 @@ def build_pool(source: str, n: int, seed: int) -> list[dict]:
     return out[:n]
 
 
-def pool_path(root: Path, source: str, n: int, seed: int) -> Path:
-    return root / f"{source}_n{n}_seed{seed}" / "pool.json"
+def pool_path(root: Path, source: str, n: int, seed: int,
+              category: str | None = None) -> Path:
+    # The category is part of the identity of a problem set: two runs on
+    # different subjects must not silently share a cached pool.
+    from arappav.data.categories import normalise
+    c = normalise(category)
+    suffix = "" if c == "all" else f"_{c}"
+    return root / f"{source}{suffix}_n{n}_seed{seed}" / "pool.json"
 
 
-def get_pool(root: Path, source: str, n: int, seed: int) -> list[dict]:
-    p = pool_path(root, source, n, seed)
+def get_pool(root: Path, source: str, n: int, seed: int,
+             category: str | None = None) -> list[dict]:
+    p = pool_path(root, source, n, seed, category)
     if p.exists():
         return json.loads(p.read_text())
-    pool = build_pool(source, n, seed)
+    pool = build_pool(source, n, seed, category)
     _w(p, pool)
     print(f"[pool] built {len(pool)} problems from {source} → {p.parent.name}")
     return pool
@@ -135,8 +145,8 @@ def get_pool(root: Path, source: str, n: int, seed: int) -> list[dict]:
 
 def cmd_run(args) -> int:
     root = Path(args.root)
-    pool = get_pool(root, args.source, args.n, args.seed)
-    base = root / f"{args.source}_n{args.n}_seed{args.seed}"
+    pool = get_pool(root, args.source, args.n, args.seed, args.category)
+    base = pool_path(root, args.source, args.n, args.seed, args.category).parent
     reward_cfg = scoring.load_reward_config()
 
     frozen = args.frozen_verifier or f"{args.prefix.replace('perturb', 'verify')}-v1"
@@ -248,7 +258,8 @@ def _score(vdir: Path, skill: str, frozen: str, args) -> dict:
 
 
 def cmd_select(args) -> int:
-    base = Path(args.root) / f"{args.source}_n{args.n}_seed{args.seed}"
+    base = pool_path(Path(args.root), args.source, args.n, args.seed,
+                     getattr(args, "category", None)).parent
     rows = []
     for f in sorted((base / "scores").glob(f"{args.prefix}-v*.json"),
                     key=lambda p: int(p.stem.rsplit("-v", 1)[1])):
@@ -299,6 +310,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--source", choices=SOURCES, default="hendrycks")
     p.add_argument("--n", type=int, default=80, help="problems per version")
     p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--category", default=None,
+                   help="restrict to one MATH subject; must match the "
+                        "category the policies were trained on")
     p.add_argument("--backend", choices=["api", "claude-code", "batch"], default="api")
     p.add_argument("--provider", default=None, choices=["anthropic", "openai", "deepseek"])
     p.add_argument("--model", default="claude-haiku-4-5")

@@ -660,7 +660,7 @@ class TestPerturberEvaluation:
         calls = {"n": 0}
         fake = [{"episode_id": "x", "problem": "p", "solution": "s", "meta": {}}]
 
-        def build(source, n, seed):
+        def build(source, n, seed, category=None):
             calls["n"] += 1
             return fake
         monkeypatch.setattr(m, "build_pool", build)
@@ -967,3 +967,49 @@ class TestRichContext:
 
     def test_rich_context_is_opt_in(self):
         assert PipelineConfig().rich_context is False
+
+
+class TestCategoryRestriction:
+    """Training and evaluation must agree on what a category is."""
+
+    def test_naming_is_reconciled_across_datasets(self):
+        # Hendrycks says counting_and_probability, MATH-500 says
+        # "Counting & Probability". Matching by string would silently give an
+        # empty validation set, which looks like a small sample, not a bug.
+        from arappav.data.categories import math500_subject, train_topics
+        assert train_topics("counting_and_probability") == ["counting_and_probability"]
+        assert math500_subject("counting_and_probability") == "Counting & Probability"
+
+    @pytest.mark.parametrize("given,expected", [
+        ("algebra", "algebra"), ("Algebra", "algebra"),
+        ("Counting & Probability", "counting_and_probability"),
+        ("Number Theory", "number_theory"), ("all", "all"), (None, "all")])
+    def test_either_spelling_resolves(self, given, expected):
+        from arappav.data.categories import normalise
+        assert normalise(given) == expected
+
+    def test_an_unknown_category_fails_loudly(self):
+        from arappav.data.categories import normalise
+        with pytest.raises(ValueError, match="unknown MATH category"):
+            normalise("calculus")
+
+    def test_unrestricted_uses_every_topic(self):
+        from arappav.data.categories import CATEGORIES, train_topics
+        assert len(train_topics("all")) == len(CATEGORIES)
+
+    def test_an_empty_filter_is_an_error_not_an_empty_sample(self):
+        from arappav.data.categories import filter_math500
+        rows = {"subject": ["Algebra", "Geometry"]}
+        assert filter_math500(rows, "algebra") == [0]
+        with pytest.raises(ValueError, match="mapping is wrong"):
+            filter_math500({"subject": ["Algebra"]}, "precalculus")
+
+    def test_pools_for_different_categories_do_not_collide(self, tmp_path):
+        from importlib.machinery import SourceFileLoader
+        m = SourceFileLoader("epcat", "scripts/eval_perturber.py").load_module()
+        a = m.pool_path(tmp_path, "math500", 8, 0, "algebra")
+        b = m.pool_path(tmp_path, "math500", 8, 0, "geometry")
+        assert a != b
+
+    def test_default_is_unrestricted(self):
+        assert PipelineConfig().category is None

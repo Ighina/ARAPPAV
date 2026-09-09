@@ -91,8 +91,13 @@ def cmd_prepare(args) -> int:
 
     ds = load_dataset("HuggingFaceH4/MATH-500", split="test")
     import random
+    from arappav.data.categories import filter_math500, normalise
+    pool = filter_math500(ds, args.category)
+    if args.category and normalise(args.category) != "all":
+        print(f"[prepare] restricted to {normalise(args.category)!r}: "
+              f"{len(pool)} of {len(ds)} MATH-500 items")
     rng = random.Random(args.seed)
-    idx = rng.sample(range(len(ds)), min(args.n, len(ds)))
+    idx = rng.sample(pool, min(args.n, len(pool)))
     idx.sort()
     n_clean = int(round(len(idx) * args.clean_frac))
     clean_ids = set(rng.sample(idx, n_clean))
@@ -308,6 +313,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--provider", default=None,
                    choices=["anthropic", "openai", "deepseek"])
     p.add_argument("--model", default="claude-haiku-4-5")
+    p.add_argument("--category", default=None,
+                   help="restrict MATH-500 to one subject; must match the "
+                        "category the policies were trained on")
     p.add_argument("--concurrency", type=int, default=6)
     p.add_argument("--timeout", type=int, default=600)
     sub = p.add_subparsers(dest="cmd", required=True)

@@ -9,11 +9,22 @@ You revise the **Perturber policy** using the evidence from exactly one scored r
 
 The orchestrator passes you, inline:
 
-- `CONTEXT FROM EARLIER ROUNDS` — the findings it has decided you are entitled to:
-  round metrics, per-error-type detection rates, format failures, which injected errors were
-  detected and which survived, and any unit collapse. Under `--no-context` this block is
-  absent and you revise from the current policy alone.
+- `CONTEXT FROM EARLIER ROUNDS` — the evidence it has decided you are entitled to.
+  Under `--rich-context` this is a **briefing** produced by
+  `summarise-context-perturber`: which injected errors survived and which were
+  caught, each quoting **the actual text** of the original and the injection,
+  with a concrete reading of what made the difference, plus format failures, unit
+  collapse, and what carried forward from the previous round. Otherwise it is the
+  older aggregate: metrics, per-error-type detection rates, and identifiers.
+  Under `--no-context` the block is absent and you revise from the current policy
+  alone.
 - `CURRENT POLICY` — the rules that produced those results.
+
+Reason from the **text**, not the labels. `error_type` is a taxonomy tag that
+plays no part in scoring, so a rule of the form "prefer type X, avoid type Y"
+derived from one round's detection rates is fitting noise over a handful of
+samples — and it narrows what the Perturber will even attempt. What survived and
+what was caught, as text, is the evidence.
 
 **That is your entire input.** Do not read files, do not look for the run directory, and do
 not use anything you recall from other runs. You have no tools; asking for more input is not

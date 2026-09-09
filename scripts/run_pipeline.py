@@ -56,6 +56,12 @@ def build_parser() -> argparse.ArgumentParser:
     d.add_argument("--problems-file", default=None, dest="problems_file")
     d.add_argument("--topics", nargs="+", default=["algebra"])
     d.add_argument("--per-topic", type=int, default=50, dest="per_topic")
+    d.add_argument("--category", default=None,
+                   help="restrict the experiment to one MATH subject (algebra, "
+                        "geometry, number_theory, precalculus, prealgebra, "
+                        "intermediate_algebra, counting_and_probability, or 'all'). "
+                        "Training draws only that topic; MATH-500 validation is "
+                        "filtered to the matching subject.")
 
     o = p.add_argument_group("paths")
     o.add_argument("--root", default="data/skill_rollouts")
@@ -119,6 +125,7 @@ def main() -> int:
         rounds=args.rounds, episodes=args.episodes, k=args.k, start=args.start,
         freeze=args.freeze, source=args.source, problems_file=args.problems_file,
         topics=tuple(args.topics), per_topic=args.per_topic, seed=args.seed,
+        category=args.category,
         root=args.root, skills_root=args.skills_root,
         perturb_prefix=args.perturb_prefix, verify_prefix=args.verify_prefix,
         model=args.model, updater_model=args.updater_model,
