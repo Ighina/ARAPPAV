@@ -1122,3 +1122,30 @@ class TestInfraRetryBudget:
     def test_infra_budget_is_separate_from_format_retries(self):
         c = PipelineConfig()
         assert c.infra_retries == 2 and c.retry_format == 0
+
+
+class TestClaudeCodeCredentialIsolation:
+    """`claude -p` must use the subscription, not a stray API key."""
+
+    def test_the_api_key_is_stripped_from_the_subprocess_env(self, monkeypatch, tmp_path):
+        # With ANTHROPIC_API_KEY set, the CLI silently bills that key instead of
+        # the claude.ai login. Sourcing a secrets file for the API backends then
+        # breaks the claude-code backend with "Credit balance is too low" while
+        # the subscription is untouched.
+        import arappav.pipeline.agents as A
+        seen = {}
+
+        class P:
+            returncode, stdout, stderr = 0, "ok", ""
+
+        def fake_run(cmd, **kw):
+            seen.update(kw.get("env") or {})
+            return P()
+
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-should-not-be-used")
+        monkeypatch.setenv("PATH", "/usr/bin")
+        monkeypatch.setattr(A.subprocess, "run", fake_run)
+        monkeypatch.setattr(A, "claude_available", lambda: True)
+        A.run_claude("x", step="s", round_dir=tmp_path)
+        assert "ANTHROPIC_API_KEY" not in seen
+        assert "PATH" in seen          # the rest of the environment survives

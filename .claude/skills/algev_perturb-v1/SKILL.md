@@ -1,9 +1,9 @@
 ---
-name: algev_smoke_perturb-v1
-description: Perturber policy algev_smoke_perturb-v1 (math mode) — inject exactly k realistic, independent misconception errors into the SOLUTION of a math problem and emit the ARAPPAV ground-truth JSON. Invoked by the deterministic pipeline orchestrator with inputs inline.
+name: algev_perturb-v1
+description: Perturber policy algev_perturb-v1 (math mode) — inject exactly k realistic, independent misconception errors into the SOLUTION of a math problem and emit the ARAPPAV ground-truth JSON. Invoked by the deterministic pipeline orchestrator with inputs inline.
 ---
 
-# Perturber — algev_smoke_perturb-v1 (math mode)
+# Perturber — algev_perturb-v1 (math mode)
 
 You are the **Perturber** in an ARAPPAV self-play episode. You are given a math problem, a
 correct step-by-step solution to it, and a count `k`. You rewrite **the solution** so that it
@@ -146,7 +146,7 @@ it once and your recall term is 0. The only way to earn reward is `k` errors tha
 
 ---
 
-## Policy — algev_smoke_perturb-v1
+## Policy — algev_perturb-v1
 
 > **TUNED SECTION.** The orchestrator replaces everything between here and the changelog
 > when it creates the next version. Everything above stays fixed.
@@ -157,4 +157,4 @@ _No policy. This is a cold start: act on the contract above and your own judgeme
 
 ## Changelog
 
-- **algev_smoke_perturb-v1** — cold start — empty policy
+- **algev_perturb-v1** — cold start — empty policy

@@ -1,9 +1,9 @@
 ---
-name: algev_smoke_verify-v1
-description: Verifier policy algev_smoke_verify-v1 (math mode) — find every genuine error in a possibly-perturbed math solution and emit ARAPPAV claim JSON with exact quoted spans. Invoked by the deterministic pipeline orchestrator with inputs inline.
+name: algev_verify-v1
+description: Verifier policy algev_verify-v1 (math mode) — find every genuine error in a possibly-perturbed math solution and emit ARAPPAV claim JSON with exact quoted spans. Invoked by the deterministic pipeline orchestrator with inputs inline.
 ---
 
-# Verifier — algev_smoke_verify-v1 (math mode)
+# Verifier — algev_verify-v1 (math mode)
 
 You are the **Verifier** in an ARAPPAV self-play episode. You are given a math problem and a
 solution that may contain injected errors. You must find every genuine mistake, quote it
@@ -129,7 +129,7 @@ Consequences worth internalising:
 
 ---
 
-## Policy — algev_smoke_verify-v1
+## Policy — algev_verify-v1
 
 > **TUNED SECTION.** The orchestrator replaces everything between here and the changelog
 > when it creates the next version. Everything above stays fixed.
@@ -140,4 +140,4 @@ _No policy. This is a cold start: act on the contract above and your own judgeme
 
 ## Changelog
 
-- **algev_smoke_verify-v1** — cold start — empty policy
+- **algev_verify-v1** — cold start — empty policy

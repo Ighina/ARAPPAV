@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import time
@@ -159,6 +160,15 @@ def run_claude(prompt: str, *, step: str, round_dir: Path,
     if not claude_available():
         raise AgentError("`claude` CLI not found on PATH.")
 
+    # The CLI prefers ANTHROPIC_API_KEY over the claude.ai subscription login
+    # whenever the variable is set. Sourcing a secrets file for the API
+    # backends therefore silently redirects every `claude -p` call onto the API
+    # key's balance — which presents as "Credit balance is too low" while the
+    # subscription is fine, and is invisible unless you compare a shell that
+    # has the variable with one that does not.
+    env = {k: v for k, v in os.environ.items()
+           if k not in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")}
+
     cmd = ["claude", "-p", prompt, "--output-format", "text"]
     if model:
         cmd += ["--model", model]
@@ -167,7 +177,8 @@ def run_claude(prompt: str, *, step: str, round_dir: Path,
 
     t0 = time.time()
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        proc = subprocess.run(cmd, capture_output=True, text=True,
+                              timeout=timeout, env=env)
     except subprocess.TimeoutExpired:
         return AgentResult(step, "", 124, round(time.time() - t0, 2), len(prompt), sha,
                            stderr=f"timeout after {timeout}s")
