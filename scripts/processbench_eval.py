@@ -447,6 +447,9 @@ def main() -> int:
     p_prep.add_argument("--round", type=int, required=True)
     p_prep.add_argument("--subsets", nargs="+", default=SUBSETS, choices=SUBSETS)
     p_prep.add_argument("--per-subset", type=int, default=20)
+    p_prep.add_argument("--full", action="store_true",
+                        help="use every item in each subset (the whole benchmark, "
+                             "3,400 items) — overrides --per-subset")
     p_prep.add_argument("--sampling", choices=["balanced", "random"], default="balanced",
                         help="'balanced' draws equal erroneous/correct items (accuracies are per-class, so this only reduces variance).")
     p_prep.add_argument("--max-steps", type=int, default=None, help="Skip chains longer than this many steps.")

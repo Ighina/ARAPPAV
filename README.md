@@ -222,6 +222,41 @@ calls. A and B run through `claude -p` at ~$0.048/call, so start with
 `ROUNDS=3` and `PB_BACKEND=batch`. Re-running the same command resumes:
 completed rounds and answered evaluation items are skipped.
 
+### Evaluation protocol: validation, then test
+
+Three datasets with three distinct jobs. Keeping them apart is what makes the
+reported number mean anything.
+
+| set | role | what it decides |
+|---|---|---|
+| self-play episodes | training signal | the policy updates |
+| **MATH-500** (`HuggingFaceH4/MATH-500`) | **validation** | which round's policy wins |
+| **ProcessBench** (full, 3,400 items) | **test** | the reported result, on the winner only |
+
+```bash
+./scripts/final_evaluation.sh hverify 10 claude-haiku-4-5
+```
+
+That runs, in order: build the MATH-500 validation set once with a **pinned**
+perturber → score every verifier version on those identical items → select the
+best by validation F1 → run the **full** ProcessBench on that one policy.
+
+**Why not select on self-play reward.** Measured over the ten-round Haiku run,
+self-play verifier F1 correlates with held-out F1 at r = +0.275 (n = 10, not
+significant; 56% pairwise ranking agreement against 50% for a coin flip).
+Picking the best self-play round returns a policy that is *worse on held-out
+data than the untuned cold start*. Each round draws fresh problems against a
+co-evolving perturber, so the score mixes policy quality with problem difficulty
+and opponent weakness. MATH-500 fixes both: same problems, same pinned
+perturber, every version.
+
+**Why not select on ProcessBench.** Choosing and reporting on the same benchmark
+makes the reported figure a training score.
+
+`scripts/eval_policies_processbench.py` — 80 ProcessBench items across *every*
+round — remains available and unchanged, but it is an **analysis** tool for
+reading the trajectory. It must not be used to pick a policy.
+
 ### Documentation
 
 - **[NEW_BACKENDS.md](NEW_BACKENDS.md)** — the three backends, providers, costs.

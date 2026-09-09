@@ -537,3 +537,68 @@ class TestApiProviders:
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
         with pytest.raises(SystemExit, match="Anthropic-only"):
             B.make_backend("batch", model="gpt-5")
+
+
+class TestValidationProtocol:
+    """MATH-500 selects; ProcessBench reports. They must stay separate."""
+
+    def _mk(self, tmp_path, versions):
+        """A validation root with hand-written answers and verifier outputs."""
+        import json
+        (tmp_path / "answers").mkdir(parents=True)
+        (tmp_path / "inbox").mkdir(parents=True)
+        # one perturbed item, one clean item
+        pert = {"episode_id": "p1", "clean": False, "k": 1,
+                "problem": "2+2?", "original_solution": "2+2 = 4.",
+                "solution_to_review": "2+2 = 5.",
+                "errors": [{"error_id": "err_001", "step_index": 0,
+                            "original_text": "2+2 = 4", "injected_text": "2+2 = 5",
+                            "error_type": "wrong_operation", "rationale": "4 not 5"}]}
+        clean = {"episode_id": "c1", "clean": True, "k": 0, "problem": "1+1?",
+                 "original_solution": "1+1 = 2.", "solution_to_review": "1+1 = 2.",
+                 "errors": []}
+        for r in (pert, clean):
+            (tmp_path / "answers" / f"{r['episode_id']}.json").write_text(json.dumps(r))
+        for skill, (pclaim, cclaim) in versions.items():
+            d = tmp_path / "outbox" / skill
+            d.mkdir(parents=True)
+            (d / "p1.json").write_text(pclaim)
+            (d / "c1.json").write_text(cclaim)
+        return tmp_path
+
+    def test_catching_the_error_beats_missing_it(self, tmp_path):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "v500", Path("scripts/validate_math500.py"))
+        v500 = importlib.util.module_from_spec(spec); spec.loader.exec_module(v500)
+        root = self._mk(tmp_path, {
+            "hv-v1": ('{"claims":[{"quoted_text":"2+2 = 5","explanation":"should be 4"}]}',
+                      '{"claims":[]}'),
+            "hv-v2": ('{"claims":[]}', '{"claims":[]}'),
+        })
+        cfg = scoring.load_reward_config()
+        good = v500._score_version(root, "hv-v1", cfg)
+        bad = v500._score_version(root, "hv-v2", cfg)
+        assert good["mean_verifier_f1"] > bad["mean_verifier_f1"]
+
+    def test_false_alarms_on_clean_items_are_counted_separately(self, tmp_path):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "v500b", Path("scripts/validate_math500.py"))
+        v500 = importlib.util.module_from_spec(spec); spec.loader.exec_module(v500)
+        root = self._mk(tmp_path, {
+            "hv-v1": ('{"claims":[]}', '{"claims":[]}'),                    # silent
+            "hv-v2": ('{"claims":[]}',
+                      '{"claims":[{"quoted_text":"1+1 = 2","explanation":"x"}]}'),
+        })
+        cfg = scoring.load_reward_config()
+        assert v500._score_version(root, "hv-v1", cfg)["false_alarm_rate"] == 0.0
+        assert v500._score_version(root, "hv-v2", cfg)["false_alarm_rate"] == 1.0
+
+    def test_validation_inbox_carries_no_ground_truth(self, tmp_path):
+        # The verifier's view must be problem + text only: the original solution
+        # would give the diff away, and the error list is the answer.
+        from arappav.pipeline.contracts import VERIFY_INPUT_FIELDS
+        assert set(VERIFY_INPUT_FIELDS) == {"problem", "solution_to_review"}
+        for forbidden in ("original_solution", "errors", "k", "clean"):
+            assert forbidden not in VERIFY_INPUT_FIELDS
