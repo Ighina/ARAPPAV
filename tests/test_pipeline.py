@@ -873,3 +873,23 @@ class TestResumeAfterPartialRound:
         policies.write_version(tmp_path, "verify", "verify", 1, "1. a", "x")
         with pytest.raises(policies.PolicyError, match="already exists"):
             policies.write_version(tmp_path, "verify", "verify", 1, "1. b", "y")
+
+
+class TestThinkingOnlyReplies:
+    """A reply that is all thinking and no text is a failed episode."""
+
+    def _res(self, text="", had_content=False, rc=0):
+        from arappav.pipeline.agents import AgentResult
+        return AgentResult("perturb", text, rc, 0.1, 10, "sha",
+                           had_content=had_content)
+
+    def test_thinking_only_is_not_an_outage(self):
+        # The model ran; it just produced nothing usable. It must flow on to
+        # fail parsing and be retried, not abort a 160-episode run.
+        assert self._res("", had_content=True).infra_failure() is None
+
+    def test_a_truly_contentless_reply_is_an_outage(self):
+        assert self._res("", had_content=False).infra_failure() == "empty response"
+
+    def test_a_real_reply_is_unaffected(self):
+        assert self._res('{"claims": []}', had_content=True).infra_failure() is None

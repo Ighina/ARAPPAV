@@ -317,10 +317,17 @@ class ApiBackend(Backend):
         # lets it fail parsing, be retried by --retry-format, and finally be
         # scored as a format failure for that one episode. Treating it as
         # infrastructure aborted a whole 160-episode run on one rare runaway.
+        note = ""
+        if truncated:
+            note = (f"truncated at max_tokens={self.max_tokens} "
+                    f"(output {usage.get('output_tokens')})")
+        elif not text.strip():
+            note = (f"no text returned; the model produced only thinking "
+                    f"({usage.get('output_tokens')} output tokens)")
         r = AgentResult(step, text.strip(), 0, round(time.time() - t0, 2),
-                        len(system) + len(user), "",
-                        stderr=(f"truncated at max_tokens={self.max_tokens} "
-                                f"(output {usage.get('output_tokens')})" if truncated else ""))
+                        len(system) + len(user), "", stderr=note,
+                        had_content=bool(getattr(resp, "content", None)
+                                         or getattr(resp, "choices", None)))
         r.usage = usage                                # type: ignore[attr-defined]
         return r
 

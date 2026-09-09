@@ -69,6 +69,7 @@ class PipelineConfig:
     timeout: int = 900
     max_tokens: int = 16000
     taxonomy_free: bool = False
+    infra_retries: int = 2
     retry_format: int = 0   # extra attempts when a reply fails to parse
     resume: bool = False    # skip rounds that already have a summary
 
@@ -357,7 +358,8 @@ class Pipeline:
                     episode_id=f"{ep.episode_id}_a{attempt}" if attempt
                     else ep.episode_id)
                 ledger.record("perturb", ep.episode_id, {}, p_body, pres)
-                _guard(pres, f"round {i} {ep.episode_id} perturb")
+                _guard(pres, f"round {i} {ep.episode_id} perturb",
+                       attempt, cfg.retry_format)
                 parsed, err, stage = scoring.parse_perturbation(pres.text, ep.k, ep.solution)
                 attempts.append({"attempt": attempt, "format_valid": parsed is not None,
                                  "failure_stage": stage})
@@ -581,7 +583,7 @@ def _summary_table(rounds: list[dict], cfg: PipelineConfig) -> str:
     return head + "\n".join(rows) + "\n"
 
 
-def _guard(res, what: str) -> None:
+def _guard(res, what: str, attempt: int = 0, retries: int = 0) -> None:
     """Abort the run if a call never reached a model.
 
     Deliberately fail-fast. The alternative — recording a penalty — silently
@@ -590,6 +592,11 @@ def _guard(res, what: str) -> None:
     so `--resume` continues from the last good round once the cause is fixed.
     """
     reason = res.infra_failure()
+    if reason and attempt < retries:
+        # Transient blips (a dropped connection, a momentary 5xx) should cost
+        # one call, not the run. A real outage persists and still aborts below.
+        print(f"[retry] {what}: {reason} — attempt {attempt + 1}/{retries}")
+        return
     if reason:
         raise InfrastructureError(
             f"{what}: the model was never reached ({reason}). "

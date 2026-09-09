@@ -68,6 +68,9 @@ class AgentResult:
     prompt_sha256: str
     stderr: str = ""
     dry_run: bool = False
+    #: True when the provider returned content blocks (e.g. thinking) even
+    #: though no text came out. That is a failed generation, not a failed call.
+    had_content: bool = False
 
     def ok(self) -> bool:
         return self.returncode == 0 and bool(self.text.strip())
@@ -89,7 +92,10 @@ class AgentResult:
             return (detail[0][:160] if detail
                     else f"call failed (rc={self.returncode})")
         if not self.text.strip():
-            return "empty response"
+            # Content blocks present but no text: the model ran and produced
+            # only thinking. Let it fail parsing and be retried as a bad
+            # episode instead of aborting the run as an outage.
+            return None if self.had_content else "empty response"
         return None
 
 
