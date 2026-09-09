@@ -271,3 +271,18 @@ class TestInfrastructureFailure:
     def test_guard_passes_a_real_reply_through(self):
         from arappav.pipeline.orchestrator import _guard
         _guard(self._res('{"claims": []}', rc=0), "round 0 ep00 verify")   # no raise
+
+
+class TestUpdaterModel:
+    """Policy authoring can use a different model from episode play."""
+
+    def test_defaults_to_the_player_model(self):
+        assert PipelineConfig(model="claude-haiku-4-5").policy_model() == "claude-haiku-4-5"
+
+    def test_override_separates_the_two_roles(self):
+        c = PipelineConfig(model="claude-haiku-4-5", updater_model="claude-opus-5")
+        assert c.policy_model() == "claude-opus-5"
+        assert c.model == "claude-haiku-4-5"
+
+    def test_both_unset_is_none(self):
+        assert PipelineConfig().policy_model() is None

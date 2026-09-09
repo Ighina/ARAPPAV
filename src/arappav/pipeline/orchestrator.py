@@ -47,6 +47,11 @@ class PipelineConfig:
     perturb_prefix: str = "perturb"
     verify_prefix: str = "verify"
     model: str | None = None
+    # Model for policy authoring (create-policy-*, update-*) as opposed to
+    # playing episodes. Separating them isolates *policy quality* from *player
+    # capability*: the 10-round haiku run degraded because the updater fitted
+    # per-round noise while the players were competent (see HAIKU_FAILURE.md).
+    updater_model: str | None = None
     processbench_enabled: bool = False  # spec 11
     processbench_per_subset: int = 5
     processbench_root: str = "data/skill_evals"
@@ -57,6 +62,10 @@ class PipelineConfig:
     timeout: int = 900
     retry_format: int = 0   # extra attempts when a reply fails to parse
     resume: bool = False    # skip rounds that already have a summary
+
+    def policy_model(self) -> str | None:
+        """Model used to author policies; falls back to the player model."""
+        return self.updater_model or self.model
 
     def freeze_perturber(self) -> bool:
         return self.freeze in ("perturber", "both")
@@ -165,12 +174,14 @@ class Pipeline:
                           "Return ONLY the markdown body of the policy section: a short list "
                           "of numbered strategy rules. No headings, no preamble, no fences.\n")
                 res = run_claude(prompt, step=f"create-policy-{role}",
-                                 round_dir=self.round_dir(0), model=cfg.model,
+                                 round_dir=self.round_dir(0),
+                                 model=cfg.policy_model(),
                                  timeout=cfg.timeout, dry_run=cfg.dry_run)
                 ledger.record(f"create-policy-{role}", None, {}, prompt, res)
                 _guard(res, f"create-policy-{role}")
                 body = res.text if res.ok() else ""
-                note = "warm start — policy authored by " + skill
+                note = (f"warm start — policy authored by {skill} "
+                        f"({cfg.policy_model() or 'default model'})")
                 if not body:
                     note += " (empty: the skill returned nothing)"
             policies.write_version(self.skills, role, prefix, v, body, note,
@@ -208,7 +219,8 @@ class Pipeline:
                 "numbered rules. No headings, no preamble, no fences, no changelog.\n"
             )
             res = run_claude(prompt, step=f"{skill}", round_dir=self.round_dir(i),
-                             model=cfg.model, timeout=cfg.timeout, dry_run=cfg.dry_run)
+                             model=cfg.policy_model(), timeout=cfg.timeout,
+                             dry_run=cfg.dry_run)
             ledger.record(skill, None, allowed, prompt, res)
             _guard(res, f"round {i} {skill}")
             body = res.text if res.ok() else old_body
@@ -449,7 +461,8 @@ class Pipeline:
             "\n\n## PRECOMPUTED ROUND TABLE\n" + table + "\n"
         )
         res = run_claude(prompt, step="final_summary", round_dir=self.root,
-                         model=cfg.model, timeout=cfg.timeout, dry_run=cfg.dry_run)
+                         model=cfg.policy_model(), timeout=cfg.timeout,
+                         dry_run=cfg.dry_run)
         if res.infra_failure():
             print(f"[final] narrative summary unavailable ({res.infra_failure()}); "
                   "writing the deterministic table instead.")

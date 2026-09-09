@@ -69,7 +69,13 @@ def build_parser() -> argparse.ArgumentParser:
     b.add_argument("--processbench-seed", type=int, default=0, dest="processbench_seed")
 
     a = p.add_argument_group("agents")
-    a.add_argument("--model", default=None, help="passed through to `claude --model`")
+    a.add_argument("--model", default=None,
+                   help="model for playing episodes (perturb + verify)")
+    a.add_argument("--updater-model", default=None, dest="updater_model",
+                   help="model for authoring policies (create-policy-*, update-*, "
+                        "final_summary). Defaults to --model. Set it higher than "
+                        "--model to test whether the policy writer, rather than the "
+                        "players, is the bottleneck.")
     a.add_argument("--timeout", type=int, default=900)
     a.add_argument("--retry-format", type=int, default=0, dest="retry_format",
                    help="extra attempts when a reply fails to parse (default 0, "
@@ -91,7 +97,8 @@ def main() -> int:
         topics=tuple(args.topics), per_topic=args.per_topic, seed=args.seed,
         root=args.root, skills_root=args.skills_root,
         perturb_prefix=args.perturb_prefix, verify_prefix=args.verify_prefix,
-        model=args.model, processbench_enabled=args.processbench_enabled,
+        model=args.model, updater_model=args.updater_model,
+        processbench_enabled=args.processbench_enabled,
         processbench_per_subset=args.processbench_per_subset,
         processbench_root=args.processbench_root,
         processbench_seed=args.processbench_seed, no_context=args.no_context,
@@ -99,6 +106,8 @@ def main() -> int:
         timeout=args.timeout, retry_format=args.retry_format,
         resume=args.resume,
     )
+    print(f"[pipeline] players={cfg.model or 'default'} "
+          f"updater={cfg.policy_model() or 'default'}")
     print(f"[pipeline] start={cfg.start} freeze={cfg.freeze} rounds={cfg.rounds} "
           f"episodes={cfg.episodes} k={cfg.k} processbench={cfg.processbench_enabled} "
           f"no_context={cfg.no_context} dry_run={cfg.dry_run}")
