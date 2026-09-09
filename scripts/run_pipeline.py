@@ -76,6 +76,16 @@ def build_parser() -> argparse.ArgumentParser:
                         "final_summary). Defaults to --model. Set it higher than "
                         "--model to test whether the policy writer, rather than the "
                         "players, is the bottleneck.")
+    a.add_argument("--backend", choices=["claude-code", "api"], default="claude-code",
+                   help="claude-code: `claude -p` per call (Claude models only). "
+                        "api: direct API — the only way to run non-Claude models.")
+    a.add_argument("--provider", default=None,
+                   choices=["anthropic", "openai", "deepseek"],
+                   help="api backend: provider for the players; inferred from --model")
+    a.add_argument("--updater-provider", default=None, dest="updater_provider",
+                   choices=["anthropic", "openai", "deepseek"],
+                   help="api backend: provider for the policy author; "
+                        "inferred from --updater-model")
     a.add_argument("--timeout", type=int, default=900)
     a.add_argument("--retry-format", type=int, default=0, dest="retry_format",
                    help="extra attempts when a reply fails to parse (default 0, "
@@ -98,6 +108,8 @@ def main() -> int:
         root=args.root, skills_root=args.skills_root,
         perturb_prefix=args.perturb_prefix, verify_prefix=args.verify_prefix,
         model=args.model, updater_model=args.updater_model,
+        backend=args.backend, provider=args.provider,
+        updater_provider=args.updater_provider,
         processbench_enabled=args.processbench_enabled,
         processbench_per_subset=args.processbench_per_subset,
         processbench_root=args.processbench_root,
@@ -106,7 +118,7 @@ def main() -> int:
         timeout=args.timeout, retry_format=args.retry_format,
         resume=args.resume,
     )
-    print(f"[pipeline] players={cfg.model or 'default'} "
+    print(f"[pipeline] backend={cfg.backend} players={cfg.model or 'default'} "
           f"updater={cfg.policy_model() or 'default'}")
     print(f"[pipeline] start={cfg.start} freeze={cfg.freeze} rounds={cfg.rounds} "
           f"episodes={cfg.episodes} k={cfg.k} processbench={cfg.processbench_enabled} "

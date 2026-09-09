@@ -46,6 +46,7 @@ Thumbs.db
 # Environment
 .env
 .env.local
+.secrets
 
 # claude code configuration file
 claude-code-source.sh

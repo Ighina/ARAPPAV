@@ -15,8 +15,9 @@ from pathlib import Path
 
 from arappav.pipeline import agents, policies, scoring
 from arappav.pipeline.agents import (
-    ContextLedger, InfrastructureError, render_context_block, run_claude,
+    ContextLedger, InfrastructureError, render_context_block,
 )
+from arappav.pipeline.backends import make_backend
 from arappav.pipeline.contracts import (
     Episode, LeakageError, assert_problem_unchanged,
     render_perturb_prompt, render_verify_prompt,
@@ -47,6 +48,12 @@ class PipelineConfig:
     perturb_prefix: str = "perturb"
     verify_prefix: str = "verify"
     model: str | None = None
+    # Transport for every agent call. `claude-code` runs `claude -p`, which only
+    # reaches Claude models; `api` reaches Anthropic, OpenAI and DeepSeek, and is
+    # the only way to run this pipeline on a non-Claude model.
+    backend: str = "claude-code"
+    provider: str | None = None          # players; inferred from model when None
+    updater_provider: str | None = None  # policy author; falls back to provider
     # Model for policy authoring (create-policy-*, update-*) as opposed to
     # playing episodes. Separating them isolates *policy quality* from *player
     # capability*: the 10-round haiku run degraded because the updater fitted
@@ -66,6 +73,10 @@ class PipelineConfig:
     def policy_model(self) -> str | None:
         """Model used to author policies; falls back to the player model."""
         return self.updater_model or self.model
+
+    def policy_provider(self) -> str | None:
+        return self.updater_provider or (
+            None if self.updater_model else self.provider)
 
     def freeze_perturber(self) -> bool:
         return self.freeze in ("perturber", "both")
@@ -148,6 +159,55 @@ class Pipeline:
         self.reward_cfg = scoring.load_reward_config()
         self.history: list = []          # cross-round anti-duplicate corpus
         self.rounds: list[dict] = []
+        self._players = None
+        self._author = None
+
+    def _backend(self, which: str):
+        """Lazily build the play / policy-authoring backend.
+
+        Built on demand so a --dry-run needs no credentials at all.
+        """
+        cfg = self.cfg
+        if which == "players":
+            if self._players is None:
+                self._players = make_backend(
+                    cfg.backend, model=cfg.model, timeout=cfg.timeout,
+                    skills_root=self.skills,
+                    **({"provider": cfg.provider} if cfg.backend != "claude-code" else {}))
+            return self._players
+        if self._author is None:
+            self._author = make_backend(
+                cfg.backend, model=cfg.policy_model(), timeout=cfg.timeout,
+                skills_root=self.skills,
+                **({"provider": cfg.policy_provider()} if cfg.backend != "claude-code" else {}))
+        return self._author
+
+    def _call(self, which: str, *, skill: str | None, user: str, step: str,
+              round_dir: Path, episode_id: str | None = None):
+        """One agent call through the configured transport.
+
+        `skill` is the policy to apply. Under `claude-code` it becomes a
+        `/slash` command inside the prompt; under `api` it is loaded from disk
+        and sent as a cached system prompt. Steps with no versioned policy
+        (create-policy-*, update-*, final_summary) pass skill=None and carry
+        their instruction in the prompt body instead.
+        """
+        cfg = self.cfg
+        if cfg.dry_run:
+            from arappav.pipeline.agents import run_claude
+            text = f"/{skill}\n\n{user}" if skill else user
+            return run_claude(text, step=step, round_dir=round_dir,
+                              episode_id=episode_id, model=cfg.model,
+                              timeout=cfg.timeout, dry_run=True)
+        backend = self._backend(which)
+        if skill is None:
+            # No policy file to send: the whole instruction is the prompt. The
+            # CLI backend takes it as-is; the API backend needs a system prompt,
+            # so it gets a minimal one.
+            return backend.run_raw(user=user, step=step, round_dir=round_dir,
+                                   episode_id=episode_id)
+        return backend.run(skill=skill, user=user, step=step,
+                           round_dir=round_dir, episode_id=episode_id)
 
     # -- paths ------------------------------------------------------------
     def round_dir(self, i: int) -> Path:
@@ -173,10 +233,9 @@ class Pipeline:
                 prompt = (f"/{skill}\n\n"
                           "Return ONLY the markdown body of the policy section: a short list "
                           "of numbered strategy rules. No headings, no preamble, no fences.\n")
-                res = run_claude(prompt, step=f"create-policy-{role}",
-                                 round_dir=self.round_dir(0),
-                                 model=cfg.policy_model(),
-                                 timeout=cfg.timeout, dry_run=cfg.dry_run)
+                res = self._call("author", skill=None, user=prompt,
+                                 step=f"create-policy-{role}",
+                                 round_dir=self.round_dir(0))
                 ledger.record(f"create-policy-{role}", None, {}, prompt, res)
                 _guard(res, f"create-policy-{role}")
                 body = res.text if res.ok() else ""
@@ -218,9 +277,8 @@ class Pipeline:
                 "Return ONLY the markdown body of the NEXT policy section — the revised "
                 "numbered rules. No headings, no preamble, no fences, no changelog.\n"
             )
-            res = run_claude(prompt, step=f"{skill}", round_dir=self.round_dir(i),
-                             model=cfg.policy_model(), timeout=cfg.timeout,
-                             dry_run=cfg.dry_run)
+            res = self._call("author", skill=None, user=prompt, step=f"{skill}",
+                             round_dir=self.round_dir(i))
             ledger.record(skill, None, allowed, prompt, res)
             _guard(res, f"round {i} {skill}")
             body = res.text if res.ok() else old_body
@@ -274,19 +332,19 @@ class Pipeline:
             _write(ed / "meta.json", ep.meta())
 
             # ---- perturbation -------------------------------------------
-            p_prompt = render_perturb_prompt(ep, f"/{cfg.perturb_prefix}-v{pv}",
-                                             render_context_block({}, cfg.no_context))
+            p_body = render_perturb_prompt(
+                ep, "", render_context_block({}, cfg.no_context)).lstrip()
             # `retry_format` is an explicit orchestration knob, default 0, so the
             # reward statistics match the pre-refactor pipeline unless asked
             # otherwise. Every attempt is recorded.
             attempts = []
             for attempt in range(cfg.retry_format + 1):
-                pres = run_claude(p_prompt, step="perturb", round_dir=rdir,
-                                  episode_id=f"{ep.episode_id}_a{attempt}" if attempt
-                                  else ep.episode_id,
-                                  model=cfg.model, timeout=cfg.timeout,
-                                  dry_run=cfg.dry_run)
-                ledger.record("perturb", ep.episode_id, {}, p_prompt, pres)
+                pres = self._call(
+                    "players", skill=f"{cfg.perturb_prefix}-v{pv}", user=p_body,
+                    step="perturb", round_dir=rdir,
+                    episode_id=f"{ep.episode_id}_a{attempt}" if attempt
+                    else ep.episode_id)
+                ledger.record("perturb", ep.episode_id, {}, p_body, pres)
                 _guard(pres, f"round {i} {ep.episode_id} perturb")
                 parsed, err, stage = scoring.parse_perturbation(pres.text, ep.k, ep.solution)
                 attempts.append({"attempt": attempt, "format_valid": parsed is not None,
@@ -314,13 +372,13 @@ class Pipeline:
                 v_input = {"problem": ep.problem,
                            "solution_to_review": parsed.perturbed_solution}
                 _write(ed / "verify_input.json", v_input)
-                v_prompt = render_verify_prompt(
-                    ep, parsed.perturbed_solution, f"/{cfg.verify_prefix}-v{vv}",
-                    render_context_block({}, cfg.no_context))
-                vres = run_claude(v_prompt, step="verify", round_dir=rdir,
-                                  episode_id=ep.episode_id, model=cfg.model,
-                                  timeout=cfg.timeout, dry_run=cfg.dry_run)
-                ledger.record("verify", ep.episode_id, {}, v_prompt, vres)
+                v_body = render_verify_prompt(
+                    ep, parsed.perturbed_solution, "",
+                    render_context_block({}, cfg.no_context)).lstrip()
+                vres = self._call("players", skill=f"{cfg.verify_prefix}-v{vv}",
+                                  user=v_body, step="verify", round_dir=rdir,
+                                  episode_id=ep.episode_id)
+                ledger.record("verify", ep.episode_id, {}, v_body, vres)
                 _guard(vres, f"round {i} {ep.episode_id} verify")
                 vres_text = vres.text
                 (ed / "verify_raw.txt").write_text(vres_text)
@@ -386,11 +444,9 @@ class Pipeline:
             item = json.loads(f.read_text())
             ep = Episode(episode_id=f.stem, problem=item["problem"],
                          solution="", k=0)
-            prompt = render_verify_prompt(ep, item["solution_to_review"],
-                                          f"/{skill}", "")
-            r = run_claude(prompt, step="processbench", round_dir=self.round_dir(i),
-                           episode_id=f.stem, model=cfg.model,
-                           timeout=cfg.timeout, dry_run=cfg.dry_run)
+            body = render_verify_prompt(ep, item["solution_to_review"], "", "").lstrip()
+            r = self._call("players", skill=skill, user=body, step="processbench",
+                           round_dir=self.round_dir(i), episode_id=f.stem)
             (outbox / f.name).write_text(r.text or '{"claims": []}')
         sc = subprocess.run(
             [sys.executable, "scripts/processbench_eval.py", "--root", str(root),
@@ -460,9 +516,8 @@ class Pipeline:
             "## RUN DATA\n" + json.dumps(payload, indent=2, ensure_ascii=False)[:120000] +
             "\n\n## PRECOMPUTED ROUND TABLE\n" + table + "\n"
         )
-        res = run_claude(prompt, step="final_summary", round_dir=self.root,
-                         model=cfg.policy_model(), timeout=cfg.timeout,
-                         dry_run=cfg.dry_run)
+        res = self._call("author", skill=None, user=prompt, step="final_summary",
+                         round_dir=self.root)
         if res.infra_failure():
             print(f"[final] narrative summary unavailable ({res.infra_failure()}); "
                   "writing the deterministic table instead.")

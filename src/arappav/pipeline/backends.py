@@ -107,6 +107,16 @@ class Backend:
             episode_id: str | None = None) -> AgentResult:
         raise NotImplementedError
 
+    def run_raw(self, *, user: str, step: str, round_dir: Path,
+                episode_id: str | None = None) -> AgentResult:
+        """A call with no versioned policy file — the prompt is the instruction.
+
+        Used by create-policy-*, update-* and final_summary, which reference a
+        static skill by name inside the prompt rather than being governed by a
+        versioned policy.
+        """
+        raise NotImplementedError
+
 
 @dataclass
 class ClaudeCodeBackend(Backend):
@@ -115,6 +125,11 @@ class ClaudeCodeBackend(Backend):
     def run(self, *, skill, user, step, round_dir, episode_id=None) -> AgentResult:
         # The slash command loads the policy; the harness supplies everything else.
         return run_claude(f"/{skill}\n\n{user}", step=step, round_dir=round_dir,
+                          episode_id=episode_id, model=self.model,
+                          timeout=self.timeout)
+
+    def run_raw(self, *, user, step, round_dir, episode_id=None) -> AgentResult:
+        return run_claude(user, step=step, round_dir=round_dir,
                           episode_id=episode_id, model=self.model,
                           timeout=self.timeout)
 
@@ -198,12 +213,34 @@ class ApiBackend(Backend):
             kwargs["max_tokens"] = self.max_tokens
         return kwargs
 
+    def run_raw(self, *, user, step, round_dir, episode_id=None) -> AgentResult:
+        """No versioned policy: resolve a leading `/skill` line off disk instead.
+
+        The API has no slash-command mechanism, so a prompt that opens with
+        `/update-verify` would otherwise reach the model as literal text. The
+        named skill file is loaded and sent as the system prompt, and the line
+        is stripped from the body.
+        """
+        system, body = "You are a careful assistant. Follow the instructions exactly.", user
+        m = re.match(r"\s*/([A-Za-z0-9_-]+)\s*\n", user)
+        if m:
+            try:
+                system = skill_text(self.skills_root, m.group(1))
+                body = user[m.end():].lstrip()
+            except FileNotFoundError:
+                pass
+        return self._send(system, body, step, round_dir, episode_id)
+
     def run(self, *, skill, user, step, round_dir, episode_id=None) -> AgentResult:
         system = self._cache.setdefault(skill, skill_text(self.skills_root, skill))
+        return self._send(system, user, step, round_dir, episode_id)
+
+    def _send(self, system: str, user: str, step: str, round_dir: Path,
+              episode_id: str | None) -> AgentResult:
         tag = f"{step}__{episode_id}" if episode_id else step
         pdir = round_dir / "prompts"
         pdir.mkdir(parents=True, exist_ok=True)
-        (pdir / f"{tag}.txt").write_text(f"[system: {skill}]\n\n{user}")
+        (pdir / f"{tag}.txt").write_text(f"[system]\n{system}\n\n[user]\n{user}")
         anthropic_path = PROVIDERS[self.provider]["sdk"] == "anthropic"
 
         t0 = time.time()

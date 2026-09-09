@@ -172,3 +172,23 @@ The `claude-code` path has been exercised end to end on real runs. The `api` and
 caching, provider routing, id-keyed collection, failure classification — but at
 the time of writing had **not** been run against a live API key. Send two items
 before committing to a full sweep.
+
+---
+
+## Running the pipeline on non-Claude models
+
+`scripts/run_pipeline.py` also takes `--backend`. It defaults to `claude-code`,
+which invokes `claude -p` and therefore reaches **Claude models only**;
+`--backend api` is the only way to run the self-play loop on OpenAI or DeepSeek.
+
+Players and policy author are configured independently, and may use different
+providers:
+
+```bash
+python scripts/run_pipeline.py --rounds 10 --episodes 8 \
+    --backend api --model gpt-5.6-terra --updater-model gpt-5.6-sol
+```
+
+`run_experiments.sh` wraps the four comparisons this repository cares about —
+strong-updater vs weak-updater, on Claude, OpenAI and DeepSeek — picking the
+backend per model family and skipping any run whose credential is absent.
