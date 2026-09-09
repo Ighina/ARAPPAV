@@ -1088,3 +1088,37 @@ class TestUpdateModes:
 
     def test_acceptance_gating_is_off_by_default(self):
         assert PipelineConfig().accept_on_validation is False
+
+
+class TestInfraRetryBudget:
+    """Transient blips get their own budget, and a wait."""
+
+    def _res(self, reason):
+        from arappav.pipeline.agents import AgentResult
+        return AgentResult("perturb", "", 1, 0.1, 10, "sha", stderr=reason)
+
+    def test_a_transient_failure_is_retried_not_fatal(self, monkeypatch):
+        import arappav.pipeline.orchestrator as O
+        monkeypatch.setattr(O.time, "sleep", lambda s: None)
+        O._guard(self._res("credit balance"), "x", attempt=0, retries=2)  # no raise
+
+    def test_it_aborts_once_the_budget_is_spent(self, monkeypatch):
+        import arappav.pipeline.orchestrator as O
+        from arappav.pipeline.agents import InfrastructureError
+        monkeypatch.setattr(O.time, "sleep", lambda s: None)
+        with pytest.raises(InfrastructureError):
+            O._guard(self._res("credit balance"), "x", attempt=2, retries=2)
+
+    def test_it_waits_before_retrying(self, monkeypatch):
+        # Retrying a rate or credit blip instantly just reproduces it — which is
+        # how a recoverable failure previously killed a run on attempt two.
+        import arappav.pipeline.orchestrator as O
+        waits = []
+        monkeypatch.setattr(O.time, "sleep", lambda s: waits.append(s))
+        O._guard(self._res("rate limit"), "x", attempt=0, retries=2, backoff=10)
+        O._guard(self._res("rate limit"), "x", attempt=1, retries=2, backoff=10)
+        assert waits == [10, 20]        # and it backs off
+
+    def test_infra_budget_is_separate_from_format_retries(self):
+        c = PipelineConfig()
+        assert c.infra_retries == 2 and c.retry_format == 0

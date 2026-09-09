@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import random
+import time
 import subprocess
 import sys
 from dataclasses import asdict, dataclass, field
@@ -599,7 +600,7 @@ class Pipeline:
             # reward statistics match the pre-refactor pipeline unless asked
             # otherwise. Every attempt is recorded.
             attempts = []
-            for attempt in range(cfg.retry_format + 1):
+            for attempt in range(max(cfg.retry_format, cfg.infra_retries) + 1):
                 pres = self._call(
                     "players", skill=f"{cfg.perturb_prefix}-v{pv}", user=p_body,
                     step="perturb", round_dir=rdir,
@@ -607,7 +608,7 @@ class Pipeline:
                     else ep.episode_id)
                 ledger.record("perturb", ep.episode_id, {}, p_body, pres)
                 _guard(pres, f"round {i} {ep.episode_id} perturb",
-                       attempt, cfg.retry_format)
+                       attempt, cfg.infra_retries)
                 parsed, err, stage = scoring.parse_perturbation(pres.text, ep.k, ep.solution)
                 attempts.append({"attempt": attempt, "format_valid": parsed is not None,
                                  "failure_stage": stage})
@@ -637,11 +638,15 @@ class Pipeline:
                 v_body = render_verify_prompt(
                     ep, parsed.perturbed_solution, "",
                     render_context_block({}, cfg.no_context)).lstrip()
-                vres = self._call("players", skill=f"{cfg.verify_prefix}-v{vv}",
-                                  user=v_body, step="verify", round_dir=rdir,
-                                  episode_id=ep.episode_id)
+                for vattempt in range(cfg.infra_retries + 1):
+                    vres = self._call("players", skill=f"{cfg.verify_prefix}-v{vv}",
+                                      user=v_body, step="verify", round_dir=rdir,
+                                      episode_id=ep.episode_id)
+                    _guard(vres, f"round {i} {ep.episode_id} verify",
+                           vattempt, cfg.infra_retries)
+                    if not vres.infra_failure():
+                        break
                 ledger.record("verify", ep.episode_id, {}, v_body, vres)
-                _guard(vres, f"round {i} {ep.episode_id} verify")
                 vres_text = vres.text
                 (ed / "verify_raw.txt").write_text(vres_text)
 
@@ -841,7 +846,8 @@ def _summary_table(rounds: list[dict], cfg: PipelineConfig) -> str:
     return head + "\n".join(rows) + "\n"
 
 
-def _guard(res, what: str, attempt: int = 0, retries: int = 0) -> None:
+def _guard(res, what: str, attempt: int = 0, retries: int = 0,
+           backoff: float = 20.0) -> None:
     """Abort the run if a call never reached a model.
 
     Deliberately fail-fast. The alternative — recording a penalty — silently
@@ -851,9 +857,14 @@ def _guard(res, what: str, attempt: int = 0, retries: int = 0) -> None:
     """
     reason = res.infra_failure()
     if reason and attempt < retries:
-        # Transient blips (a dropped connection, a momentary 5xx) should cost
-        # one call, not the run. A real outage persists and still aborts below.
-        print(f"[retry] {what}: {reason} — attempt {attempt + 1}/{retries}")
+        # Transient blips (a dropped connection, a momentary 5xx, a credit or
+        # rate wobble) should cost one call, not the run. Wait before retrying:
+        # an immediate retry against a rate limit simply reproduces it, which is
+        # how a recoverable blip previously killed a run on its second attempt.
+        wait = backoff * (attempt + 1)
+        print(f"[retry] {what}: {reason} — attempt {attempt + 1}/{retries}, "
+              f"waiting {wait:.0f}s", flush=True)
+        time.sleep(wait)
         return
     if reason:
         raise InfrastructureError(
