@@ -745,12 +745,21 @@ class TestTruncationAndStreaming:
         return B.make_backend("api", model="claude-haiku-4-5", max_tokens=max_tokens,
                               skills_root=Path(".claude/skills"))
 
-    def test_hitting_the_ceiling_says_so(self, tmp_path, monkeypatch):
+    def test_truncation_is_a_failed_episode_not_an_outage(self, tmp_path, monkeypatch):
+        # The model answered, just unusably. It must flow on to fail parsing and
+        # be retried, not abort the run: one rare runaway killed a 160-episode
+        # experiment when this was classified as infrastructure.
         b = self._stub(monkeypatch, "max_tokens")
         r = b.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
-        assert "max_tokens" in r.infra_failure()
-        # and must not be misreported as the model being unreachable
-        assert "empty response" not in r.infra_failure()
+        assert r.infra_failure() is None
+        assert "truncated at max_tokens" in r.stderr   # still diagnosable
+
+    def test_a_genuine_outage_still_aborts(self, tmp_path, monkeypatch):
+        b = self._stub(monkeypatch, "end_turn")
+        b._client.messages.create = lambda **kw: (_ for _ in ()).throw(
+            RuntimeError("You've hit your session limit"))
+        r = b.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
+        assert r.infra_failure() is not None
 
     def test_a_normal_stop_is_not_flagged(self, tmp_path, monkeypatch):
         b = self._stub(monkeypatch, "end_turn")

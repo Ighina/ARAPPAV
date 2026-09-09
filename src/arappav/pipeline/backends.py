@@ -290,20 +290,14 @@ class ApiBackend(Backend):
 
         if anthropic_path:
             text = "".join(b.text for b in resp.content if b.type == "text")
-            if getattr(resp, "stop_reason", None) == "max_tokens":
-                # Not an outage and not a bad answer: our ceiling was too low,
-                # most often because extended thinking ate the budget. Saying
-                # "empty response" here sent the last run chasing the wrong bug.
-                return AgentResult(
-                    step, "", 3, round(time.time() - t0, 2), len(user), "",
-                    stderr=f"truncated at max_tokens={self.max_tokens} "
-                           f"(output {resp.usage.output_tokens}); raise --max-tokens")
+            truncated = getattr(resp, "stop_reason", None) == "max_tokens"
             u = resp.usage
             usage = {"input_tokens": u.input_tokens, "output_tokens": u.output_tokens,
                      "cache_read": getattr(u, "cache_read_input_tokens", 0),
                      "cache_write": getattr(u, "cache_creation_input_tokens", 0)}
         else:
             text = resp.choices[0].message.content or ""
+            truncated = getattr(resp.choices[0], "finish_reason", None) == "length"
             u = resp.usage
             # OpenAI and DeepSeek cache long prefixes automatically and report
             # the hit under different names; normalise onto ours.
@@ -318,8 +312,15 @@ class ApiBackend(Backend):
 
         (pdir / f"{tag}.stdout.txt").write_text(text)
         self._warn_if_not_caching(usage)
+        # A truncated reply is the model rambling past the ceiling, not an
+        # outage: it answered, just unusably. Returning it as a normal result
+        # lets it fail parsing, be retried by --retry-format, and finally be
+        # scored as a format failure for that one episode. Treating it as
+        # infrastructure aborted a whole 160-episode run on one rare runaway.
         r = AgentResult(step, text.strip(), 0, round(time.time() - t0, 2),
-                        len(system) + len(user), "")
+                        len(system) + len(user), "",
+                        stderr=(f"truncated at max_tokens={self.max_tokens} "
+                                f"(output {usage.get('output_tokens')})" if truncated else ""))
         r.usage = usage                                # type: ignore[attr-defined]
         return r
 
