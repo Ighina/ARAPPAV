@@ -1,0 +1,51 @@
+I'll work through this problem systematically to verify the solution.
+
+**Step 1: Solve the problem myself**
+
+Given: $-4 \leq x \leq -2$ and $2 \leq y \leq 4$
+
+Find the maximum of $\frac{x+y}{x}$.
+
+Rewriting: $\frac{x+y}{x} = 1 + \frac{y}{x}$
+
+To maximize this, I need to maximize $\frac{y}{x}$.
+
+Since $x$ is negative and $y$ is positive, $\frac{y}{x}$ is negative. To maximize a negative quantity means to make it closest to zero (least negative).
+
+$\frac{y}{x}$ is maximized when:
+- The numerator $y$ is as small as possible (to make the magnitude smaller)
+- The denominator $|x|$ is as large as possible (to make the magnitude smaller)
+
+So I want $y = 2$ (minimum) and $x = -4$ (minimum value, largest magnitude).
+
+This gives: $\frac{y}{x} = \frac{2}{-4} = -\frac{1}{2}$
+
+Therefore: $1 + \frac{y}{x} = 1 - \frac{1}{2} = \frac{1}{2}$
+
+**Step 2: Compare with the given solution**
+
+The solution says: "To maximize $\frac{y}{x}$, we need to make it as close to zero as possible... we choose $y = 4$ and $x = -4$."
+
+This is the error. To maximize a negative quantity (make it closest to zero), we should:
+- Minimize $y$ (not maximize it)
+- Maximize $|x|$ (which means minimize $x$ toward $-4$)
+
+The solution chose $y = 4$ (the maximum), when they should have chosen $y = 2$ (the minimum).
+
+With $y = 4$ and $x = -4$: $\frac{4}{-4} = -1$
+With $y = 2$ and $x = -4$: $\frac{2}{-4} = -\frac{1}{2}$
+
+Since $-\frac{1}{2} > -1$, the correct maximum is $1 - \frac{1}{2} = \frac{1}{2}$, not $0$.
+
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "The value of \\frac{y}{x} is maximized when y is the largest possible and x is the smallest possible. Therefore, we choose y = 4 and x = -4",
+      "explanation": "Since y/x is negative (y > 0, x < 0), maximizing it means making it as close to zero as possible (least negative). This requires minimizing y (not maximizing it) and maximizing |x|. The correct choice is y = 2 and x = -4, giving y/x = 2/(-4) = -1/2, which is greater than -1. The final answer should be 1 + (-1/2) = 1/2, not 0.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

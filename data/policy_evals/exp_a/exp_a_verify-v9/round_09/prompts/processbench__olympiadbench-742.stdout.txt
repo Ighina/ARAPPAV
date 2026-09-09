@@ -1,0 +1,73 @@
+I'll work through this problem systematically, following the verification policy.
+
+## My Own Solution First
+
+**Problem Setup:**
+- Original parabola: $y = x^2 - 2x + 4$
+- Translation: $p$ units right, $q$ units down
+- New parabola has $x$-intercepts at 3 and 5
+
+**Step 1: Find the equation after translation**
+When translating right by $p$ and down by $q$:
+- Replace $x$ with $(x-p)$
+- Subtract $q$ from the result
+
+New equation: $y = (x-p)^2 - 2(x-p) + 4 - q$
+
+**Step 2: Expand**
+$y = x^2 - 2px + p^2 - 2x + 2p + 4 - q$
+$y = x^2 - (2p+2)x + (p^2 + 2p + 4 - q)$
+
+**Step 3: Use x-intercepts**
+If $x$-intercepts are 3 and 5, then:
+- Sum of roots: $3 + 5 = 8$
+- Product of roots: $3 \times 5 = 15$
+
+By Vieta's formulas for $x^2 - (2p+2)x + (p^2 + 2p + 4 - q) = 0$:
+- Sum of roots = $2p + 2 = 8$
+- Product of roots = $p^2 + 2p + 4 - q = 15$
+
+**Step 4: Solve for p**
+$2p + 2 = 8$
+$2p = 6$
+$p = 3$ ✓
+
+**Step 5: Solve for q**
+$p^2 + 2p + 4 - q = 15$
+$9 + 6 + 4 - q = 15$
+$19 - q = 15$
+$q = 4$ ✓
+
+## Comparison Against Solution
+
+Now let me compare my derivation with the solution provided:
+
+- **Step 0-1**: Setup ✓
+- **Step 2**: Translation formula ✓
+- **Step 3**: Expansion ✓
+- **Step 4**: Setup using $x$-intercepts ✓
+- **Step 5**: Vieta's formulas reference ✓
+- **Step 6**: Sum of roots calculation: $3 + 5 = 2p + 2 \Rightarrow 8 = 2p + 2 \Rightarrow p = 3$ ✓
+- **Step 7**: Product of roots: $3 \cdot 5 = 15 = 9 + 6 + 4 - q = 19 - q \Rightarrow q = 4$ ✓
+- **Step 8**: Final answer ✓
+
+## Value-by-Value Comparison
+
+| Quantity | My Value | Solution Value | Match |
+|----------|----------|-----------------|-------|
+| Sum of roots | 8 | 8 | ✓ |
+| Coefficient of $x$ | $2p+2$ | $2p+2$ | ✓ |
+| $p$ | 3 | 3 | ✓ |
+| Product of roots | 15 | 15 | ✓ |
+| Constant term evaluation | $9+6+4=19$ | $9+6+4=19$ | ✓ |
+| $q$ | 4 | 4 | ✓ |
+
+## Semantic Pass
+
+Each step asserts the correct mathematical operation in the correct order with correct operands. The translation rule is applied correctly, the expansion is correct, Vieta's formulas are applied correctly, and the arithmetic is sound throughout.
+
+All steps pass both numeric and semantic verification.
+
+```json
+{"claims": []}
+```

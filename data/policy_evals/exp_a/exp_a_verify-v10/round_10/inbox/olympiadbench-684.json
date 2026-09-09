@@ -1,0 +1,8 @@
+{
+  "episode_id": "olympiadbench-684",
+  "subset": "olympiadbench",
+  "problem": "In triangle $A B C, a=12, b=17$, and $c=13$. Compute $b \\cos C-c \\cos B$.",
+  "solution_to_review": "<step_0>\nTo solve this problem, we'll use the Law of Cosines, which is given by: \\[ c^2 = a^2 + b^2 - 2ab\\cos(C) \\] and \\[ b^2 = a^2 + c^2 - 2ac\\cos(B) \\] We need to find \\( b\\cos(C) - c\\cos(B) \\).\n</step_0>\n\n<step_1>\nFrom the Law of Cosines for \\( c^2 \\), we can solve for \\( \\cos(C) \\) as follows: \\[ c^2 = a^2 + b^2 - 2ab\\cos(C) \\] \\[ \\cos(C) = \\frac{a^2 + b^2 - c^2}{2ab} \\] Substitute the given values: \\[ \\cos(C) = \\frac{12^2 + 17^2 - 13^2}{2(12)(17)} \\] \\[ \\cos(C) = \\frac{144 + 289 - 169}{408} \\] \\[ \\cos(C) = \\frac{264}{408} = \\frac{22}{34} = \\frac{11}{17} \\]\n</step_1>\n\n<step_2>\nNow, from the Law of Cosines for \\( b^2 \\), we can solve for \\( \\cos(B) \\): \\[ b^2 = a^2 + c^2 - 2ac\\cos(B) \\] \\[ \\cos(B) = \\frac{a^2 + c^2 - b^2}{2ac} \\] Substitute the given values: \\[ \\cos(B) = \\frac{12^2 + 13^2 - 17^2}{2(12)(13)} \\] \\[ \\cos(B) = \\frac{144 + 169 - 289}{312} \\] \\[ \\cos(B) = \\frac{24}{312} = \\frac{2}{26} = \\frac{1}{13} \\]\n</step_2>\n\n<step_3>\nNow we have \\( \\cos(C) = \\frac{11}{17} \\) and \\( \\cos(B) = \\frac{1}{13} \\). So, \\[ b\\cos(C) - c\\cos(B) = 17\\left(\\frac{11}{17}\\right) - 13\\left(\\frac{1}{13}\\right) \\] \\[ b\\cos(C) - c\\cos(B) = 11 - 1 = 10 \\]\n</step_3>\n\n<step_4>\nThus, the value of \\( b\\cos(C) - c\\cos(B) \\) is \\(\\boxed{10}\\).\n</step_4>",
+  "step_format": "tagged",
+  "num_steps": 5
+}

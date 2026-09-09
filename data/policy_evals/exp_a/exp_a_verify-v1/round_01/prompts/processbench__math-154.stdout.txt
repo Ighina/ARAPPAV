@@ -1,0 +1,18 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "We can rotate the bracelet 5 times, but only 4 of them will give us a new arrangement (since the fifth rotation will bring us back to where we started). So, we divide by 4.",
+      "explanation": "When accounting for rotational symmetry, we divide by the total number of rotations (5), not by 4. There are 5 distinct rotational positions of a bracelet with 5 beads, and the symmetry group action divides the total arrangements by 5, not by 4. The correct divisor for rotations is 5.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "$\\frac{5!}{4 \\cdot 2} = \\boxed{30}$",
+      "explanation": "The calculation uses the wrong divisor for rotations (4 instead of 5). The correct formula for placing n distinct beads on a bracelet accounting for both rotations and reflections is $\\frac{n!}{2n}$ when n > 2. For n=5, this gives $\\frac{5!}{2 \\cdot 5} = \\frac{120}{10} = 12$, not 30. Using the incorrect divisor of 4, the computation $\\frac{120}{8} = 15$ is also incorrect; even $\\frac{120}{4 \\cdot 2}$ evaluates to 15, not 30.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

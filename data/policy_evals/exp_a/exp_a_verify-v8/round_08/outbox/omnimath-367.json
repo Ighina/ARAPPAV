@@ -1,0 +1,51 @@
+I'll work through this problem systematically.
+
+**My own derivation first:**
+
+Given: $-4 \leq x \leq -2$ and $2 \leq y \leq 4$
+
+We want to maximize $\frac{x+y}{x}$.
+
+Rewriting: $\frac{x+y}{x} = 1 + \frac{y}{x}$
+
+Since $x$ is negative (range: $[-4, -2]$) and $y$ is positive (range: $[2, 4]$), the term $\frac{y}{x}$ is negative.
+
+To maximize $1 + \frac{y}{x}$ (where $\frac{y}{x}$ is negative), I need to maximize $\frac{y}{x}$, which means making it as close to zero as possible (least negative).
+
+Since $\frac{y}{x}$ is negative, $\frac{y}{x} = \frac{\text{positive}}{\text{negative}}$.
+
+For a negative fraction $\frac{y}{x}$:
+- To make it least negative (closest to zero), I want the absolute value $\frac{|y|}{|x|}$ to be as small as possible
+- This means: minimize $y$ and maximize $|x|$
+- So: $y = 2$ (minimum) and $x = -4$ (minimum value, giving maximum absolute value)
+
+$\frac{y}{x} = \frac{2}{-4} = -\frac{1}{2}$
+
+Therefore: $1 + \frac{y}{x} = 1 - \frac{1}{2} = \frac{1}{2}$
+
+**Now reviewing the solution:**
+
+Step 0: Correctly rewrites the expression.
+
+Step 1: **ERROR FOUND** — The solution claims "we need to make it as close to zero as possible" which is correct reasoning, but then states "The value of $\frac{y}{x}$ is maximized when $y$ is the largest possible and $x$ is the smallest possible." This is wrong.
+
+To maximize a negative fraction (make it least negative), we need to *minimize* its absolute value. Since $\frac{y}{x} = \frac{y}{|x|} \cdot (-1)$ with $y > 0$ and $x < 0$, we want to minimize $\frac{y}{|x|}$. This requires:
+- Minimizing $y$ (not maximizing): $y = 2$
+- Maximizing $|x|$ (which means $x = -4$, the smallest value): $x = -4$
+
+The solution chose $y = 4$ and $x = -4$, giving $\frac{4}{-4} = -1$, which is more negative than the correct $\frac{2}{-4} = -\frac{1}{2}$.
+
+Step 2: The arithmetic follows from step 1's values, but those values are wrong.
+
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "The value of $\\frac{y}{x}$ is maximized when $y$ is the largest possible and $x$ is the smallest possible. Therefore, we choose $y = 4$ and $x = -4$",
+      "explanation": "To maximize a negative fraction (make it least negative), we must minimize its absolute value. Since $y > 0$ and $x < 0$, we need to minimize $y$ and maximize $|x|$. The correct choice is $y = 2$ (minimum) and $x = -4$ (smallest value), giving $\\frac{y}{x} = \\frac{2}{-4} = -\\frac{1}{2}$, not $-1$. This yields $1 + \\frac{y}{x} = \\frac{1}{2}$, not $0$.",
+      "error_type": "wrong_reasoning"
+    }
+  ]
+}
+```

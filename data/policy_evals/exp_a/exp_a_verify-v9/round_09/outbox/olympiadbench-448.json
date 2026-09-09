@@ -1,0 +1,30 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "2014 - 1900 - 10x - y = 2(10x + y)",
+      "explanation": "The equation setup is incorrect. Charlie's birth year is 19xy, so his age in 2014 is 2014 - (1900 + 10x + y). The correct equation should be: 2014 - (1900 + 10x + y) = 2(10x + y), which simplifies to 114 - 10x - y = 2(10x + y), not 2014 - 1900 - 10x - y = 2(10x + y). The solution incorrectly separated 2014 - 1900 as if it were a standalone subtraction, when it should be 2014 - (1900 + 10x + y).",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 1,
+      "quoted_text": "14 - 10x - y = 20x + 2y",
+      "explanation": "This line follows from the incorrect equation in step 0. Given the error in step 0, this simplification is a consequence. The correct simplification from 114 - 10x - y = 2(10x + y) would be: 114 - 10x - y = 20x + 2y, leading to 114 = 30x + 3y.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 3,
+      "quoted_text": "4.67 = 10x + y",
+      "explanation": "Dividing 14 = 30x + 3y by 3 gives 14/3 = 10x + y, which equals approximately 4.67. However, the equation itself is wrong due to the error in step 0. The correct equation 114 = 30x + 3y, when divided by 3, yields 38 = 10x + y. Additionally, even if 14/3 were correct, rounding a non-integer result to an integer for a problem requiring exact digits is mathematically invalid—the equation should have an exact integer solution.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 7,
+      "quoted_text": "2 \\times 5 = 10",
+      "explanation": "The verification fails because 109 ≠ 10. The solution acknowledges this discrepancy in step 8 but does not correct the underlying error. The correct birth year should satisfy both conditions: age in 2014 equals twice the two-digit number from the birth year. With the corrected equation 38 = 10x + y, we get x = 3, y = 8, so Charlie was born in 1938, and his age would be 2014 - 1938 = 76, which equals 2 × 38 = 76. ✓",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

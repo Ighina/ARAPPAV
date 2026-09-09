@@ -1,0 +1,40 @@
+I'll solve this problem myself first, then verify the solution.
+
+**My own derivation:**
+
+Given: $a = 12$, $b = 17$, $c = 13$ in triangle $ABC$.
+
+I need to find $b\cos C - c\cos B$.
+
+Using the Law of Cosines:
+- $\cos C = \frac{a^2 + b^2 - c^2}{2ab} = \frac{144 + 289 - 169}{2(12)(17)} = \frac{264}{408}$
+
+Let me simplify: $\gcd(264, 408) = 24$, so $\frac{264}{408} = \frac{11}{17}$ ✓
+
+- $\cos B = \frac{a^2 + c^2 - b^2}{2ac} = \frac{144 + 169 - 289}{2(12)(13)} = \frac{24}{312}$
+
+Let me simplify: $\gcd(24, 312) = 24$, so $\frac{24}{312} = \frac{1}{13}$ ✓
+
+Therefore:
+$$b\cos C - c\cos B = 17 \cdot \frac{11}{17} - 13 \cdot \frac{1}{13} = 11 - 1 = 10$$
+
+**Verification against the solution:**
+
+| Step | Content | My Value | Solution Value | Match |
+|------|---------|----------|-----------------|-------|
+| 1 | $\cos(C) = \frac{a^2 + b^2 - c^2}{2ab}$ | Correct formula | Correct formula | ✓ |
+| 1 | Numerator: $144 + 289 - 169$ | $264$ | $264$ | ✓ |
+| 1 | Denominator: $2(12)(17)$ | $408$ | $408$ | ✓ |
+| 1 | $\cos(C) = \frac{264}{408}$ | $\frac{11}{17}$ | $\frac{11}{17}$ | ✓ |
+| 2 | $\cos(B) = \frac{a^2 + c^2 - b^2}{2ac}$ | Correct formula | Correct formula | ✓ |
+| 2 | Numerator: $144 + 169 - 289$ | $24$ | $24$ | ✓ |
+| 2 | Denominator: $2(12)(13)$ | $312$ | $312$ | ✓ |
+| 2 | Simplification $\frac{24}{312}$ | $\frac{1}{13}$ | $\frac{1}{13}$ | ✓ |
+| 3 | $b\cos(C) - c\cos(B) = 17(\frac{11}{17}) - 13(\frac{1}{13})$ | $11 - 1 = 10$ | $11 - 1 = 10$ | ✓ |
+| 4 | Final answer | $10$ | $10$ | ✓ |
+
+All steps check out correctly. The solution correctly applies the Law of Cosines, properly simplifies fractions, and arrives at the correct final answer of 10.
+
+```json
+{"claims": []}
+```

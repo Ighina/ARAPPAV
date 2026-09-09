@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-275",
+  "subset": "gsm8k",
+  "problem": "Patricia has 30 roses. She gave 24 roses to her mother. She bought 15 more roses.  How many roses did she have now?",
+  "solution_to_review": "<step_0>\nTo find out how many roses Patricia has now, let's break it down step by step: First, Patricia initially had 30 roses.\n</step_0>\n\n<step_1>\nSecond, she gave 24 roses to her mother, so we need to subtract 24 from 30. 30 - 24 = 6. Now, Patricia has 6 roses left.\n</step_1>\n\n<step_2>\nThird, Patricia then bought 15 more roses, so we add 15 to 6. 6 + 15 = 21.\n</step_2>\n\n<step_3>\nSo, after giving away some roses and buying more, Patricia now has a total of 21 roses. \\boxed{21}\n</step_3>",
+  "step_format": "tagged",
+  "num_steps": 4
+}

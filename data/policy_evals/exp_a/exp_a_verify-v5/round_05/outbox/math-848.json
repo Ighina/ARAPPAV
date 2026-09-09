@@ -1,0 +1,50 @@
+I'll work through this problem independently first, then check the solution.
+
+**My independent solution:**
+
+The rectangle has vertices at $(5,4)$, $(5,-4)$, $(-5,4)$, $(-5,-4)$.
+
+This is an axis-aligned rectangle with:
+- Left edge at $x = -5$
+- Right edge at $x = 5$
+- Bottom edge at $y = -4$
+- Top edge at $y = 4$
+
+For a point to be **strictly inside**, it must satisfy:
+- $-5 < x < 5$ (strict inequalities)
+- $-4 < y < 4$ (strict inequalities)
+
+For integers:
+- $x$ must satisfy $-5 < x < 5$, so $x \in \{-4, -3, -2, -1, 0, 1, 2, 3, 4\}$
+- That's 9 values.
+
+- $y$ must satisfy $-4 < y < 4$, so $y \in \{-3, -2, -1, 0, 1, 2, 3\}$
+- That's 7 values.
+
+Total integer coordinates: $9 \times 7 = 63$.
+
+**Now checking the provided solution:**
+
+**Step 0:** Correctly frames the problem as finding integer coordinates strictly inside (not on boundary).
+
+**Step 1:** 
+- Claims $-5 < x < 5$ ✓
+- Claims integers are $-4$ to $4$ inclusive ✓
+- Counts: $4 - (-4) + 1 = 9$ ✓
+
+**Step 2:**
+- Claims $-4 < y < 4$ ✓
+- Claims integers are $-3$ to $3$ inclusive ✓
+- Counts: $3 - (-3) + 1 = 7$ ✓
+
+**Step 3:**
+- Multiplies $9 \times 7 = 63$ ✓
+
+**Step 4:**
+- Reports final answer as 63 ✓
+
+All steps are correct. Each premise matches the problem, each arithmetic calculation checks out, and the final answer is properly boxed.
+
+```json
+{"claims": []}
+```

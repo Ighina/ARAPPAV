@@ -1,0 +1,59 @@
+I'll solve this problem myself first, then check the solution.
+
+**My derivation:**
+
+The problem states:
+- Chim Tu has 4 T-shirts in different colors
+- An outfit consists of 3 or more T-shirts worn in order (order matters)
+- Two outfits are distinct if the sets differ OR the sets are the same but order differs
+- He changes outfit every 3 days and never repeats
+- Question: How many days can he survive?
+
+**Understanding the setup:**
+- An outfit is an ordered selection of 3 or 4 T-shirts from 4 available
+- This is a permutation problem, not combinations
+
+**Case 1: Exactly 3 T-shirts**
+- Choose 3 T-shirts from 4: C(4,3) = 4 ways
+- Arrange these 3 in order: 3! = 6 ways
+- Total: 4 × 6 = 24 outfits
+- Alternatively, P(4,3) = 4!/(4-3)! = 4!/1! = 24 ✓
+
+**Case 2: Exactly 4 T-shirts**
+- Use all 4 T-shirts
+- Arrange all 4 in order: 4! = 24 ways
+- Total: 24 outfits
+- Alternatively, P(4,4) = 4! = 24 ✓
+
+**Total distinct outfits:** 24 + 24 = 48 ✓
+
+**Days survived:**
+- He changes outfit every 3 days (meaning each outfit lasts 3 days)
+- Total days = 48 outfits × 3 days/outfit = 144 days ✓
+
+**Checking the solution against my work:**
+
+| Quantity | My derivation | Solution | Status |
+|----------|---------------|----------|--------|
+| Outfits with 3 T-shirts | 24 | 24 | MATCH |
+| Outfits with 4 T-shirts | 24 | 24 | MATCH |
+| Total outfits | 48 | 48 | MATCH |
+| Days survived | 144 | 144 | MATCH |
+
+**Semantic pass:**
+
+- Step 0: Correctly identifies the problem structure ✓
+- Step 1: C(4,3)=4 is correct; 3!=6 is correct; 4×6=24 is correct ✓
+- Step 2: One way to choose all 4; 4!=24 arrangements; 1×24=24 ✓
+- Step 3: 24+24=48 total outfits ✓; 48×3=144 days ✓
+
+**Completeness check:**
+- The problem asks for "how many days of winter can Chim Tu survive"
+- The solution provides this: 144 days ✓
+- All cases (3 shirts and 4 shirts) are covered ✓
+
+All arithmetic is correct, the logic is sound, and the final answer directly addresses the question asked.
+
+```json
+{"claims": []}
+```

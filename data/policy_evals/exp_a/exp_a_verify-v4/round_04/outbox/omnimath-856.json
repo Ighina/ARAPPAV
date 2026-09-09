@@ -1,0 +1,52 @@
+I'll work through this problem carefully, building my own solution first before comparing it to the given one.
+
+**My own solution:**
+
+The original rectangular prism has dimensions 4 × 2 × 2.
+- Original surface area: 2(4·2 + 4·2 + 2·2) = 2(8 + 8 + 4) = 2(20) = 40 ✓
+
+When a 1 × 1 × 1 cube is cut from a corner:
+- We remove portions of three external faces of the prism (each 1 × 1 area removed)
+- We expose three new internal faces of the cube (each 1 × 1 area added)
+
+The removed area: 3 × 1 = 3 square units
+The added area: 3 × 1 = 3 square units
+
+Net change: 3 - 3 = 0
+
+Final surface area: 40 + 0 = 40
+
+**Comparing to the given solution:**
+
+Let me trace through the logic more carefully. The solution claims:
+- Three faces of the cube are removed (removing 3 square units total)
+- Three new faces are added (adding 3 square units total)
+- Net change is 0, so answer is 40
+
+Wait—I need to reconsider what "removing three faces" means. When we cut out a corner cube:
+- From the face of dimension 4 × 2: we remove a 1 × 1 area
+- From the face of dimension 4 × 2 (opposite side): we remove a 1 × 1 area
+- From one face of dimension 2 × 2: we remove a 1 × 1 area
+- From the other face of dimension 2 × 2: we remove a 1 × 1 area
+
+Actually, a corner cube touches THREE faces of the prism (one from each pair of opposite faces). So:
+- We lose 1 × 1 from one 4 × 2 face
+- We lose 1 × 1 from one 4 × 2 face  
+- We lose 1 × 1 from one 2 × 2 face
+
+That's 3 square units removed.
+
+Inside the cut, we create three new internal faces (the three interior faces of the removed cube):
+- One 1 × 1 face perpendicular to the length
+- One 1 × 1 face perpendicular to the width  
+- One 1 × 1 face perpendicular to the height
+
+That's 3 square units added.
+
+Net: 40 - 3 + 3 = 40 ✓
+
+The solution's reasoning is actually correct. The net change is indeed zero, and the final answer of 40 is correct.
+
+```json
+{"claims": []}
+```

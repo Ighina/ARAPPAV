@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-228",
+  "subset": "gsm8k",
+  "problem": "The ratio of men to women on a bus is 5:9. If the total number of passengers on the bus is 84, and 20 women alight from the bus at the next stop, how many women have remained on the bus?",
+  "solution_to_review": "<step_0>\nTo solve this problem, we need to determine the number of men and women initially on the bus and then calculate the number of women remaining after some alight.\n</step_0>\n\n<step_1>\nFirst, determine the initial number of men and women. The ratio of men to women is given as 5:9. Let the number of men be \\(5x\\) and the number of women be \\(9x\\).\n</step_1>\n\n<step_2>\nNext, set up the equation for the total number of passengers. The total number of passengers is 84. Therefore, \\(5x + 9x = 84\\).\n</step_2>\n\n<step_3>\nNow, solve for \\(x\\):\n\\[ 14x = 84 \\]\n\\[ x = \\frac{84}{14} = 6 \\]\n</step_3>\n\n<step_4>\nThen, calculate the number of men and women:\n- Number of men: \\(5x = 5 \\times 6 = 30\\)\n- Number of women: \\(9x = 9 \\times 6 = 54\\)\n</step_4>\n\n<step_5>\nFinally, determine the number of women remaining after 20 women alight:\n- Initial number of women: 54\n- Number of women who alight: 20\n- Number of women remaining: \\(54 - 20 = 34\\)\n</step_5>\n\n<step_6>\nThus, the number of women remaining on the bus is \\(\\boxed{34}\\).\n</step_6>",
+  "step_format": "tagged",
+  "num_steps": 7
+}

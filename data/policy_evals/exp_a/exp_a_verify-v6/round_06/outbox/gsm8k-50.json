@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "Subtract the cost of the computer from the total amount spent: \\[ 2400 - 1100 = 1300 \\] So, the combined cost of the two monitors is $1,300.",
+      "explanation": "This step fails to account for the printer. The problem states Errol bought a computer, 2 monitors, and a printer for $2,400 total. The solution subtracts only the computer cost from the total, leaving $1,300, but this amount must cover both the 2 monitors AND the printer. The printer costs $1,100 - $400 = $700, so the actual combined cost of the two monitors is $2,400 - $1,100 - $700 = $600, not $1,300.",
+      "error_type": "missing_quantity"
+    }
+  ]
+}
+```

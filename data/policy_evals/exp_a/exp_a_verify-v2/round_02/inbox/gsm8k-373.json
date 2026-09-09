@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-373",
+  "subset": "gsm8k",
+  "problem": "Gretchen has some coins. There are 30 more gold coins than silver coins. If she had 70 gold coins, how many coins did Gretchen have in total?",
+  "solution_to_review": "<step_0>\nTo find the total number of coins Gretchen has, we need to determine the number of silver coins first. Let's denote the number of silver coins as 'x'. Since there are 30 more gold coins than silver coins, the number of gold coins can be represented as 'x + 30'.\n</step_0>\n\n<step_1>\nWe know that Gretchen has 70 gold coins. Therefore, we can set up an equation to represent this information: x + 30 = 70.\n</step_1>\n\n<step_2>\nTo solve for 'x', we need to isolate it on one side of the equation. We can do this by subtracting 30 from both sides of the equation: x = 70 - 30. This simplifies to x = 40. So, Gretchen has 40 silver coins.\n</step_2>\n\n<step_3>\nNow that we know the number of silver coins (40) and the number of gold coins (70), we can find the total number of coins by adding these two numbers together: Total coins = Number of silver coins + Number of gold coins = 40 + 70 = 110.\n</step_3>\n\n<step_4>\nTherefore, Gretchen has a total of 110 coins. \\boxed{110}\n</step_4>",
+  "step_format": "tagged",
+  "num_steps": 5
+}

@@ -1,0 +1,48 @@
+I'll work through this problem myself first, then check the solution.
+
+**My solution:**
+
+Given: $T = -14$, so $d = |T| = 14$
+
+July has 31 days. A Leo is born between July 23 and August 22 inclusive.
+
+- First person: birthday before July 14 (days 1-13) — that's 13 days
+- Second person: birthday after July 14 (days 15-31) — that's 17 days
+
+Within July, Leo days are July 23-31, which is 9 days.
+
+For the first person (before July 14): No Leo days exist before July 14.
+- P(first is Leo) = 0
+- P(first is not Leo) = 1
+
+For the second person (after July 14): Leo days after July 14 are July 23-31 (9 days out of 17 days after the 14th).
+- P(second is Leo) = 9/17
+- P(second is not Leo) = 8/17
+
+For exactly one to be a Leo:
+- Scenario 1: First is not Leo AND second is Leo: $1 \times \frac{9}{17} = \frac{9}{17}$
+- Scenario 2: First is Leo AND second is not Leo: $0 \times \frac{8}{17} = 0$
+
+Total probability: $\frac{9}{17} + 0 = \frac{9}{17}$
+
+**Checking the solution:**
+
+Step 0: Correctly identifies $d = 14$, counts 13 days before (July 1-13) and 17 days after (July 15-31). ✓
+
+Step 1: Correctly identifies 9 Leo days in July (July 23-31). ✓
+
+Step 2: Correctly states P(first is Leo) = 0 and P(first is not Leo) = 1. ✓
+
+Step 3: Correctly states P(second is Leo) = 9/17. ✓
+
+Step 4: Sets up the two scenarios correctly and computes both. ✓
+
+Step 5: Correctly adds the scenarios to get $\frac{9}{17}$. ✓
+
+All arithmetic, logic, and setup are correct. The solution properly identifies that exactly one person is a Leo only when the first is not a Leo (which has probability 1) and the second is a Leo (probability 9/17), yielding the final answer of 9/17.
+
+```json
+{
+  "claims": []
+}
+```

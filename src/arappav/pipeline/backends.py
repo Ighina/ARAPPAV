@@ -36,8 +36,30 @@ FATAL_PATTERNS = (
     "invalid api key", "not logged in", "overloaded",
 )
 
-#: Models that reject `thinking` / `output_config.effort` on the Messages API.
-NO_THINKING = {"claude-haiku-4-5"}
+#: Models that reject BOTH adaptive thinking and `output_config.effort`, but
+#: still support extended thinking through the older `budget_tokens` form.
+#: Disabling thinking outright on these is a large silent quality regression:
+#: `claude -p` runs them with thinking on, so an API run without it is not the
+#: same experiment.
+BUDGET_THINKING = {"claude-haiku-4-5"}
+
+#: Thinking budget for those models, in tokens. Must be < max_tokens.
+DEFAULT_THINK_BUDGET = 4000
+
+#: Models that take no thinking configuration at all.
+NO_THINKING: set[str] = set()
+
+
+def thinking_kwargs(model: str, max_tokens: int, effort: str) -> dict:
+    """Thinking configuration for a model, in the form that model accepts."""
+    m = model or ""
+    if m in NO_THINKING:
+        return {}
+    if m in BUDGET_THINKING:
+        # `adaptive` is rejected with a 400 here; `effort` is unsupported.
+        budget = min(DEFAULT_THINK_BUDGET, max(1024, max_tokens - 1024))
+        return {"thinking": {"type": "enabled", "budget_tokens": budget}}
+    return {"thinking": {"type": "adaptive"}, "output_config": {"effort": effort}}
 
 # ---------------------------------------------------------------------------
 # Providers
@@ -191,9 +213,7 @@ class ApiBackend(Backend):
                      "cache_control": {"type": "ephemeral"}}],
             messages=[{"role": "user", "content": user}],
         )
-        if (self.model or "") not in NO_THINKING:
-            kwargs["thinking"] = {"type": "adaptive"}
-            kwargs["output_config"] = {"effort": self.effort}
+        kwargs.update(thinking_kwargs(self.model, self.max_tokens, self.effort))
         return kwargs
 
     def openai_kwargs(self, system: str, user: str) -> dict:
@@ -357,9 +377,7 @@ class BatchBackend(ApiBackend):
             "system": [{"type": "text", "text": system,
                         "cache_control": {"type": "ephemeral"}}],
         }
-        if (self.model or "") not in NO_THINKING:
-            params_common["thinking"] = {"type": "adaptive"}
-            params_common["output_config"] = {"effort": self.effort}
+        params_common.update(thinking_kwargs(self.model, self.max_tokens, self.effort))
         return [
             {"custom_id": _custom_id(skill, iid),
              "params": {**params_common,

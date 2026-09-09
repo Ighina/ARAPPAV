@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-332",
+  "subset": "gsm8k",
+  "problem": "Castle bought 3 boxes of Coco Crunch and 5 boxes of Fruit Loops this week. Last week she bought 4 boxes of cereal. How many more boxes of cereal did she buy this week than last week?",
+  "solution_to_review": "<step_0>\nLet's break it down step by step! This week, Castle bought: First, 3 boxes of Coco Crunch. Second, 5 boxes of Fruit Loops.\n</step_0>\n\n<step_1>\nTotal number of boxes bought this week = 3 + 5 = 8 boxes.\n</step_1>\n\n<step_2>\nLast week, Castle bought 4 boxes of cereal.\n</step_2>\n\n<step_3>\nTo find out how many more boxes she bought this week than last week, we need to subtract the number of boxes bought last week from the number of boxes bought this week: 8 (this week) - 4 (last week) = 4.\n</step_3>\n\n<step_4>\nSo, Castle bought \\boxed{4} more boxes of cereal this week than last week.\n</step_4>",
+  "step_format": "tagged",
+  "num_steps": 5
+}

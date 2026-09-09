@@ -1,0 +1,62 @@
+I will work through this problem independently first, then verify the given solution.
+
+**My own solution:**
+
+Original parabola: $y = x^2 - 2x + 4$
+
+After translating $p$ units right and $q$ units down:
+- Replace $x$ with $(x-p)$
+- Subtract $q$ from $y$
+
+New equation: $y = (x-p)^2 - 2(x-p) + 4 - q$
+
+Expanding:
+$y = x^2 - 2px + p^2 - 2x + 2p + 4 - q$
+$y = x^2 - (2p+2)x + (p^2 + 2p + 4 - q)$
+
+The $x$-intercepts are 3 and 5, so when $y=0$:
+$0 = x^2 - (2p+2)x + (p^2 + 2p + 4 - q)$
+
+By Vieta's formulas:
+- Sum of roots: $3 + 5 = 2p + 2$
+  - $8 = 2p + 2$
+  - $p = 3$ ✓
+
+- Product of roots: $3 \times 5 = p^2 + 2p + 4 - q$
+  - $15 = 9 + 6 + 4 - q$
+  - $15 = 19 - q$
+  - $q = 4$ ✓
+
+Now let me verify the given solution line by line:
+
+**Step 0-1:** Introductory material and original equation are correct.
+
+**Step 2:** Translation rule stated correctly: replace $x$ with $(x-p)$ and subtract $q$.
+
+**Step 3:** Expansion:
+- $(x-p)^2 = x^2 - 2px + p^2$ ✓
+- $-2(x-p) = -2x + 2p$ ✓
+- Combined: $x^2 - 2px + p^2 - 2x + 2p + 4 - q = x^2 - (2p+2)x + (p^2+2p+4-q)$ ✓
+
+**Step 4-5:** Setup with Vieta's formulas is correct.
+
+**Step 6:** Sum of roots:
+- $3 + 5 = 2p + 2$
+- $8 = 2p + 2$
+- $6 = 2p$
+- $p = 3$ ✓
+
+**Step 7:** Product of roots:
+- $3 \times 5 = p^2 + 2p + 4 - q$
+- $15 = 3^2 + 2(3) + 4 - q$
+- $15 = 9 + 6 + 4 - q$
+- $15 = 19 - q$
+- $q = 4$ ✓
+
+**Step 8:** Final answer states $p = 3$ and $q = 4$, which is correct.
+
+The entire solution is mathematically correct. Every step follows logically from the previous one, the algebra is accurate, the application of Vieta's formulas is correct, and the final answer matches my independent verification.
+
+```json
+{"claims": []}
+```

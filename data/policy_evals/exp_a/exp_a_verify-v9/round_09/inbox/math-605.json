@@ -1,0 +1,8 @@
+{
+  "episode_id": "math-605",
+  "subset": "math",
+  "problem": "How many degrees are in the acute angle formed by the hands of a clock at 3:30?",
+  "solution_to_review": "<step_0>\nTo find the acute angle formed by the hands of a clock at 3:30, we can follow these steps: First, determine the position of each hand. The hour hand at 3:30 is halfway between 3 and 4. Since there are 12 hours on a clock, each hour represents \\(360^\\circ / 12 = 30^\\circ\\). Therefore, the hour hand has moved \\(3 \\times 30^\\circ + (30/2)^\\circ = 90^\\circ + 15^\\circ = 105^\\circ\\) from the 12 o'clock position.\n</step_0>\n\n<step_1>\nSecond, the minute hand points directly at 6, which corresponds to half the clock's circumference or \\(180^\\circ\\) from the 12 o'clock position.\n</step_1>\n\n<step_2>\nNext, calculate the difference in angles. The difference between the positions of the hour and minute hands is \\(180^\\circ - 105^\\circ = 75^\\circ\\).\n</step_2>\n\n<step_3>\nTherefore, the acute angle formed by the hands of a clock at 3:30 is \\(75^\\circ\\). The answer is: \\(\\boxed{75}\\)\n</step_3>",
+  "step_format": "tagged",
+  "num_steps": 4
+}

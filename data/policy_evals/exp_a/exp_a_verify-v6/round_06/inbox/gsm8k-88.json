@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-88",
+  "subset": "gsm8k",
+  "problem": "Duncan's age eight years ago was two times Adam's age four years ago. If Duncan's age is 60 now, how old will Adam be in 8 years?",
+  "solution_to_review": "<step_0>\nTo solve this problem, we'll break it down into steps. First, let's denote Duncan's age eight years ago as D - 8, and Adam's age four years ago as A - 4.\n</step_0>\n\n<step_1>\nAccording to the given information, Duncan's age eight years ago (D - 8) was two times Adam's age four years ago (2 * (A - 4)). We know Duncan's current age is 60. So, let's express Duncan's age eight years ago using his current age: D - 8 = 60 - 8. This simplifies to D - 8 = 52.\n</step_1>\n\n<step_2>\nNow that we have Duncan's age eight years ago (52), we can set up an equation based on the given information: D - 8 = 2 * (A - 4). Substitute D - 8 with 52: 52 = 2 * (A - 4).\n</step_2>\n\n<step_3>\nTo find Adam's age four years ago (A - 4), divide both sides of the equation by 2: (A - 4) = 52 / 2. This simplifies to (A - 4) = 26.\n</step_3>\n\n<step_4>\nSolve for A (Adam's age four years ago): A = 26 + 4. This gives us A = 30.\n</step_4>\n\n<step_5>\nSince we know Adam's age four years ago, we can find Adam's current age by adding 4: Adam's current age = A + 4. Adam's current age = 30 + 4. Adam's current age = 34.\n</step_5>\n\n<step_6>\nFinally, we need to find Adam's age in 8 years: Adam's age in 8 years = Adam's current age + 8. Adam's age in 8 years = 34 + 8. Adam's age in 8 years = 42. Therefore, Adam will be 42 years old in 8 years. The final answer is: \\boxed{42}.\n</step_6>",
+  "step_format": "tagged",
+  "num_steps": 7
+}

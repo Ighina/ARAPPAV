@@ -1,0 +1,8 @@
+{
+  "episode_id": "olympiadbench-485",
+  "subset": "olympiadbench",
+  "label": 2,
+  "num_steps": 12,
+  "final_answer_correct": false,
+  "generator": "Qwen2.5-7B-Instruct"
+}

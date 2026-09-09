@@ -1,0 +1,30 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "George spent $5 in total and had 1% of his money left. This means he spent 99% of his money, which is equivalent to $5 - (1/100 * $5). So, the amount of money George spent is 99% of $5, or 0.99 * $5 = $4.95.",
+      "explanation": "The problem states George 'spent $5 and got 3 bags of chips and had 1% of his money left.' This means his initial money was more than $5. If he had 1% remaining, he spent 99% of his initial amount. Let M be his initial money. Then 0.99M is what he spent. The problem says he spent some amount and had 1% left, implying: amount spent + 1% of initial = initial money. Since he spent money totaling to chips and candy bars, and had 1% left, we need 0.01M as the remainder. The step incorrectly assumes he started with exactly $5, when in fact $5 was what he spent on items, not his starting amount. The correct setup: if he spent $5 on items and had 1% of his starting money left, then starting money M satisfies: $5 + 0.01M = M, which gives M = $5.05 (approximately). He spent $5, not $4.95.",
+      "error_type": "wrong_setup"
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "Since each bag of chips costs 40 cents ($0.40), we can calculate the number of bags of chips he bought by dividing the amount spent on chips by the cost per bag: Number of bags of chips = $4.95 / $0.40 = 12.375. Since you cannot buy a fraction of a bag, and George bought 3 whole bags of chips, we know that the remaining amount of money he spent was not used to buy chips but rather candy bars.",
+      "explanation": "The step computes $4.95 / $0.40 = 12.375, which is arithmetically correct for that division. However, the step then contradicts itself by saying 'George bought 3 whole bags of chips' when the division result is 12.375. The problem statement clearly says George bought 3 bags of chips. The correct cost of 3 bags is 3 × $0.40 = $1.20, not $4.95. The solution's earlier error (spending $4.95 instead of $5) compounds here.",
+      "error_type": "arithmetic_error"
+    },
+    {
+      "step_index": 3,
+      "quoted_text": "Therefore, we will use this information to find out the total amount he spent on candy bars. However, considering he bought 3 bags of chips for $4.95, this means the remaining amount he spent is $5 - $4.95 = $0.05.",
+      "explanation": "If George bought 3 bags of chips at $0.40 each, the cost is $1.20, not $4.95. The correct remaining amount spent on candy bars should be $5 - $1.20 = $3.80, not $0.05. This error stems from the incorrect allocation in the earlier step.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 4,
+      "quoted_text": "Number of candy bars = $0.05 / $0.75 = 0.0667.",
+      "explanation": "Given the correct amount spent on candy bars is $3.80 (from 3 bags costing $1.20), the number of candy bars is $3.80 / $0.75 ≈ 5.067, which rounds to 5 candy bars. The computation $0.05 / $0.75 = 0.0667 is arithmetically correct for those inputs, but those inputs are wrong due to the upstream error in step 3.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

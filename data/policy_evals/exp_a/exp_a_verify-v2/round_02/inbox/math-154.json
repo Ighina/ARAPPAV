@@ -1,0 +1,8 @@
+{
+  "episode_id": "math-154",
+  "subset": "math",
+  "problem": "In how many ways can I place 5 different beads on a bracelet if rotations and flips of the bracelet are not treated as different arrangements?",
+  "solution_to_review": "<step_0>\nThere are $5!$ ways to place 5 different beads on a bracelet. However, we need to divide by the number of ways we can rotate the bracelet and get the same arrangement. We can rotate the bracelet 5 times, but only 4 of them will give us a new arrangement (since the fifth rotation will bring us back to where we started). So, we divide by 4.\n</step_0>\n\n<step_1>\nNext, we need to divide by the number of ways we can flip the bracelet and get the same arrangement. We can flip the bracelet in two ways, so we divide by 2.\n</step_1>\n\n<step_2>\nSo, the total number of ways to place 5 different beads on a bracelet if rotations and flips of the bracelet are not treated as different arrangements is $\\frac{5!}{4 \\cdot 2} = \\boxed{30}$. Final Answer: The final answer is 30. I hope it is correct.\n</step_2>",
+  "step_format": "tagged",
+  "num_steps": 3
+}

@@ -1,0 +1,18 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "The total cost of the mixing bowls is $20.00, and there is no discount on this item.",
+      "explanation": "The problem states that 'everything was 20% off' at checkout, meaning the 20% discount applies to all items including the mixing bowls. The solution incorrectly assumes the mixing bowls have no discount.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "So, the total cost of Charlotte's order before the discount is $96 + $20 + $25 = $141.",
+      "explanation": "This step treats the pot and pans as already discounted ($96) while adding the full undiscounted prices of mixing bowls ($20) and utensils ($25). Instead, the 20% discount should apply to the entire original order total of $120 + $20 + $25 = $165, giving a single discount of 20% off that total, not a mixed calculation.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

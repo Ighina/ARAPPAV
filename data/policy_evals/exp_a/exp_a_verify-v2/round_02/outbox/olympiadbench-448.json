@@ -1,0 +1,24 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "2014 - 1900 - 10x - y = 2(10x + y)",
+      "explanation": "The setup is incorrect. If the birth year is 19xy (where xy is a two-digit number), then Charlie's age is 2014 - (1900 + 10x + y). The equation should be: 2014 - (1900 + 10x + y) = 2(10x + y), which expands to 2014 - 1900 - 10x - y = 2(10x + y), or 114 - 10x - y = 2(10x + y). The quoted equation omits the leading digit of the birth year; it uses 1900 as the base but 19xy should give (1900 + 10x + y) in the age formula, leading to 114 on the left side, not a fresh subtraction that gives only 14.",
+      "error_type": "wrong_setup"
+    },
+    {
+      "step_index": 3,
+      "quoted_text": "Dividing the entire equation by 3, we get: \\[4.67 = 10x + y\\]",
+      "explanation": "Dividing 14 by 3 gives 14/3 ≈ 4.67, but 10x + y must be a two-digit integer from 00 to 99. The equation 14 = 30x + 3y cannot have an integer solution for single digits x and y (dividing by 3 leaves a remainder of 2), which means the setup in step 0 was wrong. This division result should signal an error in the earlier setup, but the line itself compounds the error by using a decimal approximation for a quantity that must be an integer.",
+      "error_type": "invalid_rounding"
+    },
+    {
+      "step_index": 4,
+      "quoted_text": "Since \\(10x + y\\) must be an integer, we round 4.67 to the nearest integer, which is 5.",
+      "explanation": "Rounding a decimal derived from an algebraic equation is not valid. If the equation 14 = 30x + 3y has no integer solutions for single-digit x and y, the correct response is to recognize that the original equation is unsolvable under those constraints, not to round and guess. The proper fix is to go back and correct the setup in step 0.",
+      "error_type": "invalid_rounding"
+    }
+  ]
+}
+```

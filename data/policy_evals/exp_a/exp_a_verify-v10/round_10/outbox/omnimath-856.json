@@ -1,0 +1,49 @@
+I'll solve this problem myself first, then audit the solution.
+
+**My own derivation:**
+
+Given:
+- Original rectangular prism: 4 × 2 × 2
+- Cut out: 1 × 1 × 1 cube from one corner
+
+When a 1×1×1 cube is cut from a corner:
+- The cube sits at a corner, so it touches three faces of the prism
+- Each of those three faces loses a 1×1 square
+- But the cut creates a cavity with three new internal faces (each 1×1)
+
+Let me be precise:
+- Original surface area: 2(4·2 + 4·2 + 2·2) = 2(8 + 8 + 4) = 2(20) = 40 ✓
+
+When the corner cube is removed:
+- We lose three 1×1 squares from the exterior faces: −3 square units
+- We gain three 1×1 interior faces (the walls of the cavity): +3 square units
+- Net change: −3 + 3 = 0
+- New surface area: 40 square units
+
+This matches the solution's logic and arithmetic.
+
+**Now auditing the solution line by line:**
+
+**Step 0 (Original surface area):**
+- Calculation: 2(4·2 + 4·2 + 2·2) = 2(8 + 8 + 4) = 2·20 = 40 ✓
+- PASS
+
+**Step 1 (Effect of cutting):**
+- Claims: "we remove three faces of the cube (one face for each dimension) but add three new faces"
+- This is correct conceptually. When a corner cube is removed, three exterior faces are partially removed, and three new interior faces are created.
+- PASS
+
+**Step 2 (Change in surface area):**
+- States: "Removing the three faces of the cube reduces the surface area by 3×1 = 3 square units. Adding the three new faces increases the surface area by 3×1 = 3 square units."
+- Net change: 3 − 3 = 0 ✓
+- PASS
+
+**Step 3 (Final answer):**
+- Concludes: A_new = 40
+- PASS
+
+All steps are arithmetically and conceptually correct. The solution properly identifies that removing a corner cube removes three 1×1 exterior squares and adds three 1×1 interior squares, resulting in no net change to the surface area.
+
+```json
+{"claims": []}
+```

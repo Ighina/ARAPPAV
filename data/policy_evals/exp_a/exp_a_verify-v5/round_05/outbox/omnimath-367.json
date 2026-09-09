@@ -1,0 +1,46 @@
+I need to work through this problem independently first, then check the given solution.
+
+**My own solution:**
+
+Given: $-4 \leq x \leq -2$ and $2 \leq y \leq 4$
+
+We want to maximize $\frac{x+y}{x}$.
+
+Rewriting: $\frac{x+y}{x} = 1 + \frac{y}{x}$
+
+Since $x$ is negative and $y$ is positive, $\frac{y}{x}$ is negative.
+
+To maximize $1 + \frac{y}{x}$, I need to maximize $\frac{y}{x}$ (make it least negative/closest to zero).
+
+Since $\frac{y}{x}$ is negative:
+- To make $\frac{y}{x}$ as close to zero as possible (least negative), I need $|\frac{y}{x}|$ to be as small as possible.
+- $|\frac{y}{x}| = \frac{y}{|x|}$ (since $y > 0$ and $x < 0$)
+- To minimize $\frac{y}{|x|}$, I need $y$ small and $|x|$ large.
+- So $y = 2$ and $x = -4$ (which gives $|x| = 4$, the maximum).
+
+This gives: $\frac{y}{x} = \frac{2}{-4} = -\frac{1}{2}$
+
+Therefore: $1 + \frac{y}{x} = 1 - \frac{1}{2} = \frac{1}{2}$
+
+**Now checking the given solution:**
+
+Step 0 is correct: the rewriting to $1 + \frac{y}{x}$ is valid.
+
+Step 1 contains an error. The solution states: "The value of $\frac{y}{x}$ is maximized when $y$ is the largest possible and $x$ is the smallest possible. Therefore, we choose $y = 4$ and $x = -4$."
+
+This is wrong. Since $\frac{y}{x}$ is negative and we want to maximize it (make it closest to zero, i.e., least negative), we need to minimize its absolute value $|\frac{y}{x}| = \frac{y}{|x|}$. This requires $y$ to be **smallest** (not largest) and $|x|$ to be **largest** (so $x$ to be most negative). The correct choices are $y = 2$ and $x = -4$, giving $\frac{y}{x} = \frac{2}{-4} = -\frac{1}{2}$, not $-1$.
+
+Step 2 follows arithmetically from the wrong choice in Step 1, but the final answer $0$ is incorrect; it should be $\frac{1}{2}$.
+
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "The value of \\frac{y}{x} is maximized when y is the largest possible and x is the smallest possible. Therefore, we choose y = 4 and x = -4",
+      "explanation": "Since \\frac{y}{x} is negative (y > 0, x < 0), maximizing it means making it least negative, which requires minimizing |\\frac{y}{x}| = \\frac{y}{|x|}. This is minimized when y is smallest and |x| is largest, so y = 2 and x = -4. This gives \\frac{y}{x} = \\frac{2}{-4} = -\\frac{1}{2}, not -1.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

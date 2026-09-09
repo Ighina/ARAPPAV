@@ -1,0 +1,37 @@
+I'll solve this problem myself first, then audit the solution.
+
+**My own derivation:**
+
+To rationalize $\frac{1}{2\sqrt{7}}$, I need to eliminate the square root from the denominator.
+
+The denominator is $2\sqrt{7}$. To rationalize, I multiply by $\frac{\sqrt{7}}{\sqrt{7}}$ (not by $\frac{2\sqrt{7}}{2\sqrt{7}}$):
+
+$$\frac{1}{2\sqrt{7}} \times \frac{\sqrt{7}}{\sqrt{7}} = \frac{\sqrt{7}}{2\sqrt{7} \times \sqrt{7}} = \frac{\sqrt{7}}{2 \times 7} = \frac{\sqrt{7}}{14}$$
+
+Final answer: $\frac{\sqrt{7}}{14}$ ✓
+
+**Now auditing the solution line by line:**
+
+**Step 0:** Claims the conjugate of $2\sqrt{7}$ is $2\sqrt{7}$ itself and proposes multiplying by $\frac{2\sqrt{7}}{2\sqrt{7}}$.
+
+The reasoning here is confused. The denominator $2\sqrt{7}$ is not a binomial; it's a monomial. The term "conjugate" applies to binomials like $a + b$. To rationalize a monomial containing a square root, we multiply by the square root itself (or a form that eliminates the radical), not invoke conjugates. However, the proposed action of multiplying by $\frac{2\sqrt{7}}{2\sqrt{7}}$ will still work arithmetically, though it's inefficient.
+
+**Step 1:** Claims $\frac{1}{2\sqrt{7}} \times \frac{2\sqrt{7}}{2\sqrt{7}} = \frac{2\sqrt{7}}{2\sqrt{7} \times 2\sqrt{7}}$.
+
+This is correct—numerator is $1 \times 2\sqrt{7} = 2\sqrt{7}$ and denominator is $2\sqrt{7} \times 2\sqrt{7}$.
+
+**Step 2:** Claims $\frac{2\sqrt{7}}{2\sqrt{7} \times 2\sqrt{7}} = \frac{2\sqrt{7}}{4 \times 7}$.
+
+Let me verify: $(2\sqrt{7}) \times (2\sqrt{7}) = 4 \times 7 = 28$. ✓
+
+**Step 3:** Claims $\frac{2\sqrt{7}}{4 \times 7} = \frac{\sqrt{7}}{14}$.
+
+The denominator $4 \times 7 = 28$. The numerator is $2\sqrt{7}$. Dividing both by 2: $\frac{2\sqrt{7}}{28} = \frac{\sqrt{7}}{14}$. ✓
+
+**Step 4:** Final answer $\boxed{\frac{\sqrt{7}}{14}}$ ✓
+
+Despite the confused explanation in Step 0 about conjugates and an inefficient choice of multiplier, the arithmetic is correct throughout and the final answer is correct.
+
+```json
+{"claims": []}
+```

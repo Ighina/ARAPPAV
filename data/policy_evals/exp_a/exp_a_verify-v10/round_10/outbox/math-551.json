@@ -1,0 +1,66 @@
+I'll work through this problem step-by-step, following the audit policy.
+
+## My own derivation first
+
+Given: $(3 - i)x^2 + (a + 4i)x - 115 + 5i = 0$ with $a$ real, and we seek real roots.
+
+If $x = r$ is real, substituting gives:
+$(3 - i)r^2 + (a + 4i)r - 115 + 5i = 0$
+
+Expanding:
+$3r^2 - ir^2 + ar + 4ir - 115 + 5i = 0$
+
+Grouping real and imaginary parts:
+- Real: $3r^2 + ar - 115 = 0$
+- Imaginary: $-r^2 + 4r + 5 = 0$
+
+Both must equal zero for the equation to hold.
+
+From the imaginary part:
+$-r^2 + 4r + 5 = 0$
+$r^2 - 4r - 5 = 0$
+$(r - 5)(r + 1) = 0$
+So $r = 5$ or $r = -1$ ✓
+
+For $r = 5$ in the real part:
+$3(25) + 5a - 115 = 0$
+$75 + 5a - 115 = 0$
+$5a = 40$
+$a = 8$ ✓
+
+For $r = -1$ in the real part:
+$3(1) + a(-1) - 115 = 0$
+$3 - a - 115 = 0$
+$-a - 112 = 0$
+$a = -112$ ✓
+
+## Now auditing the solution line by line
+
+**Step 0:** The separation into real and imaginary parts.
+- Real part: $3r^2 + ar - 115 = 0$ ✓
+- Imaginary part: $-r^2 + 4r + 5 = 0$ ✓
+
+**Step 1:** Solving $-r^2 + 4r + 5 = 0$
+- Multiply by -1: $r^2 - 4r - 5 = 0$ ✓
+- Factor: $(r - 5)(r + 1) = 0$ ✓
+- Solutions: $r = 5$ or $r = -1$ ✓
+
+**Step 3:** For $r = 5$:
+- Equation: $3(5)^2 + a(5) - 115 = 0$ ✓
+- Simplifies: $75 + 5a - 115 = 0$ ✓
+- Thus: $5a - 40 = 0$ ✓
+- Solution: $a = 8$ ✓
+
+**Step 4:** For $r = -1$:
+- Equation: $3(-1)^2 + a(-1) - 115 = 0$ ✓
+- Simplifies: $3 - a - 115 = 0$ ✓
+- Thus: $-a - 112 = 0$ ✓
+- Solution: $a = -112$ ✓
+
+**Step 5:** Final answer: $a = 8, -112$ ✓
+
+All steps check out correctly. The logic is sound: if $x = r$ is a real root, both the real and imaginary parts must vanish. The imaginary constraint forces $r \in \{5, -1\}$, and each is substituted into the real constraint to find the corresponding $a$ values.
+
+```json
+{"claims": []}
+```

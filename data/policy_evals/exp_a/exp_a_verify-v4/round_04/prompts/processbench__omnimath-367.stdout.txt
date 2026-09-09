@@ -1,0 +1,59 @@
+I need to work through this problem myself first, then check the given solution.
+
+**My solution:**
+
+The expression is $\frac{x+y}{x}$ with $-4 \leq x \leq -2$ and $2 \leq y \leq 4$.
+
+Rewriting: $\frac{x+y}{x} = 1 + \frac{y}{x}$
+
+Since $x \in [-4, -2]$ (negative) and $y \in [2, 4]$ (positive), the ratio $\frac{y}{x}$ is negative.
+
+To maximize $1 + \frac{y}{x}$, I need to maximize $\frac{y}{x}$ (make it least negative).
+
+Since $\frac{y}{x}$ is negative, maximizing it means making its absolute value as small as possible.
+
+$\frac{y}{x}$ ranges from $\frac{2}{-2} = -1$ (smallest $y$, largest $x$ in absolute value) to $\frac{4}{-4} = -1$ (largest $y$, smallest $x$ in absolute value).
+
+Wait, let me be more careful. I want to maximize $\frac{y}{x}$ where $y > 0$ and $x < 0$.
+
+For a fixed $x$, $\frac{y}{x}$ increases as $y$ decreases (since we're dividing a smaller positive by a negative).
+For a fixed $y$, $\frac{y}{x}$ increases as $x$ increases toward 0 (since we're dividing by a number closer to zero in absolute value, and it's negative).
+
+So to maximize $\frac{y}{x}$:
+- Choose $y$ as small as possible: $y = 2$
+- Choose $x$ as large as possible (closest to 0): $x = -2$
+
+This gives: $\frac{y}{x} = \frac{2}{-2} = -1$
+
+Therefore: $1 + \frac{y}{x} = 1 + (-1) = 0$
+
+**Checking the solution:**
+
+Step 0 is correct: the rewriting is valid.
+
+Step 1 has an error. It states: "The value of $\frac{y}{x}$ is maximized when $y$ is the largest possible and $x$ is the smallest possible."
+
+This is incorrect. Since $x$ is negative and we're dividing a positive $y$ by a negative $x$, we get a negative result. To maximize a negative number (make it closest to zero, i.e., least negative), we need to make its absolute value smallest. 
+
+With $y$ positive and $x$ negative: $\frac{y}{x}$ is maximized by minimizing $y$ and maximizing $x$ (making $x$ closest to 0).
+
+The solution chooses $y = 4$ and $x = -4$, which actually *minimizes* $\frac{y}{x}$ (makes it most negative), not maximizes it.
+
+With the correct choice $y = 2, x = -2$: $\frac{y}{x} = \frac{2}{-2} = -1$, giving $1 + (-1) = 0$.
+
+Interestingly, both the wrong choice and the right choice yield $\frac{y}{x} = -1$, so the final numerical answer happens to be correct despite the reasoning error.
+
+However, the claim in step 1 about which values maximize $\frac{y}{x}$ is wrong.
+
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "The value of $\\frac{y}{x}$ is maximized when $y$ is the largest possible and $x$ is the smallest possible.",
+      "explanation": "This is backwards. Since $x$ is negative and $y$ is positive, $\\frac{y}{x}$ is negative. To maximize a negative quantity (make it least negative, closest to zero), we minimize its absolute value. This requires minimizing $y$ and maximizing $x$ (bringing $x$ closest to 0), which means choosing $y = 2$ and $x = -2$, not $y = 4$ and $x = -4$. Fortunately, both choices yield $\\frac{y}{x} = -1$, so the final answer is correct despite the flawed reasoning.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

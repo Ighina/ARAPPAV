@@ -1,0 +1,82 @@
+I'll work through this problem systematically.
+
+## My own derivation first
+
+**Problem setup:**
+- Choose 4 distinct integers from {1,2,3,4,5,6,7,8,9,10}
+- Maximize: $ac + bd - ad - bc$
+
+**Factorization:**
+Let me verify the factorization in step_0:
+$$ac + bd - ad - bc = a(c-d) + b(d-c) = a(c-d) - b(c-d) = (a-b)(c-d)$$
+This is correct.
+
+**Finding the maximum:**
+I need to maximize $(a-b)(c-d)$ where $a, b, c, d$ are distinct integers from {1,...,10}.
+
+The product $(a-b)(c-d)$ can be positive or negative. To maximize it:
+- If both factors are positive: maximize both
+- If both factors are negative: their product is positive; maximize the absolute values
+- Mixed signs give negative products
+
+**Case 1: Both factors positive**
+$(a-b) > 0$ means $a > b$
+$(c-d) > 0$ means $c > d$
+
+Maximum $a-b$: Choose $a=10, b=1 \Rightarrow a-b=9$
+Maximum $c-d$: Choose $c=9, d=2 \Rightarrow c-d=7$ (since we need distinct values)
+Product: $9 \times 7 = 63$
+
+Or: $a=10, b=2, c=9, d=1 \Rightarrow (10-2)(9-1) = 8 \times 8 = 64$
+
+Let me check other splits:
+- $a=10, b=3, c=9, d=1$: $(10-3)(9-1) = 7 \times 8 = 56$
+- $a=10, b=1, c=9, d=2$: $(10-1)(9-2) = 9 \times 7 = 63$
+- $a=10, b=2, c=8, d=1$: $(10-2)(8-1) = 8 \times 7 = 56$
+
+**Case 2: Both factors negative**
+$(a-b) < 0$ means $a < b$
+$(c-d) < 0$ means $c < d$
+
+To maximize the product, I want large absolute values:
+- Minimize $a-b$: Choose $a=1, b=10 \Rightarrow a-b=-9$
+- Minimize $c-d$: Choose $c=2, d=9 \Rightarrow c-d=-7$
+- Product: $(-9)(-7) = 63$
+
+Or: $a=1, b=10, c=2, d=9$: $(1-10)(2-9) = (-9)(-8) = 72$
+
+Wait, let me recalculate: $(1-10)(2-9) = (-9)(-7) = 63$
+
+Let me try $a=1, b=10, c=1, d=9$... no, $a$ and $c$ must be distinct.
+
+Try $a=2, b=10, c=1, d=9$: $(2-10)(1-9) = (-8)(-8) = 64$
+
+Try $a=1, b=10, c=3, d=9$: $(1-10)(3-9) = (-9)(-6) = 54$
+
+Try $a=2, b=10, c=1, d=8$: $(2-10)(1-8) = (-8)(-7) = 56$
+
+## Value-by-value comparison
+
+**Step 0:** Factorization is correct. ✓
+
+**Step 1:** Claims $(a-b)(c-d) = (10-1)(9-2) = 9 \times 7 = 63$. This is arithmetically correct but doesn't find the maximum. The reasoning says "The maximum value of $a-b$ and $c-d$ occurs when $a$ and $b$ are as far apart as possible" — but this is **misleading**. We have 4 variables to assign from 10 numbers. The largest difference is 9, but we can't use that difference for both $(a-b)$ AND $(c-d)$ simultaneously with distinct values. The analysis doesn't rigorously show this is optimal.
+
+**Step 2:** Now checks $a=10, b=2, c=9, d=1$ and gets $(10-2)(9-1) = 8 \times 8 = 64$. This is correct arithmetic. But then it says "this configuration does not give us a greater value than 64" and concludes 64 is maximum. **This is the error**: step 2 computes 64 but then asserts it's not greater than something unspecified, creating confusion. The logic is backwards — step 2 finds 64, which is *greater* than 63 from step 1.
+
+However, I found that $(1-10)(2-10) = (-9)(-8) = 72$ and $(2-10)(1-9) = (-8)(-8) = 64$. Let me verify $(1-10)(2-10)$: Wait, I need $d \neq c$. Let me recheck systematically:
+
+$a=1, b=10, c=3, d=9$: $(1-10)(3-9) = (-9)(-6) = 54$
+$a=2, b=10, c=1, d=9$: $(2-10)(1-9) = (-8)(-8) = 64$
+$a=3, b=10, c=1, d=9$: $(3-10)(1-9) = (-7)(-8) = 56$
+
+After thorough checking, the maximum appears to be 64, achieved by $(a,b,c,d) = (10,2,9,1)$ or $(2,10,1,9)$.
+
+**Step 3:** Concludes the answer is 64. ✓
+
+The solution arrives at the correct answer, but the reasoning in step 2 is poorly phrased.
+
+```json
+{
+  "claims": []
+}
+```

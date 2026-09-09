@@ -1,0 +1,62 @@
+I'll solve this problem myself first, then audit the solution.
+
+**My solution:**
+
+Given: $T = -14$, so $d = |T| = 14$
+
+Leo zodiac: July 23 to August 22 inclusive
+
+First person: birthday before July 14
+- Days available: July 1-13 = 13 days
+- Leo days in this range: none (Leo starts July 23)
+- P(first is Leo) = 0/13 = 0
+- P(first is not Leo) = 13/13 = 1
+
+Second person: birthday after July 14
+- Days available: July 15-31 = 17 days
+- Leo days in this range: July 23-31 = 9 days
+- P(second is Leo) = 9/17
+- P(second is not Leo) = 8/17
+
+For exactly one to be Leo:
+- Scenario 1: First is Leo AND Second is not Leo = 0 × 8/17 = 0
+- Scenario 2: First is not Leo AND Second is Leo = 1 × 9/17 = 9/17
+
+Total probability = 0 + 9/17 = **9/17**
+
+**Auditing the solution:**
+
+| Step | Line | Inputs | Operation | My Result | Solution | Verdict |
+|------|------|--------|-----------|-----------|----------|---------|
+| 0 | $d = 14$, days before 14th | July 1-13 | Count | 13 | 13 | PASS |
+| 0 | days after 14th | July 15-31 | Count | 17 | 17 | PASS |
+| 1 | Leo range in July | July 23-31 | Count | 9 | 9 | PASS |
+| 2 | P(first is Leo) | 0 days in July 1-13 are Leo | Calculate | 0 | 0 | PASS |
+| 2 | P(first is not Leo) | 13/13 | Calculate | 1 | 1 | PASS |
+| 3 | P(second is Leo) | 9 Leo days out of 17 after 14th | Calculate | 9/17 | 9/17 | PASS |
+| 4 | First scenario | 1 × 9/17 | Multiply | 9/17 | 9/17 | PASS |
+| 4 | Second scenario | 0 × 8/17 | Multiply | 0 | 0 | PASS |
+| 5 | Final answer | Sum of scenarios | Add | 9/17 | 9/17 | PASS |
+
+**Semantic pass:**
+
+The problem asks for the probability that exactly one person is a Leo. The solution correctly identifies:
+- The two mutually exclusive scenarios (first is Leo XOR second is Leo)
+- Uses the condition that the first birthday is *before* the 14th and the second is *after* the 14th
+- Correctly applies that Leo runs July 23-Aug 22, so no days before July 14 qualify
+- Uses appropriate independence assumption for the two randomly selected people
+
+All interpretations align with the problem statement.
+
+**Verification of arithmetic:**
+- Days 1-13 before 14th: correct
+- Days 15-31 after 14th: 31 - 14 = 17, correct
+- Leo days (23-31): 31 - 22 = 9, correct
+- All probability fractions are correctly simplified or computed
+- Final summation: 9/17 + 0 = 9/17
+
+Every line passes recomputation and semantic verification.
+
+```json
+{"claims": []}
+```

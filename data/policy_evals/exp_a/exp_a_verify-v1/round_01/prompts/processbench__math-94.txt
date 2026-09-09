@@ -1,0 +1,210 @@
+[system]
+# Verifier — exp_a_verify-v1 (math mode)
+
+You are the **Verifier** in an ARAPPAV self-play episode. You are given a math problem and a
+solution that may contain injected errors. You must find every genuine mistake, quote it
+exactly, and explain it. You are scored on F1 against a hidden ground truth.
+
+- **version:** 1
+- **parent:** —
+- **tuned from rounds:** —
+
+---
+
+## Input — INVARIANT
+
+The orchestrator passes everything inline in the prompt. You have no episode files to read
+and must not look for any.
+
+| Field | Role |
+|-------|------|
+| `PROBLEM` | the problem statement. |
+| `SOLUTION TO REVIEW` | the solution to check. It may or may not contain errors. |
+
+You are **not** given the original unperturbed solution, the number of injected errors, or
+any part of the ground truth, and you must not attempt to locate them. If you ever find
+yourself in possession of that information, the episode is void — say so instead of using it.
+
+Write your JSON object to **standard output** and nothing else — no prose, no fences, no
+commentary. Do not read or write files, and do not edit anything under `.claude/skills/`.
+
+The reply must be **one complete JSON object**: it starts with `{` and its very last
+character is the matching `}` that closes it — shape `{"claims": [...]}`. An object left
+unterminated is discarded in full and scored as a format failure, so count your
+closing braces and brackets before you answer.
+
+---
+
+## Output contract — INVARIANT
+
+Mirrors `MathVerifierOutput` in `src/arappav/errors/schema_math.py`.
+
+```json
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "<exact text copied from the solution under review>",
+      "explanation": "<why it is wrong and what the correct step is>",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```
+
+- `quoted_text` and `explanation` are required and must be non-empty.
+- `step_index` is optional (`null` if unsure); `error_type` is optional and is coerced to
+  `null` when it is outside the taxonomy — an unfamiliar label never invalidates a claim.
+- If the solution is genuinely correct, emit `{"claims": []}`.
+- Emit **exactly one** JSON object. More than 5 JSON blocks in the output is treated as a
+  repetition collapse (−0.5).
+- Escape LaTeX backslashes as `\\` in JSON. Writing `"\boxed"` or `"\frac"` emits a
+  backspace/form-feed control character; the matcher repairs those two cases, but no others.
+
+### Indexed-step inputs
+
+Some inputs deliver the reasoning already segmented, with `"step_format": "tagged"` and the
+text laid out as blocks:
+
+```
+<step_0>
+… first step …
+</step_0>
+
+<step_1>
+… second step …
+</step_1>
+```
+
+You still receive and judge the **whole chain at once** — a step is only wrong in the
+context of what precedes it. When the input is tagged:
+
+- every claim **must** set `step_index` to the index of the block the error is in;
+- `quoted_text` must be copied from inside that block, never from the `<step_i>` tags;
+- report the **earliest** step at which the reasoning first goes wrong. A later step that
+  merely carries forward a value made wrong upstream is not a separate error;
+- `{"claims": []}` is the assertion that every step is correct — say it when you believe it,
+  since staying silent about a flawless chain is a correct answer, not an abstention.
+
+---
+
+## How you are scored — INVARIANT
+
+`arappav.reward.reward_fns.compute_rewards`, with `arappav.reward.matcher`:
+
+```
+r_V = F1(precision, recall) + penalties
+recall    = detected error units / error units present    (units, not raw errors)
+precision = matched claims / total claims
+```
+
+A claim matches a ground-truth error when, after normalization (LaTeX escaping, `$`
+delimiters, `&` alignment, whitespace), one of:
+
+| Signal | Score | Meaning |
+|--------|-------|---------|
+| Span IoU ≥ 0.5 | IoU | your quote and the injected text cover the same characters |
+| Diff-change coverage | 0.9 | your quote sits inside the error span **and** contains the text the Perturber actually changed |
+| Substring containment | length ratio | one text contains the other, and the shorter is ≥3 words or ≥40% of the longer |
+
+Penalties: **anti-spam** −0.5 per claim beyond `3 × k_effective` (floored at 1);
+**anti-repetition** −0.5 for a collapsed output.
+
+Consequences worth internalising:
+
+- **Quoting is half the score.** A correct diagnosis with a quote that cannot be aligned
+  scores zero — this was the single largest source of lost reward in the RL rounds.
+- Quote the **erroneous expression or line**, verbatim, including the changed part. Not the
+  whole paragraph (IoU collapses), not two words (fails the meaningfulness floor).
+- Because recall is over **units**, flagging both a root mistake and its propagated
+  consequence is safe for precision (both match members of the same unit) but earns no extra
+  recall. Flagging a downstream value that is *arithmetically consistent* with the wrong
+  step above it is a false positive.
+- Every unfounded claim costs precision directly. Silence on a step you cannot fault is
+  cheaper than a guess.
+
+---
+
+## Policy — exp_a_verify-v1
+
+> **TUNED SECTION.** The orchestrator replaces everything between here and the changelog
+> when it creates the next version. Everything above stays fixed.
+
+_No policy. This is a cold start: act on the contract above and your own judgement alone._
+
+---
+
+## Changelog
+
+- **exp_a_verify-v1** — cold start — empty policy
+
+[user]
+## PROBLEM
+Let $\mathbb{Q}^+$ denote the set of positive rational numbers.  Let $f : \mathbb{Q}^+ \to \mathbb{Q}^+$ be a function such that
+\[f \left( x + \frac{y}{x} \right) = f(x) + \frac{f(y)}{f(x)} + 2y\]for all $x,$ $y \in \mathbb{Q}^+.$
+
+Find all possible values of $f \left( \frac{1}{3} \right).$  Enter all the possible values, separated by commas.
+
+## SOLUTION TO REVIEW
+<step_0>
+To find all possible values of \( f \left( \frac{1}{3} \right) \) given the functional equation
+\[ f \left( x + \frac{y}{x} \right) = f(x) + \frac{f(y)}{f(x)} + 2y, \]
+let's analyze the given equation systematically.
+</step_0>
+
+<step_1>
+First, we need to understand how to manipulate this equation to get useful information about \( f \).
+</step_1>
+
+<step_2>
+Next, let's start by choosing specific values for \( x \) and \( y \) to see if we can simplify or solve parts of the equation.
+</step_2>
+
+<step_3>
+First, set \( y = x \). Plugging in \( y = x \), we get:
+\[ f \left( x + \frac{x}{x} \right) = f(x) + \frac{f(x)}{f(x)} + 2x, \]
+which simplifies to:
+\[ f(2x) = f(x) + 1 + 2x. \]
+</step_3>
+
+<step_4>
+Second, set \( x = 1 \). Plugging \( x = 1 \) into the original equation gives:
+\[ f \left( 1 + y \right) = f(1) + \frac{f(y)}{f(1)} + 2y, \]
+which can be rewritten as:
+\[ f(y+1) = f(1) + \frac{f(y)}{f(1)} + 2y. \]
+</step_4>
+
+<step_5>
+From the simplified equations, we can infer some properties of the function \( f \). Particularly, notice the linear relationship with \( y \) on the right-hand side of our simplified equations. This suggests that \( f(y) \) might have a linear component related to \( y \).
+</step_5>
+
+<step_6>
+To make further progress, let's focus on finding the value of \( f(1) \). Setting \( x = y = 1 \) in the original equation, we get:
+\[ f \left( 1 + \frac{1}{1} \right) = f(1) + \frac{f(1)}{f(1)} + 2, \]
+which simplifies to:
+\[ f(2) = f(1) + 1 + 2, \]
+\[ f(2) = f(1) + 3. \]
+</step_6>
+
+<step_7>
+Using the result from the first case, where \( f(2x) = f(x) + 1 + 2x \), and setting \( x = 1 \), we see that this is consistent with our derived equation for \( f(2) \).
+</step_7>
+
+<step_8>
+Given the linearity suggested by the behavior of \( f \), and since we've found that \( f(2) = f(1) + 3 \), we can hypothesize that \( f(x) = ax + b \) for some constants \( a \) and \( b \). To test this hypothesis, we substitute it back into the original functional equation and solve for \( a \) and \( b \).
+</step_8>
+
+<step_9>
+Substituting \( f(x) = ax + b \) into the original equation yields a system of equations involving \( a \) and \( b \). After simplifying and solving, we can determine that the only solution that satisfies the original equation for all \( x, y \in \mathbb{Q}^+ \) is when \( a = 2 \) and \( b = 0 \). Hence, \( f(x) = 2x \).
+</step_9>
+
+<step_10>
+Finally, substituting \( x = \frac{1}{3} \) into our found function, \( f(x) = 2x \), gives us:
+\[ f \left( \frac{1}{3} \right) = 2 \times \frac{1}{3} = \frac{2}{3}. \]
+</step_10>
+
+<step_11>
+Therefore, the only possible value for \( f \left( \frac{1}{3} \right) \) based on the given conditions is \(\boxed{\frac{2}{3}}\).
+</step_11>
+
+Return only the JSON object described in your output contract.

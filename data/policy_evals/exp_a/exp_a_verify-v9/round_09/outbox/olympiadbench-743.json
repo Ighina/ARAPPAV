@@ -1,0 +1,63 @@
+I'll work through this problem systematically.
+
+## My own derivation first
+
+**Setup:**
+- $T = -14$, so $d = |T| = 14$
+- Person 1: birthday before July 14 (July 1–13) → 13 days
+- Person 2: birthday after July 14 (July 15–31) → 17 days
+- Leo range: July 23 to August 22 inclusive
+- In July, Leo days are: July 23–31 → 9 days
+
+**Key observation:** Leo days that fall before July 14: none (Leo starts July 23)
+Leo days that fall after July 14: July 23–31 → 9 days
+
+**Probabilities:**
+- P(Person 1 is Leo) = 0/13 = 0 (no Leo days in July 1–13)
+- P(Person 1 is not Leo) = 13/13 = 1
+- P(Person 2 is Leo) = 9/17 (9 Leo days out of July 15–31)
+- P(Person 2 is not Leo) = 8/17
+
+**Exactly one is Leo:**
+- Scenario A: Person 1 is Leo AND Person 2 is not Leo = 0 × 8/17 = 0
+- Scenario B: Person 1 is not Leo AND Person 2 is Leo = 1 × 9/17 = 9/17
+
+**Total probability:** 0 + 9/17 = **9/17**
+
+## Now reviewing the solution
+
+**Step 0:** Correctly identifies $d = 14$, correctly counts 13 days before (July 1–13) and 17 days after (July 15–31). ✓
+
+**Step 1:** Correctly identifies 9 Leo days in July (July 23–31). ✓
+
+**Step 2:** Correctly states P(first person is Leo) = 0 and P(first person is not Leo) = 1. ✓
+
+**Step 3:** Correctly states P(second person is Leo) = 9/17. ✓
+
+**Step 4:** Correctly computes both scenarios:
+- First not Leo, second is Leo: 1 × 9/17 = 9/17 ✓
+- First is Leo, second not Leo: 0 × 8/17 = 0 ✓
+
+**Step 5:** Correctly concludes the answer is 9/17. ✓
+
+## Value-by-value comparison
+
+| Quantity | Solution | My derivation | Status |
+|----------|----------|---------------|--------|
+| $d$ | 14 | 14 | MATCH |
+| Days before day 14 | 13 | 13 | MATCH |
+| Days after day 14 | 17 | 17 | MATCH |
+| Leo days in July | 9 | 9 | MATCH |
+| P(Person 1 is Leo) | 0 | 0 | MATCH |
+| P(Person 2 is Leo) | 9/17 | 9/17 | MATCH |
+| Final answer | 9/17 | 9/17 | MATCH |
+
+## Semantic pass
+
+Each step makes the correct logical assertion for the problem. The operations are correct (counting ranges, identifying Leo dates, applying conditional probability rules). All variables denote their intended quantities. The solution answers exactly what was asked.
+
+The solution is mathematically sound and complete.
+
+```json
+{"claims": []}
+```

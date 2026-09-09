@@ -1,0 +1,8 @@
+{
+  "episode_id": "olympiadbench-297",
+  "subset": "olympiadbench",
+  "label": 3,
+  "num_steps": 10,
+  "final_answer_correct": false,
+  "generator": "Llama-3.1-70B-Instruct"
+}

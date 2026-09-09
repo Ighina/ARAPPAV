@@ -359,10 +359,13 @@ class TestBackends:
             b.run(skill="verify-v1", user=f"item{i}", step="s", round_dir=tmp_path)
         assert len(b._cache) == 1 and len(b._client.messages.calls) == 3
 
-    def test_haiku_omits_thinking_but_opus_gets_it(self, monkeypatch, tmp_path):
+    def test_each_model_gets_the_thinking_form_it_accepts(self, monkeypatch, tmp_path):
+        # This test previously asserted that haiku got NO thinking, which is
+        # what the bug was: haiku rejects `adaptive` but does support
+        # budget_tokens, and running it thinking-free cost ~0.17 exact-match.
         h = self._stub(monkeypatch)
         h.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
-        assert "thinking" not in h._client.messages.calls[0]
+        assert h._client.messages.calls[0]["thinking"]["type"] == "enabled"
         o = self._stub(monkeypatch, model="claude-opus-5")
         o.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
         assert o._client.messages.calls[0]["thinking"] == {"type": "adaptive"}
@@ -666,3 +669,40 @@ class TestPerturberEvaluation:
     def test_sources_cover_analysis_validation_and_test(self):
         assert set(self._mod().SOURCES) == {
             "hendrycks", "math500", "processbench-correct"}
+
+
+class TestThinkingConfiguration:
+    """Each model family must get the thinking form it actually accepts.
+
+    Regression: haiku-4-5 was in a NO_THINKING set, so the API path ran it with
+    thinking disabled while `claude -p` ran it with thinking on. On an identical
+    24-item ProcessBench slice with the identical policy that cost 0.708 vs
+    0.875 exact-match — a large silent quality regression that made API and CLI
+    runs incomparable.
+    """
+
+    def test_haiku_gets_budget_tokens_not_adaptive(self):
+        # The API rejects `adaptive` on haiku-4-5 with a 400, and `effort` is
+        # unsupported there, but extended thinking still works via budget_tokens.
+        from arappav.pipeline.backends import thinking_kwargs
+        kw = thinking_kwargs("claude-haiku-4-5", 8000, "high")
+        assert kw["thinking"]["type"] == "enabled"
+        assert kw["thinking"]["budget_tokens"] > 0
+        assert "output_config" not in kw
+
+    def test_budget_stays_below_max_tokens(self):
+        from arappav.pipeline.backends import thinking_kwargs
+        kw = thinking_kwargs("claude-haiku-4-5", 2048, "high")
+        assert kw["thinking"]["budget_tokens"] < 2048
+
+    def test_adaptive_models_get_adaptive_and_effort(self):
+        from arappav.pipeline.backends import thinking_kwargs
+        kw = thinking_kwargs("claude-opus-5", 8000, "high")
+        assert kw["thinking"] == {"type": "adaptive"}
+        assert kw["output_config"] == {"effort": "high"}
+
+    def test_thinking_is_never_silently_disabled(self):
+        # Nothing should land in NO_THINKING without a deliberate decision:
+        # an empty set means every model gets some thinking configuration.
+        from arappav.pipeline.backends import NO_THINKING
+        assert NO_THINKING == set()

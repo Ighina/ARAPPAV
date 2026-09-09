@@ -1,0 +1,44 @@
+I'll work through this problem independently first, then check the solution.
+
+**Building my own solution:**
+
+- $T = -14$, so $d = |T| = 14$
+- First person: birthday before July 14 (July 1-13, which is 13 days)
+- Second person: birthday after July 14 (July 15-31, which is 17 days)
+- Leo range: July 23 to August 22 inclusive
+- In July, Leo days are: July 23-31 (9 days)
+
+For exactly one person to be a Leo:
+- **Scenario A:** First person is a Leo AND second person is not a Leo
+  - Days before July 14 that are Leo: 0 (Leo starts July 23)
+  - P(first is Leo) = 0/13 = 0
+  
+- **Scenario B:** First person is not a Leo AND second person is a Leo
+  - Days after July 14 that are Leo: July 23-31 = 9 days
+  - P(second is Leo) = 9/17
+  - P(first is not Leo) = 13/13 = 1
+  - P(Scenario B) = 1 × 9/17 = 9/17
+
+Total probability = 0 + 9/17 = **9/17**
+
+Now checking the given solution:
+
+**Step 0:** Correctly identifies $d = 14$, counts 13 days before (July 1-13) and 17 days after (July 15-31). ✓
+
+**Step 1:** Correctly identifies 9 Leo days in July (July 23-31). ✓
+
+**Step 2:** Correctly states P(first person is Leo) = 0 and P(first person is not Leo) = 1. ✓
+
+**Step 3:** Correctly states P(second person is a Leo) = 9/17. ✓
+
+**Step 4:** Sets up both scenarios correctly:
+- Scenario 1: First not Leo, second is Leo = 1 × 9/17 = 9/17 ✓
+- Scenario 2: First is Leo, second not Leo = 0 × 8/17 = 0 ✓
+
+**Step 5:** Concludes probability is 9/17. ✓
+
+The solution is mathematically sound. All setup, calculations, and reasoning are correct. The final answer is properly derived and boxed.
+
+```json
+{"claims": []}
+```

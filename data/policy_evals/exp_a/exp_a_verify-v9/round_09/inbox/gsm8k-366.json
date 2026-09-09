@@ -1,0 +1,8 @@
+{
+  "episode_id": "gsm8k-366",
+  "subset": "gsm8k",
+  "problem": "Carl has a cane that is half as long as he is tall.  Carl is one foot taller than his brother, Ned.  And Ned is two feet shorter than his cousin, Isabel.  If Isabel is 7 feet tall, how long is Carl's cane, in feet?",
+  "solution_to_review": "<step_0>\nLet's start by figuring out how tall Isabel is. If she is 7 feet tall, then Ned is two feet shorter than her, which means Ned is \\(7 - 2 = 5\\) feet tall.\n</step_0>\n\n<step_1>\nIf Carl is one foot taller than Ned, then Carl is \\(5 + 1 = 6\\) feet tall.\n</step_1>\n\n<step_2>\nAnd if Carl's cane is half as long as he is tall, then the length of his cane is \\(\\frac{6}{2} = 3\\) feet. So Carl's cane is 3 feet long. The answer is: \\(\\boxed{3}\\)\n</step_2>",
+  "step_format": "tagged",
+  "num_steps": 3
+}

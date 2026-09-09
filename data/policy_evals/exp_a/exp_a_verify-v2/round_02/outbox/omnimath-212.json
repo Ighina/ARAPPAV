@@ -1,0 +1,36 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "The minimum number of queens needed to dominate an \\(n \\times n\\) board is approximately \\(n/2\\) for large \\(n\\). For \\(2017\\), the minimum number of queens required is approximately \\(2017/2 \\approx 1008.5\\). Since we can't place half a queen, we need at least 1009 queens.",
+      "explanation": "The claim that the minimum dominating set of queens on an \\(n \\times n\\) board is approximately \\(n/2\\) is incorrect. For an \\(n \\times n\\) chessboard, the minimum number of queens needed to dominate all squares is approximately \\(n/3\\) (or more precisely, ⌈n/3⌉ for most values of n). For n=2017, this would be around 673 queens, not 1009. Since 1000 > 673, the conclusion that 1000 queens is insufficient is incorrect; 1000 queens should actually be sufficient to dominate a 2017×2017 board.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 4,
+      "quoted_text": "The number of distinct powers of 2 up to \\(2^{20}\\) (since \\(2^{20} = 1048576\\)) is 21.",
+      "explanation": "This reasoning misinterprets the problem. The problem asks whether Kelvin can make every square contain a *different* power of 2, not whether there are enough distinct powers of 2 up to some value. The constraint is not about the magnitude of powers but about the parity structure of the grid. Each increment operation adds 1 to the sum of two adjacent squares. Over all squares, each operation increases the total sum by 2. Starting from 0 everywhere, the total sum is always even. However, if we assign distinct powers of 2 to all 4,068,289 squares, the sum would be odd (since there is an odd number of squares and we'd have an odd number of terms summing to an odd total). This parity argument proves it is impossible, not the counting argument presented.",
+      "error_type": "wrong_reasoning"
+    },
+    {
+      "step_index": 6,
+      "quoted_text": "In such a tournament, any set of 2017 players can be dominated by the player ranked immediately higher than the highest-ranked player in the set.",
+      "explanation": "This reasoning is flawed. Consider a transitive tournament where players are linearly ordered and a higher-ranked player always beats a lower-ranked player. If we take a set of 2017 players that includes the highest-ranked player overall, then no other player beats all members of that set (since the highest-ranked player is in the set and beats everyone but themselves). The solution fails to address this case. A tournament where every set of 2017 people is dominated does not exist; by a counting/probabilistic argument, in any tournament, if the number of players is sufficiently large relative to the set size, some set of 2017 people will not be dominated.",
+      "error_type": "wrong_reasoning"
+    },
+    {
+      "step_index": 10,
+      "quoted_text": "Specifically, there exists a constant \\(c > 0\\) such that \\(\\max(|A + A|, |A \\cdot A|) \\geq c|A| \\log |A|\\). However, the exact form of the bound \\(\\max(|A + A|, |A \\cdot A|) \\geq c|A| \\log^2 |A|\\) is not generally known to hold for all sets \\(A\\).",
+      "explanation": "The solution correctly identifies that the bound with \\(\\log^2 |A|\\) is not known to hold, but then concludes 'No'. This is contradictory and misleading. The actual answer to part (e) is 'Yes'—there does exist such a constant c. The correct bound \\(\\max(|A \\cdot A|, |A + A|) \\geq c|A|\\log^2|A|\\) is a known result in additive combinatorics (related to work by Erdős and others). The solution's conclusion is incorrect.",
+      "error_type": "wrong_conclusion"
+    },
+    {
+      "step_index": 12,
+      "quoted_text": "It is known that the set \\(\\{1, 2, \\ldots, n\\}\\) can be partitioned into \\(k\\) sum-free subsets if \\(n \\leq 2^k - 1\\).",
+      "explanation": "This criterion is stated backward or is simply incorrect. The correct classical result is that \\(\\{1, 2, \\ldots, n\\}\\) can be partitioned into \\(k\\) sum-free subsets when \\(n < 2^k\\) (not 2^k-1), but more importantly, this is a sufficient condition stated as if it were necessary. The converse is not true: it is possible to partition \\(\\{1, 2, \\ldots, 1093\\}\\) into 7 sum-free subsets even though \\(1093 > 2^7 - 1 = 127\\). The answer to part (f) is actually 'Yes', not 'No'. A valid partition exists using techniques from additive combinatorics.",
+      "error_type": "wrong_reasoning"
+    }
+  ]
+}
+```

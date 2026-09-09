@@ -1,0 +1,8 @@
+{
+  "episode_id": "omnimath-367",
+  "subset": "omnimath",
+  "problem": "Suppose that $x$ and $y$ are real numbers with $-4 \\leq x \\leq -2$ and $2 \\leq y \\leq 4$. What is the greatest possible value of $\\frac{x+y}{x}$?",
+  "solution_to_review": "<step_0>\nTo find the greatest possible value of the expression \\(\\frac{x+y}{x}\\) given the constraints \\(-4 \\leq x \\leq -2\\) and \\(2 \\leq y \\leq 4\\), we start by rewriting the expression as follows: \\[ \\frac{x+y}{x} = \\frac{x}{x} + \\frac{y}{x} = 1 + \\frac{y}{x} \\] Thus, the problem reduces to finding the maximum value of \\(1 + \\frac{y}{x}\\). Since \\(1\\) is a constant, we need to maximize \\(\\frac{y}{x}\\).\n</step_0>\n\n<step_1>\nGiven that \\(x\\) is negative (\\(-4 \\leq x \\leq -2\\)) and \\(y\\) is positive (\\(2 \\leq y \\leq 4\\)), the fraction \\(\\frac{y}{x}\\) will be negative. To maximize \\(\\frac{y}{x}\\), we need to make it as close to zero as possible (i.e., as least negative as possible). The value of \\(\\frac{y}{x}\\) is maximized when \\(y\\) is the largest possible and \\(x\\) is the smallest possible. Therefore, we choose \\(y = 4\\) and \\(x = -4\\): \\[ \\frac{y}{x} = \\frac{4}{-4} = -1 \\]\n</step_1>\n\n<step_2>\nSubstituting this back into the expression \\(1 + \\frac{y}{x}\\), we get: \\[ 1 + \\frac{y}{x} = 1 + (-1) = 0 \\] Thus, the greatest possible value of \\(\\frac{x+y}{x}\\) is \\(\\boxed{0}\\).\n</step_2>",
+  "step_format": "tagged",
+  "num_steps": 3
+}

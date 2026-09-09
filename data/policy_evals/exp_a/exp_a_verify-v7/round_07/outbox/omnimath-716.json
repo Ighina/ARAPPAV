@@ -1,0 +1,43 @@
+I need to verify this solution step by step.
+
+**My own solution first:**
+
+The problem asks: Chim Tu has 4 T-shirts. An outfit consists of 3 or more T-shirts worn in a specific order. Two outfits are distinct if the sets differ OR the order differs. He changes outfit every 3 days and never repeats. How many days can he survive?
+
+This is asking for the total number of ordered selections (permutations) of 3 or more items from 4 items.
+
+- **Outfits with exactly 3 T-shirts:** This is P(4,3) = 4!/(4-3)! = 4!/1! = 24. (Choose and order 3 from 4.)
+- **Outfits with exactly 4 T-shirts:** This is P(4,4) = 4! = 24. (All 4, ordered in all possible ways.)
+
+Total outfits: 24 + 24 = 48.
+
+Days of survival: 48 outfits × 3 days per outfit = 144 days.
+
+**Now comparing with the solution:**
+
+**Step 0:** Correctly identifies the need to count distinct outfits with 3 or more T-shirts, considering cases separately. ✓
+
+**Step 1:** "We can choose 3 out of 4 T-shirts in C(4, 3) = 4 ways. For each combination, there are 3! = 6 ways to arrange them."
+
+- C(4,3) = 4 ✓
+- 3! = 6 ✓
+- Total: 4 × 6 = 24 ✓
+
+This is correct, though the language "choose and then arrange" could be clearer. The result is P(4,3) = 24.
+
+**Step 2:** "There is only one way to choose all four T-shirts. There are 4! = 24 ways to arrange them."
+
+- 1 way to choose all 4 ✓
+- 4! = 24 ✓
+- Total: 1 × 24 = 24 ✓
+
+**Step 3:** "In total, Chim Tu can create 24 + 24 = 48 distinct outfits. Given that Chim Tu changes his outfit every three days and never wears the same outfit twice, the maximum number of days he can survive is 48 * 3 = 144."
+
+- Total outfits: 24 + 24 = 48 ✓
+- Days: 48 × 3 = 144 ✓
+
+All steps are mathematically correct and properly address the problem's requirements.
+
+```json
+{"claims": []}
+```

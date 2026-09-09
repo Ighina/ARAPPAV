@@ -1,0 +1,74 @@
+I'll work through this problem systematically, following the policy outlined.
+
+## My own solution first
+
+The problem asks for $\frac{1}{2015} = \frac{a}{5} + \frac{b}{13} + \frac{c}{31}$ with $0 \leq a < 5$ and $0 \leq b < 13$.
+
+First, I verify that $5 \times 13 \times 31 = 2015$. Yes, this is correct.
+
+Multiplying both sides by 2015:
+$$1 = a \cdot 403 + b \cdot 155 + c \cdot 65$$
+
+where $403 = 2015/5$, $155 = 2015/13$, $65 = 2015/31$.
+
+**Finding $a$ mod 5:**
+Taking mod 5: $1 \equiv 3a \pmod{5}$ (since $403 \equiv 3$, $155 \equiv 0$, $65 \equiv 0$).
+The inverse of 3 mod 5 is 2 (since $3 \cdot 2 = 6 \equiv 1$).
+So $a \equiv 2 \pmod{5}$, thus $a = 2$.
+
+**Finding $b$ mod 13:**
+Substituting $a = 2$: $1 = 806 + 155b + 65c$
+$-805 = 155b + 65c$
+Dividing by 5: $-161 = 31b + 13c$
+
+Taking mod 13: $-161 \equiv 31b \pmod{13}$
+$-161 = -13 \times 12 - 5 = -156 - 5$, so $-161 \equiv -5 \equiv 8 \pmod{13}$
+$31 \equiv 5 \pmod{13}$
+So $8 \equiv 5b \pmod{13}$.
+
+The inverse of 5 mod 13: $5 \times 8 = 40 = 39 + 1 \equiv 1 \pmod{13}$, so the inverse is 8.
+Thus $b \equiv 8 \times 8 \equiv 64 \equiv 12 \pmod{13}$, so $b = 12$.
+
+**Finding $c$:**
+From $-161 = 31b + 13c = 31 \times 12 + 13c = 372 + 13c$:
+$-161 - 372 = 13c$
+$-533 = 13c$
+$c = -41$
+
+**Verification:** $403(2) + 155(12) + 65(-41) = 806 + 1860 - 2665 = 2666 - 2665 = 1$ ✓
+
+So $a + b = 2 + 12 = 14$.
+
+## Audit of the solution
+
+Now I'll check each step:
+
+**Step 0:** Sets up the equation correctly. $403 = 13 \times 31$, $155 = 5 \times 31$, $65 = 5 \times 13$. The equation $1 = 403a + 155b + 65c$ is correct. ✓
+
+**Step 1:** Takes mod 5. $403 = 80 \times 5 + 3 \equiv 3$, $155 \equiv 0$, $65 \equiv 0$. Equation $1 \equiv 3a \pmod{5}$ is correct. ✓
+
+**Step 2:** Finds $a = 2$ correctly. $3 \times 2 = 6 \equiv 1 \pmod{5}$, so $a = 2$. ✓
+
+**Step 3:** Substitutes $a = 2$: $1 = 806 + 155b + 65c$, giving $-805 = 155b + 65c$. Dividing by 5: $-161 = 31b + 13c$. ✓
+
+**Step 4:** Takes mod 13. $31 \equiv 5 \pmod{13}$, $13 \equiv 0$. So $-161 \equiv 5b \pmod{13}$.
+For $-161 \pmod{13}$: $-161 / 13 = -12.385...$, so $-161 = -13 \times 13 + 8 = -169 + 8$. Thus $-161 \equiv 8 \pmod{13}$. ✓
+
+**Step 5:** Finds inverse of 5 mod 13. $5 \times 8 = 40 = 3 \times 13 + 1 \equiv 1$, so inverse is 8. ✓
+Then $b \equiv 8 \times 8 = 64 \pmod{13}$. $64 = 4 \times 13 + 12 = 52 + 12$, so $64 \equiv 12 \pmod{13}$. Thus $b = 12$. ✓
+
+**Step 6:** Substitutes $a = 2, b = 12$ into $-161 = 31b + 13c$:
+$-161 = 31 \times 12 + 13c = 372 + 13c$
+$-161 - 372 = 13c$
+$-533 = 13c$
+$c = -41$ ✓
+
+**Step 7:** $a + b = 2 + 12 = 14$ ✓
+
+All steps are arithmetically and logically correct. The reasoning is sound and complete.
+
+```json
+{
+  "claims": []
+}
+```

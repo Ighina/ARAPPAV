@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "It is given that Suzie bought 2 packs of grape gum for $2 each. So, the total cost for grape gum is \\(2 \\times 2 = \\$4\\).",
+      "explanation": "The problem states that Suzie bought four packs total: two strawberry, one grape, and one green apple. She paid $2 for *a pack* of grape gum (singular), not 2 packs. The total cost for grape gum should be $2, not $4.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

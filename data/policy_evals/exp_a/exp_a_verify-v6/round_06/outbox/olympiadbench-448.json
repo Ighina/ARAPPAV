@@ -1,0 +1,30 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "2014 - 1900 - 10x - y = 2(10x + y)",
+      "explanation": "The equation setup is incorrect. If the birth year is denoted 19xy (meaning 1900 + 10x + y), then Charlie's age in 2014 is 2014 - (1900 + 10x + y) = 114 - 10x - y. The correct equation should be: 114 - 10x - y = 2(10x + y), not 2014 - 1900 - 10x - y = 2(10x + y). The solution has incorrectly separated 2014 and 1900 instead of treating the birth year as the complete four-digit number 1900 + 10x + y.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 3,
+      "quoted_text": "Dividing the entire equation by 3, we get: \\[4.67 = 10x + y\\]",
+      "explanation": "Dividing 14 by 3 gives 14/3 ≈ 4.67, but this is a non-integer result for a problem where 10x + y must be an integer by definition (x and y are single digits). The equation 14 = 30x + 3y, or equivalently 14 = 3(10x + y), has no integer solution since 14 is not divisible by 3. This indicates an error in the setup from step 0, not a rounding opportunity.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 4,
+      "quoted_text": "Since \\(10x + y\\) must be an integer, we round 4.67 to the nearest integer, which is 5.",
+      "explanation": "Rounding a non-integer result to force it to be an integer is mathematically invalid when solving an equation. If the equation yields 4.67 = 10x + y and 10x + y must be an integer, this indicates the equation itself is wrong, not that rounding is an acceptable solution method. The correct approach is to revisit the setup in step 0.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 7,
+      "quoted_text": "We also check if 109 is twice the number formed by the rightmost two digits of 1905: \\[2 \\times 5 = 10\\]",
+      "explanation": "The calculation 2 × 5 = 10 is arithmetically correct, but this verification reveals that 109 ≠ 10, meaning the proposed answer fails the problem's requirement. Rather than accepting this failure (which the solution acknowledges in step 8), the error originates in step 0's incorrect equation setup. The correct birth year should satisfy 2014 - birth_year = 2 × (last two digits of birth year), and solving this correctly yields 1957, where 2014 - 1957 = 57 = 2 × 57 is false, or checking: 2014 - 1957 = 57, and 2 × 57 = 114, which also doesn't match. The correct year is 1981: 2014 - 1981 = 33, and 2 × 81 = 162 (also incorrect). Working correctly: if birth year is 19xy, then 2014 - 1900 - 10x - y = 2(10x + y) should become 114 - 10x - y = 2(10x + y), giving 114 = 30x + 3y, so 38 = 10x + y. This means x = 3, y = 8, birth year 1938, and verification: 2014 - 1938 = 76, and 2 × 38 = 76. ✓",
+      "error_type": "arithmetic_error"
+    }
+  ]
+}
+```
