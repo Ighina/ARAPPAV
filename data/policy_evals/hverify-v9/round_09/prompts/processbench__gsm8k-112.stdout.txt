@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "9 hours * 60 minutes/hour = 540 minutes. Add 55 minutes to get the total time she slept: 540 + 55 = 595 minutes.",
+      "explanation": "Kim went to sleep at 10 p.m. and woke up at 5:55 a.m. This is 7 hours and 55 minutes (420 + 55 = 475 minutes), not 9 hours and 55 minutes (540 + 55 = 595 minutes). When she woke up 5 minutes earlier, her total sleep time decreased from 8 hours to 7 hours 55 minutes, not increased to 9 hours 55 minutes. The correct total sleep before subtracting sleepwalking is 475 minutes, leading to a final answer of 475 - 23 = 452 minutes, not 572 minutes.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

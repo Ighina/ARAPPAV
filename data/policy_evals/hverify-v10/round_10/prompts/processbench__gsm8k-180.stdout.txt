@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "Stays: 15 minutes (half of the first train's duration).",
+      "explanation": "The problem states the second train stays for 'a quarter of the amount of time that the first train stayed in the station.' Since the first train stayed 20 minutes, a quarter of that is 1/4 × 20 = 5 minutes, not 15 minutes. This error propagates through steps 2 and 3, yielding an incorrect final answer of 155 minutes instead of the correct 145 minutes.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

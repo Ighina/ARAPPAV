@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "1/4 of the oranges = (1/4) * 240 = 60 oranges",
+      "explanation": "After giving away 4 boxes in step 0, Mrs. Harrington has 160 remaining oranges (8 boxes × 20, computed in step 1). When the problem states \"she kept 1/4 of the oranges and sold the rest,\" this refers to partitioning the remaining 160 oranges, not the original 240. The correct calculation should be: 1/4 of 160 = (1/4) × 160 = 40 oranges, leading to 160 − 40 = 120 oranges sold, not 100.",
+      "error_type": null
+    }
+  ]
+}
+```

@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "$194/meter × 490 meters = $94,860",
+      "explanation": "The arithmetic is incorrect. $194 × 490 = $95,060, not $94,860. Verification: 194 × 490 = 194 × (500 - 10) = 97,000 - 1,940 = 95,060.",
+      "error_type": "arithmetic_error"
+    }
+  ]
+}
+```

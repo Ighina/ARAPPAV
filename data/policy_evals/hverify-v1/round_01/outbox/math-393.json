@@ -1,0 +1,18 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "the height of the cone is \\( \\frac{1}{2} \\times 27 = 13.5 \\) meters",
+      "explanation": "This misinterprets the problem statement. The problem says 'The height of the cone is half the height of the cylinder', meaning h_cone = (1/2)h_cyl, not h_cone = (1/2) × (total height). With total height 27m and h_cone = (1/2)h_cyl, we have h_cyl + (1/2)h_cyl = 27, so h_cyl = 18m and h_cone = 9m.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 4,
+      "quoted_text": "\\( \\frac{4}{3} \\pi (5)^2 (13.5) = 500\\pi \\)",
+      "explanation": "The arithmetic is incorrect. (4/3) × 25 × 13.5 = (4 × 25 × 13.5)/3 = 1350/3 = 450, so this should equal 450π, not 500π.",
+      "error_type": "arithmetic"
+    }
+  ]
+}
+```

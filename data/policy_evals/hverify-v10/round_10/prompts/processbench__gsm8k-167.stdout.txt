@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 3,
+      "quoted_text": "Total number of unripe and bad oranges = 1 (bad) + 5 (unripe) = 6 oranges.",
+      "explanation": "The calculation omits the 2 sour oranges mentioned in the problem statement. The correct sum of non-good oranges is 1 (bad) + 5 (unripe) + 2 (sour) = 8 oranges. Therefore, the number of good oranges should be 25 - 8 = 17, not 19.",
+      "error_type": "missing_term"
+    }
+  ]
+}
+```

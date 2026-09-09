@@ -1,0 +1,18 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 7,
+      "quoted_text": "x = \\frac{s\\sqrt{6}}{3} - \\frac{s}{\\sqrt{105}} = \\frac{s(\\sqrt{70} - \\sqrt{105})}{3\\sqrt{35}} = \\frac{s(5\\sqrt{2} - \\sqrt{7})}{15} = \\frac{s\\sqrt{6}}{6}",
+      "explanation": "The value x = s√6/6 is incorrect. The correct solution from y = s²/105 is u = PO = s/√105, which gives x = s√6/3 - s/√105 ≈ 0.719s. This can be verified by checking that this value satisfies the critical point equation 1 = 6u/√(u² + s²/3): with u = s√6/6, the RHS equals √12 = 2√3 ≠ 1, failing the critical point condition. With the correct u = s/√105, the equation holds.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 8,
+      "quoted_text": "\\sin \\angle PBO = \\frac{PO}{BO}",
+      "explanation": "In right triangle PBO with right angle at O, the sine of angle PBO equals the ratio of opposite side to hypotenuse: sin(∠PBO) = PO/PB, not PO/BO. The ratio PO/BO is the tangent, not the sine. With the correct PO = s/√105 and BO = s√3/3, we have PB = √(s²/105 + s²/3) = 2s√105/35, giving sin(∠PBO) = (s/√105)/(2s√105/35) = 1/6, not 1/2.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

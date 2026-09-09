@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "180 minutes (before dinner) + 80 minutes (homework) = 260 minutes",
+      "explanation": "This addition is incorrect. The 180 minutes is the total time available before dinner. The 80 minutes of homework is part of that available time, not separate from it. Homework time should be subtracted from the available time to find napping time, not added to it. The correct total available time is 180 minutes, not 260 minutes. Time for napping should be: 180 - 80 = 100 minutes.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

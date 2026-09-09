@@ -1,0 +1,31 @@
+/hverify-v9
+
+## PROBLEM
+Leila buys 3 cucumbers from the market. Cucumbers are $2 each. Jack buys 5 tomatoes from the grocery store.  Tomatoes are $1 each. Chase buys 1 head of lettuce from the farmer’s market.  Lettuce cost $3 each. Together, how much did the three of them spend to make a salad for the potluck?
+
+## SOLUTION TO REVIEW
+<step_0>
+To find out how much the three of them spent to make a salad for the potluck, we need to calculate the total amount spent by Leila, Jack, and Chase.
+</step_0>
+
+<step_1>
+First, calculate the amount spent by Leila. Leila buys 3 cucumbers at $2 each. The total amount spent by Leila is the number of cucumbers multiplied by the price per cucumber. Therefore, the total amount spent by Leila is 3 * $2, which equals $6.
+</step_1>
+
+<step_2>
+Second, calculate the amount spent by Jack. Jack buys 5 tomatoes at $1 each. The total amount spent by Jack is the number of tomatoes multiplied by the price per tomato. Therefore, the total amount spent by Jack is 5 * $1, which equals $5.
+</step_2>
+
+<step_3>
+Third, calculate the amount spent by Chase. Chase buys 1 head of lettuce at $3 each. The total amount spent by Chase is the number of lettuces multiplied by the price per lettuce. Therefore, the total amount spent by Chase is 1 * $3, which equals $3.
+</step_3>
+
+<step_4>
+Finally, calculate the total amount spent by all three. The total amount spent is the sum of the amounts spent by Leila, Jack, and Chase. Therefore, the total amount spent is $6 + $5 + $3, which equals $14.
+</step_4>
+
+<step_5>
+Therefore, the three of them spent a total of $\boxed{$14}$ to make a salad for the potluck.
+</step_5>
+
+Return only the JSON object described in your output contract.

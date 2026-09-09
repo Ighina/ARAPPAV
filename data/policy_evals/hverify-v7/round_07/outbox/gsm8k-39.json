@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "180 minutes (before dinner) + 80 minutes (homework) = 260 minutes",
+      "explanation": "The 3 hours (180 minutes) before dinner is the total time available to John. The homework (80 minutes) must be completed within that window, not added to it. The operation should subtract homework time from available time: 180 - 80 = 100 minutes available for napping. By adding instead, the solution incorrectly treats homework time as separate from the available time window.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

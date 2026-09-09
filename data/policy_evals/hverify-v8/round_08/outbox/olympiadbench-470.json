@@ -1,0 +1,18 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 4,
+      "quoted_text": "In either case, m can take ⌈k/2⌉ values, and each choice of m corresponds to a distinct special k-tuple",
+      "explanation": "Each choice of m does not correspond to a single k-tuple. Rather, for each valid m, there are \\binom{k}{m} distinct tuples obtained by choosing which m positions have value a and which k-m have value -a. The total count should be ∑_m \\binom{k}{m} = 2^{k-1} (summed over valid m), not ⌈k/2⌉.",
+      "error_type": "logic_error"
+    },
+    {
+      "step_index": 5,
+      "quoted_text": "The number of distinct special k-tuples is therefore 2^k if a = 0 or k is odd, and 2^{k-1} if k is even.",
+      "explanation": "The correct count is 2^{k-1} + 1 for all k ≥ 3. This includes: (1) 2^{k-1} tuples from x_1 = 1 with entries in {±1}, (2) 2^{k-1} tuples from x_1 = -1 with entries in {±1}, and (3) 1 tuple (all zeros). The solution undercounts by missing the all-zeros tuple and misses the correct parity structure in the counting.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

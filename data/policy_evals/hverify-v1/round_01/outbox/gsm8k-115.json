@@ -1,0 +1,11 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "We know he bought 4 candies for $3.20 in total.",
+      "explanation": "The problem states 'five lollipops and four candies that cost $3.20', where $3.20 is the combined total cost of both items. The solution incorrectly assumes $3.20 refers only to the candies. The lollipops cost 5 × $0.40 = $2.00, so candies cost $3.20 − $2.00 = $1.20 total, or $0.30 each, not $0.80. This error cascades through all subsequent calculations, yielding an incorrect final answer of $12.00 instead of $7.00."
+    }
+  ]
+}
+```

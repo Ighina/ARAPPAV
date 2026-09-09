@@ -1,0 +1,35 @@
+/hverify-v2
+
+## PROBLEM
+Lindsay is doing the laundry, and thinks she has missed some socks. There are 50 socks that need washing. If she washes 10 pairs of socks and 15 loose socks, how many socks has Lindsay missed?
+
+## SOLUTION TO REVIEW
+<step_0>
+Let's break down the information provided: First, the total number of socks to be washed is 50. Second, the number of pairs of socks washed is 10 pairs. Since each pair consists of 2 socks, the total number of socks in 10 pairs is 10 * 2 = 20 socks. Third, the number of loose socks washed is 15.
+</step_0>
+
+<step_1>
+Now, we can calculate the total number of socks Lindsay has washed:
+</step_1>
+
+<step_2>
+Total washed socks = Socks from pairs + Loose socks
+Total washed socks = 20 + 15
+Total washed socks = 35 socks
+</step_2>
+
+<step_3>
+To find out how many socks Lindsay has missed, subtract the total washed socks from the total number of socks to be washed:
+</step_3>
+
+<step_4>
+Socks missed = Total socks - Total washed socks
+Socks missed = 50 - 35
+Socks missed = 15 socks
+</step_4>
+
+<step_5>
+So, Lindsay has missed 15 socks. \boxed{15}
+</step_5>
+
+Return only the JSON object described in your output contract.

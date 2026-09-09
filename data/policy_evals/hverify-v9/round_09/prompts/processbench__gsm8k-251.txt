@@ -1,0 +1,27 @@
+/hverify-v9
+
+## PROBLEM
+Roy has saved 40% more in money earned by chores than his brother Anthony.  Anthony has saved $10.00 more than their sister Eva.   Eva has saved $20.00.  How much money does Roy have?
+
+## SOLUTION TO REVIEW
+<step_0>
+Let's break down the problem step by step to find out how much money Roy has.
+</step_0>
+
+<step_1>
+First, determine how much money Eva has saved. According to the problem, Eva has saved $20.00. So, \( E = 20 \).
+</step_1>
+
+<step_2>
+Second, determine how much money Anthony has saved. Anthony has saved $10.00 more than Eva. Therefore, \( A = E + 10 \). Substituting the value of \( E \): \[ A = 20 + 10 = 30 \]
+</step_2>
+
+<step_3>
+Third, determine how much money Roy has saved. Roy has saved 40% more than Anthony. To calculate 40% more than Anthony's savings: \[ 0.40 \times A = 0.40 \times 30 = 12 \] Therefore, the amount Roy has saved is: \[ R = A + 0.40 \times A = 30 + 12 = 42 \]
+</step_3>
+
+<step_4>
+Thus, the amount of money Roy has saved is \(\boxed{42}\).
+</step_4>
+
+Return only the JSON object described in your output contract.

@@ -1,0 +1,23 @@
+/hverify-v2
+
+## PROBLEM
+Find the value of the base $b$ such that the following addition problem is correct: $$ \begin{array}{@{}c@{\;}c@{}c@{}c@{}c@{}c} & & 6 & 6 & 5 & 1_b \\ + & & & 1 & 1 & 5_b \\ \cline{1-6} & 1 & 0 & 0 & 6 & 6_b\\ \end{array} $$
+
+## SOLUTION TO REVIEW
+<step_0>
+Since we have a carry in the ones place, we must have $1+5+1=6+1=b$, so $b=7$.
+</step_0>
+
+<step_1>
+Similarly, since there is no carry in the fives place, we must have $1+5=6$, which is true.
+</step_1>
+
+<step_2>
+Finally, since there is a carry in the sixty-fives place, we must have $6+1+1=7+0=b$, which is also true.
+</step_2>
+
+<step_3>
+Final Answer: The final answer is 7. I hope it is correct.
+</step_3>
+
+Return only the JSON object described in your output contract.

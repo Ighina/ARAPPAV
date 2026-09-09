@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "This means she slept for 9 hours and 55 minutes instead of 8 hours.",
+      "explanation": "If Kim went to sleep at 10 p.m. and woke up at 5:55 a.m. (5 minutes earlier than the usual 6 a.m.), she slept for 7 hours and 55 minutes, not 9 hours and 55 minutes. Waking up 5 minutes earlier means sleeping 5 minutes less than usual: 8 hours − 5 minutes = 7 hours 55 minutes = 475 minutes. This error propagates through the solution, leading to an incorrect final answer of 572 instead of the correct 452 minutes (475 − 23).",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 5,
+      "quoted_text": "$2015 + \\frac{2015 - 1}{2015} = 2015 + \\frac{1}{2015}$",
+      "explanation": "This simplification is incorrect. We have $2015 - 1 = 2014$, not $1$, so $\\frac{2015 - 1}{2015} = \\frac{2014}{2015}$. Therefore, $n = 2014 + \\frac{2014}{2015}$, which gives $\\{n\\} = \\frac{2014}{2015}$, not $\\frac{1}{2015}$.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

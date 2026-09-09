@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "180 minutes (before dinner) + 80 minutes (homework) = 260 minutes",
+      "explanation": "The 80 minutes of homework is part of the 180 minutes available before dinner, not additional to it. The homework is time John must spend from his available window, not extra time added on top. The correct available time for all activities is 180 minutes. This error propagates to subsequent steps, making the final answer incorrect.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

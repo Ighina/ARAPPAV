@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "180 minutes (before dinner) + 80 minutes (homework) = 260 minutes",
+      "explanation": "This addition is incorrect. The 3 hours (180 minutes) is John's total available time before dinner. The 80 minutes of homework is a subset of this time, not an additional block. The homework should be subtracted from the total available time, not added to it. The correct calculation is: 180 - 80 = 100 minutes available for napping, not 180 minutes.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

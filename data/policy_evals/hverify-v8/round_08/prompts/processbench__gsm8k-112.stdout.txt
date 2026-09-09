@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 2,
+      "quoted_text": "This means she slept for 9 hours and 55 minutes instead of 8 hours.",
+      "explanation": "This is incorrect. Kim went to sleep at 10 p.m. and woke up 5 minutes earlier than usual, at 5:55 a.m. instead of 6 a.m. The duration from 10 p.m. to 5:55 a.m. is 7 hours and 55 minutes (475 minutes), not 9 hours and 55 minutes. Waking up 5 minutes earlier means she slept less time, not more. The correct total before subtracting sleepwalking is 475 minutes, not 595 minutes.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

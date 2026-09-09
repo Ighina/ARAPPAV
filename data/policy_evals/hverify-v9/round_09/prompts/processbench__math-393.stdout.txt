@@ -1,0 +1,18 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "so the height of the cone is \\( \\frac{1}{2} \\times 27 = 13.5 \\) meters. The height of the cylinder is the remaining part of the total height, which is \\( 27 - 13.5 = 13.5 \\) meters.",
+      "explanation": "The problem states 'The height of the cone is half the height of the cylinder,' meaning cone_height = (1/2) × cylinder_height. Combined with total height 27, we solve: cylinder + cone = 27 and cone = (1/2)cylinder, giving (3/2)cylinder = 27, so cylinder = 18 meters and cone = 9 meters. The solution incorrectly computes cone = 27/2 = 13.5 instead, making both heights equal and violating the stated relationship.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 4,
+      "quoted_text": "\\( \\frac{4}{3} \\pi \\cdot 25 \\cdot 13.5 = 500\\pi \\)",
+      "explanation": "Computing \\(\\frac{4}{3} \\times 25 \\times 13.5 = \\frac{1350}{3} = 450\\), so the correct result is \\(450\\pi\\), not \\(500\\pi\\).",
+      "error_type": "arithmetic_error"
+    }
+  ]
+}
+```

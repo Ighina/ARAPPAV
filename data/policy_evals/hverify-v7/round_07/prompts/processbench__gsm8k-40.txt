@@ -1,0 +1,23 @@
+/hverify-v7
+
+## PROBLEM
+It costs $194 per meter to repave a street. Monica's street is 150 meters long. How much more does it cost to repave Lewis' street, which is 490 meters long?
+
+## SOLUTION TO REVIEW
+<step_0>
+Let's break it down step by step! First, the cost of repaving Monica's street is $194 per meter, and her street is 150 meters long. To find the total cost, we multiply the cost per meter by the length of the street: Cost of repaving Monica's street = $194/meter × 150 meters = $29,100.
+</step_0>
+
+<step_1>
+Next, let's calculate the cost of repaving Lewis' street, which is 490 meters long: Cost of repaving Lewis' street = $194/meter × 490 meters = $94,860.
+</step_1>
+
+<step_2>
+To find out how much more it costs to repave Lewis' street, we subtract the cost of repaving Monica's street from the cost of repaving Lewis' street: Additional cost = Cost of repaving Lewis' street - Cost of repaving Monica's street = $94,860 - $29,100 = $65,760.
+</step_2>
+
+<step_3>
+So, the final answer is: \boxed{\$65,760}.
+</step_3>
+
+Return only the JSON object described in your output contract.

@@ -1,0 +1,18 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 1,
+      "quoted_text": "there is no discount on this item",
+      "explanation": "The problem states 'everything was 20% off.' This applies to the mixing bowls as well. They should be discounted: $20.00 × 0.80 = $16.00, not kept at $20.00.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "the total cost of Charlotte's order before the discount is $96 + $20 + $25 = $141",
+      "explanation": "This mixes discounted and undiscounted prices incorrectly. The $96 is the already-discounted pot-and-pans price (from step 0), while $20 and $25 are original prices. The correct original total before any discount is $120 + $20 + $25 = $165. Applying 20% uniformly to all items: $165 × 0.80 = $132.00, not $112.80.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

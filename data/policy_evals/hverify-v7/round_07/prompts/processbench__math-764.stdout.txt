@@ -1,0 +1,18 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "we have a carry in the ones place",
+      "explanation": "There is no carry in the ones place. In position 0 (rightmost), the addition is 1 + 5 = 6. Since 6 < 7 (the base), no carry is generated to the next position.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "$6+1+1$",
+      "explanation": "The carry from position 1 (fives place) into position 2 (sixty-fives place) is 0, not 1. Position 1 computes 5 + 1 + 0 = 6, which produces no carry. Therefore, position 2 should compute 6 + 1 + 0 = 7, not 6 + 1 + 1.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```
