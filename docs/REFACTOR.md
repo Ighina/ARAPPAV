@@ -283,3 +283,45 @@ Both paths use the same renderer, the same leak guard and the same fail-fast
 infrastructure check, and write the same artefacts, so results are comparable.
 Keep `claude-code` for parity checks and for running without a key; use `api`
 for volume.
+
+
+---
+
+## 12. Policy-update modes (`--update-mode`)
+
+The ablation axis for how a policy is revised between rounds.
+
+| mode | mechanism | what it tests |
+|---|---|---|
+| `rewrite` (default) | one updater rewrites the whole policy body | the original design |
+| `summarise` | a `summarise-context-*` step briefs the updater with the episodes' text first | whether the updater was starved of evidence |
+| `evolve` | one analyst per episode proposes typed edits in parallel, `evolve-merge-patches` reconciles them, Python applies the result | whether rewriting is itself the problem |
+
+`evolve` follows Trace2Skill (Qwen, arXiv 2603.25158): parallel trajectory-local
+proposals, hierarchical consolidation, structured patch operations. Three of its
+four relevant ideas are implemented; the fourth — spilling detail into
+`references/*.md` loaded on demand — is not, because the API backend sends one
+prompt per call and has no mechanism to load a second file. It remains available
+in principle under `--backend claude-code`.
+
+Why it may matter: the default rewrite accumulated monotonically over ten rounds
+(90 to 2,922 characters, consecutive diffs +253, −13, +31, +1, +24, +68, −11,
++12, +51) while held-out F1 stayed flat. A rewrite can only drop a rule by
+forgetting it. Under `evolve`, `delete_rule` is an operation an analyst has to
+name, and `apply_patch` refuses a patch that targets one rule twice — an
+unresolved merge conflict fails the round rather than silently producing
+mangled text.
+
+## 13. Validation-gated acceptance (`--accept-on-validation`)
+
+Keeps a revised **verifier** policy only if it does not regress on a small
+held-out MATH-500 check, otherwise carries the previous one forward.
+
+The motivation is measured: self-play reward correlates with held-out F1 at
+r = +0.275 over ten rounds (n = 10, not significant), and selecting on it
+returns a policy worse than the untuned cold start. Acceptance therefore cannot
+be judged on the game's own score.
+
+Only the verifier is gated. The perturber's held-out score needs a full
+perturb-and-verify pass per candidate, which costs more than the round that
+produced it; `scripts/eval_perturber.py` measures it offline instead.

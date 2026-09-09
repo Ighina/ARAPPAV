@@ -77,6 +77,15 @@ class PipelineConfig:
     # Insert a summarise-context-* step before each policy update, so the
     # updater receives the text of the episodes rather than counts and ids.
     rich_context: bool = False
+    # How a policy is revised between rounds. This is the ablation axis:
+    #   rewrite   — one updater rewrites the whole policy body (the default)
+    #   summarise — a summariser briefs the updater first (--rich-context)
+    #   evolve    — parallel per-episode analysts propose typed patches, a merge
+    #               step reconciles them, and Python applies the result
+    update_mode: str = "rewrite"
+    #: Keep a new policy only if it does not regress on a held-out check.
+    accept_on_validation: bool = False
+    validation_n: int = 12
     retry_format: int = 0   # extra attempts when a reply fails to parse
     resume: bool = False    # skip rounds that already have a summary
 
@@ -175,6 +184,7 @@ class Pipeline:
         self._author = None
         self._retrying = False
         self._briefings: dict[str, dict] = {}
+        self._last_scores: list[dict] = []
 
     def _backend(self, which: str):
         """Lazily build the play / policy-authoring backend.
@@ -266,7 +276,7 @@ class Pipeline:
     def update_policies(self, i: int, findings: dict, ledger: ContextLedger) -> None:
         """Rounds >= 1: bump each policy unless frozen (spec 4, 5)."""
         cfg = self.cfg
-        prev, new = self._policy_version(i - 1), self._policy_version(i)
+        prev, new_v = self._policy_version(i - 1), self._policy_version(i)
         for role, prefix, skill, frozen in (
             ("perturb", cfg.perturb_prefix, "update-perturb", cfg.freeze_perturber()),
             ("verify", cfg.verify_prefix, "update-verify", cfg.freeze_verifier()),
@@ -276,12 +286,31 @@ class Pipeline:
             if frozen:
                 # Retain the previous policy unchanged, re-published under the
                 # new version so every round has a version of its own.
-                policies.write_version(self.skills, role, prefix, new, old_body,
+                policies.write_version(self.skills, role, prefix, new_v, old_body,
                                        f"FROZEN — identical to {prefix}-v{prev}",
                                        parent=f"{prefix}-v{prev}", tuned_from="—",
                                        overwrite=cfg.overwrite_policies
                                        or getattr(self, "_retrying", False))
-                print(f"[policy] {prefix}-v{new}: FROZEN (unchanged from v{prev})")
+                print(f"[policy] {prefix}-v{new_v}: FROZEN (unchanged from v{prev})")
+                continue
+
+            # evolve mode replaces the rewrite entirely: analysts propose typed
+            # edits and Python applies them, so no updater call happens here.
+            if cfg.update_mode == "evolve":
+                got = self.evolve_policy(i, role, self._last_scores, old_body, ledger)
+                if got is None:
+                    body, note = old_body, f"evolve produced no admissible patch; carried v{prev}"
+                else:
+                    body, rec = got
+                    note = (f"evolved from round {i-1}: {rec['applied']['num_edits']} "
+                            f"edits {rec['applied']['by_op']}")
+                body = self._gate_on_validation(i, role, old_body, body, prefix) \
+                    if cfg.accept_on_validation else body
+                policies.write_version(self.skills, role, prefix, new_v, body, note,
+                                       parent=f"{prefix}-v{prev}", tuned_from=str(i - 1),
+                                       overwrite=cfg.overwrite_policies
+                                       or getattr(self, "_retrying", False))
+                print(f"[policy] {prefix}-v{new_v}: {note}")
                 continue
 
             brief = self._briefings.get(role) if cfg.rich_context else None
@@ -306,11 +335,160 @@ class Pipeline:
             else:
                 note = (f"update produced no policy (rc={res.returncode}); "
                         f"carried v{prev} forward")
-            policies.write_version(self.skills, role, prefix, new, body, note,
+            policies.write_version(self.skills, role, prefix, new_v, body, note,
                                    parent=f"{prefix}-v{prev}", tuned_from=str(i - 1),
                                    overwrite=cfg.overwrite_policies
                                    or getattr(self, "_retrying", False))
-            print(f"[policy] {prefix}-v{new}: {note}")
+            print(f"[policy] {prefix}-v{new_v}: {note}")
+
+    def _gate_on_validation(self, i: int, role: str, old_body: str,
+                            new_body: str, prefix: str) -> str:
+        """Keep a revision only if a held-out check does not get worse.
+
+        Self-play reward is not a usable acceptance signal — measured over ten
+        rounds it correlates with held-out F1 at r = +0.275, and selecting on it
+        returns a policy worse than the untuned baseline. So acceptance is
+        judged on the same MATH-500 validation set used to pick the final round,
+        and a revision that regresses is discarded rather than carried forward.
+        """
+        cfg = self.cfg
+        if role != "verify":
+            # Only the verifier has a cheap held-out score. The perturber's
+            # would need a full perturb+verify pass per candidate, which costs
+            # more than the round that produced it.
+            return new_body
+        try:
+            before = self._validation_score(i, prefix, old_body)
+            after = self._validation_score(i, prefix, new_body)
+        except Exception as e:
+            print(f"[accept] validation unavailable ({e}); keeping the revision")
+            return new_body
+        keep = after >= before
+        print(f"[accept] {role}: validation {before:.3f} -> {after:.3f} — "
+              f"{'kept' if keep else 'REVERTED'}")
+        _write(self.round_dir(i) / f"acceptance_{role}.json",
+               {"before": before, "after": after, "kept": keep})
+        return new_body if keep else old_body
+
+    def _validation_score(self, i: int, prefix: str, body: str) -> float:
+        """Mean verifier F1 for a candidate policy on a small fixed sample."""
+        import tempfile
+        from arappav.pipeline.backends import make_backend
+        cfg = self.cfg
+        vdir = Path(tempfile.mkdtemp())
+        # Render the candidate as a throwaway policy so the backend can send it
+        # exactly as it would in play.
+        policies.write_version(vdir, "verify", "cand", 1, body, "validation candidate")
+        items = self._validation_items(cfg.validation_n)
+        bk = make_backend(cfg.backend, model=cfg.model, timeout=cfg.timeout,
+                          skills_root=vdir, max_tokens=cfg.max_tokens,
+                          **({"provider": cfg.provider} if cfg.backend != "claude-code" else {}))
+        from arappav.errors.schema_math import MathPerturberOutput
+        f1s = []
+        for it in items:
+            ep = Episode(episode_id=it["episode_id"], problem=it["problem"],
+                         solution="", k=it["k"])
+            res = bk.run(skill="cand-v1",
+                         user=render_verify_prompt(ep, it["solution_to_review"], "", "").lstrip(),
+                         step="accept-check", round_dir=self.round_dir(i),
+                         episode_id=it["episode_id"])
+            po = MathPerturberOutput.model_validate(
+                {"perturbed_solution": it["solution_to_review"], "errors": it["errors"]})
+            s = scoring.score_episode(episode_id=it["episode_id"], k=it["k"],
+                                      perturbed=po, failure_stage=None,
+                                      failure_reason=None, verifier_raw=res.text,
+                                      config=self.reward_cfg, history=None)
+            if s.get("verifier_reward") is not None:
+                f1s.append(s["verifier_reward"])
+        return sum(f1s) / len(f1s) if f1s else 0.0
+
+    def _validation_items(self, n: int) -> list[dict]:
+        """A fixed held-out set, built once and cached for the run."""
+        cached = self.root / "acceptance_validation.json"
+        if cached.exists():
+            return json.loads(cached.read_text())[:n]
+        # Reuse the MATH-500 validation set when one has been prepared.
+        from arappav.data.categories import filter_math500
+        from datasets import load_dataset
+        import random
+        ds = load_dataset("HuggingFaceH4/MATH-500", split="test")
+        pool = filter_math500(ds, self.cfg.category)
+        rng = random.Random(0)
+        picked = rng.sample(pool, min(n, len(pool)))
+        out = []
+        for idx in picked:
+            row = ds[idx]
+            out.append({"episode_id": row["unique_id"].replace("/", "_"),
+                        "problem": row["problem"],
+                        "solution_to_review": row["solution"], "k": 0, "errors": []})
+        _write(cached, out)
+        return out
+
+    # -- evolve mode -------------------------------------------------------
+    def evolve_policy(self, i: int, role: str, scores: list[dict],
+                      old_body: str, ledger: ContextLedger) -> tuple[str, dict] | None:
+        """Parallel analysts -> merged patch -> deterministic application.
+
+        One analyst per episode, none of which sees the others, so a change
+        proposed by several is corroborated rather than merely repeated. The
+        merge step reconciles them and Python applies the result, which is what
+        makes `delete_rule` reachable at all: a rewrite can only drop a rule by
+        forgetting it, whereas here removal is an operation someone has to name.
+        """
+        from arappav.pipeline import patches as P
+
+        cfg = self.cfg
+        analyst = f"evolve-analyse-{'perturber' if role == 'perturb' else 'verifier'}"
+        evidence = scoring.episode_evidence(scores, role)
+
+        proposals = []
+        for ev in evidence:
+            prompt = (f"/{analyst}\n\n## EPISODE\n"
+                      + json.dumps(ev, indent=2, ensure_ascii=False)[:20000]
+                      + f"\n\n## CURRENT POLICY\n{old_body}\n\n"
+                      "Return only the JSON object.\n")
+            res = self._call("author", skill=None, user=prompt,
+                             step=f"evolve-analyse-{role}", round_dir=self.round_dir(i),
+                             episode_id=ev["episode_id"])
+            if not res.ok():
+                continue
+            from arappav.utils.parsing import extract_first_json_object, strip_json_fences
+            obj, _ = extract_first_json_object(strip_json_fences(res.text))
+            if isinstance(obj, dict) and obj.get("edits"):
+                proposals.append({"episode_id": ev["episode_id"], **obj})
+        ledger.record(analyst, None, {"episodes": len(evidence)},
+                      f"{len(proposals)} proposals", None)
+
+        if not proposals:
+            print(f"[evolve] {role}: no analyst proposed a change — policy unchanged")
+            return None
+
+        merge_prompt = ("/evolve-merge-patches\n\n## PATCHES\n"
+                        + json.dumps(proposals, indent=2, ensure_ascii=False)[:40000]
+                        + f"\n\n## CURRENT POLICY\n{old_body}\n\n"
+                        "Return only the JSON object.\n")
+        mres = self._call("author", skill=None, user=merge_prompt,
+                          step=f"evolve-merge-{role}", round_dir=self.round_dir(i))
+        ledger.record("evolve-merge-patches", None, {"patches": len(proposals)},
+                      merge_prompt, mres)
+        if not mres.ok():
+            print(f"[evolve] {role}: merge produced nothing — policy unchanged")
+            return None
+        from arappav.utils.parsing import extract_first_json_object, strip_json_fences
+        obj, err = extract_first_json_object(strip_json_fences(mres.text))
+        try:
+            patch = P.Patch.parse(obj)
+            new_body, log = P.apply_patch(old_body, patch)
+        except (P.PatchError, TypeError) as e:
+            print(f"[evolve] {role}: patch rejected ({e}) — policy unchanged")
+            return None
+
+        record = {"role": role, "num_proposals": len(proposals),
+                  "applied": P.summarise_patch(patch), "log": log}
+        _write(self.round_dir(i) / f"evolve_patch_{role}.json", record)
+        print(f"[evolve] {role}: {len(proposals)} proposals -> "
+              f"{record['applied']['num_edits']} edits {record['applied']['by_op']}")
+        return new_body, record
 
     def summarise_context(self, i: int, role: str, scores: list[dict],
                           metrics: dict, ledger: ContextLedger) -> dict | None:
@@ -479,6 +657,7 @@ class Pipeline:
                   f"r_V={s.get('verifier_reward')}")
 
         self.history.extend(round_errors)   # visible from the next round on
+        self._last_scores = scores
         metrics = scoring.aggregate(scores)
         findings = scoring.build_findings(i, scores, metrics)
         if cfg.rich_context:

@@ -1013,3 +1013,78 @@ class TestCategoryRestriction:
 
     def test_default_is_unrestricted(self):
         assert PipelineConfig().category is None
+
+
+class TestPatchOps:
+    """Typed edits, and deletion as an operation rather than an omission."""
+
+    def _body(self):
+        return ("1. **V1 — Solve it yourself.** Work independently.\n\n"
+                "2. **V2 — Re-derive.** Check each line.\n\n"
+                "3. **V3 — Quote loosely.** Take the paragraph.\n")
+
+    def test_rules_split_on_numbers_and_labels(self):
+        from arappav.pipeline.patches import split_rules
+        assert len(split_rules(self._body())) == 3
+
+    def test_delete_removes_a_rule(self):
+        from arappav.pipeline.patches import Patch, apply_patch
+        p = Patch.parse({"edits": [{"op": "delete_rule", "target": "3."}]})
+        new, _ = apply_patch(self._body(), p)
+        assert "Quote loosely" not in new and "Re-derive" in new
+
+    def test_append_extends_without_replacing(self):
+        from arappav.pipeline.patches import Patch, apply_patch
+        p = Patch.parse({"edits": [{"op": "append_to_rule", "target": "2.",
+                                    "content": "Recompute literally."}]})
+        new, _ = apply_patch(self._body(), p)
+        assert "Check each line. Recompute literally." in new
+
+    def test_replace_needs_its_old_text_to_exist(self):
+        from arappav.pipeline.patches import Patch, PatchError, apply_patch
+        p = Patch.parse({"edits": [{"op": "replace_in_rule", "target": "1.",
+                                    "old_text": "not present", "content": "x"}]})
+        with pytest.raises(PatchError, match="not in the rule"):
+            apply_patch(self._body(), p)
+
+    def test_two_edits_on_one_rule_are_refused(self):
+        # An unresolved merge conflict must fail loudly, not silently mangle.
+        from arappav.pipeline.patches import Patch, PatchError, apply_patch
+        p = Patch.parse({"edits": [
+            {"op": "append_to_rule", "target": "2.", "content": "a"},
+            {"op": "rewrite_rule", "target": "2.", "content": "b"}]})
+        with pytest.raises(PatchError, match="same rule"):
+            apply_patch(self._body(), p)
+
+    def test_an_unknown_op_is_rejected(self):
+        from arappav.pipeline.patches import Patch, PatchError
+        with pytest.raises(PatchError, match="unknown op"):
+            Patch.parse({"edits": [{"op": "nuke", "target": "1."}]})
+
+    def test_a_missing_target_fails_rather_than_guessing(self):
+        from arappav.pipeline.patches import Patch, PatchError, apply_patch
+        p = Patch.parse({"edits": [{"op": "delete_rule", "target": "no such rule"}]})
+        with pytest.raises(PatchError, match="no rule matching"):
+            apply_patch(self._body(), p)
+
+    def test_targets_match_by_label_as_well_as_number(self):
+        from arappav.pipeline.patches import Patch, apply_patch
+        p = Patch.parse({"edits": [{"op": "delete_rule", "target": "**V2"}]})
+        new, _ = apply_patch(self._body(), p)
+        assert "Re-derive" not in new
+
+    def test_the_summary_counts_operations(self):
+        from arappav.pipeline.patches import Patch, summarise_patch
+        p = Patch.parse({"edits": [{"op": "delete_rule", "target": "1."},
+                                   {"op": "delete_rule", "target": "2."}]})
+        assert summarise_patch(p)["by_op"] == {"delete_rule": 2}
+
+
+class TestUpdateModes:
+    def test_three_modes_and_rewrite_is_default(self):
+        assert PipelineConfig().update_mode == "rewrite"
+        for m in ("rewrite", "summarise", "evolve"):
+            assert PipelineConfig(update_mode=m).update_mode == m
+
+    def test_acceptance_gating_is_off_by_default(self):
+        assert PipelineConfig().accept_on_validation is False

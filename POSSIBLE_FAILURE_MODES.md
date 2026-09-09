@@ -491,3 +491,14 @@ The first Opus-updater run (`exp_a`, now archived under
 extended thinking disabled on the API path, worth 0.708 vs 0.875 exact-match on
 an identical ProcessBench slice. Its apparent monotone decline should not be
 cited. The rerun is what counts.
+
+
+## Addressed since (2026-09-09)
+
+The document's hypotheses 5 and 6 — policy accumulation and behaviourally
+useless verbosity — now have a direct experimental control rather than only a
+diagnosis. `--update-mode evolve` replaces whole-policy rewriting with typed
+patch operations proposed per episode and merged, making `delete_rule` an action
+someone must name. `--accept-on-validation` refuses a revision that regresses on
+held-out data. Both are off by default, so `rewrite` remains the baseline the
+others are compared against.

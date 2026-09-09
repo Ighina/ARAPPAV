@@ -105,6 +105,22 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("--retry-format", type=int, default=0, dest="retry_format",
                    help="extra attempts when a reply fails to parse (default 0, "
                         "which preserves the pre-refactor penalty statistics)")
+    a.add_argument("--update-mode", choices=["rewrite", "summarise", "evolve"],
+                   default="rewrite", dest="update_mode",
+                   help="how a policy is revised between rounds — the ablation axis. "
+                        "rewrite: one updater rewrites the whole body (default). "
+                        "summarise: a summariser briefs the updater first. "
+                        "evolve: Trace2Skill-style — one analyst per episode proposes "
+                        "typed edits in parallel, a merge step reconciles them, and "
+                        "Python applies the result, which makes deletion an operation "
+                        "rather than an omission.")
+    a.add_argument("--accept-on-validation", action="store_true",
+                   dest="accept_on_validation",
+                   help="keep a revised verifier policy only if it does not regress on "
+                        "a small held-out MATH-500 check; otherwise carry the previous "
+                        "one forward")
+    a.add_argument("--validation-n", type=int, default=12, dest="validation_n",
+                   help="items in the acceptance check (default 12)")
     a.add_argument("--rich-context", action="store_true", dest="rich_context",
                    help="insert a summarise-context-* step before each policy "
                         "update, so the updater receives the TEXT of the episodes "
@@ -138,11 +154,16 @@ def main() -> int:
         overwrite_policies=args.overwrite_policies, dry_run=args.dry_run,
         timeout=args.timeout, retry_format=args.retry_format,
         max_tokens=args.max_tokens, taxonomy_free=args.taxonomy_free,
-        rich_context=args.rich_context,
+        rich_context=args.rich_context or args.update_mode == 'summarise',
+        update_mode=args.update_mode,
+        accept_on_validation=args.accept_on_validation,
+        validation_n=args.validation_n,
         resume=args.resume,
     )
     print(f"[pipeline] backend={cfg.backend} players={cfg.model or 'default'} "
           f"updater={cfg.policy_model() or 'default'}")
+    print(f"[pipeline] update-mode={cfg.update_mode}"
+          + ("  accept-on-validation=on" if cfg.accept_on_validation else ""))
     print(f"[pipeline] start={cfg.start} freeze={cfg.freeze} rounds={cfg.rounds} "
           f"episodes={cfg.episodes} k={cfg.k} processbench={cfg.processbench_enabled} "
           f"no_context={cfg.no_context} dry_run={cfg.dry_run}")

@@ -31,6 +31,9 @@ K=${K:-3}
 SEED=${SEED:-42}
 PER_TOPIC=${PER_TOPIC:-300}
 START=${START:-cold}
+UPDATE_MODE=${UPDATE_MODE:-rewrite}   # rewrite | summarise | evolve
+ACCEPT_ON_VALIDATION=${ACCEPT_ON_VALIDATION:-0}
+CATEGORY=${CATEGORY:-}                # restrict to one MATH subject
 PB_PER_SUBSET=${PB_PER_SUBSET:-20}     # ProcessBench items per subset, per policy
 PB_BACKEND=${PB_BACKEND:-api}          # api | batch | claude-code
 DRY_RUN=${DRY_RUN:-0}
@@ -113,6 +116,10 @@ run_experiment() {   # name players updater
   fi
 
   local dry=""; [ "$DRY_RUN" = "1" ] && dry="--dry-run"
+  local extra=""
+  [ "$UPDATE_MODE" != "rewrite" ] && extra="$extra --update-mode $UPDATE_MODE"
+  [ "$ACCEPT_ON_VALIDATION" = "1" ] && extra="$extra --accept-on-validation"
+  [ -n "$CATEGORY" ] && extra="$extra --category $CATEGORY"
   # Each experiment gets its own policy namespace so versions never collide.
   python scripts/run_pipeline.py \
       --rounds "$ROUNDS" --episodes "$EPISODES" --k "$K" --seed "$SEED" \
@@ -121,7 +128,7 @@ run_experiment() {   # name players updater
       --backend "$backend" \
       --perturb-prefix "${tag}_perturb" --verify-prefix "${tag}_verify" \
       --root "$root" --retry-format 1 --resume \
-      $dry >"$log" 2>&1
+      $extra $dry >"$log" 2>&1
   local rc=$?
 
   if [ $rc -ne 0 ]; then
@@ -170,6 +177,9 @@ Environment overrides (defaults in brackets)
   SELFPLAY_BACKEND     force the self-play transport (api | claude-code).
                        Claude models default to claude-code, which needs no key
                        but costs ~19x more per call than api.
+  UPDATE_MODE [rewrite]  rewrite | summarise | evolve  — the policy-update ablation
+  ACCEPT_ON_VALIDATION [0]  1 keeps a revision only if held-out score holds
+  CATEGORY []          restrict to one MATH subject (e.g. algebra)
   PB_BACKEND [api]     api | batch | claude-code  (evaluation only)
   DRY_RUN [0]          1 renders every prompt and calls nothing
   A_PLAYERS/A_UPDATER  ... D_PLAYERS/D_UPDATER  override any model id
