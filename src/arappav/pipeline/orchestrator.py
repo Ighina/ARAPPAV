@@ -163,6 +163,7 @@ class Pipeline:
         self.rounds: list[dict] = []
         self._players = None
         self._author = None
+        self._retrying = False
 
     def _backend(self, which: str):
         """Lazily build the play / policy-authoring backend.
@@ -247,7 +248,8 @@ class Pipeline:
                     note += " (empty: the skill returned nothing)"
             policies.write_version(self.skills, role, prefix, v, body, note,
                                    parent="—", tuned_from="—",
-                                   overwrite=cfg.overwrite_policies)
+                                   overwrite=cfg.overwrite_policies
+                                   or getattr(self, "_retrying", False))
             print(f"[policy] {prefix}-v{v}: {note}")
 
     def update_policies(self, i: int, findings: dict, ledger: ContextLedger) -> None:
@@ -266,7 +268,8 @@ class Pipeline:
                 policies.write_version(self.skills, role, prefix, new, old_body,
                                        f"FROZEN — identical to {prefix}-v{prev}",
                                        parent=f"{prefix}-v{prev}", tuned_from="—",
-                                       overwrite=cfg.overwrite_policies)
+                                       overwrite=cfg.overwrite_policies
+                                       or getattr(self, "_retrying", False))
                 print(f"[policy] {prefix}-v{new}: FROZEN (unchanged from v{prev})")
                 continue
 
@@ -293,7 +296,8 @@ class Pipeline:
                         f"carried v{prev} forward")
             policies.write_version(self.skills, role, prefix, new, body, note,
                                    parent=f"{prefix}-v{prev}", tuned_from=str(i - 1),
-                                   overwrite=cfg.overwrite_policies)
+                                   overwrite=cfg.overwrite_policies
+                                   or getattr(self, "_retrying", False))
             print(f"[policy] {prefix}-v{new}: {note}")
 
     @staticmethod
@@ -313,6 +317,12 @@ class Pipeline:
     def run_round(self, i: int) -> dict:
         cfg = self.cfg
         rdir = self.round_dir(i)
+        # Redoing a round that previously aborted: its policy versions exist
+        # but the round does not, so they are stale and may be replaced.
+        self._retrying = rdir.exists() and not (rdir / "round_summary.json").exists()
+        if self._retrying:
+            print(f"[round {i}] previous attempt did not finish — replacing its "
+                  f"policy versions and redoing the round")
         rdir.mkdir(parents=True, exist_ok=True)
         ledger = ContextLedger(rdir, cfg.no_context)
 

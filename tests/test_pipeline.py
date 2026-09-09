@@ -845,3 +845,31 @@ class TestTaxonomyFree:
         # everything else must survive: the output contract is unchanged
         for anchor in ("## Output contract", "perturbed_solution", "## Policy"):
             assert anchor in free
+
+
+class TestResumeAfterPartialRound:
+    """A round that aborted mid-way must be redoable."""
+
+    def test_stale_policy_versions_are_replaced_on_retry(self, tmp_path):
+        # An aborted round leaves its policy versions behind. Without this the
+        # retry hits "already exists" and --resume can never pass the round
+        # that failed.
+        cfg = PipelineConfig(skills_root=str(tmp_path), root=str(tmp_path / "run"),
+                             dry_run=True, freeze="none")
+        pipe = Pipeline(cfg)
+        policies.write_version(tmp_path, "perturb", "perturb", 1, "1. a", "x")
+        policies.write_version(tmp_path, "verify", "verify", 1, "1. b", "x")
+        policies.write_version(tmp_path, "perturb", "perturb", 2, "1. stale", "x")
+        policies.write_version(tmp_path, "verify", "verify", 2, "1. stale", "x")
+        # round 1 exists on disk but never produced a summary
+        (tmp_path / "run" / "round_1").mkdir(parents=True)
+        pipe._retrying = True
+        pipe.rounds.append({"findings": scoring.build_findings(0, [], {})})
+        led = ContextLedger(tmp_path / "run" / "round_1", no_context=True)
+        pipe.update_policies(1, pipe.rounds[-1]["findings"], led)   # must not raise
+
+    def test_a_completed_round_is_still_protected(self, tmp_path):
+        # Overwriting is only licensed for a round being redone.
+        policies.write_version(tmp_path, "verify", "verify", 1, "1. a", "x")
+        with pytest.raises(policies.PolicyError, match="already exists"):
+            policies.write_version(tmp_path, "verify", "verify", 1, "1. b", "y")
