@@ -134,25 +134,31 @@ Consequences worth internalising:
 > **TUNED SECTION.** The orchestrator replaces everything between here and the changelog
 > when it creates the next version. Everything above stays fixed.
 
-1. **Re-derive before you read closely.** Solve the problem yourself from the statement alone — full computation, final value — before judging the given solution. Only then compare. Your own derivation is what licenses a claim.
+1. **Re-derive first, read second.** Before evaluating the given solution, solve the problem independently from the problem statement: pick your own method, compute your own intermediate values, and reach your own final answer. Only then read the solution line by line and compare. Never let the solution's framing choose your method.
 
-2. **Audit every line to the very end; never stop at the first error.** A solution may contain several independent mistakes, and later ones are as likely as early ones. Walk each step in order and check it *locally*: take that step's inputs as given (even if you believe an earlier step corrupted them) and verify that the step's own transformation is valid. A step is a new error if it is wrong even on its own inputs.
+2. **Sweep every line; never stop at the first error.** Number the solution's steps and check all of them, including lines that appear after a mistake you have already found and the final answer line. Assume a solution may contain several independent errors in different places; budget attention to later steps as generously as to early ones.
 
-3. **Check operation choice, not just arithmetic.** For each step ask which operation the wording actually calls for: multiply vs. divide, add vs. subtract, part-of-whole vs. whole-of-part, rate vs. reciprocal rate, total vs. difference. Confirm the operand order for non-commutative operations (subtraction, division, exponent, "A less than B", "A per B"). An arithmetically flawless line can still implement the wrong relation; this is the single most common miss.
+3. **Recompute every arithmetic step exactly.** Redo each operation yourself rather than checking plausibility. Keep fractions, radicals, and decimals in exact form. Explicitly flag any step where an exact quantity is silently replaced by a rounded, truncated, or "nice" value — a remainder dropped, a fraction rounded to an integer, a decimal point shifted, or `≈` treated as `=` — unless the problem authorises the approximation.
 
-4. **Check completeness against the question asked.** Enumerate every quantity the problem requests, every case/root/interval/unit/simplification the method requires, and confirm each is actually produced. A derivation that halts before answering, drops a case, leaves an unsimplified or unconverted result, or boxes only part of what was asked is an error — quote the final line of the truncated work or the incomplete final answer.
+4. **Audit the operation choice, not just the result.** For each step ask what the problem semantics require: multiplication vs. division, addition vs. subtraction, which quantity divides which, sign and direction of change, order of operations, and whether an inverse operation is correctly inverted when solving for an unknown. A step can be arithmetically correct and still be the wrong operation; compute what the intended operation would have given and compare.
 
-5. **Give special scrutiny to sign and structure handling:** negatives distributed across parentheses or subtracted quantities, symmetry/parity claims (odd vs. even), fraction arithmetic (common denominators, operating on the denominator only), rounding or truncating a value that should stay fractional, index/term offsets in sequences, and substitution of the wrong variable or the wrong term.
+5. **Expand every sequence, list, or enumeration explicitly.** Write out the terms yourself. Verify the first term, the common difference or ratio, the index-to-term mapping (watch off-by-one), the stopping bound or condition, and whether the term the solution names actually occupies the position it claims. Do the same for enumerations of cases, factors, or divisors: check none is invented, duplicated, or omitted.
 
-6. **Precision gate.** Claim a step only if you can state, in your explanation, the specific correct value or correct statement that should replace it. If your re-derivation reproduces the line, or you can only say it "looks suspicious," say nothing.
+6. **Check every definition, formula, and conversion against its standard statement.** Restate the formula for the geometric object, unit conversion, percentage, average, probability rule, or algebraic identity being used, then confirm the solution's version matches it and that variables are bound to the right quantities.
 
-7. **Root cause only.** When a wrong value propagates, claim the earliest line where the wrong value is produced, not the downstream lines that merely carry it. Do not claim a final answer separately when it is simply the consequence of an already-claimed step; do claim it if it fails to follow from the work above it.
+7. **Trace every number to a source.** Each value in a line must come from the problem statement or from an earlier line. A constant that appears with no derivation, or a value that silently differs from the one established earlier, is an error at that line.
 
-8. **Do not claim correct results with shaky reasoning.** If a line's stated value or conclusion is right, leave it alone even if the justification is odd. If the justification is itself an explicitly wrong statement, quote the wrong statement, not the correct conclusion that follows it.
+8. **Completeness check.** Confirm the solution answers exactly what was asked: all required cases handled, all parts answered, units and final conversion applied, and no step abandoned before the requested quantity is produced. A solution that stops short or answers a different question is in error at the point it goes off track.
 
-9. **One claim per error, one error per claim.** Never let a single quote span two distinct mistakes — split it into two claims with disjoint quotes. Never file two claims for the same mistake.
+9. **Claim the root cause only.** For each distinct mistake, quote the earliest line where the wrong value or wrong decision is introduced. Do not file separate claims for later lines — including the final answer — whose values are the faithful propagation of an already-claimed mistake. A later line earns its own claim only if it introduces a fresh, independent mistake that would still be wrong had the earlier line been correct.
 
-10. **Quote minimally and verbatim.** The quoted span must be an exact substring of the solution, short enough to contain only the erroneous expression (typically one equation, one clause, or one sentence) and long enough to be unique in the text. Reproduce spacing and notation exactly; do not paraphrase, normalise, or add ellipses.
+10. **One claim per error, one error per claim.** If a single line contains two independent mistakes, split it into two claims with two distinct, minimal, non-overlapping quotes. Never let one quote span two errors, and never file two claims covering the same error.
+
+11. **Quote verbatim and minimally.** Each quote must be a single contiguous character-for-character copy of the solution text — LaTeX, punctuation, and spacing preserved — covering exactly the expression, equation, or sentence that carries the mistake. No ellipses, no paraphrase, no normalisation, no padding with surrounding prose.
+
+12. **Evidence bar for claiming.** File a claim only when you can state the correct value or correct step and show it differs from what is written. If your re-derivation reproduces the line, do not claim it. Stylistic choices, unusual but valid methods, terse-but-correct steps, and harmless alternative forms are not errors.
+
+13. **Where to spend effort.** Coverage of the whole solution is the scarcer resource: mistakes are missed far more often by never examining a step than by mis-analysing one. Extend the sweep and the re-derivation rather than lowering the evidence bar; a claim made on suspicion alone costs more than it gains.
 
 ---
 

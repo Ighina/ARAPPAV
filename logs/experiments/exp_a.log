@@ -6,63 +6,79 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
 [policy] exp_a_perturb-v1: cold start — empty policy
 [policy] exp_a_verify-v1: cold start — empty policy
 [api] note: the policy prefix is not being cached (2,318 input tokens/call at the full rate). Providers decline to cache prefixes below a minimum (2048 tokens on claude-haiku-4-5). Cost estimates that assume caching do not apply.
-Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$a - b = \\boxed{3}$'
-Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
-Mechanical injection: 0/3 errors applied (3 warning(s)).
-Mechanical injection: Could not find original_text for err_001 in solution. Original: '(3y + 8)(y - 3)'
-Mechanical injection: Could not find original_text for err_002 in solution. Original: '$b = -3$'
-Mechanical injection: Could not find original_text for err_003 in solution. Original: '$a - b = \\boxed{11}$'
-Unknown error_type 'arithmetic_error' — coercing to None.
-Unknown error_type 'wrong_property' — coercing to None.
-Unknown error_type 'incomplete_reasoning' — coercing to None.
-Unknown error_type 'wrong_answer' — coercing to None.
-Injected text for err_001 not found in perturbed_solution — the error may not be detectable. Injected: '$3+3$'
-Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: '$(2^3)((x^{3})^3)=4(x^{3+3})$'
+Injected text for err_001 not found in perturbed_solution — the error may not be detectable. Injected: '$(3y + 8)(y + 3)$'
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$a - b = \\boxed{13}$'
 Only 1/3 injected_text values found in perturbed output — applying mechanical backoff.
 Mechanical injection: 0/3 errors applied (3 warning(s)).
-Mechanical injection: Could not find original_text for err_001 in solution. Original: '$3\\ast3$'
-Mechanical injection: Could not find original_text for err_002 in solution. Original: '$(2^3)((x^{3})^3)=8(x^{3\\ast3})$'
-Mechanical injection: Could not find original_text for err_003 in solution. Original: '\\boxed{8x^9}'
-Unknown error_type 'logical_error' — coercing to None.
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$(3y + 8)(y - 3)$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$b = -3$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$a - b = \\boxed{11}$'
+Unknown error_type 'wrong_factorization' — coercing to None.
+Unknown error_type 'wrong_value' — coercing to None.
+Unknown error_type 'wrong_arithmetic' — coercing to None.
+Relaxed fuzzy match for 'wrong_number' → 'whole_number_bias' (distance=8, word overlap).
+Fuzzy-matched error_type 'wrong_number' → 'whole_number_bias'. The Perturber should be encouraged to use exact enum values.
+Unknown error_type 'wrong_sequence_bound' — coercing to None.
 Unknown error_type 'arithmetic_error' — coercing to None.
-Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: '$\\log_8 64$'
-Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$\\boxed{2}$'
+Unknown error_type 'wrong_final_answer' — coercing to None.
+Relaxed fuzzy match for 'wrong_number' → 'whole_number_bias' (distance=8, word overlap).
+Fuzzy-matched error_type 'wrong_number' → 'whole_number_bias'. The Perturber should be encouraged to use exact enum values.
+Relaxed fuzzy match for 'wrong_number' → 'whole_number_bias' (distance=8, word overlap).
+Fuzzy-matched error_type 'wrong_number' → 'whole_number_bias'. The Perturber should be encouraged to use exact enum values.
+Unknown error_type 'wrong_formula' — coercing to None.
+Injected text for err_001 not found in perturbed_solution — the error may not be detectable. Injected: '$(2^2)$'
+Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: '$x^{3+3}$'
+Only 1/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$(2^3)$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$x^{3\\ast3}$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '\\boxed{8x^9}'
+Unknown error_type 'arithmetic_error' — coercing to None.
+Unknown error_type 'arithmetic_error' — coercing to None.
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$9\\cdot 19 = 9 \\cdot 18 = \\boxed{162}$'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: 'Since 9 is a perfect square, $2n+17$ must also be a perfect square.'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: 'The smallest value of $n$ for which this occurs is  $n = 4$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$9\\cdot 19 = \\boxed{225}$'
+Unknown error_type 'wrong_condition' — coercing to None.
+Unknown error_type 'arithmetic_error' — coercing to None.
+Injected text for err_001 not found in perturbed_solution — the error may not be detectable. Injected: '$5x+2x+5=37$'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$5x+2x-5=37$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$7x=42$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$x=\\boxed{6}$'
+Unknown error_type 'arithmetic_error' — coercing to None.
+Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: '$\\log_3 64$'
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$\\log_4 64 = \\boxed{4}$'
 Only 1/3 injected_text values found in perturbed output — applying mechanical backoff.
 Mechanical injection: 0/3 errors applied (3 warning(s)).
 Mechanical injection: Could not find original_text for err_001 in solution. Original: '$4^3=64$'
 Mechanical injection: Could not find original_text for err_002 in solution. Original: '$\\log_4 64$'
-Mechanical injection: Could not find original_text for err_003 in solution. Original: '$\\boxed{3}$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$\\log_4 64 = \\boxed{3}$'
+Missing error penalty: 1/3 errors not found in perturbed text. Penalty: -0.5
+Unknown error_type 'arithmetic_error' — coercing to None.
+Unknown error_type 'arithmetic_error' — coercing to None.
 Unknown error_type 'wrong_value' — coercing to None.
-Unknown error_type 'wrong_value' — coercing to None.
-Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: '$(a-b)^2 = (t-8)^2$'
+Relaxed fuzzy match for 'wrong_number' → 'whole_number_bias' (distance=8, word overlap).
+Fuzzy-matched error_type 'wrong_number' → 'whole_number_bias'. The Perturber should be encouraged to use exact enum values.
+Relaxed fuzzy match for 'wrong_number' → 'whole_number_bias' (distance=8, word overlap).
+Fuzzy-matched error_type 'wrong_number' → 'whole_number_bias'. The Perturber should be encouraged to use exact enum values.
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: 'the sixth term is $2 \\cdot r^6$'
 Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
 Mechanical injection: 0/3 errors applied (3 warning(s)).
-Mechanical injection: Could not find original_text for err_001 in solution. Original: '$49 = 7^2$'
-Mechanical injection: Could not find original_text for err_002 in solution. Original: '$(a-b)(a+b) = (t-7)(t+7)$'
-Mechanical injection: Could not find original_text for err_003 in solution. Original: '$\\boxed{(t-7)(t+7)}$'
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '2\\cdot r^4=162'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: 'or $r=3$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: 'the sixth term is $2 \\cdot r^5$'
 Unknown error_type 'arithmetic_error' — coercing to None.
-Unknown error_type 'wrong_formula' — coercing to None.
-Unknown error_type 'wrong_constant' — coercing to None.
+Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: '$s \\cdot 1200$'
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$s = \\frac{.35}{3}$'
+Only 1/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$r\\cdot s$ must be a constant'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$s \\cdot 2400$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$s = \\frac{.35}{2}$'
+Unknown error_type 'sign_error' — coercing to None.
 Unknown error_type 'wrong_value' — coercing to None.
-Unknown error_type 'wrong_answer' — coercing to None.
-
-[pipeline] ABORTED — round 1 ep05 perturb: the model was never reached (empty response). No reward is recorded for this call. Fix the cause and re-run with --resume to continue from the last completed round.
-[pipeline] Completed rounds are on disk and were NOT contaminated.
-[round 0] ep00: r_P=0.5 r_V=0.6666666666666666
-[round 0] ep01: r_P=0.6666666666666667 r_V=0.5
-[round 0] ep02: r_P=0.0 r_V=0.6666666666666666
-[round 0] ep03: r_P=0.0 r_V=1.0
-[round 0] ep04: r_P=0.0 r_V=1.0
-[round 0] ep05: r_P=0.0 r_V=1.0
-[round 0] ep06: unparseable perturbation (schema); retry 1 of 1
-[round 0] ep06: r_P=0.5 r_V=0.6666666666666666
-[round 0] ep07: r_P=0.0 r_V=1.0
-
-=== round 1 ==================================================
-[policy] exp_a_perturb-v2: tuned from round 0
-[policy] exp_a_verify-v2: tuned from round 0
-[round 1] ep00: r_P=0.5 r_V=0.6666666666666666
-[round 1] ep01: r_P=0.0 r_V=1.0
-[round 1] ep02: r_P=0.0 r_V=1.0
-[round 1] ep03: r_P=0.0 r_V=1.0
-[round 1] ep04: r_P=0.0 r_V=1.0
+Unknown error_type 'wrong_value' — coercing to None.

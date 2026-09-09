@@ -151,31 +151,31 @@ it once and your recall term is 0. The only way to earn reward is `k` errors tha
 > **TUNED SECTION.** The orchestrator replaces everything between here and the changelog
 > when it creates the next version. Everything above stays fixed.
 
-1. **Emit exactly k distinct error units.** Each unit must live in its own step, equation, or declaration, separated by at least one clean intervening line. Two corruptions inside the same sentence or the same displayed equation collapse into one unit and the extra work earns nothing.
+1. **Emit exactly k separated error units.** Each injected mistake must live in its own declaration unit, in a different step, sentence, or line of the solution. If two edits touch the same computation or the same line, they collapse into one unit and only one of them can ever earn credit — merge-prone edits are the single biggest source of wasted effort. Before finalising, count distinct edited locations and confirm the count equals k.
 
-2. **Vary the error type within a solution.** Repeating one manipulation mistake two or three times in a single derivation makes the pattern legible; after the second instance a reader stops checking and starts scanning for the motif.
+2. **Bias placement toward the interior and the tail.** Opening lines — the setup, the restatement of givens, the choice of formula — are read with the most attention and are almost always caught. Put mistakes in later steps: intermediate arithmetic, a substitution three lines down, a unit conversion, a rounding at the end, a verification or "check" passage. Reserve at most one error for the first third of the solution.
 
-3. **Do not corrupt the opening.** The problem restatement, the setup, the first formula and the first substitution are read most carefully and are checked against the problem statement directly. Put errors in the middle and late portions, after the reader has accepted the framing as correct.
+3. **Keep the surface edit minimal.** Alter one number, one index, one operator, or one clause, leaving the surrounding wording, notation, and layout byte-identical to what a correct solution would say. A step that is rephrased, expanded, or hedged relative to its neighbours reads as suspicious independently of its content.
 
-4. **Propagate fully.** Every line after the corrupted step, including the final boxed or stated answer, must be arithmetically consistent with the wrong value. An unpropagated error leaves a self-contradiction that is found without re-deriving anything.
+4. **Propagate every error forward consistently.** All downstream lines must be arithmetically correct *given* the wrong value. An error that is not carried through leaves an internal contradiction, which is far easier to spot than the error itself. Equally, never let a later line silently restate the correct value.
 
-5. **Execute the wrong step correctly.** Whatever operation the corrupted line claims to perform, perform it accurately. Mismatches between the narrated method and the arithmetic actually done are the fastest thing to spot; a wrong-but-cleanly-executed operation forces genuine re-derivation.
+5. **Favour precision-and-magnitude mistakes over operator swaps.** Rounding to a whole number where a fraction or decimal is required, truncating a remainder, discarding a fractional part of an answer, dropping a decimal place, or treating a quotient as exact all read as ordinary student sloppiness and survive scrutiny. These should be your default choice.
 
-6. **Keep the prose in agreement.** If the operation, sign, or quantity changes, adjust the surrounding narration to describe what is now being done, neutrally and in the same voice. Never leave commentary that states the correct method beside a step that violates it.
+6. **Use wrong-operation errors sparingly and never in a headline step.** A visibly wrong operator in a short, clearly-labelled computation is the cheapest thing in the world to notice. If you use one, hide it inside a multi-term expression, an inverse or "undo" step where the correct direction is genuinely ambiguous, or a step whose result is not immediately re-checked.
 
-7. **Respect the sanity ceiling.** The corrupted value must keep the right sign, plausible magnitude, correct units, and satisfy the obvious domain constraints (counts whole and positive, probabilities in range, lengths and areas positive, monotonicity where it is expected). Anything that fails a two-second plausibility glance is detected without any computation.
+7. **Diversify types within a single solution.** Do not inject the same error type twice in one solution; a repeated pattern makes the second instance trivial once the first is found. Spread the k units across different categories and different mathematical objects (a value, an index, a rounding, a definition).
 
-8. **Avoid textbook-archetype forms.** Canonical misconceptions stated in their most recognisable place — adding numerators and denominators of a displayed fraction sum, treating a symbol as a fixed number in the defining equation, reversing the two operands of the headline computation — are recognised on sight. Use the same underlying misconception one level down: inside a sub-step, in an intermediate coefficient, in a unit conversion, in one term of a longer expression.
+8. **Prefer facts stated once and never re-derived.** Index shifts in a sequence, a constant inside a formula, a definition applied later, an assumption introduced mid-solution — these have no second occurrence to contradict them. Avoid touching any quantity that the solution recomputes or verifies elsewhere.
 
-9. **Favour errors that require re-derivation to see.** A defensible-looking but wrong choice of operation at an intermediate step, a sign lost while distributing or rearranging, a dropped case, root, or constraint, and a solution that confidently answers a nearby-but-different quantity all survive scrutiny far better than a corrupted digit in a headline calculation.
+9. **Never contradict the problem statement verbatim.** Do not misquote a given number, condition, or requested quantity. Copying a given wrongly is the most conspicuous possible mistake; the error must arise from the *work*, not from misreading the prompt.
 
-10. **Make omissions look finished.** An incomplete solution must end with a confident concluding sentence — the missing case or the missing final conversion should simply never be mentioned, rather than being trailed off, hedged, or left mid-sentence.
+10. **Apply the plausibility test to every candidate.** Ask: would a competent student under time pressure actually write this? Reject sign flips that make an obviously positive quantity negative, factor-of-1000 slips, geometric or definitional claims that a beginner would never assert, and anything whose result is absurd on inspection. Absurd errors are detected at essentially 100% and are worth nothing.
 
-11. **Never inject anything mathematically inert.** Notational oddities, restatements, or changes that leave every subsequent value identical are not errors; they cost effort and return nothing.
+11. **Write with uniform confidence.** No hedging words, no approximation markers, no parenthetical justifications attached only to the flawed steps. Tone, verbosity, and formatting must be indistinguishable across correct and incorrect steps.
 
-12. **Match register exactly.** Same notation, rounding conventions, verbosity, and step granularity as the surrounding solution. A step that is suddenly terse, suddenly chatty, or that introduces notation used nowhere else advertises itself regardless of its content.
+12. **Keep everything else genuinely right.** The non-error portions of the solution should be complete, well-organised, and correct, including the presentation of the final answer. Do not truncate the solution or omit a required step as a "free" extra error — missing work is obvious at a glance.
 
-13. **Declare spans that tightly cover the corrupted text** — the wrong expression together with the line it sits in, no padding and no truncation. Spans chosen to game overlap rather than to mark the mistake are not wins.
+13. **Declare honestly and precisely.** Each declared unit should point at the minimal region actually containing its mistake, with the error type that truthfully describes it. Do not pad, do not declare a unit for text you did not change, and do not overlap declared spans.
 
 ---
 

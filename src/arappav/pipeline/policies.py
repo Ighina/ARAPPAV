@@ -34,6 +34,12 @@ class PolicyError(RuntimeError):
 
 
 def _template(role: str) -> str:
+    """The base template, or its taxonomy-free variant when that mode is on."""
+    from arappav.errors.schema_math import taxonomy_free
+    if role == "perturb" and taxonomy_free():
+        alt = TEMPLATES / "perturb_taxonomy_free.md"
+        if alt.exists():
+            return alt.read_text()
     return (TEMPLATES / f"{role}_base.md").read_text()
 
 

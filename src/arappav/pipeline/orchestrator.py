@@ -68,6 +68,7 @@ class PipelineConfig:
     dry_run: bool = False
     timeout: int = 900
     max_tokens: int = 16000
+    taxonomy_free: bool = False
     retry_format: int = 0   # extra attempts when a reply fails to parse
     resume: bool = False    # skip rounds that already have a summary
 
@@ -461,6 +462,13 @@ class Pipeline:
 
     # -- driver -----------------------------------------------------------
     def run(self) -> dict:
+        if self.cfg.taxonomy_free:
+            # Set before any policy is rendered or any reply parsed, since both
+            # the template choice and schema validation read it.
+            import os
+            os.environ["ARAPPAV_TAXONOMY_FREE"] = "1"
+            print("[pipeline] taxonomy-free: the perturber names its own error "
+                  "types and free-text labels no longer void an episode")
         self.root.mkdir(parents=True, exist_ok=True)
         _write(self.root / "run_config.json", asdict(self.cfg))
         for i in range(self.cfg.rounds):

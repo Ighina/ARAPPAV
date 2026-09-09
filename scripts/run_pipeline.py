@@ -44,6 +44,12 @@ def build_parser() -> argparse.ArgumentParser:
     g.add_argument("--freeze", choices=["none", "perturber", "verifier", "both"],
                    default="none", help="which policy is NOT updated between rounds")
     g.add_argument("--seed", type=int, default=42)
+    g.add_argument("--no-taxonomy", action="store_true", dest="taxonomy_free",
+                   help="drop the fixed 26-category error taxonomy: the perturber "
+                        "names misconceptions in its own words and a free-text "
+                        "label no longer fails schema validation. The taxonomy "
+                        "never affected scoring, only what the perturber could "
+                        "express without voiding the episode.")
 
     d = p.add_argument_group("data")
     d.add_argument("--source", choices=["hendrycks", "local", "file"], default="hendrycks")
@@ -119,7 +125,7 @@ def main() -> int:
         processbench_seed=args.processbench_seed, no_context=args.no_context,
         overwrite_policies=args.overwrite_policies, dry_run=args.dry_run,
         timeout=args.timeout, retry_format=args.retry_format,
-        max_tokens=args.max_tokens,
+        max_tokens=args.max_tokens, taxonomy_free=args.taxonomy_free,
         resume=args.resume,
     )
     print(f"[pipeline] backend={cfg.backend} players={cfg.model or 'default'} "

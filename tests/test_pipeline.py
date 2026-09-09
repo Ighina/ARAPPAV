@@ -773,3 +773,66 @@ class TestTruncationAndStreaming:
         kw = thinking_kwargs("claude-haiku-4-5", 16000, "high")
         assert kw["thinking"]["budget_tokens"] == DEFAULT_THINK_BUDGET
         assert kw["thinking"]["budget_tokens"] < 16000 / 2
+
+
+class TestTaxonomyFree:
+    """The taxonomy constrains the perturber only, and can be switched off."""
+
+    def test_error_type_does_not_affect_the_score(self):
+        # The premise of the whole option: a deliberately wrong label scores
+        # the same as the right one, because the matcher never reads it.
+        from arappav.errors.schema_math import MathInjectedError, MathVerifierClaim
+        from arappav.reward.reward_fns import compute_rewards
+        gt = [MathInjectedError(error_id="e1", step_index=0, original_text="2+2 = 4",
+                                injected_text="2+2 = 5",
+                                error_type="wrong_operation", rationale="x")]
+        scores = []
+        for et in ("wrong_operation", "geometry_definition", None):
+            c = [MathVerifierClaim(quoted_text="2+2 = 5", explanation="should be 4",
+                                   error_type=et)]
+            scores.append(compute_rewards(ground_truth=gt, verifier_claims=c,
+                                          perturbed_text="2+2 = 5.", k=1).verifier_reward)
+        assert len(set(scores)) == 1
+
+    def test_off_by_default_an_unknown_label_is_rejected(self, monkeypatch):
+        import importlib
+        monkeypatch.delenv("ARAPPAV_TAXONOMY_FREE", raising=False)
+        import arappav.errors.schema_math as sm
+        importlib.reload(sm)
+        with pytest.raises(Exception):
+            sm.MathInjectedError(error_id="e", step_index=0, original_text="a",
+                                 injected_text="b", error_type="not_a_real_type",
+                                 rationale="r")
+
+    def test_on_an_unknown_label_is_kept_verbatim(self, monkeypatch):
+        import importlib
+        monkeypatch.setenv("ARAPPAV_TAXONOMY_FREE", "1")
+        import arappav.errors.schema_math as sm
+        importlib.reload(sm)
+        e = sm.MathInjectedError(error_id="e", step_index=0, original_text="a",
+                                 injected_text="b",
+                                 error_type="misread_the_problem_statement",
+                                 rationale="r")
+        assert e.error_type == "misread_the_problem_statement"
+        importlib.reload(sm)
+
+    def test_known_labels_still_resolve_to_the_enum(self, monkeypatch):
+        import importlib
+        monkeypatch.setenv("ARAPPAV_TAXONOMY_FREE", "1")
+        import arappav.errors.schema_math as sm
+        importlib.reload(sm)
+        e = sm.MathInjectedError(error_id="e", step_index=0, original_text="a",
+                                 injected_text="b", error_type="wrong_operation",
+                                 rationale="r")
+        assert e.error_type.value == "wrong_operation"
+        importlib.reload(sm)
+
+    def test_the_template_variant_drops_the_enum_list(self):
+        from arappav.pipeline.policies import TEMPLATES
+        free = (TEMPLATES / "perturb_taxonomy_free.md").read_text()
+        base = (TEMPLATES / "perturb_base.md").read_text()
+        assert "whole_number_bias" in base and "whole_number_bias" not in free
+        assert "no fixed list" in free
+        # everything else must survive: the output contract is unchanged
+        for anchor in ("## Output contract", "perturbed_solution", "## Policy"):
+            assert anchor in free

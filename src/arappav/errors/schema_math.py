@@ -28,6 +28,26 @@ MATH_ERROR_TYPE_ALIASES = {
 }
 
 
+#: Environment switch for taxonomy-free runs. When set, a Perturber label that
+#: matches no taxonomy member is kept as free text instead of failing schema
+#: validation and voiding the whole episode.
+#:
+#: The taxonomy never affected scoring — `error_type` is reported in
+#: match_details but is not read by the matcher or by compute_rewards, and a
+#: claim with a deliberately wrong type scores identically to a correct one.
+#: Its only effect was a one-sided hard constraint on the Perturber: the
+#: Verifier's unknown labels are coerced to None at no cost, while the
+#: Perturber's raised ValidationError and cost the episode a format penalty.
+#: That silently bounded the space of errors the Perturber could express to 26
+#: fixed categories, which need not cover the errors in an external benchmark.
+TAXONOMY_FREE_ENV = "ARAPPAV_TAXONOMY_FREE"
+
+
+def taxonomy_free() -> bool:
+    import os
+    return os.environ.get(TAXONOMY_FREE_ENV, "").lower() in ("1", "true", "yes")
+
+
 def _fuzzy_match_math_error_type(name: str) -> MathErrorType | None:
     """Find the closest MathErrorType to *name* (see ``fuzzy.fuzzy_match_enum``)."""
     return fuzzy_match_enum(name, MathErrorType, aliases=MATH_ERROR_TYPE_ALIASES)
@@ -51,7 +71,9 @@ class MathInjectedError(BaseModel):
     injected_text: str = Field(
         ..., description="The erroneous replacement text/step."
     )
-    error_type: MathErrorType = Field(..., description="Category of the injected error.")
+    error_type: MathErrorType | str = Field(
+        ..., description="Category of the injected error. A value outside the\n"
+        "taxonomy is rejected unless ARAPPAV_TAXONOMY_FREE is set.")
     rationale: str = Field(
         ..., description="Why the injected text constitutes an error — the ground-truth explanation."
     )
@@ -96,6 +118,10 @@ class MathInjectedError(BaseModel):
                 v, best.value,
             )
             return best
+        if taxonomy_free():
+            # Keep the model's own label. Downstream only ever reports it.
+            logger.info("Taxonomy-free run: keeping free-text error_type %r.", v)
+            return v
         raise ValueError(
             f"Unknown error_type {v!r} — not in MathErrorType taxonomy and no "
             f"close match found. "
