@@ -185,6 +185,7 @@ class Pipeline:
         self._retrying = False
         self._briefings: dict[str, dict] = {}
         self._last_scores: list[dict] = []
+        self._accept_baseline: float | None = None
 
     def _backend(self, which: str):
         """Lazily build the play / policy-authoring backend.
@@ -358,12 +359,18 @@ class Pipeline:
             # more than the round that produced it.
             return new_body
         try:
-            before = self._validation_score(i, prefix, old_body)
+            # The incumbent's score is whatever the last accepted candidate
+            # scored, so recomputing it every round doubles the cost of the
+            # gate for no information.
+            before = self._accept_baseline
+            if before is None:
+                before = self._validation_score(i, prefix, old_body)
             after = self._validation_score(i, prefix, new_body)
         except Exception as e:
             print(f"[accept] validation unavailable ({e}); keeping the revision")
             return new_body
         keep = after >= before
+        self._accept_baseline = after if keep else before
         print(f"[accept] {role}: validation {before:.3f} -> {after:.3f} — "
               f"{'kept' if keep else 'REVERTED'}")
         _write(self.round_dir(i) / f"acceptance_{role}.json",
