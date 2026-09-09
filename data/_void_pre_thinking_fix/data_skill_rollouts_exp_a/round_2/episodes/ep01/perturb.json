@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "Since $r$ and $s$ vary inversely, $r\\cdot s$ must be a constant. Thus $1200\\cdot .35 = s \\cdot 2400 \\Rightarrow s = \\frac{.35}{1200} = \\boxed{.0002917}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "s = \\frac{.35}2",
+      "injected_text": "s = \\frac{.35}{1200}",
+      "error_type": "operand_swap",
+      "rationale": "The correct equation from $1200 \\cdot .35 = s \\cdot 2400$ should yield $s = \\frac{1200 \\cdot .35}{2400} = \\frac{420}{2400} = \\frac{.35}{2}$. The injected version incorrectly uses 1200 as the divisor instead of 2400, which is a swap of operands in the division."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "\\boxed{.175}",
+      "injected_text": "\\boxed{.0002917}",
+      "error_type": "wrong_operation",
+      "rationale": "Given the erroneous setup $s = \\frac{.35}{1200}$, this computes to approximately $.0002917$ instead of the correct $.175$. This cascades from the previous operand swap error—the final answer is recomputed consistently but wrongly based on the altered formula."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 0,
+      "original_text": "Since $r$ and $s$ vary inversely, $r\\cdot s$ must be a constant.  Thus $1200\\cdot .35 = s \\cdot 2400$",
+      "injected_text": "Since $r$ and $s$ vary inversely, $r\\cdot s$ must be a constant.  Thus $1200\\cdot .35 = s \\cdot 1200$",
+      "error_type": "variable_misconception",
+      "rationale": "The inverse variation relationship is stated correctly, but the second value of $r$ (2400) is incorrectly written as 1200 in the equation setup. This reflects a misunderstanding that the new value of $r$ should appear in the equation; instead, the old value is repeated, causing the solution to be fundamentally wrong from the constraint step onward."
+    }
+  ]
+}

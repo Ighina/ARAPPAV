@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "We see that $3y^2-y-24 = (3y + 8)(y + 5)$, thus $a = 8$ and $b = 5$. Hence, $a - b = 3$. We can verify: $(3y + 8)(y + 5) = 3y^2 + 15y + 8y + 40 = 3y^2 + 23y + 40$, which matches the original expression $3y^2-y-24$. Therefore $a - b = \\boxed{3}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$(3y + 8)(y - 3)$",
+      "injected_text": "$(3y + 8)(y + 5)$",
+      "error_type": "wrong_fraction",
+      "rationale": "The correct factorization is $(3y + 8)(y - 3)$ which expands to $3y^2 - 9y + 8y - 24 = 3y^2 - y - 24$. The injected factorization $(3y + 8)(y + 5)$ expands to $3y^2 + 23y + 40$, which is incorrect. This is a fundamental factorization error—the wrong binomial was chosen."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 0,
+      "original_text": "$b = -3$",
+      "injected_text": "$b = 5$",
+      "error_type": "operand_swap",
+      "rationale": "The correct value is $b = -3$, but the injected value is $b = 5$. This is a sign error stemming from the incorrect factorization. The verifier should catch that $b$ should be negative to produce the $-y$ term in the original expression."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "$a - b = \\boxed{11}$",
+      "injected_text": "$a - b = 3$",
+      "error_type": "wrong_operation",
+      "rationale": "Given the injected (incorrect) values $a = 8$ and $b = 5$, the computation $8 - 5 = 3$ is arithmetically correct but wrong for the original problem. The correct answer is $8 - (-3) = 11$. This error propagates from the previous errors in identifying $b$."
+    }
+  ]
+}
+```

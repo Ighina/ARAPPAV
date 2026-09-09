@@ -1,0 +1,612 @@
+{
+  "no_context": false,
+  "steps": [
+    {
+      "step": "update-perturb",
+      "episode_id": null,
+      "no_context": false,
+      "allowed_context_keys": [
+        "detected_errors",
+        "error_type_detection",
+        "format_failures",
+        "metrics",
+        "round",
+        "undetected_errors",
+        "unit_collapse"
+      ],
+      "allowed_context": {
+        "round": 4,
+        "metrics": {
+          "num_episodes": 8,
+          "num_format_valid": 7,
+          "format_valid_rate": 0.875,
+          "mean_perturber_reward": -0.3542,
+          "mean_perturber_reward_valid_only": 0.3095,
+          "mean_verifier_reward": 0.6048,
+          "mean_verifier_recall": 0.5476,
+          "mean_verifier_precision": 0.7143,
+          "mean_units_per_episode": 2.0,
+          "total_duplicate_penalty": 0,
+          "total_spam_penalty": 0,
+          "total_repetition_penalty": 0,
+          "total_phantom_penalty": 0
+        },
+        "error_type_detection": {
+          "whole_number_bias": {
+            "injected": 8,
+            "detected": 4,
+            "detection_rate": 0.5
+          },
+          "duplication_error": {
+            "injected": 2,
+            "detected": 1,
+            "detection_rate": 0.5
+          },
+          "wrong_operation": {
+            "injected": 4,
+            "detected": 1,
+            "detection_rate": 0.25
+          },
+          "operand_swap": {
+            "injected": 1,
+            "detected": 1,
+            "detection_rate": 1.0
+          },
+          "denominator_only": {
+            "injected": 1,
+            "detected": 0,
+            "detection_rate": 0.0
+          },
+          "incomplete_solution": {
+            "injected": 1,
+            "detected": 0,
+            "detection_rate": 0.0
+          },
+          "variable_misconception": {
+            "injected": 2,
+            "detected": 0,
+            "detection_rate": 0.0
+          },
+          "additive_thinking": {
+            "injected": 1,
+            "detected": 0,
+            "detection_rate": 0.0
+          },
+          "wrong_sequence_term": {
+            "injected": 1,
+            "detected": 0,
+            "detection_rate": 0.0
+          }
+        },
+        "format_failures": [
+          {
+            "episode_id": "ep03",
+            "failure_stage": "schema",
+            "reason": "Schema validation failed: 1 validation error for MathPerturberOutput\nerrors.0\n  Value error, Phantom error detected for err_001: injected_text equals original_text — no actual modification was made. Text: 'Multiplying both sides of the second equation by 2, we get $4b+2s = 400$' [type=value_error, i"
+          }
+        ],
+        "undetected_errors": [
+          {
+            "episode_id": "ep00",
+            "error_id": "err_002",
+            "error_type": "wrong_operation",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep00",
+            "error_id": "err_003",
+            "error_type": "denominator_only",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep01",
+            "error_id": "err_001",
+            "error_type": "whole_number_bias",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep01",
+            "error_id": "err_003",
+            "error_type": "whole_number_bias",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep02",
+            "error_id": "err_002",
+            "error_type": "incomplete_solution",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep02",
+            "error_id": "err_003",
+            "error_type": "wrong_operation",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep04",
+            "error_id": "err_002",
+            "error_type": "duplication_error",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep04",
+            "error_id": "err_003",
+            "error_type": "wrong_operation",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep05",
+            "error_id": "err_001",
+            "error_type": "whole_number_bias",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep05",
+            "error_id": "err_002",
+            "error_type": "variable_misconception",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep05",
+            "error_id": "err_003",
+            "error_type": "additive_thinking",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep06",
+            "error_id": "err_003",
+            "error_type": "wrong_sequence_term",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep07",
+            "error_id": "err_002",
+            "error_type": "whole_number_bias",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep07",
+            "error_id": "err_003",
+            "error_type": "variable_misconception",
+            "best_overlap": 0.0
+          }
+        ],
+        "detected_errors": [
+          {
+            "episode_id": "ep00",
+            "error_id": "err_001",
+            "error_type": "whole_number_bias",
+            "best_overlap": 1.0
+          },
+          {
+            "episode_id": "ep01",
+            "error_id": "err_002",
+            "error_type": "duplication_error",
+            "best_overlap": 0.585
+          },
+          {
+            "episode_id": "ep02",
+            "error_id": "err_001",
+            "error_type": "whole_number_bias",
+            "best_overlap": 0.848
+          },
+          {
+            "episode_id": "ep04",
+            "error_id": "err_001",
+            "error_type": "whole_number_bias",
+            "best_overlap": 1.0
+          },
+          {
+            "episode_id": "ep06",
+            "error_id": "err_001",
+            "error_type": "wrong_operation",
+            "best_overlap": 0.534
+          },
+          {
+            "episode_id": "ep06",
+            "error_id": "err_002",
+            "error_type": "whole_number_bias",
+            "best_overlap": 1.0
+          },
+          {
+            "episode_id": "ep07",
+            "error_id": "err_001",
+            "error_type": "operand_swap",
+            "best_overlap": 0.5
+          }
+        ],
+        "unit_collapse": [
+          {
+            "episode_id": "ep01",
+            "k": 3,
+            "num_error_units": 2
+          },
+          {
+            "episode_id": "ep02",
+            "k": 3,
+            "num_error_units": 2
+          },
+          {
+            "episode_id": "ep04",
+            "k": 3,
+            "num_error_units": 2
+          },
+          {
+            "episode_id": "ep05",
+            "k": 3,
+            "num_error_units": 2
+          },
+          {
+            "episode_id": "ep06",
+            "k": 3,
+            "num_error_units": 1
+          },
+          {
+            "episode_id": "ep07",
+            "k": 3,
+            "num_error_units": 2
+          }
+        ]
+      },
+      "prompt_chars": 10180,
+      "prompt_sha256": "0c962af3466583381291f0e45490bfbf0f2b9a64994e61d534e86e681b29db45",
+      "returncode": 0,
+      "duration_s": 34.96
+    },
+    {
+      "step": "update-verify",
+      "episode_id": null,
+      "no_context": false,
+      "allowed_context_keys": [
+        "error_type_detection",
+        "metrics",
+        "round",
+        "undetected_errors",
+        "verifier_false_positives"
+      ],
+      "allowed_context": {
+        "round": 4,
+        "metrics": {
+          "num_episodes": 8,
+          "num_format_valid": 7,
+          "format_valid_rate": 0.875,
+          "mean_perturber_reward": -0.3542,
+          "mean_perturber_reward_valid_only": 0.3095,
+          "mean_verifier_reward": 0.6048,
+          "mean_verifier_recall": 0.5476,
+          "mean_verifier_precision": 0.7143,
+          "mean_units_per_episode": 2.0,
+          "total_duplicate_penalty": 0,
+          "total_spam_penalty": 0,
+          "total_repetition_penalty": 0,
+          "total_phantom_penalty": 0
+        },
+        "error_type_detection": {
+          "whole_number_bias": {
+            "injected": 8,
+            "detected": 4,
+            "detection_rate": 0.5
+          },
+          "duplication_error": {
+            "injected": 2,
+            "detected": 1,
+            "detection_rate": 0.5
+          },
+          "wrong_operation": {
+            "injected": 4,
+            "detected": 1,
+            "detection_rate": 0.25
+          },
+          "operand_swap": {
+            "injected": 1,
+            "detected": 1,
+            "detection_rate": 1.0
+          },
+          "denominator_only": {
+            "injected": 1,
+            "detected": 0,
+            "detection_rate": 0.0
+          },
+          "incomplete_solution": {
+            "injected": 1,
+            "detected": 0,
+            "detection_rate": 0.0
+          },
+          "variable_misconception": {
+            "injected": 2,
+            "detected": 0,
+            "detection_rate": 0.0
+          },
+          "additive_thinking": {
+            "injected": 1,
+            "detected": 0,
+            "detection_rate": 0.0
+          },
+          "wrong_sequence_term": {
+            "injected": 1,
+            "detected": 0,
+            "detection_rate": 0.0
+          }
+        },
+        "undetected_errors": [
+          {
+            "episode_id": "ep00",
+            "error_id": "err_002",
+            "error_type": "wrong_operation",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep00",
+            "error_id": "err_003",
+            "error_type": "denominator_only",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep01",
+            "error_id": "err_001",
+            "error_type": "whole_number_bias",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep01",
+            "error_id": "err_003",
+            "error_type": "whole_number_bias",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep02",
+            "error_id": "err_002",
+            "error_type": "incomplete_solution",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep02",
+            "error_id": "err_003",
+            "error_type": "wrong_operation",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep04",
+            "error_id": "err_002",
+            "error_type": "duplication_error",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep04",
+            "error_id": "err_003",
+            "error_type": "wrong_operation",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep05",
+            "error_id": "err_001",
+            "error_type": "whole_number_bias",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep05",
+            "error_id": "err_002",
+            "error_type": "variable_misconception",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep05",
+            "error_id": "err_003",
+            "error_type": "additive_thinking",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep06",
+            "error_id": "err_003",
+            "error_type": "wrong_sequence_term",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep07",
+            "error_id": "err_002",
+            "error_type": "whole_number_bias",
+            "best_overlap": 0.0
+          },
+          {
+            "episode_id": "ep07",
+            "error_id": "err_003",
+            "error_type": "variable_misconception",
+            "best_overlap": 0.0
+          }
+        ],
+        "verifier_false_positives": [
+          {
+            "episode_id": "ep00",
+            "quoted_text": "Then $\\alpha = 47$ and $\\beta = 90$",
+            "explanation": "This conclusion is based on the incorrect factorization above. After the numerator cancellation, the correct simplified form should be $\\frac{x - 47}{x - 33}$ (from $(x - 47)(x - 33) / ((x - 33)(x + 90))$), not $\\frac{x - 47}{x + 33}$. However, the problem states the form is $\\frac{x - \\alpha}{x + \\"
+          },
+          {
+            "episode_id": "ep02",
+            "quoted_text": "or $x=\\sqrt{109}+6$",
+            "explanation": "The solution states $x = \\sqrt{109} + 6$, but the problem requires the positive solution in the form $\\sqrt{a} - b$. From $(x+6)^2 = 109$, taking the square root gives $x + 6 = \\pm\\sqrt{109}$. For the positive solution, we need $x = \\sqrt{109} - 6$ (which is positive since $\\sqrt{109} \\approx 10.44 "
+          }
+        ]
+      },
+      "prompt_chars": 10591,
+      "prompt_sha256": "d5d6d2c6ac1954fe6cbc65b4b077618d1d466457c0543ee0bc52ba24674f69f8",
+      "returncode": 0,
+      "duration_s": 49.46
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep00",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 677,
+      "prompt_sha256": "6576bfe6d6be0f2d02f8295ceb79443d9da529562a8d433fe4b5a8e547ed4cf4",
+      "returncode": 0,
+      "duration_s": 7.35
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep00",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 576,
+      "prompt_sha256": "5b05d3e16864934c5f849432a78cd86c107efadd91c5629f13e4d79e64dad3e7",
+      "returncode": 0,
+      "duration_s": 2.25
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep01",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 455,
+      "prompt_sha256": "98c7bf67b216f34c43e57affab2778e424363096292b1798220bf679739a8e6c",
+      "returncode": 0,
+      "duration_s": 10.99
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep01",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 455,
+      "prompt_sha256": "98c7bf67b216f34c43e57affab2778e424363096292b1798220bf679739a8e6c",
+      "returncode": 0,
+      "duration_s": 66.88
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep02",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 798,
+      "prompt_sha256": "33986af4ff3a43d795597d468e84f903b3d73aa8d3e8f6be22ef325d8c263d1e",
+      "returncode": 0,
+      "duration_s": 7.31
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep02",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 699,
+      "prompt_sha256": "facdbc9e7591528b13fb4052b452f15fbe4212ed87b1177cdbbcfe2066304957",
+      "returncode": 0,
+      "duration_s": 9.02
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep03",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 662,
+      "prompt_sha256": "5b090c0e4cc9829969d0b98a373686d194ca0561df9d9938acb3f4cd403267a4",
+      "returncode": 0,
+      "duration_s": 4.82
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep03",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 562,
+      "prompt_sha256": "83a62f571e7cec0604bbdf820d51760d0313517ec39f71f58c0afcfa9b8507d3",
+      "returncode": 0,
+      "duration_s": 9.63
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep04",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 853,
+      "prompt_sha256": "0c70437eac67470266251cac2aa0fa73a7e7667093e10c10283caa1db0972bc8",
+      "returncode": 0,
+      "duration_s": 7.31
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep04",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 724,
+      "prompt_sha256": "56a8128e3da3a27b4e7a242dc48b1f4321f92687e5a8119ccb72c2d6313a4033",
+      "returncode": 0,
+      "duration_s": 8.13
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep05",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 561,
+      "prompt_sha256": "e360658535fd9d2e6611961219d8621e86f5192fbbdffbdedfb032d8b353142a",
+      "returncode": 0,
+      "duration_s": 7.46
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep05",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 461,
+      "prompt_sha256": "64215c8981cccde094c77436646aa7f17824cc359217b9fb35206bb4f2ea52d6",
+      "returncode": 0,
+      "duration_s": 5.18
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep06",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 623,
+      "prompt_sha256": "9c461b43f89d5000a6634a6cf9790304187ffeaff8ed29125463a8f73834f783",
+      "returncode": 0,
+      "duration_s": 7.54
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep06",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 536,
+      "prompt_sha256": "214c7e141697cb84af20bc671b2ff0bbd174d76babe1c953a292d9cd92fd6783",
+      "returncode": 0,
+      "duration_s": 0.74
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep07",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 452,
+      "prompt_sha256": "72a966b50c6ea012e2444f5e5bd4d8c4e7f53ee2cec63bae4ee0381754480235",
+      "returncode": 0,
+      "duration_s": 6.44
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep07",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 367,
+      "prompt_sha256": "65ea94e4d65d77f0308493487b4429b40a023d68a0d6d2fd33afbc6a243f75b7",
+      "returncode": 0,
+      "duration_s": 2.83
+    }
+  ]
+}

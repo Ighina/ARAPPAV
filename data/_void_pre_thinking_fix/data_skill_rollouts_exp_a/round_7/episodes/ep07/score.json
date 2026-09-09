@@ -1,0 +1,104 @@
+{
+  "perturber_reward": -0.5,
+  "verifier_reward": 0.8,
+  "verifier_recall": 1.0,
+  "verifier_precision": 0.6666666666666666,
+  "verifier_f_beta": 0.8,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 2,
+  "k_effective": 2,
+  "num_error_units": 2,
+  "num_matched_units": 2,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 0.8,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.8571428571428571,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {
+        "y = 11-4 = 8": 0.857,
+        "x = 11-19 = -9": 0.0,
+        "wx + yz = -1\\cdot-8 + 7\\cdot13 = 8+92 = \\boxed{100}": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 1,
+      "best_overlap": 0.875,
+      "error_type": "negative_number_error",
+      "all_overlaps": {
+        "y = 11-4 = 8": 0.0,
+        "x = 11-19 = -9": 0.875,
+        "wx + yz = -1\\cdot-8 + 7\\cdot13 = 8+92 = \\boxed{100}": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "variable_misconception",
+      "all_overlaps": {
+        "y = 11-4 = 8": 0.0,
+        "x = 11-19 = -9": 0.0,
+        "wx + yz = -1\\cdot-8 + 7\\cdot13 = 8+92 = \\boxed{100}": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep07",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "original_text": "$y = 11-4 = 7$",
+      "injected_text": "$y = 11-4 = 8$",
+      "rationale": "Changed the subtraction result from 7 to 8. This is a simple arithmetic error where $11-4$ is incorrectly computed as 8 instead of 7, a plausible student slip."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "negative_number_error",
+      "original_text": "$x = 11-19 = -8$",
+      "injected_text": "$x = 11-19 = -9$",
+      "rationale": "Changed the subtraction result from $-8$ to $-9$. The student incorrectly computes $11-19$ as $-9$ instead of $-8$, a typical error when handling negative arithmetic."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "variable_misconception",
+      "original_text": "$wx + yz = -1\\cdot-8 + 7\\cdot13 = 8+91 = \\boxed{99}$",
+      "injected_text": "$wx + yz = -1\\cdot-8 + 8\\cdot13 = 8+104 = \\boxed{112}$",
+      "rationale": "The perturbed solution uses $y=8$ (from err_001) instead of the correct $y=7$ in the final computation. This propagates the earlier error: $8\\cdot13 = 104$ instead of $7\\cdot13 = 91$, yielding $8+104=112$ instead of $8+91=99$. The student has used the wrong value of $y$ in the final product."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "y = 11-4 = 8",
+      "explanation": "Subtracting equation (2) $w+x+z = 4$ from $w+x+y+z = 11$ gives $y = 11-4 = 7$, not 8. The solution incorrectly paired this subtraction with equation (2) when it should be paired with equation (2) to yield $y$.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "x = 11-19 = -9",
+      "explanation": "Subtracting equation (3) $w+y+z = 19$ from $w+x+y+z = 11$ gives $x = 11-19 = -8$, not -9. The solution incorrectly computed this value.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "wx + yz = -1\\cdot-8 + 7\\cdot13 = 8+92 = \\boxed{100}",
+      "explanation": "With the correct values $w=-1, x=-8, y=7, z=13$, we have $wx + yz = (-1)(-8) + (7)(13) = 8 + 91 = 99$, not 100. The error stems from the incorrect values of $x$ and $y$ computed above.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 5_175"
+}

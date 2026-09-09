@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "We factor the quadratic, getting $(b-5)(2-b) \\ge 0$. The expression is equal to $0$ when $b=5 \\text{ or } 2$.  When $b \\le 2$ or $b \\ge 5$, the quadratic is positive. When $2 \\le b \\le 5$, the quadratic is non-negative. Therefore, the greatest value of $b$ for which $(b-5)(2-b)\\ge 0$ is $b=\\boxed{3}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "We factor the quadratic, getting $(b-5)(2-b) \\ge 0$.",
+      "injected_text": "We factor the quadratic, getting $(b-5)(b-2) \\ge 0$.",
+      "error_type": "wrong_fraction",
+      "rationale": "The correct factorization of $-b^2+7b-10$ is $(2-b)(5-b)$ or equivalently $(b-2)(b-5)$ after accounting for signs. Writing $(b-5)(b-2)$ without the negative signs gives $b^2-7b+10$, not $-b^2+7b-10$. This propagates to change which values satisfy the inequality."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "When $b \\le 2$ or $b \\ge 5$, the quadratic is negative.",
+      "injected_text": "When $b \\le 2$ or $b \\ge 5$, the quadratic is positive.",
+      "error_type": "negative_number_error",
+      "rationale": "The sign analysis is inverted. For the correct factorization $-(b-2)(b-5)$, when $b < 2$ or $b > 5$ both factors have the same sign, making the product positive and the negation negative. The claim here contradicts the earlier finding that the quadratic is non-negative only on $[2,5]$."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 3,
+      "original_text": "Therefore, the greatest value of $b$ for which $(b-5)(2-b)\\ge 0$ is $b=\\boxed{5}$.",
+      "injected_text": "Therefore, the greatest value of $b$ for which $(b-5)(2-b)\\ge 0$ is $b=\\boxed{3}$.",
+      "error_type": "whole_number_bias",
+      "rationale": "The final answer should be $b=5$, which is at the boundary of the solution set $[2,5]$. Choosing $b=3$ is within the valid interval but is not the greatest value. This is an off-by-one style error where an interior point replaces the correct boundary."
+    }
+  ]
+}
+```

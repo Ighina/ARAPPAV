@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "We solve for $y$ in terms of $x$: \\[y = \\frac{100 - 5x}{3}.\\] Then we express $xy$ in terms of $x$: \\[xy = x\\frac{100 - 5x}{3} = \\frac{100x - 5x^2}{3} = -\\frac{5}{3}x^2 + \\frac{100}{3}x.\\] The graph of this expression is a parabola facing downwards.  The greatest possible value of $xy$ occurs at the vertex of this parabola, which occurs when $x = \\frac{-100/3}{2\\cdot -5/3} = 12$.  Then,  \\[xy = 12\\cdot \\frac{40}{3} = \\frac{480}{3}.\\]   However, this is not an integer.  So, we test the two closest integer values of $x$: $x=11$ and $x=13$, to see if either of these yield integer values for $y$.\n\nWhen $x=11$, $y=\\frac{45}{3}=15$, which is an integer.  When $x=13$, $y=\\frac{35}{3}$, which is not an integer.  In this case, \\[xy = 11\\cdot 15 = \\boxed{165}.\\]",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "which occurs when $x = \\frac{-100/3}{2\\cdot -5/3} = 10$",
+      "injected_text": "which occurs when $x = \\frac{-100/3}{2\\cdot -5/3} = 12$",
+      "error_type": "wrong_operation",
+      "rationale": "The vertex formula $x = \\frac{-b}{2a}$ applied to $-\\frac{5}{3}x^2 + \\frac{100}{3}x$ yields $x = \\frac{-(100/3)}{2(-5/3)} = \\frac{-100/3}{-10/3} = 10$, not 12. This is a computational error in evaluating the vertex, causing the candidate points to shift incorrectly."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "Then,  \\[xy = 10\\cdot \\frac{50}{3} = \\frac{500}{3}.\\]",
+      "injected_text": "Then,  \\[xy = 12\\cdot \\frac{40}{3} = \\frac{480}{3}.\\]",
+      "error_type": "whole_number_bias",
+      "rationale": "Using the incorrect $x = 12$ from err_001, the recomputed value of $xy$ at that point becomes $\\frac{480}{3}$ instead of $\\frac{500}{3}$. When $x=12$, $y = \\frac{100-60}{3} = \\frac{40}{3}$, so $xy = 12 \\cdot \\frac{40}{3} = \\frac{480}{3}$. This propagates the earlier error consistently."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 3,
+      "original_text": "So, we test the two closest integer values of $x$: $x=9$ and $x=11$",
+      "injected_text": "So, we test the two closest integer values of $x$: $x=11$ and $x=13$",
+      "error_type": "wrong_sequence_term",
+      "rationale": "Because the vertex was incorrectly computed as $x=12$ instead of $x=10$, the two nearest integer test points should be $x=11$ and $x=13$ (not $x=9$ and $x=11$). This error flows from the first mistake but represents a distinct choice of which candidates to evaluate."
+    }
+  ]
+}

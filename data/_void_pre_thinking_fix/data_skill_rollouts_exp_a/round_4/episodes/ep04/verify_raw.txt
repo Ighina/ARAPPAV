@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "35 \\cdot \\frac{5}{28} = 7 \\cdot \\frac{5}{4}",
+      "explanation": "When simplifying $35 \\cdot \\frac{5}{28}$, the solution cancels $35$ and $28$ by dividing both by their GCD of 7, yielding $5 \\cdot \\frac{5}{4} = \\frac{25}{4}$, not $7 \\cdot \\frac{5}{4}$. The numerator $35$ should reduce to $5$ (since $35 ÷ 7 = 5$), and the denominator $28$ should reduce to $4$ (since $28 ÷ 7 = 4$). The final answer is therefore $\\frac{25}{4}$, not $\\frac{35}{4}$.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

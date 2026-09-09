@@ -1,0 +1,86 @@
+{
+  "perturber_reward": 0.5,
+  "verifier_reward": 0.6666666666666666,
+  "verifier_recall": 0.5,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 0.6666666666666666,
+  "k": 3,
+  "num_verifier_claims": 1,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.6666666666666666,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "#(.5(29)+1)=\\#(15.5)": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 0,
+      "best_overlap": 0.9523809523809523,
+      "error_type": "variable_misconception",
+      "all_overlaps": {
+        "#(.5(29)+1)=\\#(15.5)": 0.952
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "additive_thinking",
+      "all_overlaps": {
+        "#(.5(29)+1)=\\#(15.5)": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep06",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": ".5(58)+1))=\\#(\\#(30))",
+      "injected_text": ".5(58)+1))=\\#(\\#(29))",
+      "rationale": "The calculation $0.5(58) + 1$ should equal 30, not 29. Here the student incorrectly computes $0.5(58) = 28$ instead of the correct 29, then adds 1 to get 29 instead of 30. This is an arithmetic error in the first application of the function."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "variable_misconception",
+      "original_text": "\\#(.5(30)+1)=\\#(16)",
+      "injected_text": "\\#(.5(29)+1)=\\#(15.5)",
+      "rationale": "The student carries forward the incorrect intermediate value of 29 from the previous step and applies the function formula to it, obtaining $0.5(29) + 1 = 15.5$ instead of correctly using the proper value. This reflects a cascading error from the prior mistake."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "additive_thinking",
+      "original_text": "(.5(16)+1)=\\boxed{9}",
+      "injected_text": "(.5(15.5)+1)=\\boxed{8.75}",
+      "rationale": "Using the incorrect input 15.5, the final calculation should be $0.5(15.5) + 1 = 7.75 + 1 = 8.75$. The student applies the function correctly to the wrong input, resulting in an incorrect final answer. The error propagates from the second application."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "#(.5(29)+1)=\\#(15.5)",
+      "explanation": "The computation of .5(29)+1 is incorrect. 0.5 × 29 = 14.5, and 14.5 + 1 = 15.5 is correct; however, re-checking: 0.5 × 29 = 14.5, so .5(29)+1 = 14.5 + 1 = 15.5. This is actually correct. Let me verify the final step: #(15.5) = .5(15.5) + 1 = 7.75 + 1 = 8.75. The intermediate value 15.5 is correct and the final answer 8.75 follows correctly.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 3_93"
+}

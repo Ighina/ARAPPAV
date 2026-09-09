@@ -1,0 +1,4 @@
+{
+  "problem": "If $\\sqrt{\\frac{2}{x} + 2} = \\frac{3}{2}$, solve for $x$.",
+  "solution_to_review": "Squaring both sides of the equation yields $\\frac{2}{x} + 2 = \\frac{9}{16}$. Subtracting $2$ from both sides gives $\\frac{2}{x} = -\\frac{23}{16}$, so $x = \\boxed{-\\frac{32}{23}}$."
+}

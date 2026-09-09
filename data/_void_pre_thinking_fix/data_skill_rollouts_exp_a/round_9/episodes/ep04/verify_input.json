@@ -1,0 +1,4 @@
+{
+  "problem": "What is the slope of the line passing through $(-3,5)$ and $(2,-5)$?",
+  "solution_to_review": "We have $m = \\dfrac{y_2 - y_1}{x_2-x_1} = \\dfrac{-5-5}{2-(-3)} = \\dfrac{-10}{3} = \\boxed{-\\dfrac{10}{3}}$."
+}

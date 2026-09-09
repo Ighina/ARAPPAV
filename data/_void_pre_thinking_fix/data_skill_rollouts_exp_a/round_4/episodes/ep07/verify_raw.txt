@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "Cross-multiplying yields $x = \\frac{24\\cdot 3}{2}$",
+      "explanation": "The cross-multiplication of $\\frac{2}{3} = \\frac{x}{24}$ should yield $2 \\cdot 24 = 3 \\cdot x$, which gives $48 = 3x$, or $x = \\frac{48}{3} = 16$. The quoted line incorrectly multiplies $24 \\cdot 3$ in the numerator instead of recognizing that $2x = 3 \\cdot 24 = 72$, so $x = 16$. The final answer of 36 is wrong; it should be 16.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

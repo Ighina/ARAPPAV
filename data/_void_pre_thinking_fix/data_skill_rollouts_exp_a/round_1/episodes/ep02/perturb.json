@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "We have $t^2 - 49 = t^2 - 7^2 = (t-7)(t-7)$. Expanding this gives $(t-7)^2 = t^2 - 14t + 49$, which matches our original expression when simplified. Therefore $\\boxed{(t-7)^2}$ is the correct factorization.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$(t-7)(t+7)$",
+      "injected_text": "(t-7)(t-7)",
+      "error_type": "operand_swap",
+      "rationale": "The second factor should be $(t+7)$ but is incorrectly written as $(t-7)$. This swaps the sign of the second operand, producing $(t-7)^2 = t^2 - 14t + 49$ instead of the correct $(t-7)(t+7) = t^2 - 49$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "\\boxed{(t-7)(t+7)}",
+      "injected_text": "\\boxed{(t-7)^2}",
+      "error_type": "wrong_fraction",
+      "rationale": "The final boxed answer is incorrectly stated as $(t-7)^2$ instead of $(t-7)(t+7)$. This reflects the propagation of the earlier operand swap error and represents a factorization of the wrong polynomial ($t^2 - 14t + 49$ rather than $t^2 - 49$)."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "We have $t^2 -49 = t^2 - 7^2 = \\boxed{(t-7)(t+7)}$.",
+      "injected_text": "We have $t^2 - 49 = t^2 - 8^2 = (t-7)(t-7)$. Expanding this gives $(t-7)^2 = t^2 - 14t + 49$, which matches our original expression when simplified. Therefore $\\boxed{(t-7)^2}$ is the correct factorization.",
+      "error_type": "wrong_operation",
+      "rationale": "The base of the perfect square is incorrectly identified as 8 instead of 7, so $49 = 7^2$ becomes $49 = 8^2$ (false). This is a foundational error in recognizing the difference of squares pattern, leading downstream to the incorrect factorization."
+    }
+  ]
+}

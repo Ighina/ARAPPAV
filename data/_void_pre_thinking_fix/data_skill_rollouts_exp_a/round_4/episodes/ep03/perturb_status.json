@@ -1,0 +1,7 @@
+{
+  "format_valid": false,
+  "failure_stage": "schema",
+  "reason": "Schema validation failed: 1 validation error for MathPerturberOutput\nerrors.0\n  Value error, Phantom error detected for err_001: injected_text equals original_text — no actual modification was made. Text: 'Multiplying both sides of the second equation by 2, we get $4b+2s = 400$' [type=value_error, input_value={'error_id': 'err_001', '...plete and transparent.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+  "k": 3,
+  "attempts": 2
+}

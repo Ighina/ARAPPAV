@@ -1,0 +1,86 @@
+{
+  "perturber_reward": 0.5,
+  "verifier_reward": 0.6666666666666666,
+  "verifier_recall": 0.5,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 0.6666666666666666,
+  "k": 3,
+  "num_verifier_claims": 1,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.6666666666666666,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.9,
+      "error_type": "geometry_definition",
+      "all_overlaps": {
+        "the symmetry of the graph (under $90^\\circ$ rotation around the origin) tells us": 0.9
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "variable_misconception",
+      "all_overlaps": {
+        "the symmetry of the graph (under $90^\\circ$ rotation around the origin) tells us": 0.538
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "the symmetry of the graph (under $90^\\circ$ rotation around the origin) tells us": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep02",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "geometry_definition",
+      "original_text": "under $180^\\circ$ rotation around the origin",
+      "injected_text": "under $90^\\circ$ rotation around the origin",
+      "rationale": "A $90^\\circ$ rotation does not produce the stated symmetry $u(-x) = -u(x)$. Only a $180^\\circ$ (point) rotation around the origin ensures odd symmetry. This is a fundamental misidentification of the symmetry type."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "variable_misconception",
+      "original_text": "$u(-x) = -u(x)$ for all $x$ in the visible interval",
+      "injected_text": "$u(-x) = u(x)$ for all $x$ in the visible interval",
+      "rationale": "The function is odd, so $u(-x) = -u(x)$, not even. Claiming $u(-x) = u(x)$ contradicts the odd symmetry visible in the graph and invalidates all subsequent calculations."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "$$u(-2.33)+u(2.33) = 0\\phantom{.}$$and $$u(-0.81)+u(0.81) = 0.$$Thus, the exact value of $u(-2.33)+u(-0.81)+u(0.81)+u(2.33)$ is $\\boxed{0}$.",
+      "injected_text": "$$u(-2.33)+u(2.33) = 2u(2.33)\\phantom{.}$$and $$u(-0.81)+u(0.81) = 2u(0.81).$$Thus, the exact value of $u(-2.33)+u(-0.81)+u(0.81)+u(2.33)$ is $\\boxed{2u(2.33) + 2u(0.81)}$.",
+      "rationale": "If $u(-x) = u(x)$ (the erroneous claim), then $u(-2.33) + u(2.33) = 2u(2.33)$ and the sum would be $2u(2.33) + 2u(0.81)$, not $0$. However, this is incorrect because the true symmetry is $u(-x) = -u(x)$, making the correct answer $0$."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "the symmetry of the graph (under $90^\\circ$ rotation around the origin) tells us that $u(-x) = u(x)$ for all $x$ in the visible interval",
+      "explanation": "A 90° rotation around the origin does not produce the symmetry $u(-x) = u(x)$. A 90° rotation around the origin maps $(x, y)$ to $(-y, x)$ (or $(y, -x)$ depending on direction). The property $u(-x) = u(x)$ is even symmetry, which corresponds to reflection across the $y$-axis, not 90° rotation. A 90° rotation around the origin would give the property $u(-x) = -u(x)$ (odd symmetry), which is what the function $f(x) = -x + 3\\sin(x\\pi/3)$ actually satisfies. The final answer $2u(2.33) + 2u(0.81)$ happens to be correct because of odd symmetry: $u(-x) + u(x) = 0$, making the sum equal to $0$, not $2u(2.33) + 2u(0.81)$.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 3_140"
+}

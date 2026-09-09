@@ -1,0 +1,86 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 0.6666666666666666,
+  "verifier_recall": 0.5,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 0.6666666666666666,
+  "k": 3,
+  "num_verifier_claims": 1,
+  "num_matched": 1,
+  "k_effective": 2,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.6666666666666666,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.9,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "8(x^{3+3})=\\boxed{8x^6}": 0.9
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_sequence_term",
+      "all_overlaps": {
+        "8(x^{3+3})=\\boxed{8x^6}": 0.9
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "operand_swap",
+      "all_overlaps": {
+        "8(x^{3+3})=\\boxed{8x^6}": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep03",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "3\\ast3",
+      "injected_text": "3+3",
+      "rationale": "When applying the power of a power rule $(x^a)^b = x^{ab}$, the exponents must be multiplied, not added. The correct exponent is $3 \\times 3 = 9$, not $3 + 3 = 6$."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_sequence_term",
+      "original_text": "8x^9",
+      "injected_text": "8x^6",
+      "rationale": "Due to the error in the previous step where addition was used instead of multiplication for the exponents, the final answer is incorrectly simplified to $8x^6$ instead of the correct $8x^9$. This is a consequence of the wrong_operation error propagating to the boxed answer."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "operand_swap",
+      "original_text": "8(x^{3\\ast3})",
+      "injected_text": "8(x^{3}\\ast3)",
+      "rationale": "The exponentiation operation is incorrectly reordered, placing the multiplication operator outside the exponent rather than between the exponents. The correct form should keep the exponents grouped as $(x^{3})^3 = x^{3 \\times 3}$, not $x^3 \\times 3$."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "8(x^{3+3})=\\boxed{8x^6}",
+      "explanation": "The exponent rule (x^a)^b = x^(ab) should be applied here, not addition. (x^3)^3 = x^(3×3) = x^9, not x^(3+3) = x^6. The correct final answer is 8x^9.",
+      "error_type": "wrong_operation"
+    }
+  ],
+  "source_id": "algebra_Level 2_125"
+}

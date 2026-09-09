@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "The arithmetic sequence 1, 3, 5, $\\dots$, 17, has common difference 2, so the $n^{\\text{th}}$ term is $1 + 2(n - 1) = 2n - 1$.  If $2n - 1 = 17$, then $n = 8$, so this arithmetic sequence contains 8 terms.\n\nThe sum of an arithmetic series is equal to the average of the first and last term, multiplied by the number of terms, so the sum is $(1 + 17)/2 \\cdot 9 = \\boxed{72}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "If $2n - 1 = 17$, then $n = 9$",
+      "injected_text": "If $2n - 1 = 17$, then $n = 8$",
+      "error_type": "wrong_sequence_term",
+      "rationale": "Solving $2n - 1 = 17$ correctly gives $2n = 18$, so $n = 9$. The injected text incorrectly states $n = 8$, which would correspond to the term $2(8) - 1 = 15$, not 17. This is an error in solving for the term index."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 0,
+      "original_text": "so this arithmetic sequence contains 9 terms",
+      "injected_text": "so this arithmetic sequence contains 8 terms",
+      "error_type": "wrong_sequence_term",
+      "rationale": "If $n = 8$ (from the previous error), then there are 8 terms. However, the correct count is 9 terms. This error propagates from the incorrect value of $n$ derived earlier."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "$(1 + 17)/2 \\cdot 9 = \\boxed{81}$",
+      "injected_text": "$(1 + 17)/2 \\cdot 9 = \\boxed{72}$",
+      "error_type": "additive_thinking",
+      "rationale": "The correct calculation is $(1 + 17)/2 \\cdot 9 = 9 \\cdot 9 = 81$. The injected answer 72 represents computing $(1 + 17)/2 \\cdot 8 = 9 \\cdot 8 = 72$, using the incorrect term count of 8 rather than the correct count of 9. This reflects treating the number of terms additively rather than properly counting all 9 odd numbers from 1 to 17."
+    }
+  ]
+}

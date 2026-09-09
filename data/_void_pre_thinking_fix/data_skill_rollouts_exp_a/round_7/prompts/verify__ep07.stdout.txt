@@ -1,0 +1,84 @@
+I'll solve this problem first, then audit the solution line by line.
+
+## My solution
+
+Given:
+- $w+x+y = -2$ ... (1)
+- $w+x+z = 4$ ... (2)
+- $w+y+z = 19$ ... (3)
+- $x+y+z = 12$ ... (4)
+
+**Finding $w+x+y+z$:**
+Adding all four: $3w+3x+3y+3z = -2+4+19+12 = 33$
+So $w+x+y+z = 11$ ✓
+
+**Finding individual variables:**
+From (1): $w+x+y = -2$, so $z = 11-(-2) = 13$ ✓
+From (2): $w+x+z = 4$, so $y = 11-4 = 7$ 
+From (3): $w+y+z = 19$, so $x = 11-19 = -8$
+From (4): $x+y+z = 12$, so $w = 11-12 = -1$ ✓
+
+Let me verify: $w=-1, x=-8, y=7, z=13$
+- $w+x+y = -1+(-8)+7 = -2$ ✓
+- $w+x+z = -1+(-8)+13 = 4$ ✓
+- $w+y+z = -1+7+13 = 19$ ✓
+- $x+y+z = -8+7+13 = 12$ ✓
+
+**Computing $wx + yz$:**
+$wx + yz = (-1)(-8) + (7)(13) = 8 + 91 = 99$
+
+## Comparison with solution
+
+| Step | Solution's value | My value | Status |
+|------|---|---|---|
+| $w+x+y+z$ | 11 | 11 | ✓ |
+| $z$ | 13 | 13 | ✓ |
+| $y$ | 8 | 7 | **MISMATCH** |
+| $x$ | -9 | -8 | **MISMATCH** |
+| $w$ | -1 | -1 | ✓ |
+| $wx + yz$ | 100 | 99 | **MISMATCH** |
+
+## Localizing the errors
+
+The solution states: "Subtracting the four original equations from this sum gives: $z = 11-(-2) = 13$, $y = 11-4 = 8$, $x = 11-19 = -9$, and $w = 11-12 = -1$, respectively."
+
+The correct logic is:
+- From equation (1): $w+x+y = -2$ → subtract to get $z = 11 - (-2) = 13$ ✓
+- From equation (2): $w+x+z = 4$ → subtract to get $y = 11 - 4 = 7$ (not 8)
+- From equation (3): $w+y+z = 19$ → subtract to get $x = 11 - 19 = -8$ (not -9)
+- From equation (4): $x+y+z = 12$ → subtract to get $w = 11 - 12 = -1$ ✓
+
+The solution has the assignments reversed for the second and third values.
+
+## Errors found
+
+**Error 1:** The solution assigns $y = 11-4 = 8$, but equation (2) is $w+x+z = 4$, so subtracting this gives $y = 11-4 = 7$.
+
+**Error 2:** The solution assigns $x = 11-19 = -9$, but equation (3) is $w+y+z = 19$, so subtracting this gives $x = 11-19 = -8$.
+
+These errors propagate to the final computation.
+
+```json
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "y = 11-4 = 8",
+      "explanation": "Subtracting equation (2) $w+x+z = 4$ from $w+x+y+z = 11$ gives $y = 11-4 = 7$, not 8. The solution incorrectly paired this subtraction with equation (2) when it should be paired with equation (2) to yield $y$.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "x = 11-19 = -9",
+      "explanation": "Subtracting equation (3) $w+y+z = 19$ from $w+x+y+z = 11$ gives $x = 11-19 = -8$, not -9. The solution incorrectly computed this value.",
+      "error_type": "arithmetic_error"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "wx + yz = -1\\cdot-8 + 7\\cdot13 = 8+92 = \\boxed{100}",
+      "explanation": "With the correct values $w=-1, x=-8, y=7, z=13$, we have $wx + yz = (-1)(-8) + (7)(13) = 8 + 91 = 99$, not 100. The error stems from the incorrect values of $x$ and $y$ computed above.",
+      "error_type": "arithmetic_error"
+    }
+  ]
+}
+```

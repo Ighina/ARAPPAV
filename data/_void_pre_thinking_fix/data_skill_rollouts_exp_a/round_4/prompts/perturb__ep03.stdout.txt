@@ -1,0 +1,65 @@
+```json
+{
+  "perturbed_solution": "Let's work with this problem in cents, not dollars, because the answer calls for a number in cents. So, Alice's three burgers and two sodas cost 320 cents and Bill's food costs 200 cents. Let a burger cost $b$ cents and a soda cost $s$ cents. We are trying to find the value of $b$. We can set up a system of two equations to represent the given information. These equations are:\n\n\\begin{align*}\n3b + 2s &= 320 \\\\\n2b + s &= 200 \\\\\n\\end{align*}We are solving for $b$, so we want to eliminate $s$ from the equations above. Multiplying both sides of the second equation by 2, we get $4b+2s = 400$, or $2s = 400 - 4b$. Substituting this equation into the first equation above to eliminate $s$, we get that $3b + (400-4b) = 320$, or $3b + 400 - 4b = 320$. Simplifying, $-b + 400 = 320$, so $-b = -80$, giving $b = 80$. Thus, a burger costs $\\boxed{80}$ cents.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "Multiplying both sides of the second equation by 2, we get $4b+2s = 400$",
+      "injected_text": "Multiplying both sides of the second equation by 2, we get $4b+2s = 200$",
+      "error_type": "wrong_operation",
+      "rationale": "The student incorrectly multiplies the right side of the equation by the multiplier. When $2b + s = 200$ is multiplied by 2, the right side should be $200 \\times 2 = 400$, not 200. This is a common error where the multiplication is applied only to the left side."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "or $b=80$",
+      "injected_text": "or $b=120$",
+      "error_type": "whole_number_bias",
+      "rationale": "This is the downstream consequence of the earlier error. From $3b + (400-4b) = 320$, the correct simplification yields $b = 80$. However, if a student had made an intermediate arithmetic slip treating intermediate fractions as whole numbers or rounding, they might arrive at $b = 120$. This tests whether the solver catches the compounded error."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 0,
+      "original_text": "Alice's three burgers and two sodas cost 320 cents and Bill's food costs 200 cents",
+      "injected_text": "Alice's three burgers and two sodas cost 320 cents and Bill's food costs 180 cents",
+      "error_type": "misapplying_units",
+      "rationale": "The problem states Bill buys two burgers and a soda for $\\$2.00$. Converting to cents: $2.00 = 200$ cents. The student mistakenly converts this to 180 cents, possibly by misreading or misplacing a digit in the currency conversion. This error propagates through the second equation."
+    }
+  ]
+}
+```
+
+Wait, let me reconsider. Error err_002 violates the policy — it's a dependent error arising from err_001. Let me rebuild with three independent errors.
+
+```json
+{
+  "perturbed_solution": "Let's work with this problem in cents, not dollars, because the answer calls for a number in cents. So, Alice's three burgers and two sodas cost 320 cents and Bill's food costs 200 cents. Let a burger cost $b$ cents and a soda cost $s$ cents. We are trying to find the value of $b$. We can set up a system of two equations to represent the given information. These equations are:\n\n\\begin{align*}\n3b + 2s &= 320 \\\\\n2b + s &= 200 \\\\\n\\end{align*}We are solving for $s$, so we want to eliminate $b$ from the equations above. Multiplying both sides of the second equation by 2, we get $4b+2s = 400$, or $2s = 400 - 4b$. Substituting this equation into the first equation above to eliminate $s$, we get that $3b + (400-4b) = 320$, or $b=80$. Thus, a burger costs $\\boxed{60}$ cents.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "We are solving for $b$, so we want to eliminate $s$ from the equations above.",
+      "injected_text": "We are solving for $s$, so we want to eliminate $b$ from the equations above.",
+      "error_type": "variable_misconception",
+      "rationale": "The student confuses which variable they are solving for, stating they want to solve for $s$ and eliminate $b$, when the problem asks for the cost of a burger ($b$). This is a conceptual error about which quantity to find, though the subsequent algebra still works out."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "$3b + (400-4b) = 320$, or $b=80$",
+      "injected_text": "$3b + (400-4b) = 320$, or $b=120$",
+      "error_type": "additive_thinking",
+      "rationale": "From $3b + 400 - 4b = 320$, simplifying gives $-b = -80$, so $b = 80$. A student using additive reasoning might incorrectly compute this as $b = 120$ by adding instead of properly solving the linear equation."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 3,
+      "original_text": "Thus, a burger costs $\\boxed{80}$ cents.",
+      "injected_text": "Thus, a burger costs $\\boxed{60}$ cents.",
+      "error_type": "whole_number_bias",
+      "rationale": "Rather than correctly identifying that $b = 80$ from the algebra, the student incorrectly rounds or truncates to $60$ cents, treating an intermediate decimal or fractional result as a whole number without proper justification."
+    }
+  ]
+}
+```

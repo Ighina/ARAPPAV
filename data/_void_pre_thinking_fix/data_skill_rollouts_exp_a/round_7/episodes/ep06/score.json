@@ -1,0 +1,73 @@
+{
+  "perturber_reward": 1.0,
+  "verifier_reward": 0.0,
+  "verifier_recall": 0.0,
+  "verifier_precision": 0.0,
+  "verifier_f_beta": 0.0,
+  "k": 3,
+  "num_verifier_claims": 0,
+  "num_matched": 0,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 0,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 1.0,
+  "verifier_base_reward": 0.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "additive_thinking",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "operand_swap",
+      "all_overlaps": {}
+    }
+  ],
+  "episode_id": "ep06",
+  "perturber_format_valid": true,
+  "verifier_parse_error": "JSON parse error after fence stripping: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\nFirst 500 chars: {3}$ | **MISMATCH** |\n\nThe error occurs in the first line of the aligned equations.\n\n---\n\n## Error Identification\n\nThe solution states that $f(b) = 8$ implies $b^2 + 8 = 16$. This is wrong.\n\nIf $f(b) = 8$ and $f(x) = x^2 + 8$, then:\n$$b^2 + 8 = 8$$\n\nnot $b^2 + 8 = 16$.\n\nThe solution incorrectly set $b^2 + 8 = 16$, which would only be true if $f(b) = 16$.\n\nThis is the root error. Everything downstream (the values $b^2 = 8$, $b = 8$, $a^2 = 12$, and $a = 2\\sqrt{3}$) follows from this wrong equatio",
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "b^2 + 8 &= 8 \\\\",
+      "injected_text": "b^2 + 8 &= 16 \\\\",
+      "rationale": "The problem states $f(g(a)) = 8$, so $f(b) = 8$ means $b^2 + 8 = 8$, not $16$. This is a transcription/substitution error where the student incorrectly wrote the right-hand side of the equation."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "additive_thinking",
+      "original_text": "b^2 &= 0 \\\\",
+      "injected_text": "b^2 &= 8 \\\\",
+      "rationale": "From the incorrect $b^2 + 8 = 16$, subtracting 8 gives $b^2 = 8$, not $0$. This is the arithmetic consequence of the first error, so the student carries the wrong intermediate value forward."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "operand_swap",
+      "original_text": "Therefore, $b = g(a) = 0.$ Now, we solve for $a$ using $g(a) = a^2 - 4 = 0.$ From this, $a = \\pm 2.$",
+      "injected_text": "Therefore, $b = g(a) = 8.$ Now, we solve for $a$ using $g(a) = a^2 - 4 = 8.$ From this, $a^2 = 12,$ so $a = \\pm 2\\sqrt{3}.$",
+      "rationale": "The student incorrectly uses $b^2 = 8$ to conclude $b = 8$, when in fact $b = \\pm 2\\sqrt{2}$. Additionally, solving $a^2 - 4 = 8$ should give $a^2 = 12$, and $a = \\pm 2\\sqrt{3}$. The error is propagating a wrong value and failing to take the square root correctly."
+    }
+  ],
+  "claims": [],
+  "source_id": "algebra_Level 3_237"
+}

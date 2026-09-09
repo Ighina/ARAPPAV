@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "We first deal with the denominator of this fraction by multiplying $6$ by $\\frac{5}{5}$ and then subtracting $\\frac{2}{5}$ from the resulting fraction to get: $$x = \\dfrac{35}{6-\\frac{2}{5}}= \\dfrac{35}{\\frac{30}{5}-\\frac{2}{5}} = \\dfrac{35}{\\frac{28}{5}}.$$  Since dividing by a fraction is the same as multiplying by its reciprocal, we have that $$x=\\dfrac{35}{\\frac{28}{5}}=35 \\cdot \\frac{5}{28} = 7 \\cdot \\frac{5}{4} = \\boxed{\\frac{35}{4}}.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "35 \\cdot \\frac{5}{28} = 5 \\cdot \\frac{5}{4}",
+      "injected_text": "35 \\cdot \\frac{5}{28} = 7 \\cdot \\frac{5}{4}",
+      "error_type": "whole_number_bias",
+      "rationale": "The correct simplification is $\\frac{35}{28} = \\frac{5}{4}$, so $35 \\cdot \\frac{5}{28} = 5 \\cdot \\frac{5}{4}$. The error treats the GCD of 35 and 28 as if it were 7 instead of 7, incorrectly replacing 5 with 7. This reflects treating the reduced form incompletely by misapplying the cancellation."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "5 \\cdot \\frac{5}{4} = \\boxed{\\frac{25}{4}}",
+      "injected_text": "7 \\cdot \\frac{5}{4} = \\boxed{\\frac{35}{4}}",
+      "error_type": "duplication_error",
+      "rationale": "Once the erroneous coefficient of 7 from err_001 is in place, multiplying it by $\\frac{5}{4}$ yields $\\frac{35}{4}$ instead of the correct $\\frac{25}{4}$. This is the propagated consequence of the earlier wrong coefficient, carried through consistently to the final answer."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 0,
+      "original_text": "\\frac{30}{5}-\\frac{2}{5} = \\frac{28}{5}",
+      "injected_text": "\\frac{30}{5}-\\frac{2}{5} = \\frac{32}{5}",
+      "error_type": "wrong_operation",
+      "rationale": "The correct computation is $30 - 2 = 28$, so the denominator should be $\\frac{28}{5}$. The error treats the subtraction as addition instead, yielding $30 + 2 = 32$ and thus $\\frac{32}{5}$. This is an independent error in the denominator simplification."
+    }
+  ]
+}

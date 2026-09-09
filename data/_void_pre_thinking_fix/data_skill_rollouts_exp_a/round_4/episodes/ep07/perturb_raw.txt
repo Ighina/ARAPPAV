@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "If $10$ of $15$ students received an $A$, then the ratio of students receiving an $A$ to students not receiving an $A$ is $\\frac{10}{15}$, or $\\frac{2}{3}$. Let $x$ be the number of students in Mrs. Berkeley's class who received an $A$. Since the ratio is consistent across the two classes, $\\frac{2}{3} = \\frac{x}{24}$. Cross-multiplying yields $x = \\frac{24\\cdot 3}{2}$, so, by simplification, we can see that $\\boxed{36}$ of Mrs. Berkeley's students must have received an $A$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 3,
+      "original_text": "$x = \\frac{24\\cdot 2}{3}$",
+      "injected_text": "$x = \\frac{24\\cdot 3}{2}$",
+      "error_type": "operand_swap",
+      "rationale": "The numerator and denominator of the fraction being multiplied by 24 have been swapped. The correct cross-multiplication from $\\frac{2}{3} = \\frac{x}{24}$ gives $3x = 24 \\cdot 2$, so $x = \\frac{24 \\cdot 2}{3} = 16$. The error reverses this to $\\frac{24 \\cdot 3}{2} = 36$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 3,
+      "original_text": "$\\boxed{16}$",
+      "injected_text": "$\\boxed{36}$",
+      "error_type": "whole_number_bias",
+      "rationale": "The final answer has been changed from 16 to 36, which is the result of the operand swap error propagated through to the conclusion. This is the consequence of swapping the numerator and denominator in the cross-multiplication step."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "the ratio of students receiving an $A$ to students not receiving an $A$ is $\\frac{10}{15}$",
+      "injected_text": "the ratio of students receiving an $A$ to total students is $\\frac{10}{15}$",
+      "error_type": "variable_misconception",
+      "rationale": "The description of what the ratio represents has been changed. The original correctly states it is 'students receiving an A to students not receiving an A', but the error changes it to 'students receiving an A to total students'. However, the numerical value $\\frac{10}{15}$ is actually the correct ratio for A's to total students (which simplifies to $\\frac{2}{3}$), so this creates confusion about what the ratio means while the subsequent work remains consistent with the intended interpretation."
+    }
+  ]
+}
+```

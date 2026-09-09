@@ -1,0 +1,95 @@
+{
+  "perturber_reward": 0.5,
+  "verifier_reward": 0.5,
+  "verifier_recall": 0.5,
+  "verifier_precision": 0.5,
+  "verifier_f_beta": 0.5,
+  "k": 3,
+  "num_verifier_claims": 2,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.5,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.9,
+      "error_type": "inversion_error",
+      "all_overlaps": {
+        "when we multiply the wrench length by $\\dfrac53$, we must multiply the force req": 0.9,
+        "when we multiply the wrench length by $\\dfrac53$": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "when we multiply the wrench length by $\\dfrac53$, we must multiply the force req": 0.0,
+        "when we multiply the wrench length by $\\dfrac53$": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {
+        "when we multiply the wrench length by $\\dfrac53$, we must multiply the force req": 0.0,
+        "when we multiply the wrench length by $\\dfrac53$": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep00",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "inversion_error",
+      "original_text": "we must multiply the force required by $\\dfrac35$",
+      "injected_text": "we must multiply the force required by $\\dfrac53$",
+      "rationale": "The error inverts the reciprocal fraction. Since force and length are inversely proportional and length is multiplied by 5/3, force must be multiplied by the reciprocal 3/5, not 5/3. This is a conceptual slip in applying the inverse relationship correctly."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "original_text": "$(375)\\left(\\frac35\\right) = \\boxed{225}$",
+      "injected_text": "$(375)\\left(\\frac35\\right) = \\boxed{135}$",
+      "rationale": "The arithmetic computation is altered. Computing 375 × (3/5) correctly gives 225, but the boxed answer is changed to 135, which would result from a different computation (e.g., 375 × (3/5) but with an error in multiplication or simplification). This error persists from the stated equation."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "whole_number_bias",
+      "original_text": "we multiply the length of the wrench by $\\frac{15}{9} = \\frac{5}{3}$",
+      "injected_text": "we multiply the length of the wrench by $\\frac{15}{9} = \\frac{5}{4}$",
+      "rationale": "The fraction simplification is wrong. 15/9 reduces to 5/3, not 5/4. This is an arithmetic error in reducing the fraction that affects the setup of the proportional relationship, even though the subsequent work proceeds from the correct 5/3 value stated in the prose."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "when we multiply the wrench length by $\\dfrac53$, we must multiply the force required by $\\dfrac53$",
+      "explanation": "This statement contradicts the definition of inverse proportionality. When two quantities are inversely proportional, if one is multiplied by a factor k, the other must be multiplied by 1/k to keep their product constant. The solution correctly identifies that the wrench length is multiplied by 5/3 (since 15/9 = 5/3), but then incorrectly states the force should also be multiplied by 5/3. For inverse proportionality, the force should be multiplied by the reciprocal: 3/5. The correct calculation is: Force = 375 × (3/5) = 225 pounds, not 135.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "when we multiply the wrench length by $\\dfrac53$",
+      "explanation": "The solution first correctly computes the ratio 15/9 = 5/3, but then incorrectly labels this as the multiplier to apply to force. The problem states the force varies inversely with handle length, meaning F × L = k (constant). If L is multiplied by 5/3, then F must be multiplied by 3/5 to preserve the constant product, not by 5/3.",
+      "error_type": "wrong_operation"
+    }
+  ],
+  "source_id": "algebra_Level 2_162"
+}

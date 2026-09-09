@@ -1,0 +1,4 @@
+{
+  "problem": "Let $f(x)=2\\sqrt{x} + \\frac{12}{\\sqrt{x}}$ and let $g(x)=2x^2-2x-3$. What is $f(g(3))$?",
+  "solution_to_review": "We first evaluate $g(3) = 2\\cdot3^2 - 2\\cdot3-3=18$. Therefore $f(g(3))=f(18)=2\\sqrt{18} + \\frac{12}{\\sqrt{18}}= 2\\cdot3\\sqrt{2} + \\frac{12}{3\\sqrt{2}}=6\\sqrt{2}+\\frac{4}{\\sqrt{2}}=6\\sqrt{2}+2\\sqrt{2}=\\boxed{8\\sqrt{2}}$."
+}

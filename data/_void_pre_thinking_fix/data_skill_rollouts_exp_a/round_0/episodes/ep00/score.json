@@ -1,0 +1,104 @@
+{
+  "perturber_reward": 0.33333333333333337,
+  "verifier_reward": 0.6666666666666666,
+  "verifier_recall": 0.6666666666666666,
+  "verifier_precision": 0.6666666666666666,
+  "verifier_f_beta": 0.6666666666666666,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 2,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 2,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.33333333333333337,
+  "verifier_base_reward": 0.6666666666666666,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.9,
+      "error_type": "wrong_fraction",
+      "all_overlaps": {
+        "We see that $3y^2-y-24 = (3y + 8)(y + 5)$": 0.9,
+        "$a = 8$ and $b = 5$": 0.0,
+        "We can verify: $(3y + 8)(y + 5) = 3y^2 + 15y + 8y + 40 = 3y^2 + 23y + 40$, which": 0.9
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 1,
+      "best_overlap": 0.9,
+      "error_type": "operand_swap",
+      "all_overlaps": {
+        "We see that $3y^2-y-24 = (3y + 8)(y + 5)$": 0.0,
+        "$a = 8$ and $b = 5$": 0.9,
+        "We can verify: $(3y + 8)(y + 5) = 3y^2 + 15y + 8y + 40 = 3y^2 + 23y + 40$, which": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "We see that $3y^2-y-24 = (3y + 8)(y + 5)$": 0.0,
+        "$a = 8$ and $b = 5$": 0.0,
+        "We can verify: $(3y + 8)(y + 5) = 3y^2 + 15y + 8y + 40 = 3y^2 + 23y + 40$, which": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep00",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_fraction",
+      "original_text": "$(3y + 8)(y - 3)$",
+      "injected_text": "$(3y + 8)(y + 5)$",
+      "rationale": "The correct factorization is $(3y + 8)(y - 3)$ which expands to $3y^2 - 9y + 8y - 24 = 3y^2 - y - 24$. The injected factorization $(3y + 8)(y + 5)$ expands to $3y^2 + 23y + 40$, which is incorrect. This is a fundamental factorization error—the wrong binomial was chosen."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "operand_swap",
+      "original_text": "$b = -3$",
+      "injected_text": "$b = 5$",
+      "rationale": "The correct value is $b = -3$, but the injected value is $b = 5$. This is a sign error stemming from the incorrect factorization. The verifier should catch that $b$ should be negative to produce the $-y$ term in the original expression."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "$a - b = \\boxed{11}$",
+      "injected_text": "$a - b = 3$",
+      "rationale": "Given the injected (incorrect) values $a = 8$ and $b = 5$, the computation $8 - 5 = 3$ is arithmetically correct but wrong for the original problem. The correct answer is $8 - (-3) = 11$. This error propagates from the previous errors in identifying $b$."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "We see that $3y^2-y-24 = (3y + 8)(y + 5)$",
+      "explanation": "The factorization is incorrect. Expanding $(3y + 8)(y + 5) = 3y^2 + 15y + 8y + 40 = 3y^2 + 23y + 40$, which does not equal $3y^2 - y - 24$. The correct factorization is $(3y - 8)(y + 3) = 3y^2 + 9y - 8y - 24 = 3y^2 + y - 24$ or $(3y + 9)(y - \\frac{8}{3})$ is not integer, so we need $(3y - 9)(y + \\frac{8}{3})$ which also isn't integer. The correct factorization with integer coefficients is $(3y + 9)(y - \\frac{8}{3})$ doesn't work. Actually: $3y^2 - y - 24 = (3y - 9)(y + \\frac{8}{3})$ doesn't have integer $b$. Trying systematically: if $3y^2 - y - 24 = (3y + a)(y + b)$, then $3y^2 + 3by + ay + ab = 3y^2 + (3b + a)y + ab$. So $3b + a = -1$ and $ab = -24$. With $a = 8, b = -3$: $3(-3) + 8 = -9 + 8 = -1$ ✓ and $8(-3) = -24$ ✓. The correct factorization is $(3y + 8)(y - 3)$.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "$a = 8$ and $b = 5$",
+      "explanation": "Given the incorrect factorization, these values are wrong. The correct values are $a = 8$ and $b = -3$.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "We can verify: $(3y + 8)(y + 5) = 3y^2 + 15y + 8y + 40 = 3y^2 + 23y + 40$, which matches the original expression $3y^2-y-24$.",
+      "explanation": "The verification step is false. The expansion gives $3y^2 + 23y + 40$, which clearly does not match $3y^2 - y - 24$ (the coefficients of $y$ and the constant terms are completely different). This is a direct contradiction within the solution.",
+      "error_type": "wrong_operation"
+    }
+  ],
+  "source_id": "algebra_Level 3_57"
+}

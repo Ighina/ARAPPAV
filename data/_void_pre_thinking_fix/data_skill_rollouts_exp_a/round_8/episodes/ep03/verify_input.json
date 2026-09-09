@@ -1,0 +1,4 @@
+{
+  "problem": "What is the value of $y$ in the equation $\\frac{30}{50}=\\sqrt{\\frac{y}{50}}$?",
+  "solution_to_review": "Squaring both sides, we have $\\frac{30^2}{50^2}=\\frac{y}{50}$. This gives $\\frac{900}{2500}=\\frac{y}{50}$. Solving for $y$ yields $y=900 \\cdot 50=\\boxed{45000}$."
+}

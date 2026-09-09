@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "Completing the square, we add $(12/2)^2=36$ to both sides of the equation to get $x^2+12x+36=109 \\Rightarrow (x+6)^2=109$. Taking the square root of both sides, we get $x+6=\\sqrt{109}$ (we take the positive square root because we want the positive solution), or $x=\\sqrt{109}-6$. Thus, $a=109$ and $b=6$, so $a+b=\\boxed{120}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 4,
+      "original_text": "Thus, $a=109$ and $b=6$, so $a+b=\\boxed{115}$.",
+      "injected_text": "Thus, $a=109$ and $b=6$, so $a+b=\\boxed{120}$.",
+      "error_type": "whole_number_bias",
+      "rationale": "The final arithmetic is incorrect: $109 + 6 = 115$, not $120$. This is a computational error where the student miscalculates the sum of the two numbers, treating them as slightly different values or simply making an arithmetic mistake in the final step."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "Completing the square, we add $(12/2)^2=36$ to both sides of the equation to get $x^2+12x+36=109 \\Rightarrow (x+6)^2=109$.",
+      "injected_text": "Completing the square, we add $(12/2)^2=36$ to both sides of the equation to get $x^2+12x+36=73+36 \\Rightarrow (x+6)^2=109$.",
+      "error_type": "incomplete_solution",
+      "rationale": "The student writes the intermediate step as $x^2+12x+36=73+36$ but then claims this equals $(x+6)^2=109$ without explicitly showing that $73+36=109$. This omits the crucial arithmetic verification that $73+36=109$, treating the equation as if the sum is automatic rather than computed."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "Taking the square root of both sides, we get $x+6=\\sqrt{109}$ (we take the positive square root because we want the positive solution), or $x=\\sqrt{109}-6$.",
+      "injected_text": "Taking the square root of both sides, we get $x+6=\\sqrt{109}$ (we take the positive square root because we want the positive solution), or $x=\\sqrt{109}+6$.",
+      "error_type": "wrong_operation",
+      "rationale": "The student incorrectly isolates $x$ by adding 6 instead of subtracting it. From $x+6=\\sqrt{109}$, subtracting 6 gives $x=\\sqrt{109}-6$, not $x=\\sqrt{109}+6$. This is a sign error in the algebraic manipulation."
+    }
+  ]
+}
+```

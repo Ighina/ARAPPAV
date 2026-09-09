@@ -1,0 +1,236 @@
+{
+  "round": 7,
+  "metrics": {
+    "num_episodes": 8,
+    "num_format_valid": 7,
+    "format_valid_rate": 0.875,
+    "mean_perturber_reward": -0.25,
+    "mean_perturber_reward_valid_only": 0.4286,
+    "mean_verifier_reward": 0.3048,
+    "mean_verifier_recall": 0.2857,
+    "mean_verifier_precision": 0.381,
+    "mean_units_per_episode": 2.0,
+    "total_duplicate_penalty": 0,
+    "total_spam_penalty": 0,
+    "total_repetition_penalty": 0,
+    "total_phantom_penalty": 0
+  },
+  "error_type_detection": {
+    "wrong_sequence_term": {
+      "injected": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    "operand_swap": {
+      "injected": 5,
+      "detected": 1,
+      "detection_rate": 0.2
+    },
+    "whole_number_bias": {
+      "injected": 3,
+      "detected": 1,
+      "detection_rate": 0.333
+    },
+    "negative_number_error": {
+      "injected": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    "wrong_operation": {
+      "injected": 4,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "variable_misconception": {
+      "injected": 2,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "additive_thinking": {
+      "injected": 2,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "incomplete_solution": {
+      "injected": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    }
+  },
+  "format_failures": [
+    {
+      "episode_id": "ep02",
+      "failure_stage": "schema",
+      "reason": "Expected exactly 3 errors, got 1. Error IDs: ['err_001']"
+    }
+  ],
+  "undetected_errors": [
+    {
+      "episode_id": "ep00",
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep00",
+      "error_id": "err_002",
+      "error_type": "operand_swap",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep00",
+      "error_id": "err_003",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep01",
+      "error_id": "err_002",
+      "error_type": "operand_swap",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep01",
+      "error_id": "err_003",
+      "error_type": "wrong_sequence_term",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep03",
+      "error_id": "err_001",
+      "error_type": "negative_number_error",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep03",
+      "error_id": "err_003",
+      "error_type": "variable_misconception",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep04",
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep04",
+      "error_id": "err_002",
+      "error_type": "operand_swap",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep04",
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep05",
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep05",
+      "error_id": "err_002",
+      "error_type": "additive_thinking",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep05",
+      "error_id": "err_003",
+      "error_type": "incomplete_solution",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep06",
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep06",
+      "error_id": "err_002",
+      "error_type": "additive_thinking",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep06",
+      "error_id": "err_003",
+      "error_type": "operand_swap",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep07",
+      "error_id": "err_003",
+      "error_type": "variable_misconception",
+      "best_overlap": 0.0
+    }
+  ],
+  "detected_errors": [
+    {
+      "episode_id": "ep01",
+      "error_id": "err_001",
+      "error_type": "wrong_sequence_term",
+      "best_overlap": 0.9
+    },
+    {
+      "episode_id": "ep03",
+      "error_id": "err_002",
+      "error_type": "operand_swap",
+      "best_overlap": 0.836
+    },
+    {
+      "episode_id": "ep07",
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.857
+    },
+    {
+      "episode_id": "ep07",
+      "error_id": "err_002",
+      "error_type": "negative_number_error",
+      "best_overlap": 0.875
+    }
+  ],
+  "verifier_false_positives": [
+    {
+      "episode_id": "ep07",
+      "quoted_text": "wx + yz = -1\\cdot-8 + 7\\cdot13 = 8+92 = \\boxed{100}",
+      "explanation": "With the correct values $w=-1, x=-8, y=7, z=13$, we have $wx + yz = (-1)(-8) + (7)(13) = 8 + 91 = 99$, not 100. The error stems from the incorrect values of $x$ and $y$ computed above."
+    }
+  ],
+  "unit_collapse": [
+    {
+      "episode_id": "ep00",
+      "k": 3,
+      "num_error_units": 1
+    },
+    {
+      "episode_id": "ep01",
+      "k": 3,
+      "num_error_units": 2
+    },
+    {
+      "episode_id": "ep03",
+      "k": 3,
+      "num_error_units": 2
+    },
+    {
+      "episode_id": "ep05",
+      "k": 3,
+      "num_error_units": 2
+    },
+    {
+      "episode_id": "ep06",
+      "k": 3,
+      "num_error_units": 2
+    },
+    {
+      "episode_id": "ep07",
+      "k": 3,
+      "num_error_units": 2
+    }
+  ]
+}

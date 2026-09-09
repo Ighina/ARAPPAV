@@ -1,0 +1,86 @@
+{
+  "perturber_reward": 0.6666666666666667,
+  "verifier_reward": 0.5,
+  "verifier_recall": 0.3333333333333333,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 0.5,
+  "k": 3,
+  "num_verifier_claims": 1,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.6666666666666667,
+  "verifier_base_reward": 0.5,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 1.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "The sum $A+B+C+D = 3+9+15+25 = \\boxed{58}$": 1.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {
+        "The sum $A+B+C+D = 3+9+15+25 = \\boxed{58}$": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "incomplete_solution",
+      "all_overlaps": {
+        "The sum $A+B+C+D = 3+9+15+25 = \\boxed{58}$": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep07",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "The sum $A+B+C+D = 3+9+15+25 = \\boxed{52}$",
+      "injected_text": "The sum $A+B+C+D = 3+9+15+25 = \\boxed{58}$",
+      "rationale": "The arithmetic is changed: $3+9+15+25 = 52$, not $58$. The student incorrectly adds the components, arriving at an erroneous final answer. The correct sum is 52."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "whole_number_bias",
+      "original_text": "Then, $A+B+C+D > B+C+D \\ge 49k \\ge 98$",
+      "injected_text": "Then, $A+B+C+D > B+C+D \\ge 48k \\ge 96$",
+      "rationale": "The inequality bound is incorrectly lowered. When $k > 1$, we have $B+C+D = 9k + 15k + 25k = 49k$, not $48k$. This leads to the wrong threshold $96$ instead of the correct $98$, supporting the incorrect final answer."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "incomplete_solution",
+      "original_text": "so it follows that $52$ is indeed the smallest possible value of $A+B+C+D$",
+      "injected_text": "so it follows that $58$ is indeed the smallest possible value of $A+B+C+D$",
+      "rationale": "The conclusion is restated incorrectly to match the erroneous earlier calculation. The correct smallest value is $52$, not $58$. This error propagates the mistake from err_001, ensuring the final claim is internally inconsistent with the correct arithmetic."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "The sum $A+B+C+D = 3+9+15+25 = \\boxed{58}$",
+      "explanation": "The arithmetic is incorrect. 3 + 9 + 15 + 25 = 52, not 58. The solution correctly identifies A = 3, B = 9, C = 15, and D = 25, but then miscomputes their sum. The correct answer is 52.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 5_11"
+}

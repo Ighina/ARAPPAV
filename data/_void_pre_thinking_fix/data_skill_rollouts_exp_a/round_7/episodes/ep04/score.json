@@ -1,0 +1,73 @@
+{
+  "perturber_reward": 1.0,
+  "verifier_reward": 0.0,
+  "verifier_recall": 0.0,
+  "verifier_precision": 0.0,
+  "verifier_f_beta": 0.0,
+  "k": 3,
+  "num_verifier_claims": 0,
+  "num_matched": 0,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 0,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 1.0,
+  "verifier_base_reward": 0.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "operand_swap",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {}
+    }
+  ],
+  "episode_id": "ep04",
+  "perturber_format_valid": true,
+  "verifier_parse_error": "JSON parse error after fence stripping: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\nFirst 500 chars: {2x} = \\sqrt{27}$\n\n- $\\sqrt{27} = 27^{1/2}$\n- $27 = 3^3$, so $27^{1/2} = (3^3)^{1/2} = 3^{3/2}$\n- Therefore: $3^{2x} = 3^{3/2}$\n- Since the bases are equal: $2x = \\frac{3}{2}$\n- Solving for $x$: $x = \\frac{3}{2} \\div 2 = \\frac{3}{2} \\cdot \\frac{1}{2} = \\frac{3}{4}$\n\n**Now examining the solution:**\n\nThe solution states:\n1. $\\sqrt{27} = 27^{\\frac{1}{2}} = (3^3)^\\frac{1}{2} = 3^{\\frac{1}{2}}$ — **ERROR HERE**\n\nLet me check this carefully:\n- $\\sqrt{27} = 27^{1/2}$ ✓\n- $27 = 3^3$, so $27^{1/2} = (3^3",
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "$\\sqrt{27} = 27^{\\frac{1}{2}} = (3^3)^\\frac{1}{2} = 3^{\\frac{3}{2}}$",
+      "injected_text": "$\\sqrt{27} = 27^{\\frac{1}{2}} = (3^3)^\\frac{1}{2} = 3^{\\frac{1}{2}}$",
+      "rationale": "The exponent rule $(a^m)^n = a^{mn}$ requires multiplying $3 \\times \\frac{1}{2} = \\frac{3}{2}$, not applying the exponent $\\frac{1}{2}$ to just the base. The correct result is $3^{\\frac{3}{2}}$, but the injected error gives $3^{\\frac{1}{2}}$ by incorrectly taking only the outer exponent."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "operand_swap",
+      "original_text": "This gives us $2x=\\frac{3}{2}$",
+      "injected_text": "This gives us $2x=\\frac{1}{2}$",
+      "rationale": "Since the injected error in err_001 establishes $3^{2x}=3^{\\frac{1}{2}}$ (incorrect), equating exponents yields $2x=\\frac{1}{2}$ as the natural consequence. This is a downstream propagation that maintains internal consistency with the earlier error."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "$x=\\boxed{\\frac{3}{4}}$",
+      "injected_text": "$x=\\boxed{\\frac{3}{2}}$",
+      "rationale": "Dividing $2x=\\frac{1}{2}$ by 2 should give $x=\\frac{1}{4}$, but the injected text claims $x=\\frac{3}{2}$. This is wrong because it neither divides correctly nor matches the upstream value. The error represents a failure to apply the division operation properly."
+    }
+  ],
+  "claims": [],
+  "source_id": "algebra_Level 4_34"
+}

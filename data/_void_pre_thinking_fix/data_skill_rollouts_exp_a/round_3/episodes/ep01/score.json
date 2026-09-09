@@ -1,0 +1,86 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 0.6666666666666666,
+  "verifier_recall": 0.5,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 0.6666666666666666,
+  "k": 3,
+  "num_verifier_claims": 1,
+  "num_matched": 1,
+  "k_effective": 2,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.6666666666666666,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.9,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "(7 - 4) = 6 \\cdot 1": 0.9
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "variable_misconception",
+      "all_overlaps": {
+        "(7 - 4) = 6 \\cdot 1": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "(7 - 4) = 6 \\cdot 1": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep01",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "$(3 \\cdot (2)^2 - 5 \\cdot (2) + 4)(7 - 2 \\cdot (2)) = 6 \\cdot 3",
+      "injected_text": "$(3 \\cdot (2)^2 - 5 \\cdot (2) + 4)(7 - 2 \\cdot (2)) = (12 - 10 + 4)(7 - 4) = 6 \\cdot 1",
+      "rationale": "The second factor $(7 - 2 \\cdot (2))$ should evaluate to $7 - 4 = 3$, not $1$. The error replaces the subtraction in the second factor with a different operation (implicitly treating $2 \\cdot (2)$ as if it were $2 + (2)$ or miscomputing it), making $7 - 2 \\cdot (2) = 1$ instead of $3$. This changes the final product from $6 \\cdot 3 = 18$ to $6 \\cdot 1 = 6$."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "variable_misconception",
+      "original_text": "Alternatively, we notice that the desired expression is simply the value of $ax^3+bx^2+cx+d$ evaluated at the point $x=2$",
+      "injected_text": "Alternatively, we notice that the desired expression is simply the value of $ax^3+bx^2+cx+d$ evaluated at the point $x=1$",
+      "rationale": "The coefficient pattern $8a + 4b + 2c + d$ corresponds to evaluation at $x=2$ (since $8 = 2^3$, $4 = 2^2$, $2 = 2^1$), not $x=1$. Substituting the wrong evaluation point is a fundamental misunderstanding of what the coefficient pattern represents."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "$(3 \\cdot (2)^2 - 5 \\cdot (2) + 4)",
+      "injected_text": "$(3 \\cdot (2)^2 - 5 \\cdot (2) - 4)",
+      "rationale": "The constant term in the first polynomial is $+4$, not $-4$. Changing the sign from addition to subtraction gives $(12 - 10 - 4) = -2$ instead of the correct $(12 - 10 + 4) = 6$, a conceptual error in expanding or evaluating the first factor."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "(7 - 4) = 6 \\cdot 1",
+      "explanation": "The second factor evaluates to 7 - 2(2) = 7 - 4 = 3, not 1. The product should be 6 × 3 = 18, not 6 × 1 = 6. The final answer should be 18.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 4_231"
+}

@@ -1,0 +1,95 @@
+{
+  "perturber_reward": -0.5,
+  "verifier_reward": 1.0,
+  "verifier_recall": 1.0,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 1.0,
+  "k": 3,
+  "num_verifier_claims": 2,
+  "num_matched": 2,
+  "k_effective": 2,
+  "num_error_units": 1,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 1.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 1,
+      "best_overlap": 0.5338078291814946,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "Subtracting these equations, we get $2d = 22$, so $d = 22$.": 0.0,
+        "The seventh term is $a + 6d = -5 + 6(11) = -5 + 66 = 61$. However, we should ver": 0.534
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 0,
+      "best_overlap": 1.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {
+        "Subtracting these equations, we get $2d = 22$, so $d = 22$.": 1.0,
+        "The seventh term is $a + 6d = -5 + 6(11) = -5 + 66 = 61$. However, we should ver": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_sequence_term",
+      "all_overlaps": {
+        "Subtracting these equations, we get $2d = 22$, so $d = 22$.": 0.0,
+        "The seventh term is $a + 6d = -5 + 6(11) = -5 + 66 = 61$. However, we should ver": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep06",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "Then the seventh term is $a + 6d = (a + 4d) + 2d = 39 + 22 = \\boxed{61}$.",
+      "injected_text": "Then $d = 11$. We can find $a$ by substituting into the third term equation: $a + 2(11) = 17$, so $a + 22 = 17$, giving $a = -5$.\n\nThe seventh term is $a + 6d = -5 + 6(11) = -5 + 66 = 61$. However, we should verify using the formula $a + 6d = (a + 4d) + 3d = 39 + 33 = \\boxed{72}$.",
+      "rationale": "The error is in the verification step: the seventh term should be $(a + 4d) + 2d = 39 + 22 = 61$, but the injected text incorrectly uses $3d$ instead of $2d$, claiming $(a + 4d) + 3d = 39 + 33 = 72$. This is wrong because from the fifth term (when $n=5$) to the seventh term (when $n=7$), there are exactly 2 steps, requiring adding $2d$, not $3d$. The correct answer is 61, not 72."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "whole_number_bias",
+      "original_text": "Subtracting these equations, we get $2d = 22$.",
+      "injected_text": "Subtracting these equations, we get $2d = 22$, so $d = 22$.",
+      "rationale": "The error treats the equation $2d = 22$ as if $d = 22$ instead of correctly solving $d = 22/2 = 11$. This is a failure to complete the division, treating the left-hand side coefficient as irrelevant or applying incomplete simplification. Though this is corrected later in the perturbed solution, the initial error in this declaration creates confusion about what $d$ actually is at this point."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_sequence_term",
+      "original_text": "Then the seventh term is $a + 6d = (a + 4d) + 2d = 39 + 22 = \\boxed{61}$.",
+      "injected_text": "The seventh term can also be calculated as $a + 7d = (a + 4d) + 3d = 39 + 33 = \\boxed{72}$.",
+      "rationale": "The seventh term corresponds to $n = 7$, so the formula should be $a + 6d$ (since we use $a + (n-1)d$ with $n=7$). The injected text incorrectly uses $a + 7d$ instead, which would be the eighth term. This shifts the index and produces the wrong answer of 72 instead of the correct 61."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "Subtracting these equations, we get $2d = 22$, so $d = 22$.",
+      "explanation": "The subtraction is correct: $(a + 4d) - (a + 2d) = 39 - 17$ gives $2d = 22$. However, the conclusion is wrong. From $2d = 22$, we should get $d = 11$, not $d = 22$. Dividing both sides by 2 yields $d = 11$.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "The seventh term is $a + 6d = -5 + 6(11) = -5 + 66 = 61$. However, we should verify using the formula $a + 6d = (a + 4d) + 3d = 39 + 33 = \\boxed{72}$.",
+      "explanation": "The first computation is correct: $-5 + 6(11) = -5 + 66 = 61$. However, the 'verification' is wrong. Using $(a + 4d) + 2d$ (not $3d$) gives $39 + 2(11) = 39 + 22 = 61$, which matches. The phrase $3d$ in the verification is incorrect—the 7th term requires $(a + 4d) + 2d$ because we advance from the 5th term (index 5) to the 7th term (index 7), which is 2 steps. Therefore $39 + 33 = 72$ is wrong, and the boxed answer of 72 is incorrect; the correct answer is 61.",
+      "error_type": "wrong_operation"
+    }
+  ],
+  "source_id": "algebra_Level 1_18"
+}

@@ -1,0 +1,86 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 1.0,
+  "verifier_recall": 1.0,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 1.0,
+  "k": 3,
+  "num_verifier_claims": 1,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 1,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 1.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.5185185185185185,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "y=900 \\cdot 50=\\boxed{45000}": 0.519
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {
+        "y=900 \\cdot 50=\\boxed{45000}": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "operand_swap",
+      "all_overlaps": {
+        "y=900 \\cdot 50=\\boxed{45000}": 0.933
+      }
+    }
+  ],
+  "episode_id": "ep03",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "Solving for $y$ yields $y=900/50=\\boxed{18}$.",
+      "injected_text": "Solving for $y$ yields $y=900 \\cdot 50=\\boxed{45000}$.",
+      "rationale": "The correct step multiplies $\\frac{900}{2500}$ by 50 on both sides: $y = \\frac{900}{2500} \\cdot 50 = \\frac{900 \\cdot 50}{2500} = \\frac{45000}{2500} = 18$. The error uses multiplication (×) instead of division (÷), giving $900 \\cdot 50 = 45000$ instead of $900 / 50 = 18$."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "whole_number_bias",
+      "original_text": "Squaring both sides, we have $\\frac{30^2}{50^2}=\\frac{y}{50}$.",
+      "injected_text": "Squaring both sides, we have $\\frac{30^2}{50^2}=\\frac{y}{50}$. This gives $\\frac{900}{2500}=\\frac{y}{50}$.",
+      "rationale": "The intermediate simplification $\\frac{900}{2500}$ is correctly computed, but this step now appears explicitly where it was previously implicit. However, the real error is the subsequent miscomputation: when $\\frac{900}{2500}=\\frac{y}{50}$, cross-multiplying gives $900 \\cdot 50 = 2500y$, so $y = \\frac{45000}{2500} = 18$. The injected text correctly shows $\\frac{900}{2500}=\\frac{y}{50}$ but the following line incorrectly treats 900 as if it directly multiplies 50."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "operand_swap",
+      "original_text": "$y=900/50=\\boxed{18}$",
+      "injected_text": "$y=900 \\cdot 50=\\boxed{45000}$",
+      "rationale": "The correct approach is to multiply both sides of $\\frac{900}{2500}=\\frac{y}{50}$ by 50: $y = \\frac{900}{2500} \\cdot 50$. The error treats the relationship backwards, multiplying 900 by 50 instead of dividing 900 by 50 (or equivalently, computing $\\frac{900 \\cdot 50}{2500}$). This inverts the fraction operation needed to isolate $y$."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "y=900 \\cdot 50=\\boxed{45000}",
+      "explanation": "The solution incorrectly multiplies 900 by 50. From the equation $\\frac{900}{2500}=\\frac{y}{50}$, we solve for $y$ by multiplying both sides by 50: $y = \\frac{900}{2500} \\cdot 50 = \\frac{900 \\cdot 50}{2500} = \\frac{45000}{2500} = 18$. The correct answer is $y=18$, not $y=45000$. The error stems from treating 900 (the numerator of the left side) as if it were already the full value to multiply, rather than computing $\\frac{900}{2500} \\cdot 50$.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 3_118"
+}

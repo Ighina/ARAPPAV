@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "When we change from a 9-inch wrench to a 15-inch wrench, we multiply the length of the wrench by $\\frac{15}{9} = \\frac{5}{4}$.  Since the wrench length and the force required are inversely proportional, their product must be constant.  So, when we multiply the wrench length by $\\dfrac53$, we must multiply the force required by $\\dfrac53$ in order to keep their product constant.  So, the force required is $(375)\\left(\\frac35\\right) = \\boxed{135}$ pounds of force.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "we must multiply the force required by $\\dfrac35$",
+      "injected_text": "we must multiply the force required by $\\dfrac53$",
+      "error_type": "inversion_error",
+      "rationale": "The error inverts the reciprocal fraction. Since force and length are inversely proportional and length is multiplied by 5/3, force must be multiplied by the reciprocal 3/5, not 5/3. This is a conceptual slip in applying the inverse relationship correctly."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "$(375)\\left(\\frac35\\right) = \\boxed{225}$",
+      "injected_text": "$(375)\\left(\\frac35\\right) = \\boxed{135}$",
+      "error_type": "wrong_operation",
+      "rationale": "The arithmetic computation is altered. Computing 375 × (3/5) correctly gives 225, but the boxed answer is changed to 135, which would result from a different computation (e.g., 375 × (3/5) but with an error in multiplication or simplification). This error persists from the stated equation."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 0,
+      "original_text": "we multiply the length of the wrench by $\\frac{15}{9} = \\frac{5}{3}$",
+      "injected_text": "we multiply the length of the wrench by $\\frac{15}{9} = \\frac{5}{4}$",
+      "error_type": "whole_number_bias",
+      "rationale": "The fraction simplification is wrong. 15/9 reduces to 5/3, not 5/4. This is an arithmetic error in reducing the fraction that affects the setup of the proportional relationship, even though the subsequent work proceeds from the correct 5/3 value stated in the prose."
+    }
+  ]
+}

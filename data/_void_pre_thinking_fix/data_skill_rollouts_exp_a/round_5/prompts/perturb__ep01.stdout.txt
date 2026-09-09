@@ -1,0 +1,49 @@
+```json
+{
+  "perturbed_solution": "$2f(4)=g(4)$, so $2\\left(16-8+m\\right)=16-8+4m$. Expanding the left-hand side gives $32-16+2m=8+4m$, or $16-2m=0$ and $m=\\boxed{8}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "Expanding the left-hand side gives $16+2m=8+4m$",
+      "injected_text": "Expanding the left-hand side gives $32-16+2m=8+4m$",
+      "error_type": "duplication_error",
+      "rationale": "The student incorrectly expanded $2(16-8+m)$ by doubling only the first term (getting $2\\times 16 = 32$) and the last term (getting $2m$), but failed to double the middle term consistently. They should have: $2(16-8+m) = 32-16+2m$, but this is still wrong because $32-16 = 16$, so it becomes $16+2m$. Here the expansion is written as written without simplifying $32-16$ to $16$, making it appear correct but it's actually showing $32-16+2m$ which when simplified still gives $16+2m$. Actually, this is a presentation error. Let me reconsider: the correct expansion is $2 \\times 16 - 2 \\times 8 + 2 \\times m = 32 - 16 + 2m$, which simplifies to $16 + 2m$. The injected text shows $32-16+2m$ which is the unsimplified form and mathematically equivalent. I need to change this."
+    }
+  ]
+}
+```
+
+Let me reconsider and restart with a valid approach:
+
+```json
+{
+  "perturbed_solution": "$2f(4)=g(4)$, so $2\\left(16-8+m\\right)=16-8+4m$. Expanding the left-hand side gives $16+2m=8+4m$, or $-8=2m$ and $m=\\boxed{-4}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "$16+2m=8+4m$, or $8=2m$",
+      "injected_text": "$16+2m=8+4m$, or $-8=2m$",
+      "error_type": "negative_number_error",
+      "rationale": "When simplifying $16+2m=8+4m$ by moving terms, the student should compute $16-8=4m-2m$, yielding $8=2m$. Instead, the student incorrectly computed $8-16=2m$, getting $-8=2m$. This is a sign error in rearrangement."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "$8=2m$ and $m=\\boxed{4}$",
+      "injected_text": "$-8=2m$ and $m=\\boxed{-4}$",
+      "error_type": "wrong_operation",
+      "rationale": "Due to the prior sign error, solving $-8=2m$ incorrectly yields $m=-4$ instead of the correct $m=4$. The student propagated the erroneous equation consistently."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 0,
+      "original_text": "$2\\left(16-8+m\\right)=16-8+4m$",
+      "injected_text": "$2\\left(16-8+m\\right)=16-4+4m$",
+      "error_type": "whole_number_bias",
+      "rationale": "When evaluating $g(4)=4^2-2(4)+4m$, the student computed $16-4+4m$ instead of $16-8+4m$. This treats the multiplication $-2(4)$ as $-1(4)=-4$ rather than $-8$, effectively halving the coefficient."
+    }
+  ]
+}
+```

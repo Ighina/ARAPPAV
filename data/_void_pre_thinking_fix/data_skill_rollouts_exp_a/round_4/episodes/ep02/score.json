@@ -1,0 +1,95 @@
+{
+  "perturber_reward": 0.5,
+  "verifier_reward": 0.5,
+  "verifier_recall": 0.5,
+  "verifier_precision": 0.5,
+  "verifier_f_beta": 0.5,
+  "k": 3,
+  "num_verifier_claims": 2,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.5,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 1,
+      "best_overlap": 0.8478260869565217,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {
+        "or $x=\\sqrt{109}+6$": 0.0,
+        "$a=109$ and $b=6$, so $a+b=\\boxed{120}$": 0.848
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "incomplete_solution",
+      "all_overlaps": {
+        "or $x=\\sqrt{109}+6$": 0.0,
+        "$a=109$ and $b=6$, so $a+b=\\boxed{120}$": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "or $x=\\sqrt{109}+6$": 0.122,
+        "$a=109$ and $b=6$, so $a+b=\\boxed{120}$": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep02",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "original_text": "Thus, $a=109$ and $b=6$, so $a+b=\\boxed{115}$.",
+      "injected_text": "Thus, $a=109$ and $b=6$, so $a+b=\\boxed{120}$.",
+      "rationale": "The final arithmetic is incorrect: $109 + 6 = 115$, not $120$. This is a computational error where the student miscalculates the sum of the two numbers, treating them as slightly different values or simply making an arithmetic mistake in the final step."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "incomplete_solution",
+      "original_text": "Completing the square, we add $(12/2)^2=36$ to both sides of the equation to get $x^2+12x+36=109 \\Rightarrow (x+6)^2=109$.",
+      "injected_text": "Completing the square, we add $(12/2)^2=36$ to both sides of the equation to get $x^2+12x+36=73+36 \\Rightarrow (x+6)^2=109$.",
+      "rationale": "The student writes the intermediate step as $x^2+12x+36=73+36$ but then claims this equals $(x+6)^2=109$ without explicitly showing that $73+36=109$. This omits the crucial arithmetic verification that $73+36=109$, treating the equation as if the sum is automatic rather than computed."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "Taking the square root of both sides, we get $x+6=\\sqrt{109}$ (we take the positive square root because we want the positive solution), or $x=\\sqrt{109}-6$.",
+      "injected_text": "Taking the square root of both sides, we get $x+6=\\sqrt{109}$ (we take the positive square root because we want the positive solution), or $x=\\sqrt{109}+6$.",
+      "rationale": "The student incorrectly isolates $x$ by adding 6 instead of subtracting it. From $x+6=\\sqrt{109}$, subtracting 6 gives $x=\\sqrt{109}-6$, not $x=\\sqrt{109}+6$. This is a sign error in the algebraic manipulation."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "or $x=\\sqrt{109}+6$",
+      "explanation": "The solution states $x = \\sqrt{109} + 6$, but the problem requires the positive solution in the form $\\sqrt{a} - b$. From $(x+6)^2 = 109$, taking the square root gives $x + 6 = \\pm\\sqrt{109}$. For the positive solution, we need $x = \\sqrt{109} - 6$ (which is positive since $\\sqrt{109} \\approx 10.44 > 6$). The solution incorrectly took the positive square root as $+\\sqrt{109}$ rather than recognizing that $x = \\sqrt{109} - 6$ is the positive root of the original equation.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "$a=109$ and $b=6$, so $a+b=\\boxed{120}$",
+      "explanation": "Given the correct form $x = \\sqrt{109} - 6$, we have $a = 109$ and $b = 6$. However, this conclusion follows from the incorrect expression $x = \\sqrt{109} + 6$ from the previous line. With the correct expression $x = \\sqrt{109} - 6$, the values $a = 109$ and $b = 6$ are still assigned the same way, so $a + b = 109 + 6 = 115$, not $120$.",
+      "error_type": "wrong_operation"
+    }
+  ],
+  "source_id": "algebra_Level 4_23"
+}

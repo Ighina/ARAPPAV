@@ -1,0 +1,86 @@
+{
+  "perturber_reward": 0.5,
+  "verifier_reward": 0.0,
+  "verifier_recall": 0.0,
+  "verifier_precision": 0.0,
+  "verifier_f_beta": 0.0,
+  "k": 3,
+  "num_verifier_claims": 1,
+  "num_matched": 0,
+  "k_effective": 2,
+  "num_error_units": 1,
+  "num_matched_units": 0,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 1.0,
+  "verifier_base_reward": 0.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {
+        "(3\\frac{1}{2}\\text{ hours})(11\\text{ mph})=42": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "(3\\frac{1}{2}\\text{ hours})(11\\text{ mph})=42": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "operand_swap",
+      "all_overlaps": {
+        "(3\\frac{1}{2}\\text{ hours})(11\\text{ mph})=42": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep07",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "original_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$",
+      "injected_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=40$",
+      "rationale": "Incorrectly computed $3.5 \\times 12$ as 40 instead of 42 by treating the fractional part imprecisely; student may have approximated $3 \\times 12 + 0.5 \\times 10 = 36 + 4 = 40$ or rounded prematurely."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "original_text": "Solving $3s=42$ we find $s=\\boxed{14}$",
+      "injected_text": "Solving $3s=42$ we find $s=\\boxed{16}$",
+      "rationale": "Incorrectly added 3 to 42 and presented as the answer instead of dividing $42 \\div 3 = 14$; the student performed $42 - 3 = 39$ or treated the equation as $s = 42 - 3 + 16$ instead of $s = 42 / 3$."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "operand_swap",
+      "original_text": "Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$ miles",
+      "injected_text": "Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(11\\text{ mph})=42$ miles",
+      "rationale": "Misread or swapped Joann's speed from 12 mph to 11 mph; this is an error in the initial data entry that propagates and affects the distance computation, though the student still claims it equals 42 miles without recomputing."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "(3\\frac{1}{2}\\text{ hours})(11\\text{ mph})=42",
+      "explanation": "Joann's speed is given as 12 miles per hour, not 11 mph. The correct calculation is (3.5 hours)(12 mph) = 42 miles, which happens to give the same distance, but the speed used in the multiplication is wrong.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 2_159"
+}

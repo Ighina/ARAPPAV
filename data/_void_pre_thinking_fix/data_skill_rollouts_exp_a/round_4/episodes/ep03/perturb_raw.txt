@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "Let's work with this problem in cents, not dollars, because the answer calls for a number in cents. So, Alice's three burgers and two sodas cost 320 cents and Bill's food costs 200 cents. Let a burger cost $b$ cents and a soda cost $s$ cents. We are trying to find the value of $b$. We can set up a system of two equations to represent the given information. These equations are:\n\n\\begin{align*}\n3b + 2s &= 320 \\\\\n2b + s &= 200 \\\\\n\\end{align*}We are solving for $b$, so we want to eliminate $s$ from the equations above. Multiplying both sides of the second equation by 2, we get $4b+2s = 400$, or $2s = 400 - 4b$. Substituting this equation into the first equation above to eliminate $s$, we get that $3b + (400-4b) = 320$, or $3b + 400 - 4b = 320$. Simplifying, we have $-b + 400 = 320$, so $-b = -80$, which gives $b = 80$. Thus, a burger costs $\\boxed{80}$ cents.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "Multiplying both sides of the second equation by 2, we get $4b+2s = 400$",
+      "injected_text": "Multiplying both sides of the second equation by 2, we get $4b+2s = 400$",
+      "error_type": "incomplete_solution",
+      "rationale": "The original solution jumps from the multiplication result directly to stating $2s = 400 - 4b$ and substituting into the first equation without showing the intermediate algebraic steps. The injected version correctly expands the substitution into the first equation to show $3b + (400-4b) = 320$, then simplifies to $3b + 400 - 4b = 320$, leading to $-b + 400 = 320$ and $b = 80$. The original skips these crucial intermediate steps, making the solution less complete and transparent."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "Substituting this equation into the first equation above to eliminate $s$, we get that $3b + (400-4b) = 320$, or $b=80$.",
+      "injected_text": "Substituting this equation into the first equation above to eliminate $s$, we get that $3b + (400-4b) = 320$, or $3b + 400 - 4b = 320$. Simplifying, we have $-b + 400 = 320$, so $-b = -80$, which gives $b = 80$.",
+      "error_type": "incomplete_solution",
+      "rationale": "The original solution jumps directly from the substitution to the final answer without showing the algebraic simplification steps. The corrected version explicitly shows the expansion $3b + 400 - 4b = 320$, the combining of like terms to get $-b + 400 = 320$, the isolation of the variable to get $-b = -80$, and finally the conclusion that $b = 80$. Skipping these steps leaves the solution incomplete and harder to verify."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 0,
+      "original_text": "Let a burger cost $b$ cents and a soda cost $s$ cents. We are trying to find the value of $b$. We can set up a system of two equations to represent the given information. These equations are:\n\n\\begin{align*}\n3b + 2s &= 320 \\\\\n2b + s &= 200 \\\\\n\\end{align*}",
+      "injected_text": "Let a burger cost $b$ cents and a soda cost $s$ cents. We are trying to find the value of $s$. We can set up a system of two equations to represent the given information. These equations are:\n\n\\begin{align*}\n3b + 2s &= 320 \\\\\n2b + s &= 200 \\\\\n\\end{align*}",
+      "error_type": "variable_misconception",
+      "rationale": "The original solution correctly identifies that we are solving for $b$ (the cost of a burger), which is what the problem asks for. The injected version incorrectly states we are solving for $s$ (the cost of a soda), which is a misunderstanding of the variable we need to find. This is a misconception about the problem's objective, though the equations themselves remain correct."
+    }
+  ]
+}
+```

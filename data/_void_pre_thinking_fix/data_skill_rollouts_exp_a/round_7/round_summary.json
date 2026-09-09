@@ -1,0 +1,67 @@
+{
+  "round": 7,
+  "config": {
+    "start": "cold",
+    "freeze": "none",
+    "k": 3,
+    "episodes": 8,
+    "no_context": false
+  },
+  "policies": {
+    "perturb": "exp_a_perturb-v8",
+    "verify": "exp_a_verify-v8"
+  },
+  "metrics": {
+    "num_episodes": 8,
+    "num_format_valid": 7,
+    "format_valid_rate": 0.875,
+    "mean_perturber_reward": -0.25,
+    "mean_perturber_reward_valid_only": 0.4286,
+    "mean_verifier_reward": 0.3048,
+    "mean_verifier_recall": 0.2857,
+    "mean_verifier_precision": 0.381,
+    "mean_units_per_episode": 2.0,
+    "total_duplicate_penalty": 0,
+    "total_spam_penalty": 0,
+    "total_repetition_penalty": 0,
+    "total_phantom_penalty": 0
+  },
+  "processbench": {
+    "enabled": false,
+    "note": "ProcessBench was not run for this round."
+  },
+  "episodes": [
+    {
+      "episode_id": "ep00",
+      "source_id": "algebra_Level 5_22"
+    },
+    {
+      "episode_id": "ep01",
+      "source_id": "algebra_Level 2_108"
+    },
+    {
+      "episode_id": "ep02",
+      "source_id": "algebra_Level 1_128"
+    },
+    {
+      "episode_id": "ep03",
+      "source_id": "algebra_Level 3_292"
+    },
+    {
+      "episode_id": "ep04",
+      "source_id": "algebra_Level 4_34"
+    },
+    {
+      "episode_id": "ep05",
+      "source_id": "algebra_Level 2_102"
+    },
+    {
+      "episode_id": "ep06",
+      "source_id": "algebra_Level 3_237"
+    },
+    {
+      "episode_id": "ep07",
+      "source_id": "algebra_Level 5_175"
+    }
+  ]
+}

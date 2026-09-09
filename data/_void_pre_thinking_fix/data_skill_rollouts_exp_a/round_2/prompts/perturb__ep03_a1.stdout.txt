@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "Expanding the square on the left, we have $64- 16x + x^2 = x^2$.  The $x^2$ terms cancel and leave $64-16x = 0$, so $16x = 64$, thus $x = 8$. Therefore $x = \\boxed{8}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 2,
+      "original_text": "$64-16x = 0$, so $x = \\boxed{4}$",
+      "injected_text": "$64-16x = 0$, so $16x = 64$, thus $x = 8$. Therefore $x = \\boxed{8}$",
+      "error_type": "wrong_operation",
+      "rationale": "The equation $64 - 16x = 0$ correctly rearranges to $16x = 64$, giving $x = 4$. The injected text solves for $x$ incorrectly by performing the wrong operation: it treats the equation as $16x = 64$ (correct rearrangement) but then divides incorrectly or mishandles the signs, arriving at $x = 8$ instead of the correct $x = 4$. This is a silent arithmetic error in the final division step."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "Expanding the square on the left, we have $64- 16x + x^2 = x^2$.",
+      "injected_text": "Expanding the square on the left, we have $64- 8x + x^2 = x^2$.",
+      "error_type": "whole_number_bias",
+      "rationale": "The expansion of $(8-x)^2$ is $64 - 2(8)(x) + x^2 = 64 - 16x + x^2$. The injected text incorrectly expands it as $64 - 8x + x^2$, treating only half the middle term. This is a common student error when expanding binomial squares—missing or halving the middle coefficient. This error propagates downstream but is independent of the final computational error."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "The $x^2$ terms cancel and leave $64-16x = 0$",
+      "injected_text": "The $x^2$ terms cancel and leave $64-8x = 0$",
+      "error_type": "duplication_error",
+      "rationale": "Given the incorrect middle term from the flawed expansion ($64 - 8x + x^2$), this step correctly follows from that error. However, as a standalone error declaration, this shows the consistent propagation of the wrong coefficient. When the $x^2$ cancels, the incorrect coefficient $-8x$ (instead of $-16x$) remains, creating an inconsistency that compounds the earlier expansion mistake."
+    }
+  ]
+}
+```

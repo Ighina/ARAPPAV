@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "(3\\frac{1}{2}\\text{ hours})(11\\text{ mph})=42",
+      "explanation": "Joann's speed is given as 12 miles per hour, not 11 mph. The correct calculation is (3.5 hours)(12 mph) = 42 miles, which happens to give the same distance, but the speed used in the multiplication is wrong.",
+      "error_type": "wrong_operand"
+    }
+  ]
+}
+```

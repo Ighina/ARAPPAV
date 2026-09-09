@@ -1,0 +1,86 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 0.6666666666666666,
+  "verifier_recall": 0.5,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 0.6666666666666666,
+  "k": 3,
+  "num_verifier_claims": 1,
+  "num_matched": 1,
+  "k_effective": 2,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.6666666666666666,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "negative_number_error",
+      "all_overlaps": {
+        "the coordinates of the $x$-intercept are $\\boxed{(3,0)}$": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 0,
+      "best_overlap": 0.835820895522388,
+      "error_type": "operand_swap",
+      "all_overlaps": {
+        "the coordinates of the $x$-intercept are $\\boxed{(3,0)}$": 0.836
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "variable_misconception",
+      "all_overlaps": {
+        "the coordinates of the $x$-intercept are $\\boxed{(3,0)}$": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep03",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "negative_number_error",
+      "original_text": "to find $x=12/(-4)=-3$",
+      "injected_text": "to find $-4x=12$, which gives $x=12/4=3$",
+      "rationale": "The original correctly divides 12 by −4 to get −3. The error drops the negative sign in the divisor, computing 12/4=3 instead, which is a common student mistake when working with negative numbers."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "operand_swap",
+      "original_text": "Therefore, the coordinates of the $x$-intercept are $\\boxed{(-3,0)}$",
+      "injected_text": "Therefore, the coordinates of the $x$-intercept are $\\boxed{(3,0)}$",
+      "rationale": "This propagates the sign error from the previous step. The correct answer is (−3,0), but substituting the wrongly-computed x-value of 3 gives (3,0), which is the x-intercept of a different line."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "variable_misconception",
+      "original_text": "If a point is on the $x$-axis, its $y$-coordinate is 0.",
+      "injected_text": "If a point is on the $x$-axis, its $x$-coordinate is 0.",
+      "rationale": "This incorrectly identifies which coordinate is zero on the x-axis. On the x-axis, the y-coordinate is always 0, not the x-coordinate. This is a conceptual error about axis definitions that would lead to substituting $x=0$ instead, yielding the wrong intercept entirely."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "the coordinates of the $x$-intercept are $\\boxed{(3,0)}$",
+      "explanation": "The solution correctly derives $x = -3$ from $-4x = 12$, but then reports the answer as $(3,0)$ instead of $(-3,0)$. The correct $x$-intercept is $(-3,0)$.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 3_292"
+}

@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "The geometric series involving the odd powers of $r$ is $ar+ar^3+ar^5+\\cdots = 5.$ Note that if we subtract this from the original series, the series involving the even powers of $r$ is  \\[12-5=7= a+ar^2+ar^4+\\cdots =r(ar+ar^3+ar^5+\\cdots).\\]However, the series involving even powers of $r$ is just $r$ times the series involving odd powers of $r,$ as shown above. Thus, substituting in our values for both those series, $7=r(5) \\implies r=\\boxed{\\frac{7}{5}}.$",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "\\[12-5=7= a+ar^2+ar^4+\\cdots =\\frac{1}{r}(ar+ar^3+ar^5+\\cdots).\\]",
+      "injected_text": "\\[12-5=7= a+ar^2+ar^4+\\cdots =r(ar+ar^3+ar^5+\\cdots).\\]",
+      "error_type": "inversion_error",
+      "rationale": "The factored form $\\frac{1}{r}(ar+ar^3+ar^5+\\cdots)$ is inverted to $r(ar+ar^3+ar^5+\\cdots)$. The even-power series should equal $\\frac{1}{r}$ times the odd-power series, not $r$ times it, because factoring out $r$ from odd powers gives even powers divided by $r$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "However, the series involving even powers of $r$ is just $\\frac{1}{r}$ times the series involving odd powers of $r,$ as shown above.",
+      "injected_text": "However, the series involving even powers of $r$ is just $r$ times the series involving odd powers of $r,$ as shown above.",
+      "error_type": "inversion_error",
+      "rationale": "The relationship between the series is inverted. The correct relationship is that the even-power series equals $\\frac{1}{r}$ times the odd-power series, not $r$ times it. This is a propagation of the same conceptual error from the equation above."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "$7=\\frac{1}{r}(5) \\implies r=\\boxed{\\frac{5}{7}}.$",
+      "injected_text": "$7=r(5) \\implies r=\\boxed{\\frac{7}{5}}.$",
+      "error_type": "operand_swap",
+      "rationale": "With the inverted relationship $7 = r(5)$ instead of $7 = \\frac{1}{r}(5)$, the equation is solved to give $r = \\frac{7}{5}$ instead of $r = \\frac{5}{7}$. The numerator and denominator are swapped due to the earlier inversion error being carried through to the final answer."
+    }
+  ]
+}
+```

@@ -1,0 +1,245 @@
+[system]
+# update-verify
+
+You revise the **Verifier policy** using the evidence from exactly one scored round.
+
+The orchestrator passes you, inline:
+
+- `CONTEXT FROM EARLIER ROUNDS` — the findings it has decided you are entitled to: round
+  metrics, per-error-type detection rates, the errors that went undetected, and the claims
+  that matched nothing. Under `--no-context` this block is absent and you revise from the
+  current policy alone.
+- `CURRENT POLICY` — the rules that produced those results.
+
+**That is your entire input.** Do not read files, do not look for the run directory, and do
+not use anything you recall from other runs. You have no tools.
+
+## How to revise
+
+1. **Separate the failure classes; they need different fixes.**
+   - *Reasoning miss* — nothing was claimed anywhere near the error (`best_overlap` ≈ 0).
+     The procedure did not surface it. Sharpen the re-derivation or extend the sweep.
+   - *Quoting miss* — the right region was flagged but the span did not align
+     (`best_overlap` positive but below threshold). Pure quote discipline, and the cheapest
+     recall available.
+   - *Reporting miss* — one quote covered two distinct errors, so only one could match.
+     Fix with a one-claim-per-error rule, not with better reasoning.
+2. **Read the false positives before adding claims.** Each is either a hallucination (require
+   a failed re-derivation before claiming), a correct observation about something that was
+   never injected (leave it alone — it is not an error in the policy), or a downstream
+   consequence claimed as independent (a root-cause rule fixes it).
+3. **Optimise F1, not recall.** If precision is the binding constraint, a rule that produces
+   more claims makes the policy worse even though it raises recall. Check which side is
+   actually losing before you edit.
+4. **Edit, don't accrete.** At most five changes; prefer revising to appending; delete what
+   the evidence contradicts. Keep the policy under ~60 lines.
+5. **Stay general, and do not model the adversary.** Rules are verification procedure. Never
+   write "errors are usually planted in the last line" or anything else derived from this
+   particular Perturber's habits: it collapses the moment the Perturber changes, and it is
+   the Verifier's characteristic way of overfitting.
+6. **Write for a cold reader.** The next Verifier sees your rules once, with no history and
+   no repository. Self-contained sentences, no file paths, no round references.
+
+## What you must not do
+
+- Do not restate or modify the output contract or the scoring rules. They sit above your
+  section and are copied byte-for-byte by the orchestrator.
+- Do not write a changelog. The orchestrator records provenance itself.
+
+## Output
+
+Return **only** the markdown body of the revised policy — the numbered rules and nothing
+else. No heading, no preamble, no code fences, no commentary.
+
+[user]
+## CONTEXT FROM EARLIER ROUNDS (the only history you are given)
+{
+  "round": 6,
+  "metrics": {
+    "num_episodes": 8,
+    "num_format_valid": 6,
+    "format_valid_rate": 0.75,
+    "mean_perturber_reward": -1.2917,
+    "mean_perturber_reward_valid_only": 0.7778,
+    "mean_verifier_reward": 0.1944,
+    "mean_verifier_recall": 0.1389,
+    "mean_verifier_precision": 0.3333,
+    "mean_units_per_episode": 2.5,
+    "total_duplicate_penalty": 0,
+    "total_spam_penalty": 0,
+    "total_repetition_penalty": 0,
+    "total_phantom_penalty": 0
+  },
+  "error_type_detection": {
+    "wrong_operation": {
+      "injected": 3,
+      "detected": 1,
+      "detection_rate": 0.333
+    },
+    "variable_misconception": {
+      "injected": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    "incomplete_solution": {
+      "injected": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "whole_number_bias": {
+      "injected": 4,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "additive_thinking": {
+      "injected": 4,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "duplication_error": {
+      "injected": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "negative_number_error": {
+      "injected": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "wrong_sequence_term": {
+      "injected": 3,
+      "detected": 0,
+      "detection_rate": 0.0
+    }
+  },
+  "undetected_errors": [
+    {
+      "episode_id": "ep00",
+      "error_id": "err_001",
+      "error_type": "incomplete_solution",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep00",
+      "error_id": "err_002",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep00",
+      "error_id": "err_003",
+      "error_type": "additive_thinking",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep01",
+      "error_id": "err_001",
+      "error_type": "duplication_error",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep01",
+      "error_id": "err_002",
+      "error_type": "negative_number_error",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep01",
+      "error_id": "err_003",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep02",
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep02",
+      "error_id": "err_002",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep02",
+      "error_id": "err_003",
+      "error_type": "wrong_sequence_term",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep04",
+      "error_id": "err_002",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep04",
+      "error_id": "err_003",
+      "error_type": "additive_thinking",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep05",
+      "error_id": "err_001",
+      "error_type": "wrong_sequence_term",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep05",
+      "error_id": "err_002",
+      "error_type": "wrong_sequence_term",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep05",
+      "error_id": "err_003",
+      "error_type": "additive_thinking",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep06",
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep06",
+      "error_id": "err_003",
+      "error_type": "additive_thinking",
+      "best_overlap": 0.0
+    }
+  ],
+  "verifier_false_positives": []
+}
+
+## CURRENT POLICY
+1. **Solve the problem yourself first, in writing, before reading the given solution critically.** From the problem statement alone, state what each unknown denotes, which relation the problem asserts, what is actually being asked, and then carry the arithmetic through to a final answer, keeping every intermediate value. Only then compare. Reading the solution first anchors you to its framing and is the main reason whole classes of mistakes stay invisible.
+
+2. **Localise by earliest divergence, then re-base and keep going.** Align your intermediate values with the solution's, in order, and find the first place they differ; that step is the error site (once you have re-checked your own work). Then *adopt the solution's value there* and continue the comparison downstream, so that a second, independent mistake later in the chain is still exposed rather than hidden behind the first divergence. Repeat until the end of the solution.
+
+3. **Recompute each step blind, before reading its printed result.** For every equation, substitution, or arithmetic line, compute what that step should yield from its own stated inputs *yourself* first, then look at what the solution wrote. Never read the result and check whether it "looks reasonable": that is how a swapped operation, a swapped operand order, a reciprocal, or an inverse operation used in place of the intended one passes inspection, since all of them produce plausible numbers.
+
+4. **Hunt setup errors by premise, not by arithmetic.** A wrong setup propagates cleanly, so no arithmetic check will flag it. For each line ask what it *claims about the problem*: does this variable still denote what the problem said; is this the relation the problem states (difference vs. ratio, sum vs. product, rate vs. total, part vs. whole); is this the term, case, index, or period asked about; is the correct quantity in the numerator; does this substituted number appear in the problem at all? Re-read the defining sentence for each premise instead of trusting the solution's paraphrase.
+
+5. **Keep a ledger of the problem's given quantities and conditions.** List every number and constraint in the statement and mark where the solution uses each. A given never used, a given applied twice where the situation supports it once (or once where it applies repeatedly), a quantity added to or multiplied by itself spuriously, a step copied forward where a new value was required, and a number appearing in the work but not derivable from the problem are all errors. Quote the line where the miscount or invented value is first written.
+
+6. **Micro-audit fractions, signs, decimals, and exactness separately.** Recompute every fraction operation with numerator *and* denominator both transformed — a step altering only one is an error. Track the sign of every term through distribution, subtraction, transposition, and negative substitution, and check that a subtraction was not silently reversed. Check decimal placement against a rough estimate. Treat silent rounding, truncation, a dropped remainder, or a non-integer snapped to a whole number as an error unless the problem's context explicitly requires whole units; whenever a division or average comes out suspiciously even, compute the exact value yourself.
+
+7. **Audit structure explicitly: formulas, order, and counts.** Is each definition, formula, or stated rule reproduced exactly? For sequences, counts, and iterations, check the first term, index, exponent, number of terms, and common difference/ratio individually, and confirm the number of steps matches the number of periods.
+
+8. **Check completeness against the question asked.** Enumerate every quantity, part, case, or unit the question demands; the final answer must be exactly that, in the requested form. A chain that stops at an intermediate quantity, handles one case and drops another, or answers a related-but-different question is an error: quote the line where the reasoning terminates or diverges and say what remained to be done.
+
+9. **Sweep every step and record a verdict; expect several independent errors.** Partition the solution into setup, each intermediate computation, and the final reporting step, and write PASS or FAIL for every one before concluding. Solutions commonly contain more than one unrelated mistake, and independent mistakes are usually non-adjacent, so finding one raises rather than lowers the chance of another; early and late stages get equal scrutiny. End the audit only when every step has a verdict — never because you already have a strong candidate or a comfortable number of claims. Emit one claim for every FAIL, no more and no fewer.
+
+10. **Distinguish root cause from consequence.** Recompute each line using the values the solution itself produced upstream. If it follows correctly from those inputs, it is a symptom of an earlier defect and gets no claim, however wrong its number looks; say so inside the earlier claim instead. If it fails on its own inputs, it earns a claim even when an earlier line was also wrong: a line can be both downstream of one error and independently defective.
+
+11. **One claim per error, one error per claim.** If two independent mistakes appear in the same sentence or equation chain, emit two claims with distinct, non-overlapping minimal spans. Never let one wide quote stand for two errors, and never file two claims about the same defect.
+
+12. **Quote minimally and verbatim, at the point of introduction.** The span must be an exact contiguous substring of the solution, no longer than the clause or equation carrying the mistake, and long enough to be unique. Quote where the wrong quantity, operation, or interpretation is first written down — not a later restatement, and never a merge of adjacent sentences.
+
+13. **Require a finished re-derivation and an unhedged explanation.** In two to four sentences state what the line asserts, what the correct derivation gives concretely, and why the line is wrong. If your write-up contains a self-correction ("wait", "actually", "let me recalculate"), a qualifier such as "unless the problem intends", or ends up conceding the line may be right, the re-derivation is unfinished: resolve it away from the page and either state the finished contradiction or drop the claim entirely.
+
+14. **Claim only mathematical defects.** Markup, notation style, spelling, spacing, alternative-but-valid methods, redundant-but-harmless steps, and presentation that changes no value are not errors. Claim only when a value, an operation, an interpretation, or a logical inference is wrong — and do not pad to reach a count, nor trim a genuine late-stage finding out of caution.
+
+Return ONLY the markdown body of the NEXT policy section — the revised numbered rules. No headings, no preamble, no fences, no changelog.

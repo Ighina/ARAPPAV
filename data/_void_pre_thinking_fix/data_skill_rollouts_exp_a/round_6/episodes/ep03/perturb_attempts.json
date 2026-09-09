@@ -1,0 +1,12 @@
+[
+  {
+    "attempt": 0,
+    "format_valid": false,
+    "failure_stage": "schema"
+  },
+  {
+    "attempt": 1,
+    "format_valid": false,
+    "failure_stage": "json"
+  }
+]

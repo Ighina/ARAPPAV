@@ -1,0 +1,19 @@
+1. **Re-derive before reading critically.** Work the problem yourself from the problem statement alone — set up the relations, carry out the arithmetic, and record your own intermediate values and final answer. Only then compare the given solution against your own chain. Never accept a line because it "looks like" a standard move.
+
+2. **Audit every line, and keep going after the first hit.** Treat each line that asserts a numeric, algebraic, or logical result as a separate obligation: re-derive it using only the quantities available before it. Mark each line as confirmed or suspect. A solution can contain several independent errors, so continue the sweep to the last line even after you have found one; stopping early is the largest single source of missed errors.
+
+3. **Run an explicit category checklist on every line you audit.** For each step ask: is the *operation* the right one (×, ÷, +, − and their inverses)? Are the *operands in the right order* for a non-commutative operation? Was a quantity *solved for* when it should have been *applied* (or vice versa)? Is a fraction, remainder, or rounding handled exactly rather than snapped to a whole number? For sequences and counts: is the index, the first term, the number of terms, or the common difference off by one? Is each *definition or formula* (geometric, custom operator, given rule) reproduced exactly as stated in the problem? Does each *substituted value* match the problem statement, and is every stated condition actually used and no invented one imposed? Are the variables assigned the meanings the problem gives them?
+
+4. **Claim the root cause, never the symptom.** If a later line contradicts an earlier one, or a "check"/"verify" step fails, the flagged line is usually correct arithmetic on a value that was already wrong. Trace back to the earliest line that is wrong *on its own terms* and quote that line. Do not file a claim for a line whose only defect is inheriting a value you have already claimed, and do not file a claim whose content is merely "this contradicts the earlier step".
+
+5. **One claim per error, one error per claim.** If two independent mistakes occur in the same sentence or equation chain, emit two claims with distinct, non-overlapping minimal spans. Never let a single wide quote stand in for two errors.
+
+6. **Quote minimally and verbatim.** The span must be copied character-for-character from the solution, contiguous, and no longer than the clause or equation that carries the mistake — long enough to be unique in the text, but never a whole paragraph and never a merge of adjacent sentences. If the wrong step is a single equation inside a longer sentence, quote just that equation and its immediate operator words.
+
+7. **Require a completed re-derivation before claiming.** State, in the explanation, (a) what the line asserts, (b) the value or operation the correct derivation gives, and (c) why the line's version is wrong. If you cannot produce (b) concretely, you have a suspicion, not a claim — drop it. Do not claim stylistic choices, alternative-but-valid methods, unnecessary-but-harmless steps, or presentational rounding that does not change a result.
+
+8. **A plausible final answer proves nothing.** Check intermediate steps even when the conclusion looks right; conversely, when the conclusion is wrong, the defect is upstream — locate the first step that broke and claim there, not at the answer line.
+
+9. **Second pass over what you accepted fast.** Before finalising, revisit the lines you confirmed quickly, especially the translation of the word problem into equations, the initial setup values, and any step whose form is routine. These are where confirmation bias hides errors that the first sweep waved through.
+
+10. **Report everything that failed re-derivation, and nothing else.** Do not pad the list to hit a count, and do not trim it out of caution: every step you can concretely show to be wrong gets exactly one claim.

@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "Taking the square root of both sides, $2008+x=\\pm x.$ There are no solutions when the right hand side equals $-x$ (the result is $2008=0$), so we consider $2008+x=x.$ Solving, $2008=2x$, so $x=\\boxed{1004}.$",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "There are no solutions when the right hand side equals $x$",
+      "injected_text": "There are no solutions when the right hand side equals $-x$",
+      "error_type": "wrong_sequence_term",
+      "rationale": "The original correctly identifies that $2008+x=x$ yields no solutions. The error claims the impossibility is for $2008+x=-x$ instead, which is actually the case that gives the solution. This flips which case is considered viable."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "so we consider $2008+x=-x.$",
+      "injected_text": "so we consider $2008+x=x.$",
+      "error_type": "wrong_operation",
+      "rationale": "The original correctly sets up $2008+x=-x$ as the case to solve. The error changes the sign from $-x$ to $+x$, leading to the impossible equation $2008=0$ rather than the solvable equation $2008=2x$."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "Solving, $x=\\boxed{-1004}.$",
+      "injected_text": "Solving, $2008=2x$, so $x=\\boxed{1004}.$",
+      "error_type": "negative_number_error",
+      "rationale": "The original correctly solves $2008+x=-x$ to get $2008=-2x$, yielding $x=-1004$. The error follows from the preceding sign error, treating $2008=2x$ (from the wrong case $2008+x=x$) and concluding $x=1004$ with the wrong sign."
+    }
+  ]
+}
+```

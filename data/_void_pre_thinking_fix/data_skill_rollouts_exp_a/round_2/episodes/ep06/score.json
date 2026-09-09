@@ -1,0 +1,104 @@
+{
+  "perturber_reward": 0.5,
+  "verifier_reward": 0.4,
+  "verifier_recall": 0.5,
+  "verifier_precision": 0.3333333333333333,
+  "verifier_f_beta": 0.4,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.4,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 2,
+      "best_overlap": 0.9,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "Substituting $x = -8.4$ and $y=18.2$ into the first equation": 0.0,
+        "$k = -2x + y = -2(-8.4) + 18.2 = 16.8 + 18.2 = \\boxed{35}$": 0.0,
+        "When $x = -8.4$, this gives us $14 - k = 2.5(-8.4) = -19.5$": 0.9
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "additive_thinking",
+      "all_overlaps": {
+        "Substituting $x = -8.4$ and $y=18.2$ into the first equation": 0.0,
+        "$k = -2x + y = -2(-8.4) + 18.2 = 16.8 + 18.2 = \\boxed{35}$": 0.0,
+        "When $x = -8.4$, this gives us $14 - k = 2.5(-8.4) = -19.5$": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "decimal_magnitude",
+      "all_overlaps": {
+        "Substituting $x = -8.4$ and $y=18.2$ into the first equation": 0.0,
+        "$k = -2x + y = -2(-8.4) + 18.2 = 16.8 + 18.2 = \\boxed{35}$": 0.0,
+        "When $x = -8.4$, this gives us $14 - k = 2.5(-8.4) = -19.5$": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep06",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "14 - k = 2.5(-8.4) = -21",
+      "injected_text": "14 - k = 2.5(-8.4) = -19.5",
+      "rationale": "The computation $2.5 \\times (-8.4)$ should equal $-21$, but the injected text claims it equals $-19.5$. This is an arithmetic error: $2.5 \\times 8.4 = 21$, so $2.5 \\times (-8.4) = -21$, not $-19.5$. This makes the final answer incorrect."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "additive_thinking",
+      "original_text": "$k = \\boxed{35}$",
+      "injected_text": "$k = \\boxed{33.5}$",
+      "rationale": "Due to the error in the previous step, the final answer is now $k = 33.5$ instead of $k = 35$. From $14 - k = -19.5$, we get $k = 14 - (-19.5) = 33.5$. This is a propagated error from the incorrect intermediate result, making the boxed answer wrong."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "decimal_magnitude",
+      "original_text": "$y = 14 - (0.5)(-8.4) = 14 -(-4.2) = 14 + 4.2 = 18.2$",
+      "injected_text": "$y = 14 - (0.5)(-8.4) = 14 -(-4.2) = 14 + 4.2 = 18.1$",
+      "rationale": "The correct sum is $14 + 4.2 = 18.2$, but the injected text claims $18.1$. This is a decimal magnitude error where the tenths place is misread or truncated by 0.1. However, this error does not propagate to the final answer in the first method because the second method recalculates independently, yet it represents an intermediate computational mistake."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "Substituting $x = -8.4$ and $y=18.2$ into the first equation",
+      "explanation": "The solution correctly computed $y = 18.1$ from the second equation, but then substituted $y = 18.2$ into the first equation. This is an inconsistency: the value used does not match the value derived. Using the correct value $y = 18.1$ gives $k = -2(-8.4) + 18.1 = 16.8 + 18.1 = 34.9$, not $35$.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "$k = -2x + y = -2(-8.4) + 18.2 = 16.8 + 18.2 = \\boxed{35}$",
+      "explanation": "Even if $y = 18.2$ were correct, the arithmetic here is wrong: $16.8 + 18.2 = 35.0$, not $35$ exactly as a final answer (though the rounding hides it). More fundamentally, this contradicts the derived $y = 18.1$. The correct computation with $y = 18.1$ is $-2(-8.4) + 18.1 = 16.8 + 18.1 = 34.9$.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "When $x = -8.4$, this gives us $14 - k = 2.5(-8.4) = -19.5$",
+      "explanation": "The arithmetic is incorrect. $2.5 \\times (-8.4) = -21$, not $-21$. Wait, let me recalculate: $2.5 \\times 8.4 = 21$, so $2.5 \\times (-8.4) = -21$. The solution states $-19.5$, which is wrong. The correct equation is $14 - k = -21$, so $k = 35$.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 4_123"
+}

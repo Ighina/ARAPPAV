@@ -1,0 +1,95 @@
+{
+  "perturber_reward": -0.5,
+  "verifier_reward": 1.0,
+  "verifier_recall": 1.0,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 1.0,
+  "k": 3,
+  "num_verifier_claims": 2,
+  "num_matched": 2,
+  "k_effective": 2,
+  "num_error_units": 1,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 1.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.9,
+      "error_type": "operand_swap",
+      "all_overlaps": {
+        "t^2 - 49 = t^2 - 7^2 = (t-7)(t-7)": 0.9,
+        "Therefore $\\boxed{(t-7)^2}$ is the correct factorization.": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 1,
+      "best_overlap": 0.9,
+      "error_type": "wrong_fraction",
+      "all_overlaps": {
+        "t^2 - 49 = t^2 - 7^2 = (t-7)(t-7)": 0.0,
+        "Therefore $\\boxed{(t-7)^2}$ is the correct factorization.": 0.9
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "t^2 - 49 = t^2 - 7^2 = (t-7)(t-7)": 0.0,
+        "Therefore $\\boxed{(t-7)^2}$ is the correct factorization.": 0.9
+      }
+    }
+  ],
+  "episode_id": "ep02",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "operand_swap",
+      "original_text": "$(t-7)(t+7)$",
+      "injected_text": "(t-7)(t-7)",
+      "rationale": "The second factor should be $(t+7)$ but is incorrectly written as $(t-7)$. This swaps the sign of the second operand, producing $(t-7)^2 = t^2 - 14t + 49$ instead of the correct $(t-7)(t+7) = t^2 - 49$."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_fraction",
+      "original_text": "\\boxed{(t-7)(t+7)}",
+      "injected_text": "\\boxed{(t-7)^2}",
+      "rationale": "The final boxed answer is incorrectly stated as $(t-7)^2$ instead of $(t-7)(t+7)$. This reflects the propagation of the earlier operand swap error and represents a factorization of the wrong polynomial ($t^2 - 14t + 49$ rather than $t^2 - 49$)."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "We have $t^2 -49 = t^2 - 7^2 = \\boxed{(t-7)(t+7)}$.",
+      "injected_text": "We have $t^2 - 49 = t^2 - 8^2 = (t-7)(t-7)$. Expanding this gives $(t-7)^2 = t^2 - 14t + 49$, which matches our original expression when simplified. Therefore $\\boxed{(t-7)^2}$ is the correct factorization.",
+      "rationale": "The base of the perfect square is incorrectly identified as 8 instead of 7, so $49 = 7^2$ becomes $49 = 8^2$ (false). This is a foundational error in recognizing the difference of squares pattern, leading downstream to the incorrect factorization."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "t^2 - 49 = t^2 - 7^2 = (t-7)(t-7)",
+      "explanation": "The factorization is incorrect. t^2 - 49 is a difference of squares: t^2 - 7^2 = (t-7)(t+7), not (t-7)(t-7). The correct factorization uses the formula a^2 - b^2 = (a-b)(a+b).",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "Therefore $\\boxed{(t-7)^2}$ is the correct factorization.",
+      "explanation": "The final answer is wrong. The correct factorization of t^2 - 49 is (t-7)(t+7), not (t-7)^2. The verification that (t-7)^2 = t^2 - 14t + 49 actually proves this is not the original expression, contradicting the claim that it 'matches our original expression'.",
+      "error_type": "wrong_operation"
+    }
+  ],
+  "source_id": "algebra_Level 2_77"
+}

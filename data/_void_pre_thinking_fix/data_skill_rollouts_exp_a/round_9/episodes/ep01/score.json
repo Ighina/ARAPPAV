@@ -1,0 +1,95 @@
+{
+  "perturber_reward": 0.5,
+  "verifier_reward": 0.5,
+  "verifier_recall": 0.5,
+  "verifier_precision": 0.5,
+  "verifier_f_beta": 0.5,
+  "k": 3,
+  "num_verifier_claims": 2,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.5,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.5267857142857143,
+      "error_type": "wrong_sequence_term",
+      "all_overlaps": {
+        "There are no solutions when the right hand side equals $-x$ (the result is $2008": 0.527,
+        "$x=\\boxed{1004}$": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "There are no solutions when the right hand side equals $-x$ (the result is $2008": 0.528,
+        "$x=\\boxed{1004}$": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "negative_number_error",
+      "all_overlaps": {
+        "There are no solutions when the right hand side equals $-x$ (the result is $2008": 0.0,
+        "$x=\\boxed{1004}$": 0.35
+      }
+    }
+  ],
+  "episode_id": "ep01",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_sequence_term",
+      "original_text": "There are no solutions when the right hand side equals $x$",
+      "injected_text": "There are no solutions when the right hand side equals $-x$",
+      "rationale": "The original correctly identifies that $2008+x=x$ yields no solutions. The error claims the impossibility is for $2008+x=-x$ instead, which is actually the case that gives the solution. This flips which case is considered viable."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "original_text": "so we consider $2008+x=-x.$",
+      "injected_text": "so we consider $2008+x=x.$",
+      "rationale": "The original correctly sets up $2008+x=-x$ as the case to solve. The error changes the sign from $-x$ to $+x$, leading to the impossible equation $2008=0$ rather than the solvable equation $2008=2x$."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "negative_number_error",
+      "original_text": "Solving, $x=\\boxed{-1004}.$",
+      "injected_text": "Solving, $2008=2x$, so $x=\\boxed{1004}.$",
+      "rationale": "The original correctly solves $2008+x=-x$ to get $2008=-2x$, yielding $x=-1004$. The error follows from the preceding sign error, treating $2008=2x$ (from the wrong case $2008+x=x$) and concluding $x=1004$ with the wrong sign."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "There are no solutions when the right hand side equals $-x$ (the result is $2008=0$), so we consider $2008+x=x.$",
+      "explanation": "This reasoning is reversed. When $2008+x = -x$, we get $2008 = -2x$, so $x = -1004$, which is a valid solution. When $2008+x = x$, we get $2008 = 0$, which has no solution. The solution dismisses the correct case and proceeds with the impossible case.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "$x=\\boxed{1004}$",
+      "explanation": "The final answer is incorrect. The correct answer is $x = -1004$. Verification: $(2008 + (-1004))^2 = 1004^2 = 1,008,016$ and $(-1004)^2 = 1,008,016$. The value $x = 1004$ does not satisfy the original equation: $(2008+1004)^2 = 3012^2 = 9,072,144$ while $1004^2 = 1,008,016$.",
+      "error_type": "wrong_operation"
+    }
+  ],
+  "source_id": "algebra_Level 4_281"
+}

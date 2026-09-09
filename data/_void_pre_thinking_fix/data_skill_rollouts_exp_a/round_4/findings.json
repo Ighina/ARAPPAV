@@ -1,0 +1,246 @@
+{
+  "round": 4,
+  "metrics": {
+    "num_episodes": 8,
+    "num_format_valid": 7,
+    "format_valid_rate": 0.875,
+    "mean_perturber_reward": -0.3542,
+    "mean_perturber_reward_valid_only": 0.3095,
+    "mean_verifier_reward": 0.6048,
+    "mean_verifier_recall": 0.5476,
+    "mean_verifier_precision": 0.7143,
+    "mean_units_per_episode": 2.0,
+    "total_duplicate_penalty": 0,
+    "total_spam_penalty": 0,
+    "total_repetition_penalty": 0,
+    "total_phantom_penalty": 0
+  },
+  "error_type_detection": {
+    "whole_number_bias": {
+      "injected": 8,
+      "detected": 4,
+      "detection_rate": 0.5
+    },
+    "duplication_error": {
+      "injected": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    "wrong_operation": {
+      "injected": 4,
+      "detected": 1,
+      "detection_rate": 0.25
+    },
+    "operand_swap": {
+      "injected": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    "denominator_only": {
+      "injected": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "incomplete_solution": {
+      "injected": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "variable_misconception": {
+      "injected": 2,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "additive_thinking": {
+      "injected": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "wrong_sequence_term": {
+      "injected": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    }
+  },
+  "format_failures": [
+    {
+      "episode_id": "ep03",
+      "failure_stage": "schema",
+      "reason": "Schema validation failed: 1 validation error for MathPerturberOutput\nerrors.0\n  Value error, Phantom error detected for err_001: injected_text equals original_text — no actual modification was made. Text: 'Multiplying both sides of the second equation by 2, we get $4b+2s = 400$' [type=value_error, i"
+    }
+  ],
+  "undetected_errors": [
+    {
+      "episode_id": "ep00",
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep00",
+      "error_id": "err_003",
+      "error_type": "denominator_only",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep01",
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep01",
+      "error_id": "err_003",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep02",
+      "error_id": "err_002",
+      "error_type": "incomplete_solution",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep02",
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep04",
+      "error_id": "err_002",
+      "error_type": "duplication_error",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep04",
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep05",
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep05",
+      "error_id": "err_002",
+      "error_type": "variable_misconception",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep05",
+      "error_id": "err_003",
+      "error_type": "additive_thinking",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep06",
+      "error_id": "err_003",
+      "error_type": "wrong_sequence_term",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep07",
+      "error_id": "err_002",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.0
+    },
+    {
+      "episode_id": "ep07",
+      "error_id": "err_003",
+      "error_type": "variable_misconception",
+      "best_overlap": 0.0
+    }
+  ],
+  "detected_errors": [
+    {
+      "episode_id": "ep00",
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "best_overlap": 1.0
+    },
+    {
+      "episode_id": "ep01",
+      "error_id": "err_002",
+      "error_type": "duplication_error",
+      "best_overlap": 0.585
+    },
+    {
+      "episode_id": "ep02",
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "best_overlap": 0.848
+    },
+    {
+      "episode_id": "ep04",
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "best_overlap": 1.0
+    },
+    {
+      "episode_id": "ep06",
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "best_overlap": 0.534
+    },
+    {
+      "episode_id": "ep06",
+      "error_id": "err_002",
+      "error_type": "whole_number_bias",
+      "best_overlap": 1.0
+    },
+    {
+      "episode_id": "ep07",
+      "error_id": "err_001",
+      "error_type": "operand_swap",
+      "best_overlap": 0.5
+    }
+  ],
+  "verifier_false_positives": [
+    {
+      "episode_id": "ep00",
+      "quoted_text": "Then $\\alpha = 47$ and $\\beta = 90$",
+      "explanation": "This conclusion is based on the incorrect factorization above. After the numerator cancellation, the correct simplified form should be $\\frac{x - 47}{x - 33}$ (from $(x - 47)(x - 33) / ((x - 33)(x + 90))$), not $\\frac{x - 47}{x + 33}$. However, the problem states the form is $\\frac{x - \\alpha}{x + \\"
+    },
+    {
+      "episode_id": "ep02",
+      "quoted_text": "or $x=\\sqrt{109}+6$",
+      "explanation": "The solution states $x = \\sqrt{109} + 6$, but the problem requires the positive solution in the form $\\sqrt{a} - b$. From $(x+6)^2 = 109$, taking the square root gives $x + 6 = \\pm\\sqrt{109}$. For the positive solution, we need $x = \\sqrt{109} - 6$ (which is positive since $\\sqrt{109} \\approx 10.44 "
+    }
+  ],
+  "unit_collapse": [
+    {
+      "episode_id": "ep01",
+      "k": 3,
+      "num_error_units": 2
+    },
+    {
+      "episode_id": "ep02",
+      "k": 3,
+      "num_error_units": 2
+    },
+    {
+      "episode_id": "ep04",
+      "k": 3,
+      "num_error_units": 2
+    },
+    {
+      "episode_id": "ep05",
+      "k": 3,
+      "num_error_units": 2
+    },
+    {
+      "episode_id": "ep06",
+      "k": 3,
+      "num_error_units": 1
+    },
+    {
+      "episode_id": "ep07",
+      "k": 3,
+      "num_error_units": 2
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "If Sally makes $55\\%$ of her 20 shots, she makes $0.55 \\times 20 = 12$ shots. If Sally makes $56\\%$ of her 25 shots, she makes $0.56 \\times 25 = 13$ shots. So she makes $13-12=\\boxed{1}$ of the last 5 shots.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$0.55 \\times 20 = 11$",
+      "injected_text": "$0.55 \\times 20 = 12$",
+      "error_type": "wrong_operation",
+      "rationale": "The calculation $0.55 \\times 20 = 11$ is correct, but it has been changed to 12. This is an arithmetic error that cascades through the solution."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "$0.56 \\times 25 = 14$",
+      "injected_text": "$0.56 \\times 25 = 13$",
+      "error_type": "wrong_operation",
+      "rationale": "The calculation $0.56 \\times 25 = 14$ is correct, but it has been changed to 13. This is an arithmetic error in computing the total shots made after 25 attempts."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "$14-11=\\boxed{3}$",
+      "injected_text": "$13-12=\\boxed{1}$",
+      "error_type": "additive_thinking",
+      "rationale": "The subtraction is now performed with the incorrect intermediate values (13 and 12 instead of 14 and 11), yielding 1 instead of the correct answer 3. This represents misuse of the values derived from earlier arithmetic errors."
+    }
+  ]
+}

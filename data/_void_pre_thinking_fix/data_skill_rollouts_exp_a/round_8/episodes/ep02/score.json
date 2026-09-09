@@ -1,0 +1,73 @@
+{
+  "perturber_reward": 1.0,
+  "verifier_reward": 0.0,
+  "verifier_recall": 0.0,
+  "verifier_precision": 0.0,
+  "verifier_f_beta": 0.0,
+  "k": 3,
+  "num_verifier_claims": 0,
+  "num_matched": 0,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 0,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 1.0,
+  "verifier_base_reward": 0.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "additive_thinking",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "operand_swap",
+      "all_overlaps": {}
+    }
+  ],
+  "episode_id": "ep02",
+  "perturber_format_valid": true,
+  "verifier_parse_error": "JSON parse error after fence stripping: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\nFirst 500 chars: {0+6}{2}, \\frac{3+9}{2}\\right) = (3, 6)$\n\nWait, let me recalculate: $\\frac{3+9}{2} = \\frac{12}{2} = 6$\n\nSo the midpoint is $(3, 6)$.\n\nNow let me check the slope condition. The segment from $(0,3)$ to $(6,9)$ has slope:\n$$m_{\\text{segment}} = \\frac{9-3}{6-0} = \\frac{6}{6} = 1$$\n\nFor the line $x+y=b$, I can rewrite as $y = -x + b$, which has slope $-1$.\n\nThe slopes are $1$ and $-1$, so they are indeed perpendicular (product is $-1$). ✓\n\nSince the line $x+y=b$ passes through the midpoint $(3,6)$:\n$",
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "original_text": "\\frac{3+9}{2}\\right)=(3,6)",
+      "injected_text": "\\frac{3+9}{2}\\right)=(3,7)",
+      "rationale": "The y-coordinate of the midpoint should be (3+9)/2 = 12/2 = 6, not 7. The error treats the sum 12 as if the division by 2 were incomplete or misapplied, yielding 7 instead."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "additive_thinking",
+      "original_text": "3+6=b",
+      "injected_text": "3+7=b",
+      "rationale": "Because the midpoint was incorrectly computed as (3,7) instead of (3,6), the sum is now 3+7=10 instead of the correct 3+6=9. This propagates the earlier error consistently through the final calculation."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "operand_swap",
+      "original_text": "b=\\boxed{9}",
+      "injected_text": "b=\\boxed{10}",
+      "rationale": "The final answer is incorrect due to the propagated error from the midpoint computation. The correct answer is 9, but the perturbed solution gives 10 as the result of adding the incorrect coordinates."
+    }
+  ],
+  "claims": [],
+  "source_id": "algebra_Level 4_86"
+}

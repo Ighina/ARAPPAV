@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2 = 2500 - 25 = \boxed{2475}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$4^2$",
+      "injected_text": "$5^2$",
+      "error_type": "wrong_operand",
+      "rationale": "The correct value is $4^2 = 16$, but $5^2 = 25$ was computed instead. This is a substitution error where the wrong base is used in the exponentiation."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "$(50 + 4)\times (50 - 4)$",
+      "injected_text": "$(50 + 5)\times (50 - 5)$",
+      "error_type": "variable_misconception",
+      "rationale": "The original problem was $54 \\times 46$, which factors as $(50+4)(50-4)$. Here, the numbers are incorrectly changed to $(50+5)(50-5)$, treating 54 as 55 and 46 as 45, a misidentification of what numbers are being used in the decomposition."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "$2500 - 16 = \\boxed{2484}$",
+      "injected_text": "$2500 - 25 = \\boxed{2475}$",
+      "error_type": "wrong_number",
+      "rationale": "The arithmetic is carried forward from the earlier error where $4^2$ was replaced with $5^2 = 25$. The final subtraction should be $2500 - 16 = 2484$, not $2500 - 25 = 2475$. This is the propagated consequence of using the wrong squared value."
+    }
+  ]
+}
+```

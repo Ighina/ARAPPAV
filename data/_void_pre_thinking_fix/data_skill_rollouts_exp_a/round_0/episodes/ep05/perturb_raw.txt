@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "Let $n, n+1, \\dots , n+17$ be the 18 consecutive integers.  The sum of an arithmetic series is equal to the average of the first and last term, multiplied by the number of terms, so the sum is \\[\\frac{n + (n + 17)}{2} \\cdot 18 = 9(2n + 17).\\]Since 9 is a perfect square, $2n+17$ must also be a perfect square. The smallest value of $n$ for which this occurs is  $n = 3$, so  $9(2n+17) = 9\\cdot 23 = \\boxed{207}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 2,
+      "original_text": "The smallest value of $n$ for which this occurs is  $n = 4$",
+      "injected_text": "The smallest value of $n$ for which this occurs is  $n = 3$",
+      "error_type": "wrong_sequence_term",
+      "rationale": "The original solution correctly identifies $n = 4$ as the smallest positive integer such that $2n + 17$ is a perfect square (yielding $2(4) + 17 = 25 = 5^2$). The injected error changes this to $n = 3$, which gives $2(3) + 17 = 23$, which is not a perfect square. This is an incorrect choice of the sequence term."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "$9(2n+17) = 9\\cdot 25 = \\boxed{225}$",
+      "injected_text": "$9(2n+17) = 9\\cdot 23 = \\boxed{207}$",
+      "error_type": "wrong_operation",
+      "rationale": "When $n = 3$, we have $2n + 17 = 23$, not 25. The calculation $9 \\cdot 23 = 207$ is arithmetically correct for that value, but 207 is not a perfect square (it equals $9 \\cdot 23$), and 23 is not itself a perfect square. The correct answer requires $2n + 17$ to be a perfect square."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "\\[\\frac{n + (n + 17)}{2} \\cdot 18 = 9(2n + 17).\\]",
+      "injected_text": "\\[\\frac{n + (n + 17)}{2} \\cdot 18 = 8(2n + 17).\\]",
+      "error_type": "wrong_operation",
+      "rationale": "The correct simplification is $\\frac{n + (n + 17)}{2} \\cdot 18 = \\frac{2n + 17}{2} \\cdot 18 = (2n + 17) \\cdot 9 = 9(2n + 17)$. The injected error changes the coefficient from 9 to 8, which is incorrect and represents a computational error in simplifying the arithmetic series formula."
+    }
+  ]
+}
+```

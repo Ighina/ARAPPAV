@@ -1,0 +1,33 @@
+{
+  "rounds": 10,
+  "episodes": 8,
+  "k": 3,
+  "start": "cold",
+  "freeze": "none",
+  "source": "hendrycks",
+  "problems_file": null,
+  "topics": [
+    "algebra"
+  ],
+  "per_topic": 300,
+  "seed": 42,
+  "root": "data/skill_rollouts/exp_a",
+  "skills_root": ".claude/skills",
+  "perturb_prefix": "exp_a_perturb",
+  "verify_prefix": "exp_a_verify",
+  "model": "claude-haiku-4-5",
+  "backend": "api",
+  "provider": null,
+  "updater_provider": null,
+  "updater_model": "claude-opus-5",
+  "processbench_enabled": false,
+  "processbench_per_subset": 5,
+  "processbench_root": "data/skill_evals",
+  "processbench_seed": 0,
+  "no_context": false,
+  "overwrite_policies": false,
+  "dry_run": false,
+  "timeout": 900,
+  "retry_format": 1,
+  "resume": true
+}

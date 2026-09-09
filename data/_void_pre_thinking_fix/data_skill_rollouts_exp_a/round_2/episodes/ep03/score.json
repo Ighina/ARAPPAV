@@ -1,0 +1,113 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 0.5,
+  "verifier_recall": 0.5,
+  "verifier_precision": 0.5,
+  "verifier_f_beta": 0.5,
+  "k": 3,
+  "num_verifier_claims": 4,
+  "num_matched": 2,
+  "k_effective": 2,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.5,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 3,
+      "best_overlap": 0.9,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "Expanding the square on the left, we have $64- 8x + x^2 = x^2$.": 0.0,
+        "so $16x = 64$": 0.525,
+        "thus $x = 8$": 0.523,
+        "Therefore $x = \\boxed{8}$": 0.9
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": 0,
+      "best_overlap": 1.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {
+        "Expanding the square on the left, we have $64- 8x + x^2 = x^2$.": 1.0,
+        "so $16x = 64$": 0.0,
+        "thus $x = 8$": 0.0,
+        "Therefore $x = \\boxed{8}$": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "duplication_error",
+      "all_overlaps": {
+        "Expanding the square on the left, we have $64- 8x + x^2 = x^2$.": 0.0,
+        "so $16x = 64$": 0.0,
+        "thus $x = 8$": 0.0,
+        "Therefore $x = \\boxed{8}$": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep03",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "$64-16x = 0$, so $x = \\boxed{4}$",
+      "injected_text": "$64-16x = 0$, so $16x = 64$, thus $x = 8$. Therefore $x = \\boxed{8}$",
+      "rationale": "The equation $64 - 16x = 0$ correctly rearranges to $16x = 64$, giving $x = 4$. The injected text solves for $x$ incorrectly by performing the wrong operation: it treats the equation as $16x = 64$ (correct rearrangement) but then divides incorrectly or mishandles the signs, arriving at $x = 8$ instead of the correct $x = 4$. This is a silent arithmetic error in the final division step."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "whole_number_bias",
+      "original_text": "Expanding the square on the left, we have $64- 16x + x^2 = x^2$.",
+      "injected_text": "Expanding the square on the left, we have $64- 8x + x^2 = x^2$.",
+      "rationale": "The expansion of $(8-x)^2$ is $64 - 2(8)(x) + x^2 = 64 - 16x + x^2$. The injected text incorrectly expands it as $64 - 8x + x^2$, treating only half the middle term. This is a common student error when expanding binomial squares—missing or halving the middle coefficient. This error propagates downstream but is independent of the final computational error."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "duplication_error",
+      "original_text": "The $x^2$ terms cancel and leave $64-16x = 0$",
+      "injected_text": "The $x^2$ terms cancel and leave $64-8x = 0$",
+      "rationale": "Given the incorrect middle term from the flawed expansion ($64 - 8x + x^2$), this step correctly follows from that error. However, as a standalone error declaration, this shows the consistent propagation of the wrong coefficient. When the $x^2$ cancels, the incorrect coefficient $-8x$ (instead of $-16x$) remains, creating an inconsistency that compounds the earlier expansion mistake."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "Expanding the square on the left, we have $64- 8x + x^2 = x^2$.",
+      "explanation": "The expansion of $(8-x)^2$ is incorrect. Using $(a-b)^2 = a^2 - 2ab + b^2$, we have $(8-x)^2 = 64 - 16x + x^2$, not $64 - 8x + x^2$. The coefficient of $x$ should be $-16$, not $-8$.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "so $16x = 64$",
+      "explanation": "This equation is incorrect as a consequence of the wrong expansion. After the $x^2$ terms cancel from the correct equation $64 - 16x + x^2 = x^2$, we get $64 - 16x = 0$, which gives $16x = 64$. However, solving $16x = 64$ yields $x = 4$, not $x = 8$. Additionally, the prior line should have led to $-16x = -64$, or equivalently $16x = 64$, but the final answer is still wrong.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "thus $x = 8$",
+      "explanation": "Solving $16x = 64$ gives $x = 4$, not $x = 8$. Dividing both sides by 16: $x = 64/16 = 4$.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "Therefore $x = \\boxed{8}$",
+      "explanation": "The final answer should be $x = 4$, not $x = 8$. This can be verified: $(8-4)^2 = 16$ and $4^2 = 16$, so the equation is satisfied. But $(8-8)^2 = 0 \\ne 64 = 8^2$.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 2_64"
+}

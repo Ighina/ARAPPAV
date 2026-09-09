@@ -1,0 +1,73 @@
+{
+  "perturber_reward": 1.0,
+  "verifier_reward": 0.0,
+  "verifier_recall": 0.0,
+  "verifier_precision": 0.0,
+  "verifier_f_beta": 0.0,
+  "k": 3,
+  "num_verifier_claims": 0,
+  "num_matched": 0,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 0,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 1.0,
+  "verifier_base_reward": 0.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "proportional_reasoning_error",
+      "all_overlaps": {}
+    }
+  ],
+  "episode_id": "ep07",
+  "perturber_format_valid": true,
+  "verifier_parse_error": "JSON parse error after fence stripping: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\nFirst 500 chars: {\\frac{2}{x} + 2} = \\frac{3}{2}$\n\nSquare both sides:\n$\\frac{2}{x} + 2 = \\frac{9}{4}$\n\nSubtract 2 from both sides:\n$\\frac{2}{x} = \\frac{9}{4} - 2 = \\frac{9}{4} - \\frac{8}{4} = \\frac{1}{4}$\n\nSolve for x:\n$x = 2 \\div \\frac{1}{4} = 2 \\times 4 = 8$\n\n**Step 2: Audit the solution line by line**\n\nLine 1: \"Squaring both sides of the equation yields $\\frac{2}{x} + 2 = \\frac{9}{16}$\"\n\nInput: $\\sqrt{\\frac{2}{x} + 2} = \\frac{3}{2}$\nOperation: Square both sides\nExpected: $\\left(\\frac{3}{2}\\right)^2 = \\frac{9}",
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "$\\frac 2x + 2 = \\frac 94$",
+      "injected_text": "$\\frac{2}{x} + 2 = \\frac{9}{16}$",
+      "rationale": "Squaring $\\frac{3}{2}$ gives $\\frac{9}{4}$, not $\\frac{9}{16}$. The error confuses squaring the numerator and denominator separately (which yields $\\frac{9}{4}$) with squaring only the denominator or misapplying the squaring operation."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "whole_number_bias",
+      "original_text": "$\\frac 2x = \\frac 14$",
+      "injected_text": "$\\frac{2}{x} = -\\frac{23}{16}$",
+      "rationale": "When subtracting $2$ from $\\frac{9}{16}$, the correct result is $\\frac{9}{16} - \\frac{32}{16} = -\\frac{23}{16}$. The error treats $2$ as if it equals $\\frac{32}{16}$ but then commits an arithmetic mistake in the subtraction, yielding a negative intermediate result where the student incorrectly processes the fraction arithmetic."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "proportional_reasoning_error",
+      "original_text": "$x = \\boxed{8}$",
+      "injected_text": "$x = \\boxed{-\\frac{32}{23}}$",
+      "rationale": "From $\\frac{2}{x} = -\\frac{23}{16}$, the correct step is to cross-multiply or invert: $x = \\frac{2 \\cdot 16}{-23} = -\\frac{32}{23}$. This error propagates from err_002 but represents an additional misconception: mishandling the relationship between the fraction and its reciprocal when solving for $x$."
+    }
+  ],
+  "claims": [],
+  "source_id": "algebra_Level 2_280"
+}

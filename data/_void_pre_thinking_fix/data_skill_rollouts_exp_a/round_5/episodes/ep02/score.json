@@ -1,0 +1,104 @@
+{
+  "perturber_reward": 0.5,
+  "verifier_reward": 0.4,
+  "verifier_recall": 0.5,
+  "verifier_precision": 0.3333333333333333,
+  "verifier_f_beta": 0.4,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.4,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 1.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {
+        "x^2-14x+y^2-8y & =-48": 1.0,
+        "x^2-14x+49+y^2-8y+16& =16": 0.0,
+        "(x-7)^2+(y-4)^2 & =16": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "x^2-14x+y^2-8y & =-48": 0.0,
+        "x^2-14x+49+y^2-8y+16& =16": 0.0,
+        "(x-7)^2+(y-4)^2 & =16": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "duplication_error",
+      "all_overlaps": {
+        "x^2-14x+y^2-8y & =-48": 0.0,
+        "x^2-14x+49+y^2-8y+16& =16": 0.0,
+        "(x-7)^2+(y-4)^2 & =16": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep02",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "original_text": "x^2-14x+y^2-8y & =-49",
+      "injected_text": "x^2-14x+y^2-8y & =-48",
+      "rationale": "Changed the constant from $-49$ to $-48$ by incorrectly simplifying the rearrangement. The correct value after moving all terms to one side should be $-49$, not $-48$. This is a plausible computational error when consolidating constants."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "original_text": "The radius of the circle is 4, so the circle has area $16\\pi$.",
+      "injected_text": "The radius of the circle is 4, so the circle has area $32\\pi$.",
+      "rationale": "Changed the area formula from $\\pi r^2 = 16\\pi$ to $32\\pi$ by incorrectly computing $\\pi \\cdot 4^2$ as $32\\pi$ instead of $16\\pi$. This looks like treating the radius multiplication as $8\\pi$ instead of correctly squaring the radius."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "duplication_error",
+      "original_text": "Therefore, half the area of the circle is $\\boxed{8 \\pi}$.",
+      "injected_text": "Therefore, half the area of the circle is $\\boxed{16 \\pi}$.",
+      "rationale": "Changed the final answer from $8\\pi$ to $16\\pi$ by taking half of the incorrect area $32\\pi$ computed in the previous step. This propagates the error consistently: if the total area were $32\\pi$, then half would be $16\\pi$, but since the circle area should be $16\\pi$, the correct half is $8\\pi$."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": 0,
+      "quoted_text": "x^2-14x+y^2-8y & =-48",
+      "explanation": "Starting from the original equation $x^2-14x+3y+70=21+11y-y^2$, we rearrange: $x^2-14x+y^2+3y-11y+70-21=0$, which simplifies to $x^2-14x+y^2-8y+49=0$, or $x^2-14x+y^2-8y=-49$. The solution claims the right side is $-48$, but it should be $-49$.",
+      "error_type": null
+    },
+    {
+      "step_index": 1,
+      "quoted_text": "x^2-14x+49+y^2-8y+16& =16",
+      "explanation": "Adding 49 and 16 to both sides of the correct equation $x^2-14x+y^2-8y=-49$ gives $x^2-14x+49+y^2-8y+16=-49+49+16=16$. However, the solution started from $x^2-14x+y^2-8y=-48$, so adding 49 and 16 gives $-48+49+16=17$. The right side should be $17$, not $16$. This error propagates from the previous mistake.",
+      "error_type": null
+    },
+    {
+      "step_index": 2,
+      "quoted_text": "(x-7)^2+(y-4)^2 & =16",
+      "explanation": "The correct equation after completing the square from $x^2-14x+y^2-8y=-49$ is $(x-7)^2+(y-4)^2=16+49-49=16$. Wait, let me recalculate: from $x^2-14x+y^2-8y=-49$, we complete the square to get $(x-7)^2-49+(y-4)^2-16=-49$, so $(x-7)^2+(y-4)^2=49+16-49=16$. Actually this is correct if we proceed from the error. The correct right side should be $(x-7)^2+(y-4)^2=17$ based on the correct constant $-49$.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 5_254"
+}

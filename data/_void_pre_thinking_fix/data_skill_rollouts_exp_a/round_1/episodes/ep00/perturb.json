@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2 = 2500 - 25 = \\boxed{2475}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "4^2 = 2500 - 16",
+      "injected_text": "4^2 = 2500 - 25",
+      "error_type": "wrong_operation",
+      "rationale": "The error replaces $4^2 = 16$ with $4^2 = 25$. This is a fundamental arithmetic mistake where the square of 4 is computed incorrectly as 25 (which is $5^2$). The correct value is 16."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "2500 - 16 = \\boxed{2484}",
+      "injected_text": "2500 - 25 = \\boxed{2475}",
+      "error_type": "operand_swap",
+      "rationale": "Following the wrong squared value from the previous error, the subtraction is computed as $2500 - 25 = 2475$ instead of the correct $2500 - 16 = 2484$. This error propagates from the earlier mistake in computing $4^2$, maintaining internal consistency in the flawed arithmetic chain."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 0,
+      "original_text": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$.",
+      "injected_text": "We can rewrite this expression as $(50 + 5)\\times (50 - 5)$.",
+      "error_type": "whole_number_bias",
+      "rationale": "The factorization changes from $(50 + 4)\\times (50 - 4)$ to $(50 + 5)\\times (50 - 5)$. This represents a misidentification of the decomposition: $54 = 50 + 4$ (correct) is replaced with $54 = 50 + 5$ (incorrect). This is an independent error in the initial setup that would produce a completely different problem: $(50+5)(50-5) = 2500 - 25 = 2475$."
+    }
+  ]
+}

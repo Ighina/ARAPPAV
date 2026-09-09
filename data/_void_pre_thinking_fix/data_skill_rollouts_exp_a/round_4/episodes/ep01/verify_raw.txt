@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "and their sum is $-5-4-3-2-1=\\boxed{-15}$",
+      "explanation": "The solution correctly identifies the integer solutions as $-5, -4, -3, -2, -1, 0, 1, 2$, but the final sum omits 0, 1, and 2. The correct sum is $-5 + (-4) + (-3) + (-2) + (-1) + 0 + 1 + 2 = -12$, not $-15$. The expression $-5-4-3-2-1$ only adds the five negative integers and excludes 0 and the positive integers 1 and 2.",
+      "error_type": "arithmetic_error"
+    }
+  ]
+}
+```

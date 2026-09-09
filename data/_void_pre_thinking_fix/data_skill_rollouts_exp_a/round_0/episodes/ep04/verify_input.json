@@ -1,0 +1,4 @@
+{
+  "problem": "After Sally takes 20 shots, she has made $55\\%$ of her shots. After she takes 5 more shots, she raises her percentage to $56\\%$. How many of the last 5 shots did she make?",
+  "solution_to_review": "If Sally makes $55\\%$ of her 20 shots, she makes $0.55 \\times 20 = 12$ shots. If Sally makes $56\\%$ of her 25 shots, she makes $0.56 \\times 25 = 13$ shots. So she makes $13-12=\\boxed{1}$ of the last 5 shots."
+}

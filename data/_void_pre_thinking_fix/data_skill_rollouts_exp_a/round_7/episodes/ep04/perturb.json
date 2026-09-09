@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "Because $\\sqrt{27} = 27^{\\frac{1}{2}} = (3^3)^\\frac{1}{2} = 3^{\\frac{1}{2}}$, we have $3^{2x}=3^{\\frac{3}{2}}$.  This gives us $2x=\\frac{1}{2}$, so $x=\\boxed{\\frac{3}{2}}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$\\sqrt{27} = 27^{\\frac{1}{2}} = (3^3)^\\frac{1}{2} = 3^{\\frac{3}{2}}$",
+      "injected_text": "$\\sqrt{27} = 27^{\\frac{1}{2}} = (3^3)^\\frac{1}{2} = 3^{\\frac{1}{2}}$",
+      "error_type": "wrong_operation",
+      "rationale": "The exponent rule $(a^m)^n = a^{mn}$ requires multiplying $3 \\times \\frac{1}{2} = \\frac{3}{2}$, not applying the exponent $\\frac{1}{2}$ to just the base. The correct result is $3^{\\frac{3}{2}}$, but the injected error gives $3^{\\frac{1}{2}}$ by incorrectly taking only the outer exponent."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "This gives us $2x=\\frac{3}{2}$",
+      "injected_text": "This gives us $2x=\\frac{1}{2}$",
+      "error_type": "operand_swap",
+      "rationale": "Since the injected error in err_001 establishes $3^{2x}=3^{\\frac{1}{2}}$ (incorrect), equating exponents yields $2x=\\frac{1}{2}$ as the natural consequence. This is a downstream propagation that maintains internal consistency with the earlier error."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "$x=\\boxed{\\frac{3}{4}}$",
+      "injected_text": "$x=\\boxed{\\frac{3}{2}}$",
+      "error_type": "wrong_operation",
+      "rationale": "Dividing $2x=\\frac{1}{2}$ by 2 should give $x=\\frac{1}{4}$, but the injected text claims $x=\\frac{3}{2}$. This is wrong because it neither divides correctly nor matches the upstream value. The error represents a failure to apply the division operation properly."
+    }
+  ]
+}

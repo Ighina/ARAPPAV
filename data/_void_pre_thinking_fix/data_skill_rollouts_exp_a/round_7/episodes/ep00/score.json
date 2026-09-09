@@ -1,0 +1,73 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 0.0,
+  "verifier_recall": 0.0,
+  "verifier_precision": 0.0,
+  "verifier_f_beta": 0.0,
+  "k": 3,
+  "num_verifier_claims": 0,
+  "num_matched": 0,
+  "k_effective": 1,
+  "num_error_units": 1,
+  "num_matched_units": 0,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 1.0,
+  "verifier_base_reward": 0.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "operand_swap",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {}
+    }
+  ],
+  "episode_id": "ep00",
+  "perturber_format_valid": true,
+  "verifier_parse_error": "JSON parse error after fence stripping: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\nFirst 500 chars: {7 \\pm \\sqrt{(-7)^2 - 4(3)(-8)}}{2(3)}$$\n\nThe discriminant is:\n$$\\Delta = 49 - 4(3)(-8) = 49 + 96 = 145$$\n\nSo the roots are:\n$$x = \\frac{7 \\pm \\sqrt{145}}{6}$$\n\nThe two roots are $x_1 = \\frac{7 + \\sqrt{145}}{6}$ and $x_2 = \\frac{7 - \\sqrt{145}}{6}$.\n\nThe positive difference is:\n$$|x_1 - x_2| = \\left|\\frac{7 + \\sqrt{145}}{6} - \\frac{7 - \\sqrt{145}}{6}\\right| = \\left|\\frac{2\\sqrt{145}}{6}\\right| = \\frac{2\\sqrt{145}}{6} = \\frac{\\sqrt{145}}{3}$$\n\nWait, let me recalculate. The difference of the two r",
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "$2 \\times \\frac{\\sqrt{7^2 + 4 \\cdot 3 \\cdot 8}}{2 \\cdot 3} = \\frac{\\sqrt{145}}{3}$",
+      "injected_text": "$2 \\times \\frac{\\sqrt{7^2 + 4 \\cdot 3 \\cdot 8}}{2 \\cdot 3} = \\frac{\\sqrt{145}}{6}$",
+      "rationale": "The simplification is incorrect. When computing $2 \\times \\frac{\\sqrt{145}}{2 \\cdot 3}$, the factor of 2 in the numerator should cancel with the 2 in the denominator, yielding $\\frac{\\sqrt{145}}{3}$, not $\\frac{\\sqrt{145}}{6}$. The student appears to have multiplied the denominator by 2 instead of canceling."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "operand_swap",
+      "original_text": "$7^2 + 4 \\cdot 3 \\cdot 8$",
+      "injected_text": "$7^2 + 4 \\cdot 3 \\cdot 7$",
+      "rationale": "The discriminant computation uses the wrong coefficient. The quadratic is $3x^2 - 7x - 8 = 0$, so the discriminant should be $b^2 - 4ac = (-7)^2 - 4(3)(-8) = 49 + 96 = 145$. The student incorrectly replaced the constant term $8$ with $7$, leading to $49 + 84 = 133$ instead of 145."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "whole_number_bias",
+      "original_text": "$145 + 3 = \\boxed{148}$",
+      "injected_text": "$133 + 6 = \\boxed{139}$",
+      "rationale": "The final sum uses values that correspond to the propagated errors from earlier steps (incorrect discriminant of 133 from using 7 instead of 8, and incorrect denominator of 6 from the simplification error). These compound to produce the wrong final answer instead of the correct $145 + 3 = 148$."
+    }
+  ],
+  "claims": [],
+  "source_id": "algebra_Level 5_22"
+}

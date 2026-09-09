@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "50^2 - 4^2 = 2500 - 25",
+      "explanation": "The calculation of $4^2$ is incorrect. $4^2 = 16$, not $25$. The correct evaluation is $50^2 - 4^2 = 2500 - 16 = 2484$, making the final answer $2484$, not $2475$.",
+      "error_type": "arithmetic_error"
+    }
+  ]
+}
+```

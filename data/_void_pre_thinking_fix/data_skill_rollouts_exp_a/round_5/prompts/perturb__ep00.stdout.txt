@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "First, remember that the slope of a line in the form of $y=mx+b$ is equal to $m$.  So, the line must take the form $y=-7x+b$.  Next, substitute the point $(3,0)$ and solve for $b$: \\begin{align*}\n0&=-7(3)+b\\\\\n\\Rightarrow\\qquad 0&=-21+b\\\\\n\\Rightarrow\\qquad 21&=b\n\\end{align*} Therefore, the value of $m+b$ is $-7+21=\\boxed{15}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 2,
+      "original_text": "the value of $m+b$ is $-7+21=\\boxed{14}$",
+      "injected_text": "the value of $m+b$ is $-7+21=\\boxed{15}$",
+      "error_type": "wrong_operation",
+      "rationale": "The arithmetic $-7+21$ should equal $14$, but the final boxed answer is incorrectly stated as $15$. This is a computational error where the student made an arithmetic mistake in adding $-7$ and $21$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "So, the line must take the form $y=-7x+b$.",
+      "injected_text": "So, the line must take the form $y=7x+b$.",
+      "error_type": "negative_number_error",
+      "rationale": "The slope is given as $-7$, so the equation should be $y=-7x+b$. Writing $y=7x+b$ drops the negative sign from the slope, which is a sign error. This would propagate to give an incorrect value of $b$ if the solution were completed with this error in place, but here it remains in the setup."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 0,
+      "original_text": "the slope of a line in the form of $y=mx+b$ is equal to $m$",
+      "injected_text": "the slope of a line in the form of $y=mx+b$ is equal to $b$",
+      "error_type": "variable_misconception",
+      "rationale": "The solution incorrectly states that the slope equals $b$ instead of $m$. In slope-intercept form $y=mx+b$, $m$ is the slope and $b$ is the $y$-intercept. This fundamental misidentification of the role of each parameter is a conceptual error, though the student proceeds with the correct value $m=-7$ afterward, showing the misconception was not fully internalized."
+    }
+  ]
+}
+```

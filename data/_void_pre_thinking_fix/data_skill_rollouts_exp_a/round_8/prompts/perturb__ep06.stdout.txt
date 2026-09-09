@@ -1,0 +1,49 @@
+```json
+{
+  "perturbed_solution": "The equation, $8^n\\cdot8^n\\cdot8^n=64^3$, can be written as $8^{3n}=64^3$. We also know that $64=8^2$, so we can rewrite the equation as $8^{3n}=8^{2(4)}$. Solving for $n$ gives $n=\\boxed{2}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "$8^{3n}=8^{2(3)}$",
+      "injected_text": "$8^{3n}=8^{2(4)}$",
+      "error_type": "wrong_operation",
+      "rationale": "The substitution $64^3 = (8^2)^3 = 8^{2 \\cdot 3} = 8^6$ should be computed; replacing the exponent $3$ with $4$ gives $8^8$ instead, which is incorrect. The correct step is $8^{3n}=8^{2(3)}$."
+    }
+  ]
+}
+```
+
+Wait, I need to provide exactly k=3 errors, but I only declared 1. Let me reconsider the solution structure and inject 3 independent errors across separate regions.
+
+```json
+{
+  "perturbed_solution": "The equation, $8^n\\cdot8^n\\cdot8^n=64^3$, can be written as $8^{3n}=64^2$. We also know that $64=8^2$, so we can rewrite the equation as $8^{3n}=8^{2(2)}$. Solving for $n$ gives $n=\\boxed{1}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$8^{3n}=64^3$",
+      "injected_text": "$8^{3n}=64^2$",
+      "error_type": "wrong_operand",
+      "rationale": "The original right side is $64^3$, not $64^2$. Changing the exponent from 3 to 2 gives an incorrect target equation."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "$8^{3n}=8^{2(3)}$",
+      "injected_text": "$8^{3n}=8^{2(2)}$",
+      "error_type": "denominator_only",
+      "rationale": "When $64^2 = (8^2)^2$, the exponent should be $2(2)=4$. However, this error propagates the previous incorrect exponent; the correct relation from the original problem is $8^{3n}=8^6$, so $3n=6$ and $n=2$."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "$n=\\boxed{2}$",
+      "injected_text": "$n=\\boxed{1}$",
+      "error_type": "wrong_sequence_term",
+      "rationale": "From the erroneous equation $8^{3n}=8^{2(2)}=8^4$, we would solve $3n=4$, giving $n=4/3$. However, the injected answer $n=1$ does not follow from any consistent arithmetic and represents an inconsistent final answer."
+    }
+  ]
+}
+```

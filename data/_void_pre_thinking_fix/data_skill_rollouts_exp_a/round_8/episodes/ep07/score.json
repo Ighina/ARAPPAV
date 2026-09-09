@@ -1,0 +1,73 @@
+{
+  "perturber_reward": 1.0,
+  "verifier_reward": 0.0,
+  "verifier_recall": 0.0,
+  "verifier_precision": 0.0,
+  "verifier_f_beta": 0.0,
+  "k": 3,
+  "num_verifier_claims": 0,
+  "num_matched": 0,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 0,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 1.0,
+  "verifier_base_reward": 0.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_fraction",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "additive_thinking",
+      "all_overlaps": {}
+    }
+  ],
+  "episode_id": "ep07",
+  "perturber_format_valid": true,
+  "verifier_parse_error": "JSON parse error after fence stripping: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\nFirst 500 chars: {10}$ → $(x-2)^2+(y-5)^2 = 10$\n\nTo find intersection points, I'll subtract equation 2 from equation 1:\n$(x-2)^2+(y+1)^2 - [(x-2)^2+(y-5)^2] = 16 - 10$\n\n$(y+1)^2 - (y-5)^2 = 6$\n\nExpanding:\n$(y^2 + 2y + 1) - (y^2 - 10y + 25) = 6$\n$y^2 + 2y + 1 - y^2 + 10y - 25 = 6$\n$12y - 24 = 6$\n$12y = 30$\n$y = \\frac{30}{12} = \\frac{5}{2}$ ✓\n\nNow substitute $y = \\frac{5}{2}$ into the first circle equation:\n$(x-2)^2 + (\\frac{5}{2}+1)^2 = 16$\n$(x-2)^2 + (\\frac{7}{2})^2 = 16$\n$(x-2)^2 + \\frac{49}{4} = 16$\n$(x-2)^2 =",
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "$(y+1)^2 - (y-5)^2 = 2y + 1 + 10y - 25 = 12y - 24 = 6,$",
+      "injected_text": "$(y+1)^2 - (y-5)^2 = 2y + 1 + 10y - 25 = 12y - 24 = 8,$",
+      "rationale": "The correct difference of the two circle equations is $16 - 10 = 6$, but the student incorrectly computed it as 8, leading to a cascading error in the final answer."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_fraction",
+      "original_text": "$(x-2)^2 = \\frac{15}{4}$",
+      "injected_text": "$(x-2)^2 = \\frac{19}{4}$",
+      "rationale": "When $y = \\frac{5}{2}$ is substituted into $(x-2)^2 + (y+1)^2 = 16$, we get $(x-2)^2 + (\\frac{7}{2})^2 = 16$, so $(x-2)^2 = 16 - \\frac{49}{4} = \\frac{15}{4}$. The student incorrectly calculated this as $\\frac{19}{4}$."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "additive_thinking",
+      "original_text": "$$\\left(2 + \\frac{\\sqrt{15}}{2}\\right) - \\left(2 - \\frac{\\sqrt{15}}{2}\\right) = \\sqrt{15}.$$Thus $(AB)^2=(\\sqrt{15})^2=\\boxed{15}$.",
+      "injected_text": "$$\\left(2 + \\frac{\\sqrt{19}}{2}\\right) - \\left(2 - \\frac{\\sqrt{19}}{2}\\right) = \\sqrt{19}.$$Thus $(AB)^2=(\\sqrt{19})^2=\\boxed{19}$.",
+      "rationale": "The student propagated the erroneous value $\\frac{19}{4}$ through to the distance calculation, leading to the wrong final answer of 19 instead of 15. The distance formula is correctly applied given the wrong $(x-2)^2$ value."
+    }
+  ],
+  "claims": [],
+  "source_id": "algebra_Level 5_224"
+}

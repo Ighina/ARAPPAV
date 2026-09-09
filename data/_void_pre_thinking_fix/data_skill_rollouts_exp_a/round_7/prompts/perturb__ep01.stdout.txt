@@ -1,0 +1,23 @@
+```json
+{
+  "perturbed_solution": "There are five 3-minute increments between 3:00 pm and 3:15 pm, so the bacteria doubles 5 times, so the final population is $2^4 = 16$ times the initial population.  Hence at 3:15 pm there are $20 \\cdot 16 = 320$ bacteria.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$2^5 = 32$ times the initial population",
+      "injected_text": "$2^4 = 16$ times the initial population",
+      "error_type": "wrong_sequence_term",
+      "rationale": "The exponent should be 5 (five 3-minute increments), not 4. Computing $2^4 = 16$ instead of $2^5 = 32$ is incorrect."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "$20 \\cdot 32 = \\boxed{640}$ bacteria",
+      "injected_text": "$20 \\cdot 16 = 320$ bacteria",
+      "error_type": "wrong_operation",
+      "rationale": "Due to the propagated error from using 16 instead of 32, the multiplication now yields 320 instead of 640. The boxed final answer is also removed to match the consistent follow-through of the error."
+    }
+  ]
+}
+```

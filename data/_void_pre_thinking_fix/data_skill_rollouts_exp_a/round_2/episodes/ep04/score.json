@@ -1,0 +1,73 @@
+{
+  "perturber_reward": 0.5,
+  "verifier_reward": 0.0,
+  "verifier_recall": 0.0,
+  "verifier_precision": 0.0,
+  "verifier_f_beta": 0.0,
+  "k": 3,
+  "num_verifier_claims": 0,
+  "num_matched": 0,
+  "k_effective": 2,
+  "num_error_units": 2,
+  "num_matched_units": 0,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 1.0,
+  "verifier_base_reward": 0.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "additive_thinking",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_sequence_term",
+      "all_overlaps": {}
+    }
+  ],
+  "episode_id": "ep04",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_operation",
+      "original_text": "b=5",
+      "injected_text": "b=6",
+      "rationale": "The equation $b+5=10$ correctly yields $b=5$, not $b=6$. Subtracting 5 from both sides gives $b=5$. This is a basic arithmetic error solving the linear equation."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "additive_thinking",
+      "original_text": "$b+5=10$ and $b=5$",
+      "injected_text": "$b+4=10$ and $b=6$",
+      "rationale": "The error lies in incorrectly substituting $c=4$ into the equation. The correct equation from $1(1)^2+b(1)+c=10$ with $c=4$ is $1+b+4=10$, so $b+5=10$. Instead, the perturbed solution uses $b+4=10$, implying $1+b=10$ without properly adding the constant term, leading to $b=6$."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_sequence_term",
+      "original_text": "\\boxed{x^2+5x+4}",
+      "injected_text": "\\boxed{x^2+6x+4}",
+      "rationale": "The final answer incorrectly uses $b=6$ instead of the correct $b=5$. Since the error in computing $b$ propagates to the final boxed answer, the polynomial is stated as $x^2+6x+4$ instead of $x^2+5x+4$. This is the downstream consequence of the earlier computational mistake."
+    }
+  ],
+  "claims": [],
+  "source_id": "algebra_Level 5_97"
+}

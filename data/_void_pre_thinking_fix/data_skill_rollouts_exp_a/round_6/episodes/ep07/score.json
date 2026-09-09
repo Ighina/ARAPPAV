@@ -1,0 +1,13 @@
+{
+  "episode_id": "ep07",
+  "k": 3,
+  "perturber_format_valid": false,
+  "failure_stage": "schema",
+  "format_violation_reason": "Expected exactly 3 errors, got 1. Error IDs: ['err_001']",
+  "perturber_reward": -5.0,
+  "verifier_reward": null,
+  "verifier_recall": null,
+  "verifier_precision": null,
+  "scored": false,
+  "source_id": "algebra_Level 1_242"
+}

@@ -1,0 +1,379 @@
+```json
+{
+  "perturbed_solution": "In $3\\frac{1}{2}$ hours, Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$ miles.  If Fran's average speed in miles per hour is $s$, then Fran covers $3s$ miles in $3$ hours.  Solving $3s=42$ we find $s=\\boxed{16}$ miles per hour.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$",
+      "injected_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=40$",
+      "error_type": "whole_number_bias",
+      "rationale": "Incorrectly computed $3.5 \\times 12$ as 40 instead of 42 by treating the fractional part imprecisely; student may have approximated $3 \\times 12 + 0.5 \\times 10 = 36 + 4 = 40$ or rounded prematurely."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "Solving $3s=42$ we find $s=\\boxed{14}$",
+      "injected_text": "Solving $3s=42$ we find $s=\\boxed{16}$",
+      "error_type": "wrong_operation",
+      "rationale": "Incorrectly added 3 to 42 and presented as the answer instead of dividing $42 \\div 3 = 14$; the student performed $42 - 3 = 39$ or treated the equation as $s = 42 - 3 + 16$ instead of $s = 42 / 3$."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$ miles",
+      "injected_text": "Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(11\\text{ mph})=42$ miles",
+      "error_type": "operand_swap",
+      "rationale": "Misread or swapped Joann's speed from 12 mph to 11 mph; this is an error in the initial data entry that propagates and affects the distance computation, though the student still claims it equals 42 miles without recomputing."
+    }
+  ]
+}
+```
+
+Wait, I need to reconsider this response. Let me check the errors for independence and proper construction.
+
+Looking at my response:
+- err_001 changes 42 to 40 in the distance calculation
+- err_002 changes the final answer from 14 to 16
+- err_003 changes 12 mph to 11 mph
+
+However, these errors are not independent in the way required. If err_001 makes the distance 40 miles instead of 42, then the correct answer should be 40÷3 ≈ 13.33, not 14 or 16. This creates a contradiction.
+
+Let me reconstruct with truly independent errors in different logical units:
+
+```json
+{
+  "perturbed_solution": "In $3\\frac{1}{2}$ hours, Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$ miles.  If Fran's average speed in miles per hour is $s$, then Fran covers $3s$ miles in $3$ hours.  Solving $3s=40$ we find $s=\\boxed{14}$ miles per hour.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 2,
+      "original_text": "Solving $3s=42$ we find $s=\\boxed{14}$",
+      "injected_text": "Solving $3s=40$ we find $s=\\boxed{14}$",
+      "error_type": "whole_number_bias",
+      "rationale": "Changed the equation from $3s=42$ to $3s=40$, misremembering or miswriting the distance as 40 miles; solving this equation correctly gives $s \\approx 13.33$, but the student incorrectly states $s=14$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "$s=\\boxed{14}$",
+      "injected_text": "$s=\\boxed{16}$",
+      "error_type": "wrong_operation",
+      "rationale": "Incorrectly computed $42 \\div 3$ as 16 instead of 14; may have added instead of dividing or made an arithmetic error in the division."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "If Fran's average speed in miles per hour is $s$, then Fran covers $3s$ miles in $3$ hours.",
+      "injected_text": "If Fran's average speed in miles per hour is $s$, then Fran covers $2s$ miles in $3$ hours.",
+      "error_type": "operand_swap",
+      "rationale": "Incorrectly multiplied speed by 2 instead of 3 hours; student confused the number of hours or made an error setting up the distance formula."
+    }
+  ]
+}
+```
+
+This still has issues. Let me create a proper independent set of 3 errors:
+
+```json
+{
+  "perturbed_solution": "In $3\\frac{1}{2}$ hours, Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$ miles.  If Fran's average speed in miles per hour is $s$, then Fran covers $2s$ miles in $3$ hours.  Solving $3s=42$ we find $s=\\boxed{14}$ miles per hour.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "then Fran covers $3s$ miles in $3$ hours",
+      "injected_text": "then Fran covers $2s$ miles in $3$ hours",
+      "error_type": "operand_swap",
+      "rationale": "Changed the coefficient from 3 to 2; student multiplied the speed by 2 hours instead of 3 hours, fundamentally misreading the time constraint."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "Solving $3s=42$",
+      "injected_text": "Solving $2s=42$",
+      "error_type": "variable_misconception",
+      "rationale": "Changed the equation to match the erroneous distance formula; student now solves $2s=42$ yielding $s=21$, but then inconsistently states the answer as 14."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "we find $s=\\boxed{14}$",
+      "injected_text": "we find $s=\\boxed{21}$",
+      "error_type": "wrong_operation",
+      "rationale": "Incorrectly computed $42 \\div 2$ as 21; when the denominator is 2 instead of 3, the division yields a different result, but this is now consistent with solving $2s=42$."
+    }
+  ]
+}
+```
+
+Actually, err_002 and err_003 are dependent (the second follows from the first). Let me fix this properly with three truly independent errors in distinct locations and failure modes:
+
+```json
+{
+  "perturbed_solution": "In $3\\frac{1}{2}$ hours, Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$ miles.  If Fran's average speed in miles per hour is $s$, then Fran covers $3s$ miles in $3$ hours.  Solving $3s=42$ we find $s=\\boxed{13}$ miles per hour.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 2,
+      "original_text": "we find $s=\\boxed{14}$",
+      "injected_text": "we find $s=\\boxed{13}$",
+      "error_type": "whole_number_bias",
+      "rationale": "Incorrectly computed $42 \\div 3$ as 13 instead of 14; student rounded down or truncated the result, treating the division imprecisely."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 0,
+      "original_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$",
+      "injected_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=43$",
+      "error_type": "decimal_magnitude",
+      "rationale": "Incorrectly computed $3.5 \\times 12$ as 43 instead of 42; student mishandled the decimal/fractional multiplication, possibly computing $3 \\times 12 + 1.5 \\approx 43$."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "then Fran covers $3s$ miles in $3$ hours",
+      "injected_text": "then Fran covers $3s$ miles in $2$ hours",
+      "error_type": "variable_misconception",
+      "rationale": "Changed the time from 3 hours to 2 hours; student misread the problem statement about how long Fran rides."
+    }
+  ]
+}
+```
+
+Now errors are independent but err_002 and err_001 still interact at the final answer. Let me separate them further:
+
+```json
+{
+  "perturbed_solution": "In $3\\frac{1}{2}$ hours, Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=43$ miles.  If Fran's average speed in miles per hour is $s$, then Fran covers $3s$ miles in $2$ hours.  Solving $3s=42$ we find $s=\\boxed{14}$ miles per hour.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$",
+      "injected_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=43$",
+      "error_type": "whole_number_bias",
+      "rationale": "Incorrectly computed $3.5 \\times 12$ as 43 instead of 42; student may have rounded or miscalculated the fractional part, treating it imprecisely."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "then Fran covers $3s$ miles in $3$ hours",
+      "injected_text": "then Fran covers $3s$ miles in $2$ hours",
+      "error_type": "irrelevant_feature",
+      "rationale": "Changed Fran's riding time from 3 hours to 2 hours; student misread or misremembered the problem constraint about Fran's duration."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "Solving $3s=42$",
+      "injected_text": "Solving $2s=42$",
+      "error_type": "wrong_operation",
+      "rationale": "Changed the equation from $3s=42$ to $2s=42$ to match the erroneous time, but this inconsistency reveals the error directly from the changed formula above."
+    }
+  ]
+}
+```
+
+Wait, err_002 and err_003 are now causally linked (err_003 is just propagating err_002). Let me rethink completely. I need 3 independent errors that each stand alone:
+
+```json
+{
+  "perturbed_solution": "In $3\\frac{1}{2}$ hours, Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=40$ miles.  If Fran's average speed in miles per hour is $s$, then Fran covers $3s$ miles in $3$ hours.  Solving $3s=42$ we find $s=\\boxed{14}$ miles per hour.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$",
+      "injected_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=40$",
+      "error_type": "whole_number_bias",
+      "rationale": "Incorrectly computed $3.5 \\times 12$ as 40 instead of 42; student may have computed $3 \\times 12 + 4 = 40$ or used imprecise rounding with the fractional part."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "Solving $3s=42$",
+      "injected_text": "Solving $3s=43$",
+      "error_type": "decimal_magnitude",
+      "rationale": "Changed the distance equation from $3s=42$ to $3s=43$; student misremembered or miscalculated Joann's total distance independently at this step."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "we find $s=\\boxed{14}$",
+      "injected_text": "we find $s=\\boxed{15}$",
+      "error_type": "wrong_operation",
+      "rationale": "Incorrectly computed $42 \\div 3$ as 15 instead of 14; student made an arithmetic error in the final division step."
+    }
+  ]
+}
+```
+
+Errors 1 and 2 are independent (different steps, different values), error 3 is arithmetic working from equation $3s=42$. But err_002 and err_003 are somewhat linked in that err_002 affects what err_003 should solve. However, they are in different logical locations and err_003 is independently wrong arithmetic.
+
+Actually, the issue is that err_002 creates an inconsistency: if Joann travels 42 miles (err_001 makes it 40), then the equation should be $3s=42$, not $3s=43$. So err_002 clashes with the supposedly untouched Joann distance.
+
+Let me put the errors in completely separate, self-contained regions:
+
+```json
+{
+  "perturbed_solution": "In $3\\frac{1}{2}$ hours, Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$ miles.  If Fran's average speed in miles per hour is $s$, then Fran covers $4s$ miles in $4$ hours.  Solving $3s=42$ we find $s=\\boxed{15}$ miles per hour.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "Fran covers $3s$ miles in $3$ hours",
+      "injected_text": "Fran covers $4s$ miles in $4$ hours",
+      "error_type": "variable_misconception",
+      "rationale": "Changed both the coefficient and the time from 3 to 4; student misread the problem and thought Fran rides for 4 hours instead of 3."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "Solving $3s=42$",
+      "injected_text": "Solving $4s=42$",
+      "error_type": "wrong_operation",
+      "rationale": "Changed the equation from $3s=42$ to $4s=42$ to match the erroneous setup; this is independent of err_001 in that it is the student carrying through their mistake."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "we find $s=\\boxed{14}$",
+      "injected_text": "we find $s=\\boxed{15}$",
+      "error_type": "whole_number_bias",
+      "rationale": "Incorrectly computed $42 \\div 3$ as 15 instead of 14; student made a rounding or arithmetic error in the division, independent of the equation setup."
+    }
+  ]
+}
+```
+
+But now err_001 and err_002 are still linked. The instruction says "do not create an error that is merely the arithmetic consequence of another". However, if a student writes the wrong time in the setup, they should carry it through the equation. That's not a separate error, that's consistency.
+
+Let me re-read the policy: "Do not create an error that is merely the arithmetic consequence of another, and do not split a single conceptual slip across several edits."
+
+So I should not have err_001 (wrong time) and err_002 (wrong equation) be linked like that. Instead, I need three independent conceptual slips. Let me try:
+
+Error 1: Wrong distance (arithmetic on Joann's ride)
+Error 2: Wrong interpretation of distance (use wrong final value in equation, unrelated to error 1)
+Error 3: Wrong final division
+
+```json
+{
+  "perturbed_solution": "In $3\\frac{1}{2}$ hours, Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=44$ miles.  If Fran's average speed in miles per hour is $s$, then Fran covers $3s$ miles in $3$ hours.  Solving $3s=42$ we find $s=\\boxed{15}$ miles per hour.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$",
+      "injected_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=44$",
+      "error_type": "whole_number_bias",
+      "rationale": "Incorrectly computed $3.5 \\times 12$ as 44 instead of 42; student miscalculated $3 \\times 12 + 0.5 \\times 12$ or rounded the intermediate result."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "Solving $3s=42$",
+      "injected_text": "Solving $3s=44$",
+      "error_type": "additive_thinking",
+      "rationale": "Incorrectly used 44 in the equation instead of 42; this is the student's independent slip in reading or transferring the distance value, separate from the calculation error."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "we find $s=\\boxed{14}$",
+      "injected_text": "we find $s=\\boxed{15}$",
+      "error_type": "wrong_operation",
+      "rationale": "Incorrectly computed $42 \\div 3$ as 15 instead of 14; student made a pure arithmetic error in division, independent of setup errors."
+    }
+  ]
+}
+```
+
+This still has an issue: if the student computed Joann's distance as 44, they should use 44 in their equation (err_002), not 42. These are linked conceptually even if treated as separate notational changes.
+
+I think the way forward is to make sure the errors are in genuinely separate idea units:
+
+Error A: Compute Joann's distance wrongly (arithmetic error in multiplication)
+Error B: Set up Fran's equation wrongly (misread time or misunderstood formula structure)
+Error C: Solve the equation for s wrongly (arithmetic error in division)
+
+For these to be independent, Error B must not be a propagation of Error A:
+
+```json
+{
+  "perturbed_solution": "In $3\\frac{1}{2}$ hours, Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=40$ miles.  If Fran's average speed in miles per hour is $s$, then Fran covers $3s$ miles in $4$ hours.  Solving $3s=42$ we find $s=\\boxed{14}$ miles per hour.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$",
+      "injected_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=40$",
+      "error_type": "whole_number_bias",
+      "rationale": "Incorrectly computed $3.5 \\times 12$ as 40 instead of 42; student may have computed $3 \\times 12 + 0.5 \\times 8 = 36 + 4 = 40$ or made a rounding error."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "in $3$ hours",
+      "injected_text": "in $4$ hours",
+      "error_type": "irrelevant_feature",
+      "rationale": "Changed Fran's riding time from 3 hours to 4 hours; student misread or forgot the problem statement that Fran rides for 3 hours."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "we find $s=\\boxed{14}$",
+      "injected_text": "we find $s=\\boxed{13}$",
+      "error_type": "wrong_operation",
+      "rationale": "Incorrectly computed $42 \\div 3$ as 13 instead of 14; student made an arithmetic error in the division or truncated the result."
+    }
+  ]
+}
+```
+
+Now:
+- Error 1: Wrong Joann distance (standalone arithmetic error)
+- Error 2: Wrong Fran time (misread problem, independent of error 1)
+- Error 3: Wrong final answer (arithmetic error, independent of errors 1 and 2, uses the correct equation $3s=42$ which is untouched)
+
+These are truly independent. Each one is wrong for its own reason and could be found/fixed independently of the others.
+
+Let me verify the JSON is valid and counts match:
+
+- k=3, errors array has 3 entries ✓
+- error_ids are unique (err_001, err_002, err_003) ✓
+- error_types are from taxonomy ✓
+- injected_text differs from original_text ✓
+- All error locations make sense ✓
+
+```json
+{
+  "perturbed_solution": "In $3\\frac{1}{2}$ hours, Joann covers $\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=40$ miles.  If Fran's average speed in miles per hour is $s$, then Fran covers $3s$ miles in $4$ hours.  Solving $3s=42$ we find $s=\\boxed{13}$ miles per hour.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=42$",
+      "injected_text": "$\\left(3\\frac{1}{2}\\text{ hours}\\right)(12\\text{ mph})=40$",
+      "error_type": "whole_number_bias",
+      "rationale": "Incorrectly computed $3.5 \\times 12$ as 40 instead of 42; student may have computed $3 \\times 12 + 0.5 \\times 8$ or made an imprecise rounding error with the fractional part."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "in $3$ hours",
+      "injected_text": "in $4$ hours",
+      "error_type": "irrelevant_feature",
+      "rationale": "Changed Fran's riding time from 3 hours to 4 hours; student misread or misremembered the problem constraint that Fran rides for 3 hours."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "we find $s=\\boxed{14}$",
+      "injected_text": "we find $s=\\boxed{13}$",
+      "error_type": "wrong_operation",
+      "rationale": "Incorrectly computed $42 \\div 3$ as 13 instead of 14; student made a truncation or arithmetic error in the division step."
+    }
+  ]
+}
+```

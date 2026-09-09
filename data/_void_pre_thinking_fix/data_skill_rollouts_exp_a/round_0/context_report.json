@@ -1,0 +1,181 @@
+{
+  "no_context": false,
+  "steps": [
+    {
+      "step": "perturb",
+      "episode_id": "ep00",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 409,
+      "prompt_sha256": "db073704b8b258fcf81cc3c48ccc95a78cc6ea593c7b8caeab6703cae1e85187",
+      "returncode": 0,
+      "duration_s": 6.81
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep00",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 456,
+      "prompt_sha256": "c5b89a999754c3ecc3d9122284aa9aac3e1eafccd62e87aaeaeceadbc5f3bebc",
+      "returncode": 0,
+      "duration_s": 6.97
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep01",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 1090,
+      "prompt_sha256": "79263cd855365c4bde8b5968845d9e59d973cf4671b369cfa2270186637232a5",
+      "returncode": 0,
+      "duration_s": 6.42
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep01",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 990,
+      "prompt_sha256": "c0c609303d18ac5f04ca1334748d9c723d25ba52a2990aa19766529982da764e",
+      "returncode": 0,
+      "duration_s": 2.29
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep02",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 1520,
+      "prompt_sha256": "0ce49eb3f81b72d89a0990f19a3197ce6ac2a6df12f9a1e017b9f852af090569",
+      "returncode": 0,
+      "duration_s": 7.95
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep02",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 1450,
+      "prompt_sha256": "36f0505966cb3349b6ae7096096f597bf7988f0bed8585e9f24e0c7f89180702",
+      "returncode": 0,
+      "duration_s": 4.01
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep03",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 344,
+      "prompt_sha256": "748cd6b8184d1e130a54a5395895912074b980588ee68332050264de805271e4",
+      "returncode": 0,
+      "duration_s": 4.19
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep03",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 241,
+      "prompt_sha256": "190ac709d72b94aa3e1b7ad5b509bb0edcc37c700db21c910459bf1cec94121d",
+      "returncode": 0,
+      "duration_s": 2.08
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep04",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 577,
+      "prompt_sha256": "872d6aad7b1ec22e68d50419e954b9a57d19fdc36c57a8ab6a7442f339813163",
+      "returncode": 0,
+      "duration_s": 5.28
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep04",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 477,
+      "prompt_sha256": "7690aaafdc48abf1099bc42848a2fd87ce3ea0df9887a878c5a5ef525d41281a",
+      "returncode": 0,
+      "duration_s": 0.82
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep05",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 725,
+      "prompt_sha256": "7343706154af1cb8420735f2eaec24b45b39582ae096b5677409e9575a1cd169",
+      "returncode": 0,
+      "duration_s": 7.8
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep05",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 625,
+      "prompt_sha256": "6ccb186747e9418cac19572f33dbbe7a3988eea3668f8cdf406e7a3581091c9e",
+      "returncode": 0,
+      "duration_s": 4.03
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep06",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 430,
+      "prompt_sha256": "4ee1aa3a4ae397fc1660835f61f44dfb8d5fb97cfe5f546f42776b059530098f",
+      "returncode": 0,
+      "duration_s": 5.65
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep06",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 385,
+      "prompt_sha256": "c597d6908fe24248f207795fb0a02b14a7ff5cb2ecadfa4ba9b4c240da5c5160",
+      "returncode": 0,
+      "duration_s": 3.26
+    },
+    {
+      "step": "perturb",
+      "episode_id": "ep07",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 264,
+      "prompt_sha256": "1fe71ba0aff6406073c9efd8d6e6f881d6611b17c647b99d35261504753fe8dc",
+      "returncode": 0,
+      "duration_s": 4.0
+    },
+    {
+      "step": "verify",
+      "episode_id": "ep07",
+      "no_context": false,
+      "allowed_context_keys": [],
+      "allowed_context": {},
+      "prompt_chars": 242,
+      "prompt_sha256": "7ec3daa352b5c8754489333584a5f31333a87851325de74b5650da53424b3fa6",
+      "returncode": 0,
+      "duration_s": 5.19
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "perturber_reward": 0.5,
+  "verifier_reward": 0.6666666666666666,
+  "verifier_recall": 0.5,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 0.6666666666666666,
+  "k": 3,
+  "num_verifier_claims": 1,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.5,
+  "verifier_base_reward": 0.6666666666666666,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 0.9,
+      "error_type": "wrong_sequence_term",
+      "all_overlaps": {
+        "the bacteria doubles 5 times, so the final population is $2^4 = 16$ times the in": 0.9
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "operand_swap",
+      "all_overlaps": {
+        "the bacteria doubles 5 times, so the final population is $2^4 = 16$ times the in": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_sequence_term",
+      "all_overlaps": {
+        "the bacteria doubles 5 times, so the final population is $2^4 = 16$ times the in": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep01",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "wrong_sequence_term",
+      "original_text": "$2^5 = 32$",
+      "injected_text": "$2^4 = 16$",
+      "rationale": "The exponent should be 5, not 4, since there are five 3-minute increments. Computing $2^4 = 16$ instead of $2^5 = 32$ is wrong; however, the final answer is then incorrectly patched by using 32 anyway in the next step, creating an internal contradiction where the stated multiplier (16) does not match the one applied (32)."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "operand_swap",
+      "original_text": "$20 \\cdot 32 = \\boxed{640}$",
+      "injected_text": "$20 \\cdot 16 = \\boxed{320}$",
+      "rationale": "If the multiplier is truly 16 (from the erroneous $2^4$), then the final answer should be $20 \\cdot 16 = 320$, not $20 \\cdot 32 = 640$. This propagates the exponent error through to the final answer."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_sequence_term",
+      "original_text": "There are five 3-minute increments between 3:00 pm and 3:15 pm",
+      "injected_text": "There are four 3-minute increments between 3:00 pm and 3:15 pm",
+      "rationale": "From 3:00 to 3:15 is 15 minutes, which contains exactly five 3-minute intervals (0–3, 3–6, 6–9, 9–12, 12–15), not four. Claiming there are four increments contradicts the correct count and would justify using $2^4$ instead of $2^5$."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "the bacteria doubles 5 times, so the final population is $2^4 = 16$ times the initial population",
+      "explanation": "The solution contradicts itself. It correctly states the bacteria doubles 5 times over the 15-minute interval (since 15 ÷ 3 = 5 doubling periods), but then computes $2^4 = 16$ instead of $2^5 = 32$. With 5 doublings, the population should be multiplied by $2^5 = 32$, giving $20 \\cdot 32 = 640$ bacteria at 3:15 pm, not 320.",
+      "error_type": "wrong_operation"
+    }
+  ],
+  "source_id": "algebra_Level 2_108"
+}

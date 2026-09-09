@@ -1,0 +1,438 @@
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2 = 2500 - 25 = \\boxed{2475}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "4^2 = 2500 - 16",
+      "injected_text": "4^2 = 2500 - 25",
+      "error_type": "wrong_operation",
+      "rationale": "The error replaces $4^2 = 16$ with $4^2 = 25$. This is a fundamental arithmetic mistake where the square of 4 is computed incorrectly as 25 (which is $5^2$). The correct value is 16."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "2500 - 16 = \\boxed{2484}",
+      "injected_text": "2500 - 25 = \\boxed{2475}",
+      "error_type": "operand_swap",
+      "rationale": "Following the wrong squared value from the previous error, the subtraction is computed as $2500 - 25 = 2475$ instead of the correct $2500 - 16 = 2484$. This error propagates from the earlier mistake in computing $4^2$, maintaining internal consistency in the flawed arithmetic chain."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 0,
+      "original_text": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$.",
+      "injected_text": "We can rewrite this expression as $(50 + 5)\\times (50 - 5)$.",
+      "error_type": "whole_number_bias",
+      "rationale": "The factorization changes from $(50 + 4)\\times (50 - 4)$ to $(50 + 5)\\times (50 - 5)$. This represents a misidentification of the decomposition: $54 = 50 + 4$ (correct) is replaced with $54 = 50 + 5$ (incorrect). This is an independent error in the initial setup that would produce a completely different problem: $(50+5)(50-5) = 2500 - 25 = 2475$."
+    }
+  ]
+}
+```
+
+Wait, I need to reconsider this. The third error I declared makes the solution internally consistent but changes what problem is being solved. Let me revise to ensure three genuinely independent errors that don't cascade or support each other.
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 3^2 = 2500 - 9 = \\boxed{2491}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "4^2",
+      "injected_text": "3^2",
+      "error_type": "wrong_operation",
+      "rationale": "The error changes $4^2$ to $3^2$. This misidentifies which number should be squared in the difference of squares formula. The correct value is $4^2 = 16$, not $3^2 = 9$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "2500 - 16",
+      "injected_text": "2500 - 9",
+      "error_type": "denominator_only",
+      "rationale": "The subtrahend changes from 16 to 9, propagating the error from miscomputing which value to square. This is the arithmetic consequence of the earlier wrong squared term, maintaining consistency in the flawed chain."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "2500 - 9 = \\boxed{2484}",
+      "injected_text": "2500 - 9 = \\boxed{2491}",
+      "error_type": "negative_number_error",
+      "rationale": "The final subtraction is computed as $2500 - 9 = 2491$ instead of the correct $2500 - 9 = 2491$. Wait, this is actually correct arithmetic. Let me recalculate: $2500 - 9 = 2491$. The error is that the boxed answer states 2491 when following from the intermediate step $2500 - 9$, which is arithmetically correct for that intermediate wrong step, but the original answer 2484 is left as if it were the endpoint."
+    }
+  ]
+}
+```
+
+I'm creating logical inconsistencies. Let me restart with three cleanly separated, independent errors:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 3)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2 = 2500 - 16 = \\boxed{2484}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "(50 + 4)\\times (50 - 4)",
+      "injected_text": "(50 + 4)\\times (50 - 3)",
+      "error_type": "operand_swap",
+      "rationale": "The second factor changes from $(50 - 4)$ to $(50 - 3)$, misidentifying the decomposition of 46. Since $54 = 50 + 4$ and $46 = 50 - 4$, changing to $(50 - 3)$ is incorrect; it would represent 47, not 46."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "50^2 - 4^2",
+      "injected_text": "50^2 - 5^2",
+      "error_type": "whole_number_bias",
+      "rationale": "The formula changes from $50^2 - 4^2$ to $50^2 - 5^2$. This incorrectly applies the difference of squares by squaring the wrong offset value. The correct value to subtract is $4^2 = 16$, not $5^2 = 25$."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "2500 - 16",
+      "injected_text": "2500 - 25",
+      "error_type": "denominator_only",
+      "rationale": "The subtraction changes from $2500 - 16$ to $2500 - 25$, following the error in squaring 5 instead of 4. The correct computation is $2500 - 16 = 2484$, not $2500 - 25 = 2475$."
+    }
+  ]
+}
+```
+
+This still has errors that are too dependent. Let me create three truly independent errors in separate regions:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This approach uses the difference of squares formula. Computing: $(50 + 4)(50 - 4) = 50^2 - 4^2$. We have $50^2 = 2400$ and $4^2 = 16$. Therefore $2400 - 16 = \\boxed{2384}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 2,
+      "original_text": "50^2 = 2400",
+      "injected_text": "50^2 = 2400",
+      "error_type": "ignores_zeroes",
+      "rationale": "Actually, I need to change this. Let me reconsider."
+    }
+  ]
+}
+```
+
+Let me think more carefully and create a clean solution:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2 = 2600 - 16 = \\boxed{2584}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "50^2 - 4^2 = 2500 - 16",
+      "injected_text": "50^2 - 4^2 = 2600 - 16",
+      "error_type": "ignores_zeroes",
+      "rationale": "The value of $50^2$ is computed as 2600 instead of the correct 2500. This represents a misplacing of the place-value zero, computing $50^2$ as $50 \\times 52$ mentally or similar error."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "= 2500 - 16 = \\boxed{2484}",
+      "injected_text": "= 2600 - 16 = \\boxed{2584}",
+      "error_type": "additive_thinking",
+      "rationale": "Following the error in $50^2$, the final subtraction becomes $2600 - 16 = 2584$ instead of $2500 - 16 = 2484$. This propagates the miscalculation of the perfect square."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 0,
+      "original_text": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$.",
+      "injected_text": "We can rewrite this expression as $(50 + 4)\\times (50 - 5)$.",
+      "error_type": "operand_swap",
+      "rationale": "The decomposition changes to $(50 - 5)$ instead of $(50 - 4)$, incorrectly representing 46 as $50 - 5$ (which equals 45). Since $54 = 50 + 4$ is correct but $46 = 50 - 4$, not $50 - 5$, this is an independent conceptual error in the initial setup."
+    }
+  ]
+}
+```
+
+Hmm, but err_003 makes the solution solve a different problem entirely. The problem asks for $54 \times 46$, and changing to $(50+4)(50-5)$ would be solving $54 \times 45$. That's too drastic. Let me reconsider the policy: I should keep the method and early steps correct. Let me try once more:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2 = 2500 - 25 = \\boxed{2475}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "4^2 = 2500 - 16",
+      "injected_text": "4^2 = 2500 - 25",
+      "error_type": "whole_number_bias",
+      "rationale": "The squared term is miscalculated: $4^2$ is treated as 25 (which is $5^2$) instead of 16. This is a whole number bias error where the square of 4 is replaced with the square of 5."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "2500 - 16 = \\boxed{2484}",
+      "injected_text": "2500 - 25 = \\boxed{2475}",
+      "error_type": "negative_number_error",
+      "rationale": "The final computation uses the wrong subtrahend from the preceding error, computing $2500 - 25 = 2475$ instead of $2500 - 16 = 2484$. This is an error in applying the subtraction operation with the wrong operand."
+    }
+  ]
+}
+```
+
+I only have 2 errors here and need 3. But I'm concerned about creating a third that's too dependent or too contrived. Let me add a genuinely separate error by restructuring the solution text slightly:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This method uses the difference of squares formula $(a+b)(a-b) = a^2 - c^2$. So we have: $(50 + 4)(50 - 4) = 50^2 - 4^2 = 2500 - 25 = \\boxed{2475}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "(a+b)(a-b) = a^2 - c^2",
+      "injected_text": "(a+b)(a-b) = a^2 - b^2",
+      "error_type": "variable_misconception",
+      "rationale": "The formula uses $c^2$ instead of $b^2$, misidentifying which variable should appear in the second term. The correct difference of squares formula is $(a+b)(a-b) = a^2 - b^2$, not $a^2 - c^2$. This introduces an undefined variable and conceptual error."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "50^2 - 4^2 = 2500 - 16",
+      "injected_text": "50^2 - 4^2 = 2500 - 25",
+      "error_type": "whole_number_bias",
+      "rationale": "The squared term is miscalculated: $4^2$ is computed as 25 (which is $5^2$) instead of the correct 16. This is a whole number bias where the square of 4 is replaced with the square of 5."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "2500 - 16 = \\boxed{2484}",
+      "injected_text": "2500 - 25 = \\boxed{2475}",
+      "error_type": "operand_swap",
+      "rationale": "The subtraction is computed with the wrong subtrahend: $2500 - 25$ instead of $2500 - 16$. This swaps in an incorrect value for the second operand, following from the miscalculation of $4^2$."
+    }
+  ]
+}
+```
+
+Actually, the first error (variable_misconception) is not truly independent—it doesn't affect the actual computation since we immediately apply the formula correctly anyway with concrete numbers. And errors 2 and 3 are causally linked (err_003 follows from err_002). This violates the policy. Let me restart with a better structure where errors are truly independent:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2 = 2500 - 16 = \\boxed{2584}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "\\boxed{2484}",
+      "injected_text": "\\boxed{2584}",
+      "error_type": "additive_thinking",
+      "rationale": "The final answer is stated as 2584 instead of 2484. This appears to be adding 100 instead of subtracting correctly, or similar additive error in the final step. The correct value is $2500 - 16 = 2484$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "50 + 4)(50 - 4) = 50^2",
+      "injected_text": "50 + 4)(50 - 4) = 51^2",
+      "error_type": "wrong_operation",
+      "rationale": "The squared base is changed from $50^2$ to $51^2$, incorrectly identifying the midpoint of the two numbers. Since $54 + 46 = 100$, the midpoint is 50, not 51."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "= 50^2 - 4^2",
+      "injected_text": "= 50^2 - 5^2",
+      "error_type": "whole_number_bias",
+      "rationale": "The offset is changed from $4^2$ to $5^2$, misidentifying the difference between each number and the base. Since $54 = 50 + 4$ and $46 = 50 - 4$, the offset is 4, not 5."
+    }
+  ]
+}
+```
+
+But error_002 changes a span that doesn't exist literally as written ("50 + 4)(50 - 4) = 50^2" doesn't appear consecutively). Let me be more careful:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2 = 2500 - 16 = \\boxed{2484}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "50^2 - 4^2",
+      "injected_text": "51^2 - 4^2",
+      "error_type": "wrong_operation",
+      "rationale": "The base of the first squared term is changed from 50 to 51. The correct approach uses the midpoint of 54 and 46, which is $\\frac{54+46}{2} = 50$, not 51."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "50^2 - 4^2",
+      "injected_text": "50^2 - 5^2",
+      "error_type": "whole_number_bias",
+      "rationale": "The offset is changed from 4 to 5. Since $54 - 50 = 4$ and $50 - 46 = 4$, the offset should be 4, not 5."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "2500 - 16 = \\boxed{2484}",
+      "injected_text": "2500 - 16 = \\boxed{2416}",
+      "error_type": "decimal_magnitude",
+      "rationale": "The final boxed answer is 2416 instead of 2484. This misplaces a digit, computing the subtraction incorrectly."
+    }
+  ]
+}
+```
+
+But err_001 and err_002 both change parts of "50^2 - 4^2", which means they're overlapping/causally linked per the rules. The grouping algorithm will merge them. Let me truly separate them:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This is a difference of squares formula. Applying it: $(50 + 4)(50 - 4) = 50^2 - 4^2$. Now, $50^2 = 2500$ and $4^2 = 16$, so the answer is $2500 - 15 = \\boxed{2485}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 2,
+      "original_text": "4^2 = 16",
+      "injected_text": "4^2 = 17",
+      "error_type": "whole_number_bias",
+      "rationale": "The square of 4 is incorrectly computed as 17 instead of 16. This is an arithmetic error in calculating $4 \\times 4$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "$2500 - 16 = \\boxed{2484}$",
+      "injected_text": "$2500 - 15 = \\boxed{2485}$",
+      "error_type": "operand_swap",
+      "rationale": "The subtrahend is changed from 16 to 15, and correspondingly the answer changes from 2484 to 2485. This is independent of the first error and represents a separate miscalculation in the final subtraction step."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "This is a difference of squares formula.",
+      "injected_text": "This is a sum of squares formula.",
+      "error_type": "geometry_definition",
+      "rationale": "The formula name is incorrectly stated as 'sum of squares' instead of 'difference of squares'. While the calculation proceeds correctly despite this mislabeling, the conceptual identification of the method is wrong."
+    }
+  ]
+}
+```
+
+But err_003 doesn't actually change the mathematics—it's just a wrong label. Per the rules, this violates the \"plausibility floor\" and the instruction not to change something that \"only looks wrong because of how the text is worded.\" Let me revise:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2$. We compute $50^2 = 2400$ and $4^2 = 16$, giving us $2400 - 16 = \\boxed{2384}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 2,
+      "original_text": "$50^2 = 2400$",
+      "injected_text": "$50^2 = 2400$",
+      "error_type": "ignores_zeroes",
+      "rationale": "Actually, $50^2 = 2500$, not 2400. The error is that a zero is dropped or misplaced in the calculation."
+    }
+  ]
+}
+```
+
+Wait, the original_text and injected_text are identical, which violates rule 3. Let me fix:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2$. We compute $50^2 = 2400$ and $4^2 = 16$, giving us $2400 - 16 = \\boxed{2384}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 2,
+      "original_text": "50^2 = 2500",
+      "injected_text": "50^2 = 2400",
+      "error_type": "ignores_zeroes",
+      "rationale": "The value of $50^2$ is incorrectly computed as 2400 instead of 2500. This represents misplacing a zero or dropping it during mental calculation, such as computing $50 \\times 50$ as $5 \\times 5 \\times 100 = 25 \\times 100$ but then using 24 instead of 25."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "2500 - 16 = \\boxed{2484}",
+      "injected_text": "2400 - 16 = \\boxed{2384}",
+      "error_type": "additive_thinking",
+      "rationale": "Following the wrong value of $50^2$, the subtraction becomes $2400 - 16 = 2384$ instead of $2500 - 16 = 2484$. This propagates the earlier error in squaring."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "$(50 + 4)(50 - 4) = 50^2 - 4^2$",
+      "injected_text": "$(50 + 4)(50 - 4) = 50^2 - 3^2$",
+      "error_type": "operand_swap",
+      "rationale": "The offset in the second squared term is changed from 4 to 3. Since $54 - 50 = 4$ and $50 - 46 = 4$, the correct offset is 4, not 3. This is an independent error in setting up the difference of squares."
+    }
+  ]
+}
+```
+
+This is better, but err_002 depends causally on err_001. Let me make err_002 and err_003 truly independent by using a fully expanded solution:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2 = 2500 - 16 = \\boxed{2484}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "50^2",
+      "injected_text": "51^2",
+      "error_type": "wrong_operation",
+      "rationale": "The base is changed from 50 to 51 in the first squared term. The midpoint between 54 and 46 is 50, not 51, so this is an incorrect identification of the center value for the difference of squares method."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "4^2",
+      "injected_text": "3^2",
+      "error_type": "whole_number_bias",
+      "rationale": "The offset is changed from 4 to 3. Since $54 = 50 + 4$ and $46 = 50 - 4$, the offset from the center to each endpoint is 4, not 3."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "2500 - 16 = \\boxed{2484}",
+      "injected_text": "2500 - 16 = \\boxed{2425}",
+      "error_type": "decimal_magnitude",
+      "rationale": "The final answer is incorrectly computed or stated as 2425 instead of 2484. The digits are transposed or miscalculated in the final step."
+    }
+  ]
+}
+```
+
+But err_001 and err_002 both change parts of the formula expression "50^2 - 4^2", so they overlap textually. The error grouping will collapse them. And if I change just "50^2" to "51^2" or just "4^2" to "3^2", the original_text needs to be a verbatim slice. Let me check: the solution says "= 50^2 - 4^2 =", so I can extract "50^2" and "4^2" as separate substrings that don't overlap. That should work per the rules. Let me verify the JSON is valid:
+
+```json
+{
+  "perturbed_solution": "We can rewrite this expression as $(50 + 4)\\times (50 - 4)$. This is a difference of squares: $(50 + 4)(50 - 4) = 50^2 - 4^2 = 2500 - 16 = \\boxed{2484}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "50^2",
+      "injected_text": "51^2",
+      "error_type": "wrong_operation",
+      "rationale": "The base is changed from 50 to 51 in the first squared term. The midpoint between 54 and 46 is 50, not 51, so this is an incorrect identification of the center value for the difference of squares method."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "4^2",
+      "injected_text": "3^2",
+      "error_type": "whole_number_bias",
+      "rationale": "The offset is changed from 4 to 3. Since $54 = 50 + 4$ and $46 = 50 - 4$, the offset from the center to each endpoint is 4, not 3."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "2500 - 16 = \\boxed{2484}",
+      "injected_text": "2500 - 16 = \\boxed{2425}",
+      "error_type": "decimal_magnitude",
+      "rationale": "The final answer is incorrectly computed or stated as 2425 instead of 2484. The digits are transposed or miscalculated in the final step."
+    }
+  ]
+}
+```
+
+But wait: if I change "50^2" to "51^2" AND "4^2" to "3^2", the full solution would read:
+"$(50 + 4)(50 - 4) = 51^2 - 3^2 = ...$"
+
+This doesn't match the original anymore at all. The orchestrator will try to find the original_text snippets in the original solution, and they are there ("50^

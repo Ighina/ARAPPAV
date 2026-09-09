@@ -1,0 +1,73 @@
+{
+  "perturber_reward": 1.0,
+  "verifier_reward": 0.0,
+  "verifier_recall": 0.0,
+  "verifier_precision": 0.0,
+  "verifier_f_beta": 0.0,
+  "k": 3,
+  "num_verifier_claims": 0,
+  "num_matched": 0,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 0,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 1.0,
+  "verifier_base_reward": 0.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {}
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "variable_misconception",
+      "all_overlaps": {}
+    }
+  ],
+  "episode_id": "ep06",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "original_text": "$C = \\left(\\frac{24 + 3}{2}, \\frac{7 + 4}{2} \\right) = \\left(\\frac{27}{2}, \\frac{11}{2} \\right).$",
+      "injected_text": "$C = \\left(\\frac{24 + 3}{2}, \\frac{7 + 4}{2} \\right) = \\left(\\frac{27}{2}, \\frac{9}{2} \\right).$",
+      "rationale": "The $y$-coordinate should be $\\frac{7+4}{2} = \\frac{11}{2}$, but $\\frac{11}{2}$ was incorrectly simplified to $\\frac{9}{2}$. This appears to treat 11 as 9 in the numerator."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "original_text": "$2x - 4y = 27 - 22 = \\boxed{5}.$",
+      "injected_text": "$2x - 4y = 27 - 18 = \\boxed{9}.$",
+      "rationale": "With the perturbed $y = \\frac{9}{2}$, the calculation becomes $2 \\cdot \\frac{27}{2} - 4 \\cdot \\frac{9}{2} = 27 - 18 = 9$. However, the correct calculation uses $y = \\frac{11}{2}$, giving $27 - 22 = 5$. The error propagates from err_001."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "variable_misconception",
+      "original_text": "The perpendicular bisector of $AB$ must meet $AB$ at its midpoint, so $C$ is the midpoint of $AB$.",
+      "injected_text": "The perpendicular bisector of $AB$ must meet $AB$ at a point equidistant from $A$ and $B$, so $C$ is that point.",
+      "rationale": "This rephrasing misses the key insight that the perpendicular bisector meets the line segment $AB$ specifically at its midpoint. The restatement is vague about what 'that point' is and obscures the midpoint relationship needed for the calculation."
+    }
+  ],
+  "claims": [],
+  "source_id": "algebra_Level 4_227"
+}

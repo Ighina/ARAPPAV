@@ -1,0 +1,27 @@
+1. **Build the unit map before you edit anything.** Read the response and list every separately locatable place: each labelled or numbered step, each displayed equation, each distinct quantity that is derived once, each sub-question answered. Choose exactly as many of these places as errors requested, spread as far apart as the structure allows, and put exactly one edit in each. Two edits inside the same equation, the same derivation of one quantity, the same sub-answer, or in neighbouring lines will be read as a single mistake and earn nothing for the second. If the response offers fewer separable places than errors requested, still separate the edits maximally — different sub-questions first, then different quantities, then distant paragraphs — and prefer an omission-style edit for the last one, since omissions attach to a place no other edit touches.
+
+2. **Each edit must change the mathematics, never only the words.** The rewritten text must assert a different value, relation, or conclusion than the original. Never reproduce a line unchanged, and never limit a change to rephrasing, re-notating, reordering equal terms, or reformatting: text that is odd but mathematically equivalent is worth nothing and a byte-identical replacement is worth less than nothing. Before submitting, check every edit against its original and confirm that some number, operation, or claim genuinely differs.
+
+3. **No dependent chains.** Never create an error that is merely the arithmetic consequence of another, and never split one conceptual slip across several edits. Each error must be wrong for its own reason, so repairing one leaves the others still wrong.
+
+4. **Keep the front of the response clean.** The restatement and the first substantive computation are read hardest, and the earliest edit in a response is the one most often found. Place no edit in the opening third; start from the middle and work back, and do not let the remaining edits crowd into the closing paragraph, where they read as one mistake.
+
+5. **Prefer the quiet error kinds, in this order.** (a) Stopping short — omit a required final conversion, one case, one part of what was asked, or the last step of a justification, with no announcement that anything is missing; (b) misusing a variable's role (rate as total, parameter as unknown, per-unit as aggregate, one unknown standing in for another); (c) an off-by-one index or shifted term deep inside a sequence, recurrence, or summation; (d) altering one component of a compound object — one side, one denominator, one factor, one boundary — while everything around it stays correct; (e) treating a relationship additively where it is multiplicative, or vice versa; (f) inverting a relationship: reciprocal instead of ratio, reversed direction of comparison, reversed order in a naturally-reading subtraction or division; (g) reusing a quantity that should be counted once, or counting once a quantity that applies repeatedly.
+
+6. **Ration the loud kinds.** Silently treating a non-integer as whole, or rounding mid-derivation as if exact, is checked routinely: use it at most once per response and never as the earliest edit. Likewise allow at most one changed arithmetic operation or exchanged pair of operands per response, only where the operands are close in size so the value still looks right, and only inside an expression long enough that the change survives a single pass. Never shift a decimal point or power of ten, never swap a coefficient or fraction a reader can check by inspection, and flip a sign only when the result keeps the sign the situation forces.
+
+7. **Never insert; only alter or remove.** Add no commentary, extra quantity, spurious justification, or hedge. Inserted-looking text is found immediately, while removals leave nothing anomalous to look at.
+
+8. **Propagate consistently.** Once a value or rule is altered, carry it through every later use so that nothing in the response contradicts anything else. A wrong value reused correctly elsewhere is the loudest possible signal.
+
+9. **Execute the wrong method correctly.** All arithmetic downstream of a wrong step must itself be exact; a wrong method plus a careless slip gives two chances to be caught for the credit of one.
+
+10. **Keep results the right kind of number.** After the error, quantities should stay the type, sign, units, and rough magnitude the problem expects. Small believable deviations survive; wild ones do not.
+
+11. **Match the surrounding register exactly.** Same notation, symbols, sentence length, and level of explanation as the untouched text. No emphasis and no unusual phrasing near the error.
+
+12. **Vary the failure modes.** Do not use one kind of slip twice in a response; near-identical edits both invite the same check and tend to read as a single mistake.
+
+13. **Respect the plausibility floor.** Every error must be one a competent but fallible student would genuinely make. Discard anything absurd and anything that looks wrong only because of wording rather than what it asserts.
+
+14. **Read it back end to end.** Confirm the number of distinct edited places equals the number of errors requested, that no two share a step, equation, quantity, or sub-answer, that each is mutually independent, that each genuinely alters the mathematics, and that no unedited line silently contradicts one of them.

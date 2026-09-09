@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "Squaring both sides of the equation yields $\\frac{2}{x} + 2 = \\frac{9}{16}$. Subtracting $2$ from both sides gives $\\frac{2}{x} = -\\frac{23}{16}$, so $x = \\boxed{-\\frac{32}{23}}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$\\frac 2x + 2 = \\frac 94$",
+      "injected_text": "$\\frac{2}{x} + 2 = \\frac{9}{16}$",
+      "error_type": "wrong_operation",
+      "rationale": "Squaring $\\frac{3}{2}$ gives $\\frac{9}{4}$, not $\\frac{9}{16}$. The error confuses squaring the numerator and denominator separately (which yields $\\frac{9}{4}$) with squaring only the denominator or misapplying the squaring operation."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "$\\frac 2x = \\frac 14$",
+      "injected_text": "$\\frac{2}{x} = -\\frac{23}{16}$",
+      "error_type": "whole_number_bias",
+      "rationale": "When subtracting $2$ from $\\frac{9}{16}$, the correct result is $\\frac{9}{16} - \\frac{32}{16} = -\\frac{23}{16}$. The error treats $2$ as if it equals $\\frac{32}{16}$ but then commits an arithmetic mistake in the subtraction, yielding a negative intermediate result where the student incorrectly processes the fraction arithmetic."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 2,
+      "original_text": "$x = \\boxed{8}$",
+      "injected_text": "$x = \\boxed{-\\frac{32}{23}}$",
+      "error_type": "proportional_reasoning_error",
+      "rationale": "From $\\frac{2}{x} = -\\frac{23}{16}$, the correct step is to cross-multiply or invert: $x = \\frac{2 \\cdot 16}{-23} = -\\frac{32}{23}$. This error propagates from err_002 but represents an additional misconception: mishandling the relationship between the fraction and its reciprocal when solving for $x$."
+    }
+  ]
+}

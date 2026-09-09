@@ -1,0 +1,33 @@
+```json
+{
+  "perturbed_solution": "Since the axis of symmetry is vertical and the vertex is $(2,4)$, the parabola may also be written as  \\[y=a(x-2)^2+4\\] for some value of $a$.  Plugging the point $(1,1)$ into this expression gives  \\[1=a(1-2)^2+4=2a+4.\\] This tells us $a=-1$.
+
+Our equation is  \\[y=-1(x-2)^2+4.\\] Putting it $y=ax^2+bx+c$ form requires expanding the square, so we get  \\[y=-1(x^2-4x+4)+4=\\boxed{-x^2+4x}.\\]",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "1=a(1-2)^2+4=a+4",
+      "injected_text": "1=a(1-2)^2+4=2a+4",
+      "error_type": "wrong_operation",
+      "rationale": "The student incorrectly computed $(1-2)^2$ as 2 instead of 1. Since $(-1)^2 = 1$, not 2, the correct simplification is $a+4$, not $2a+4$. This leads to the wrong value of $a$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 2,
+      "original_text": "This tells us $a=-3$.",
+      "injected_text": "This tells us $a=-1$.",
+      "error_type": "negative_number_error",
+      "rationale": "Because of the error in the previous step ($2a+4=1$ instead of $a+4=1$), the student now solves $2a=-3$ to get $a=-1.5$, but then rounds or approximates to $a=-1$. The correct answer is $a=-3$ from $a+4=1$."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 4,
+      "original_text": "y=-3(x^2-4x+4)+4=\\boxed{-3x^2+12x-8}",
+      "injected_text": "y=-1(x^2-4x+4)+4=\\boxed{-x^2+4x}",
+      "error_type": "incomplete_solution",
+      "rationale": "After expanding $-1(x^2-4x+4)+4 = -x^2+4x-4+4 = -x^2+4x$, the student stops and reports the final answer, but omits the constant term entirely. The correct expansion with $a=-3$ is $-3x^2+12x-8$; here the constant $-8$ is missing, making the response incomplete in form."
+    }
+  ]
+}
+```

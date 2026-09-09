@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "There are four 3-minute increments between 3:00 pm and 3:15 pm, so the bacteria doubles 5 times, so the final population is $2^4 = 16$ times the initial population.  Hence at 3:15 pm there are $20 \\cdot 16 = \\boxed{320}$ bacteria.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "$2^5 = 32$",
+      "injected_text": "$2^4 = 16$",
+      "error_type": "wrong_sequence_term",
+      "rationale": "The exponent should be 5, not 4, since there are five 3-minute increments. Computing $2^4 = 16$ instead of $2^5 = 32$ is wrong; however, the final answer is then incorrectly patched by using 32 anyway in the next step, creating an internal contradiction where the stated multiplier (16) does not match the one applied (32)."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 0,
+      "original_text": "$20 \\cdot 32 = \\boxed{640}$",
+      "injected_text": "$20 \\cdot 16 = \\boxed{320}$",
+      "error_type": "operand_swap",
+      "rationale": "If the multiplier is truly 16 (from the erroneous $2^4$), then the final answer should be $20 \\cdot 16 = 320$, not $20 \\cdot 32 = 640$. This propagates the exponent error through to the final answer."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "There are five 3-minute increments between 3:00 pm and 3:15 pm",
+      "injected_text": "There are four 3-minute increments between 3:00 pm and 3:15 pm",
+      "error_type": "wrong_sequence_term",
+      "rationale": "From 3:00 to 3:15 is 15 minutes, which contains exactly five 3-minute intervals (0–3, 3–6, 6–9, 9–12, 12–15), not four. Claiming there are four increments contradicts the correct count and would justify using $2^4$ instead of $2^5$."
+    }
+  ]
+}

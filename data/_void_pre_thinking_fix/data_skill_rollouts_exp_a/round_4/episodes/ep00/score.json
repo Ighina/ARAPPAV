@@ -1,0 +1,95 @@
+{
+  "perturber_reward": 0.6666666666666667,
+  "verifier_reward": 0.4,
+  "verifier_recall": 0.3333333333333333,
+  "verifier_precision": 0.5,
+  "verifier_f_beta": 0.4,
+  "k": 3,
+  "num_verifier_claims": 2,
+  "num_matched": 1,
+  "k_effective": 3,
+  "num_error_units": 3,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.6666666666666667,
+  "verifier_base_reward": 0.4,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 1.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {
+        "the denominator $x^2 + 57x - 2970$ factors as $(x + 33)(x + 90)$": 1.0,
+        "Then $\\alpha = 47$ and $\\beta = 90$": 0.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "the denominator $x^2 + 57x - 2970$ factors as $(x + 33)(x + 90)$": 0.0,
+        "Then $\\alpha = 47$ and $\\beta = 90$": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "denominator_only",
+      "all_overlaps": {
+        "the denominator $x^2 + 57x - 2970$ factors as $(x + 33)(x + 90)$": 0.0,
+        "Then $\\alpha = 47$ and $\\beta = 90$": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep00",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "original_text": "the denominator $x^2 + 57x - 2970$ factors as $(x - 33)(x + 90)$",
+      "injected_text": "the denominator $x^2 + 57x - 2970$ factors as $(x + 33)(x + 90)$",
+      "rationale": "The denominator should factor as $(x - 33)(x + 90)$, which gives $x^2 + 57x - 2970$ when expanded. Changing it to $(x + 33)(x + 90)$ would give $x^2 + 123x + 2970$, which is incorrect. This is a sign error in one factor root, treating the constant term's contribution without proper attention to the coefficient structure."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "original_text": "Subtracting these equations, we get $\\alpha + \\beta = 80 - (-57) = \\boxed{137}$.",
+      "injected_text": "Adding these equations, we get $\\alpha + \\beta = 80 + (-57) = \\boxed{137}$.",
+      "rationale": "The correct operation is subtraction: from $\\alpha + \\gamma = 80$ and $-\\beta + \\gamma = -57$, subtracting gives $(\\alpha + \\gamma) - (-\\beta + \\gamma) = 80 - (-57)$, so $\\alpha + \\beta = 137$. Using addition instead is an incorrect operation choice, though the final answer happens to be numerically the same by coincidence."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "denominator_only",
+      "original_text": "\\[\\frac{x^2 - 80x + 1551}{x^2 + 57x - 2970} = \\frac{(x - 47)(x - 33)}{(x - 33)(x + 90)} = \\frac{x - 47}{x + 90}.\\]",
+      "injected_text": "\\[\\frac{x^2 - 80x + 1551}{x^2 + 57x - 2970} = \\frac{(x - 47)(x - 33)}{(x - 33)(x + 90)} = \\frac{x - 47}{x + 33}.\\]",
+      "rationale": "After canceling the common factor $(x - 33)$, the simplified form should be $\\frac{x - 47}{x + 90}$. Writing $\\frac{x - 47}{x + 33}$ incorrectly changes only the denominator, replacing $x + 90$ with $x + 33$. This would lead to $\\beta = 33$ instead of $\\beta = 90$."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "the denominator $x^2 + 57x - 2970$ factors as $(x + 33)(x + 90)$",
+      "explanation": "The factorization is incorrect. Expanding $(x + 33)(x + 90)$ gives $x^2 + 123x + 2970$, not $x^2 + 57x - 2970$. The correct factorization of $x^2 + 57x - 2970$ is $(x - 33)(x + 90)$, which expands to $x^2 + 90x - 33x - 2970 = x^2 + 57x - 2970$.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "Then $\\alpha = 47$ and $\\beta = 90$",
+      "explanation": "This conclusion is based on the incorrect factorization above. After the numerator cancellation, the correct simplified form should be $\\frac{x - 47}{x - 33}$ (from $(x - 47)(x - 33) / ((x - 33)(x + 90))$), not $\\frac{x - 47}{x + 33}$. However, the problem states the form is $\\frac{x - \\alpha}{x + \\beta}$, which requires $\\beta$ to be positive in the denominator. The denominator should be $x + 90$, giving $\\alpha = 47$ and $\\beta = 90$ is actually correct, but it arises from canceling $(x - 33)$ from numerator and denominator, leaving $\\frac{x - 47}{x + 90}$.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 5_42"
+}

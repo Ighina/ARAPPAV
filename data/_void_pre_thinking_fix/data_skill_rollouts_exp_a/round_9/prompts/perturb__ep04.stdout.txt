@@ -1,0 +1,31 @@
+```json
+{
+  "perturbed_solution": "We have $m = \\dfrac{y_2 - y_1}{x_2-x_1} = \\dfrac{-5-5}{2-(-3)} = \\dfrac{-10}{3} = \\boxed{-\\dfrac{10}{3}}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 0,
+      "original_text": "\\dfrac{-10}{5}",
+      "injected_text": "\\dfrac{-10}{3}",
+      "error_type": "denominator_only",
+      "rationale": "The denominator was incorrectly changed from 5 to 3. The correct denominator is $2 - (-3) = 5$, not 3. This error propagates to give the wrong final answer of $-\\dfrac{10}{3}$ instead of $-2$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 0,
+      "original_text": "$m = \\dfrac{y_2 - y_1}{x_2-x_1} = \\dfrac{-5-5}{2-(-3)}$",
+      "injected_text": "$m = \\dfrac{y_2 - y_1}{x_2-x_1} = \\dfrac{5-(-5)}{2-(-3)}$",
+      "error_type": "operand_swap",
+      "rationale": "The numerator was incorrectly computed as $5 - (-5) = 10$ instead of $-5 - 5 = -10$. The points were swapped so that $y_1 = -5$ and $y_2 = 5$ instead of the stated assignment, giving the opposite sign in the numerator."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 0,
+      "original_text": "$2-(-3)$",
+      "injected_text": "$2+(-3)$",
+      "error_type": "wrong_operation",
+      "rationale": "The subtraction of a negative was incorrectly computed. Writing $2 + (-3)$ instead of $2 - (-3)$ gives $-1$ in the denominator rather than $5$, changing the slope calculation. This is a wrong operation applied to the denominator."
+    }
+  ]
+}
+```

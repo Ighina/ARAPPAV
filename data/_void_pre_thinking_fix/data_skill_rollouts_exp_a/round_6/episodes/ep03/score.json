@@ -1,0 +1,13 @@
+{
+  "episode_id": "ep03",
+  "k": 3,
+  "perturber_format_valid": false,
+  "failure_stage": "json",
+  "format_violation_reason": "JSON parse error after fence stripping: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\nFirst 500 chars: {19440}$\n\nThese are 6 separable computational places. I need 3 errors in 3 different places, each independently wrong.\n\n**Planning the errors:**\n\n1. **Error 1 (Step 2 - solving for C):** Change the simplification of $(3C - 3) + (3C + 3) + C + (9C) = 64$ to get a wrong value for C. The correct simplification is $16C = 64$, so $C = 4$. I'll make it $16C = 48$ leading to $C = 3$.\n\n2. **Error 2 (Step 3 - computing A):** Given $A + 3 = C \\times 3$, if $C = 3$ (from my wrong value), then $A + 3 = 9$, \nRaw output (first 500 chars): I need to inject exactly 3 independent mathematical errors into this solution. Let me first understand the solution structure and identify distinct places where I can make errors.\n\n**Unit map (places in the solution):**\n1. The constraint equation setup: $(3C - 3) + (3C + 3) + C + (9C) = 64$\n2. Solving for C from that equation: $C = 4$\n3. Computing A: $A = 9$\n4. Computing B: $B = 15$\n5. Computing D: $D = 36$\n6. Computing the product: $9\\cdot 15\\cdot 4\\cdot 36 = \\boxed{19440}$\n\nThese are 6 separab",
+  "perturber_reward": -10.0,
+  "verifier_reward": null,
+  "verifier_recall": null,
+  "verifier_precision": null,
+  "scored": false,
+  "source_id": "algebra_Level 4_169"
+}

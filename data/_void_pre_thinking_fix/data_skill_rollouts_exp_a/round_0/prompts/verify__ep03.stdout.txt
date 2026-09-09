@@ -1,0 +1,12 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "8(x^{3+3})=\\boxed{8x^6}",
+      "explanation": "The exponent rule (x^a)^b = x^(ab) should be applied here, not addition. (x^3)^3 = x^(3×3) = x^9, not x^(3+3) = x^6. The correct final answer is 8x^9.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

@@ -1,0 +1,104 @@
+{
+  "perturber_reward": 0.0,
+  "verifier_reward": 0.8,
+  "verifier_recall": 1.0,
+  "verifier_precision": 0.6666666666666666,
+  "verifier_f_beta": 0.8,
+  "k": 3,
+  "num_verifier_claims": 3,
+  "num_matched": 2,
+  "k_effective": 3,
+  "num_error_units": 2,
+  "num_matched_units": 2,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 0.8,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 2,
+      "best_overlap": 0.9,
+      "error_type": "inversion_error",
+      "all_overlaps": {
+        "Let $d$ denote the number of miles in the distance from $A$ to $B$ and let $r$ d": 0.0,
+        "It takes $d/60$ hours to travel from $A$ to $B$ and $d/r$ hours to travel from $": 0.0,
+        "$\\frac{2d}{\\frac{d}{60}+\\frac{d}{r}} \\cdot \\frac{\\frac{60}{d}}{\\frac{60}{d}} = \\": 0.9
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "Let $d$ denote the number of miles in the distance from $A$ to $B$ and let $r$ d": 0.0,
+        "It takes $d/60$ hours to travel from $A$ to $B$ and $d/r$ hours to travel from $": 0.0,
+        "$\\frac{2d}{\\frac{d}{60}+\\frac{d}{r}} \\cdot \\frac{\\frac{60}{d}}{\\frac{60}{d}} = \\": 0.0
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": 0,
+      "best_overlap": 1.0,
+      "error_type": "variable_misconception",
+      "all_overlaps": {
+        "Let $d$ denote the number of miles in the distance from $A$ to $B$ and let $r$ d": 1.0,
+        "It takes $d/60$ hours to travel from $A$ to $B$ and $d/r$ hours to travel from $": 0.0,
+        "$\\frac{2d}{\\frac{d}{60}+\\frac{d}{r}} \\cdot \\frac{\\frac{60}{d}}{\\frac{60}{d}} = \\": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep06",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "inversion_error",
+      "original_text": "\\frac{120}{1+\\frac{60}{r}}",
+      "injected_text": "\\frac{120}{1+\\frac{r}{60}}",
+      "rationale": "The simplified average speed formula should be $\\frac{120}{1+\\frac{60}{r}}$, not $\\frac{120}{1+\\frac{r}{60}}$. This inverts the fraction in the denominator, causing the subsequent calculation to yield an incorrect rate."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "wrong_operation",
+      "original_text": "Setting this expression equal to $45$, we find $r=\\boxed{36}$.",
+      "injected_text": "Setting this expression equal to $45$, we find $r=\\boxed{40}$.",
+      "rationale": "When solving $\\frac{120}{1+\\frac{r}{60}}=45$ (using the inverted form from err_001), the correct arithmetic from that (incorrect) equation yields $r=40$ rather than $36$. This compounds the inversion error by showing what value would result from the inverted formula."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "variable_misconception",
+      "original_text": "Let $d$ denote the number of miles in the distance from $A$ to $B$ and let $r$ denote the speed of the car (in miles per hour) on the return trip.",
+      "injected_text": "Let $d$ denote the number of miles in the distance from $A$ to $B$ and let $r$ denote the speed of the car (in miles per hour) on the initial trip.",
+      "rationale": "The variable $r$ is defined as the speed on the 'initial trip' instead of the 'return trip'. Since the initial trip speed is given as 60 mph, this misdefines what $r$ represents and contradicts how the problem uses $r$ throughout the derivation."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "Let $d$ denote the number of miles in the distance from $A$ to $B$ and let $r$ denote the speed of the car (in miles per hour) on the initial trip.",
+      "explanation": "The problem states the car travels from $A$ to $B$ at 60 miles per hour, not at an unknown speed $r$. The variable $r$ should denote the unknown return speed from $B$ to $A$, not the initial trip speed. The initial speed is given as 60 mph.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "It takes $d/60$ hours to travel from $A$ to $B$ and $d/r$ hours to travel from $B$ to $A$.",
+      "explanation": "Given the incorrect definition of $r$ above, this line perpetuates the error. With the correct setup where $r$ is the return speed, this line should read: It takes $d/60 = 120/60 = 2$ hours to travel from $A$ to $B$ and $d/r = 120/r$ hours to travel from $B$ to $A$.",
+      "error_type": null
+    },
+    {
+      "step_index": null,
+      "quoted_text": "$\\frac{2d}{\\frac{d}{60}+\\frac{d}{r}} \\cdot \\frac{\\frac{60}{d}}{\\frac{60}{d}} = \\frac{120}{1+\\frac{r}{60}}$",
+      "explanation": "The algebraic simplification is incorrect. Starting from $\\frac{2d}{\\frac{d}{60}+\\frac{d}{r}}$, factor out $d$ from the denominator to get $\\frac{2d}{d(\\frac{1}{60}+\\frac{1}{r})} = \\frac{2}{\\frac{1}{60}+\\frac{1}{r}}$. Multiplying by $\\frac{60r}{60r}$ yields $\\frac{120r}{r+60}$. The claimed result $\\frac{120}{1+\\frac{r}{60}}$ is equivalent to $\\frac{120 \\cdot 60}{60+r} = \\frac{7200}{60+r}$, which is incorrect.",
+      "error_type": null
+    }
+  ],
+  "source_id": "algebra_Level 5_76"
+}

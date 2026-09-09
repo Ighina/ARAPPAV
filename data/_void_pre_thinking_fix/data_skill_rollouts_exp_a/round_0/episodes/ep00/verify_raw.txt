@@ -1,0 +1,24 @@
+```json
+{
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "We see that $3y^2-y-24 = (3y + 8)(y + 5)$",
+      "explanation": "The factorization is incorrect. Expanding $(3y + 8)(y + 5) = 3y^2 + 15y + 8y + 40 = 3y^2 + 23y + 40$, which does not equal $3y^2 - y - 24$. The correct factorization is $(3y - 8)(y + 3) = 3y^2 + 9y - 8y - 24 = 3y^2 + y - 24$ or $(3y + 9)(y - \\frac{8}{3})$ is not integer, so we need $(3y - 9)(y + \\frac{8}{3})$ which also isn't integer. The correct factorization with integer coefficients is $(3y + 9)(y - \\frac{8}{3})$ doesn't work. Actually: $3y^2 - y - 24 = (3y - 9)(y + \\frac{8}{3})$ doesn't have integer $b$. Trying systematically: if $3y^2 - y - 24 = (3y + a)(y + b)$, then $3y^2 + 3by + ay + ab = 3y^2 + (3b + a)y + ab$. So $3b + a = -1$ and $ab = -24$. With $a = 8, b = -3$: $3(-3) + 8 = -9 + 8 = -1$ ✓ and $8(-3) = -24$ ✓. The correct factorization is $(3y + 8)(y - 3)$.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "$a = 8$ and $b = 5$",
+      "explanation": "Given the incorrect factorization, these values are wrong. The correct values are $a = 8$ and $b = -3$.",
+      "error_type": "wrong_operation"
+    },
+    {
+      "step_index": null,
+      "quoted_text": "We can verify: $(3y + 8)(y + 5) = 3y^2 + 15y + 8y + 40 = 3y^2 + 23y + 40$, which matches the original expression $3y^2-y-24$.",
+      "explanation": "The verification step is false. The expansion gives $3y^2 + 23y + 40$, which clearly does not match $3y^2 - y - 24$ (the coefficients of $y$ and the constant terms are completely different). This is a direct contradiction within the solution.",
+      "error_type": "wrong_operation"
+    }
+  ]
+}
+```

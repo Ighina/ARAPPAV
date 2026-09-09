@@ -1,0 +1,3154 @@
+{
+  "config": {
+    "rounds": 10,
+    "episodes": 8,
+    "k": 3,
+    "start": "cold",
+    "freeze": "none",
+    "source": "hendrycks",
+    "problems_file": null,
+    "topics": [
+      "algebra"
+    ],
+    "per_topic": 300,
+    "seed": 42,
+    "root": "data/skill_rollouts/exp_a",
+    "skills_root": ".claude/skills",
+    "perturb_prefix": "exp_a_perturb",
+    "verify_prefix": "exp_a_verify",
+    "model": "claude-haiku-4-5",
+    "backend": "api",
+    "provider": null,
+    "updater_provider": null,
+    "updater_model": "claude-opus-5",
+    "processbench_enabled": false,
+    "processbench_per_subset": 5,
+    "processbench_root": "data/skill_evals",
+    "processbench_seed": 0,
+    "no_context": false,
+    "overwrite_policies": false,
+    "dry_run": false,
+    "timeout": 900,
+    "retry_format": 1,
+    "resume": true
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "config": {
+        "start": "cold",
+        "freeze": "none",
+        "k": 3,
+        "episodes": 8,
+        "no_context": false
+      },
+      "policies": {
+        "perturb": "exp_a_perturb-v1",
+        "verify": "exp_a_verify-v1"
+      },
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 8,
+        "format_valid_rate": 1.0,
+        "mean_perturber_reward": 0.4167,
+        "mean_perturber_reward_valid_only": 0.4167,
+        "mean_verifier_reward": 0.5208,
+        "mean_verifier_recall": 0.4583,
+        "mean_verifier_precision": 0.6458,
+        "mean_units_per_episode": 1.875,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "processbench": {
+        "enabled": false,
+        "note": "ProcessBench was not run for this round."
+      },
+      "episodes": [
+        {
+          "episode_id": "ep00",
+          "source_id": "algebra_Level 3_57"
+        },
+        {
+          "episode_id": "ep01",
+          "source_id": "algebra_Level 4_12"
+        },
+        {
+          "episode_id": "ep02",
+          "source_id": "algebra_Level 3_140"
+        },
+        {
+          "episode_id": "ep03",
+          "source_id": "algebra_Level 2_125"
+        },
+        {
+          "episode_id": "ep04",
+          "source_id": "algebra_Level 2_114"
+        },
+        {
+          "episode_id": "ep05",
+          "source_id": "algebra_Level 4_71"
+        },
+        {
+          "episode_id": "ep06",
+          "source_id": "algebra_Level 2_52"
+        },
+        {
+          "episode_id": "ep07",
+          "source_id": "algebra_Level 2_279"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "config": {
+        "start": "cold",
+        "freeze": "none",
+        "k": 3,
+        "episodes": 8,
+        "no_context": false
+      },
+      "policies": {
+        "perturb": "exp_a_perturb-v2",
+        "verify": "exp_a_verify-v2"
+      },
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 8,
+        "format_valid_rate": 1.0,
+        "mean_perturber_reward": 0.2292,
+        "mean_perturber_reward_valid_only": 0.2292,
+        "mean_verifier_reward": 0.6458,
+        "mean_verifier_recall": 0.5833,
+        "mean_verifier_precision": 0.8125,
+        "mean_units_per_episode": 2.125,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "processbench": {
+        "enabled": false,
+        "note": "ProcessBench was not run for this round."
+      },
+      "episodes": [
+        {
+          "episode_id": "ep00",
+          "source_id": "algebra_Level 1_20"
+        },
+        {
+          "episode_id": "ep01",
+          "source_id": "algebra_Level 4_153"
+        },
+        {
+          "episode_id": "ep02",
+          "source_id": "algebra_Level 2_77"
+        },
+        {
+          "episode_id": "ep03",
+          "source_id": "algebra_Level 2_243"
+        },
+        {
+          "episode_id": "ep04",
+          "source_id": "algebra_Level 5_196"
+        },
+        {
+          "episode_id": "ep05",
+          "source_id": "algebra_Level 4_50"
+        },
+        {
+          "episode_id": "ep06",
+          "source_id": "algebra_Level 2_239"
+        },
+        {
+          "episode_id": "ep07",
+          "source_id": "algebra_Level 4_262"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "config": {
+        "start": "cold",
+        "freeze": "none",
+        "k": 3,
+        "episodes": 8,
+        "no_context": false
+      },
+      "policies": {
+        "perturb": "exp_a_perturb-v3",
+        "verify": "exp_a_verify-v3"
+      },
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 8,
+        "format_valid_rate": 1.0,
+        "mean_perturber_reward": 0.5,
+        "mean_perturber_reward_valid_only": 0.5,
+        "mean_verifier_reward": 0.2375,
+        "mean_verifier_recall": 0.25,
+        "mean_verifier_precision": 0.2292,
+        "mean_units_per_episode": 2.0,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "processbench": {
+        "enabled": false,
+        "note": "ProcessBench was not run for this round."
+      },
+      "episodes": [
+        {
+          "episode_id": "ep00",
+          "source_id": "algebra_Level 5_221"
+        },
+        {
+          "episode_id": "ep01",
+          "source_id": "algebra_Level 3_282"
+        },
+        {
+          "episode_id": "ep02",
+          "source_id": "algebra_Level 4_293"
+        },
+        {
+          "episode_id": "ep03",
+          "source_id": "algebra_Level 2_64"
+        },
+        {
+          "episode_id": "ep04",
+          "source_id": "algebra_Level 5_97"
+        },
+        {
+          "episode_id": "ep05",
+          "source_id": "algebra_Level 4_206"
+        },
+        {
+          "episode_id": "ep06",
+          "source_id": "algebra_Level 4_123"
+        },
+        {
+          "episode_id": "ep07",
+          "source_id": "algebra_Level 2_159"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "config": {
+        "start": "cold",
+        "freeze": "none",
+        "k": 3,
+        "episodes": 8,
+        "no_context": false
+      },
+      "policies": {
+        "perturb": "exp_a_perturb-v4",
+        "verify": "exp_a_verify-v4"
+      },
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 8,
+        "format_valid_rate": 1.0,
+        "mean_perturber_reward": 0.4792,
+        "mean_perturber_reward_valid_only": 0.4792,
+        "mean_verifier_reward": 0.5417,
+        "mean_verifier_recall": 0.4583,
+        "mean_verifier_precision": 0.75,
+        "mean_units_per_episode": 2.5,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "processbench": {
+        "enabled": false,
+        "note": "ProcessBench was not run for this round."
+      },
+      "episodes": [
+        {
+          "episode_id": "ep00",
+          "source_id": "algebra_Level 5_152"
+        },
+        {
+          "episode_id": "ep01",
+          "source_id": "algebra_Level 4_231"
+        },
+        {
+          "episode_id": "ep02",
+          "source_id": "algebra_Level 5_270"
+        },
+        {
+          "episode_id": "ep03",
+          "source_id": "algebra_Level 2_144"
+        },
+        {
+          "episode_id": "ep04",
+          "source_id": "algebra_Level 5_43"
+        },
+        {
+          "episode_id": "ep05",
+          "source_id": "algebra_Level 3_170"
+        },
+        {
+          "episode_id": "ep06",
+          "source_id": "algebra_Level 4_188"
+        },
+        {
+          "episode_id": "ep07",
+          "source_id": "algebra_Level 5_11"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "config": {
+        "start": "cold",
+        "freeze": "none",
+        "k": 3,
+        "episodes": 8,
+        "no_context": false
+      },
+      "policies": {
+        "perturb": "exp_a_perturb-v5",
+        "verify": "exp_a_verify-v5"
+      },
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 7,
+        "format_valid_rate": 0.875,
+        "mean_perturber_reward": -0.3542,
+        "mean_perturber_reward_valid_only": 0.3095,
+        "mean_verifier_reward": 0.6048,
+        "mean_verifier_recall": 0.5476,
+        "mean_verifier_precision": 0.7143,
+        "mean_units_per_episode": 2.0,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "processbench": {
+        "enabled": false,
+        "note": "ProcessBench was not run for this round."
+      },
+      "episodes": [
+        {
+          "episode_id": "ep00",
+          "source_id": "algebra_Level 5_42"
+        },
+        {
+          "episode_id": "ep01",
+          "source_id": "algebra_Level 5_228"
+        },
+        {
+          "episode_id": "ep02",
+          "source_id": "algebra_Level 4_23"
+        },
+        {
+          "episode_id": "ep03",
+          "source_id": "algebra_Level 2_131"
+        },
+        {
+          "episode_id": "ep04",
+          "source_id": "algebra_Level 2_296"
+        },
+        {
+          "episode_id": "ep05",
+          "source_id": "algebra_Level 4_87"
+        },
+        {
+          "episode_id": "ep06",
+          "source_id": "algebra_Level 1_18"
+        },
+        {
+          "episode_id": "ep07",
+          "source_id": "algebra_Level 1_17"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "config": {
+        "start": "cold",
+        "freeze": "none",
+        "k": 3,
+        "episodes": 8,
+        "no_context": false
+      },
+      "policies": {
+        "perturb": "exp_a_perturb-v6",
+        "verify": "exp_a_verify-v6"
+      },
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 7,
+        "format_valid_rate": 0.875,
+        "mean_perturber_reward": -0.0625,
+        "mean_perturber_reward_valid_only": 0.6429,
+        "mean_verifier_reward": 0.4381,
+        "mean_verifier_recall": 0.3571,
+        "mean_verifier_precision": 0.619,
+        "mean_units_per_episode": 2.0,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "processbench": {
+        "enabled": false,
+        "note": "ProcessBench was not run for this round."
+      },
+      "episodes": [
+        {
+          "episode_id": "ep00",
+          "source_id": "algebra_Level 3_209"
+        },
+        {
+          "episode_id": "ep01",
+          "source_id": "algebra_Level 4_38"
+        },
+        {
+          "episode_id": "ep02",
+          "source_id": "algebra_Level 5_254"
+        },
+        {
+          "episode_id": "ep03",
+          "source_id": "algebra_Level 4_267"
+        },
+        {
+          "episode_id": "ep04",
+          "source_id": "algebra_Level 5_203"
+        },
+        {
+          "episode_id": "ep05",
+          "source_id": "algebra_Level 2_155"
+        },
+        {
+          "episode_id": "ep06",
+          "source_id": "algebra_Level 4_227"
+        },
+        {
+          "episode_id": "ep07",
+          "source_id": "algebra_Level 1_232"
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "config": {
+        "start": "cold",
+        "freeze": "none",
+        "k": 3,
+        "episodes": 8,
+        "no_context": false
+      },
+      "policies": {
+        "perturb": "exp_a_perturb-v7",
+        "verify": "exp_a_verify-v7"
+      },
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 6,
+        "format_valid_rate": 0.75,
+        "mean_perturber_reward": -1.2917,
+        "mean_perturber_reward_valid_only": 0.7778,
+        "mean_verifier_reward": 0.1944,
+        "mean_verifier_recall": 0.1389,
+        "mean_verifier_precision": 0.3333,
+        "mean_units_per_episode": 2.5,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "processbench": {
+        "enabled": false,
+        "note": "ProcessBench was not run for this round."
+      },
+      "episodes": [
+        {
+          "episode_id": "ep00",
+          "source_id": "algebra_Level 4_167"
+        },
+        {
+          "episode_id": "ep01",
+          "source_id": "algebra_Level 3_96"
+        },
+        {
+          "episode_id": "ep02",
+          "source_id": "algebra_Level 5_40"
+        },
+        {
+          "episode_id": "ep03",
+          "source_id": "algebra_Level 4_169"
+        },
+        {
+          "episode_id": "ep04",
+          "source_id": "algebra_Level 3_215"
+        },
+        {
+          "episode_id": "ep05",
+          "source_id": "algebra_Level 2_163"
+        },
+        {
+          "episode_id": "ep06",
+          "source_id": "algebra_Level 3_93"
+        },
+        {
+          "episode_id": "ep07",
+          "source_id": "algebra_Level 1_242"
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "config": {
+        "start": "cold",
+        "freeze": "none",
+        "k": 3,
+        "episodes": 8,
+        "no_context": false
+      },
+      "policies": {
+        "perturb": "exp_a_perturb-v8",
+        "verify": "exp_a_verify-v8"
+      },
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 7,
+        "format_valid_rate": 0.875,
+        "mean_perturber_reward": -0.25,
+        "mean_perturber_reward_valid_only": 0.4286,
+        "mean_verifier_reward": 0.3048,
+        "mean_verifier_recall": 0.2857,
+        "mean_verifier_precision": 0.381,
+        "mean_units_per_episode": 2.0,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "processbench": {
+        "enabled": false,
+        "note": "ProcessBench was not run for this round."
+      },
+      "episodes": [
+        {
+          "episode_id": "ep00",
+          "source_id": "algebra_Level 5_22"
+        },
+        {
+          "episode_id": "ep01",
+          "source_id": "algebra_Level 2_108"
+        },
+        {
+          "episode_id": "ep02",
+          "source_id": "algebra_Level 1_128"
+        },
+        {
+          "episode_id": "ep03",
+          "source_id": "algebra_Level 3_292"
+        },
+        {
+          "episode_id": "ep04",
+          "source_id": "algebra_Level 4_34"
+        },
+        {
+          "episode_id": "ep05",
+          "source_id": "algebra_Level 2_102"
+        },
+        {
+          "episode_id": "ep06",
+          "source_id": "algebra_Level 3_237"
+        },
+        {
+          "episode_id": "ep07",
+          "source_id": "algebra_Level 5_175"
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "config": {
+        "start": "cold",
+        "freeze": "none",
+        "k": 3,
+        "episodes": 8,
+        "no_context": false
+      },
+      "policies": {
+        "perturb": "exp_a_perturb-v9",
+        "verify": "exp_a_verify-v9"
+      },
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 5,
+        "format_valid_rate": 0.625,
+        "mean_perturber_reward": -1.4375,
+        "mean_perturber_reward_valid_only": 0.7,
+        "mean_verifier_reward": 0.3,
+        "mean_verifier_recall": 0.3,
+        "mean_verifier_precision": 0.3,
+        "mean_units_per_episode": 2.0,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "processbench": {
+        "enabled": false,
+        "note": "ProcessBench was not run for this round."
+      },
+      "episodes": [
+        {
+          "episode_id": "ep00",
+          "source_id": "algebra_Level 2_162"
+        },
+        {
+          "episode_id": "ep01",
+          "source_id": "algebra_Level 2_278"
+        },
+        {
+          "episode_id": "ep02",
+          "source_id": "algebra_Level 4_86"
+        },
+        {
+          "episode_id": "ep03",
+          "source_id": "algebra_Level 3_118"
+        },
+        {
+          "episode_id": "ep04",
+          "source_id": "algebra_Level 1_207"
+        },
+        {
+          "episode_id": "ep05",
+          "source_id": "algebra_Level 2_289"
+        },
+        {
+          "episode_id": "ep06",
+          "source_id": "algebra_Level 1_80"
+        },
+        {
+          "episode_id": "ep07",
+          "source_id": "algebra_Level 5_224"
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "config": {
+        "start": "cold",
+        "freeze": "none",
+        "k": 3,
+        "episodes": 8,
+        "no_context": false
+      },
+      "policies": {
+        "perturb": "exp_a_perturb-v10",
+        "verify": "exp_a_verify-v10"
+      },
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 8,
+        "format_valid_rate": 1.0,
+        "mean_perturber_reward": 0.5,
+        "mean_perturber_reward_valid_only": 0.5,
+        "mean_verifier_reward": 0.4125,
+        "mean_verifier_recall": 0.375,
+        "mean_verifier_precision": 0.5208,
+        "mean_units_per_episode": 2.375,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "processbench": {
+        "enabled": false,
+        "note": "ProcessBench was not run for this round."
+      },
+      "episodes": [
+        {
+          "episode_id": "ep00",
+          "source_id": "algebra_Level 4_81"
+        },
+        {
+          "episode_id": "ep01",
+          "source_id": "algebra_Level 4_281"
+        },
+        {
+          "episode_id": "ep02",
+          "source_id": "algebra_Level 3_171"
+        },
+        {
+          "episode_id": "ep03",
+          "source_id": "algebra_Level 5_185"
+        },
+        {
+          "episode_id": "ep04",
+          "source_id": "algebra_Level 2_55"
+        },
+        {
+          "episode_id": "ep05",
+          "source_id": "algebra_Level 2_275"
+        },
+        {
+          "episode_id": "ep06",
+          "source_id": "algebra_Level 5_76"
+        },
+        {
+          "episode_id": "ep07",
+          "source_id": "algebra_Level 2_280"
+        }
+      ]
+    }
+  ],
+  "findings_by_round": [
+    {
+      "round": 0,
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 8,
+        "format_valid_rate": 1.0,
+        "mean_perturber_reward": 0.4167,
+        "mean_perturber_reward_valid_only": 0.4167,
+        "mean_verifier_reward": 0.5208,
+        "mean_verifier_recall": 0.4583,
+        "mean_verifier_precision": 0.6458,
+        "mean_units_per_episode": 1.875,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "error_type_detection": {
+        "wrong_fraction": {
+          "injected": 1,
+          "detected": 1,
+          "detection_rate": 1.0
+        },
+        "operand_swap": {
+          "injected": 2,
+          "detected": 1,
+          "detection_rate": 0.5
+        },
+        "wrong_sequence_term": {
+          "injected": 4,
+          "detected": 1,
+          "detection_rate": 0.25
+        },
+        "geometry_definition": {
+          "injected": 1,
+          "detected": 1,
+          "detection_rate": 1.0
+        },
+        "wrong_operation": {
+          "injected": 10,
+          "detected": 3,
+          "detection_rate": 0.3
+        },
+        "whole_number_bias": {
+          "injected": 2,
+          "detected": 1,
+          "detection_rate": 0.5
+        },
+        "irrelevant_feature": {
+          "injected": 1,
+          "detected": 1,
+          "detection_rate": 1.0
+        },
+        "variable_misconception": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "additive_thinking": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "inverse_operation_error": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        }
+      },
+      "format_failures": [],
+      "undetected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_003",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_002",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_002",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_003",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_003",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_001",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_002",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_003",
+          "error_type": "inverse_operation_error",
+          "best_overlap": 0.0
+        }
+      ],
+      "detected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_001",
+          "error_type": "wrong_fraction",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_002",
+          "error_type": "operand_swap",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_001",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_001",
+          "error_type": "geometry_definition",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_003",
+          "error_type": "irrelevant_feature",
+          "best_overlap": 0.9
+        }
+      ],
+      "verifier_false_positives": [
+        {
+          "episode_id": "ep00",
+          "quoted_text": "We can verify: $(3y + 8)(y + 5) = 3y^2 + 15y + 8y + 40 = 3y^2 + 23y + 40$, which matches the original expression $3y^2-y-24$.",
+          "explanation": "The verification step is false. The expansion gives $3y^2 + 23y + 40$, which clearly does not match $3y^2 - y - 24$ (the coefficients of $y$ and the constant terms are completely different). This is a direct contradiction within the solution."
+        },
+        {
+          "episode_id": "ep05",
+          "quoted_text": "Since 9 is a perfect square, $2n+17$ must also be a perfect square.",
+          "explanation": "This statement is incorrect. The sum is $8(2n + 17)$, not $9(2n+17)$. Since 8 is not a perfect square, for $8(2n + 17)$ to be a perfect square, we need $2(2n + 17)$ to be a perfect square (so that $8(2n+17) = 4 \\cdot 2(2n+17)$ is a perfect square). Alternatively, $2n+17$ must be of the form $2k^2$ f"
+        },
+        {
+          "episode_id": "ep06",
+          "quoted_text": "We can verify: $5\\star 4 = 5(4)+2(4)-5 = 20+8-5 = 23$",
+          "explanation": "The verification is incorrect. Using the definition $a\\star b = ab+2b-a$, we have $5\\star 4 = 5(4)+2(4)-5 = 20+8-5 = 23$. However, the problem states that $5\\star x = 37$, so the answer $x=4$ should satisfy this equation. The verification shows $5\\star 4 = 23 \\neq 37$, which contradicts the requirem"
+        }
+      ],
+      "unit_collapse": [
+        {
+          "episode_id": "ep01",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep02",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep03",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep04",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep05",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep06",
+          "k": 3,
+          "num_error_units": 1
+        },
+        {
+          "episode_id": "ep07",
+          "k": 3,
+          "num_error_units": 1
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 8,
+        "format_valid_rate": 1.0,
+        "mean_perturber_reward": 0.2292,
+        "mean_perturber_reward_valid_only": 0.2292,
+        "mean_verifier_reward": 0.6458,
+        "mean_verifier_recall": 0.5833,
+        "mean_verifier_precision": 0.8125,
+        "mean_units_per_episode": 2.125,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "error_type_detection": {
+        "wrong_operation": {
+          "injected": 9,
+          "detected": 3,
+          "detection_rate": 0.333
+        },
+        "operand_swap": {
+          "injected": 3,
+          "detected": 2,
+          "detection_rate": 0.667
+        },
+        "wrong_fraction": {
+          "injected": 2,
+          "detected": 2,
+          "detection_rate": 1.0
+        },
+        "variable_misconception": {
+          "injected": 1,
+          "detected": 1,
+          "detection_rate": 1.0
+        },
+        "wrong_sequence_term": {
+          "injected": 3,
+          "detected": 1,
+          "detection_rate": 0.333
+        },
+        "whole_number_bias": {
+          "injected": 3,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "denominator_only": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "negative_number_error": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "incomplete_solution": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        }
+      },
+      "format_failures": [],
+      "undetected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_002",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_003",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_001",
+          "error_type": "denominator_only",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_002",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_002",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_003",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_001",
+          "error_type": "incomplete_solution",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_003",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        }
+      ],
+      "detected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.682
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_001",
+          "error_type": "operand_swap",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_002",
+          "error_type": "wrong_fraction",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.527
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.513
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_001",
+          "error_type": "wrong_fraction",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_002",
+          "error_type": "variable_misconception",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_002",
+          "error_type": "operand_swap",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_003",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 1.0
+        }
+      ],
+      "verifier_false_positives": [
+        {
+          "episode_id": "ep01",
+          "quoted_text": "a = oxed{-9}",
+          "explanation": "The final answer is written as 'oxed{-9}' instead of the correct LaTeX command '\\boxed{-9}'. The value a = -3 is correct (from 3 = a + 6), but 'oxed' is malformed — it appears the backslash was omitted or corrupted, leaving a typographical error in the boxed answer."
+        },
+        {
+          "episode_id": "ep03",
+          "quoted_text": "the smallest $n$ for which this happens is $n = \\boxed{5}$",
+          "explanation": "Given the correct inequality $3\\cdot2^{n-1} > 100$, we get $2^{n-1} > 33\\frac{1}{3}$. Since $2^5 = 32 < 33\\frac{1}{3}$ and $2^6 = 64 > 33\\frac{1}{3}$, we need $n-1 = 6$, so $n = 7$. At the end of day 7, bacteria = $3\\cdot2^6 = 3\\cdot64 = 192 > 100$. At the end of day 5, bacteria = $3\\cdot2^4 = 48 < "
+        }
+      ],
+      "unit_collapse": [
+        {
+          "episode_id": "ep00",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep01",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep02",
+          "k": 3,
+          "num_error_units": 1
+        },
+        {
+          "episode_id": "ep03",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep05",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep06",
+          "k": 3,
+          "num_error_units": 2
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 8,
+        "format_valid_rate": 1.0,
+        "mean_perturber_reward": 0.5,
+        "mean_perturber_reward_valid_only": 0.5,
+        "mean_verifier_reward": 0.2375,
+        "mean_verifier_recall": 0.25,
+        "mean_verifier_precision": 0.2292,
+        "mean_units_per_episode": 2.0,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "error_type_detection": {
+        "operand_swap": {
+          "injected": 4,
+          "detected": 1,
+          "detection_rate": 0.25
+        },
+        "wrong_operation": {
+          "injected": 8,
+          "detected": 3,
+          "detection_rate": 0.375
+        },
+        "whole_number_bias": {
+          "injected": 3,
+          "detected": 1,
+          "detection_rate": 0.333
+        },
+        "variable_misconception": {
+          "injected": 3,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "duplication_error": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "additive_thinking": {
+          "injected": 2,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "wrong_sequence_term": {
+          "injected": 2,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "decimal_magnitude": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        }
+      },
+      "format_failures": [],
+      "undetected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_001",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_003",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_003",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_003",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_003",
+          "error_type": "duplication_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_002",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_003",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_002",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_003",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_002",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_003",
+          "error_type": "decimal_magnitude",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_003",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        }
+      ],
+      "detected_errors": [
+        {
+          "episode_id": "ep01",
+          "error_id": "err_001",
+          "error_type": "operand_swap",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.9
+        }
+      ],
+      "verifier_false_positives": [
+        {
+          "episode_id": "ep03",
+          "quoted_text": "so $16x = 64$",
+          "explanation": "This equation is incorrect as a consequence of the wrong expansion. After the $x^2$ terms cancel from the correct equation $64 - 16x + x^2 = x^2$, we get $64 - 16x = 0$, which gives $16x = 64$. However, solving $16x = 64$ yields $x = 4$, not $x = 8$. Additionally, the prior line should have led to $"
+        },
+        {
+          "episode_id": "ep03",
+          "quoted_text": "thus $x = 8$",
+          "explanation": "Solving $16x = 64$ gives $x = 4$, not $x = 8$. Dividing both sides by 16: $x = 64/16 = 4$."
+        },
+        {
+          "episode_id": "ep05",
+          "quoted_text": "which means $8 = 70,$ so $x = \\frac{70}{9}$",
+          "explanation": "The statement '$8 = 70$' is nonsensical and the derivation of $x$ is broken. From $8x = 70$, we solve for $x$ by dividing both sides by 8: $x = \\frac{70}{8} = \\frac{35}{4} = 8.75$, not $\\frac{70}{9}$. The fraction $\\frac{70}{9} \\approx 7.778$ contradicts the earlier (correct) determination that $\\lf"
+        },
+        {
+          "episode_id": "ep05",
+          "quoted_text": "$\\boxed{7.78}$",
+          "explanation": "The final answer is wrong. Since $x = \\frac{70}{8} = 8.75$, the correct answer is $8.75$, not $7.78$. The value $7.78$ does not satisfy $\\lfloor x \\rfloor \\cdot x = 70$ because $\\lfloor 7.78 \\rfloor = 7$ and $7 \\times 7.78 = 54.46 \\neq 70$."
+        },
+        {
+          "episode_id": "ep06",
+          "quoted_text": "Substituting $x = -8.4$ and $y=18.2$ into the first equation",
+          "explanation": "The solution correctly computed $y = 18.1$ from the second equation, but then substituted $y = 18.2$ into the first equation. This is an inconsistency: the value used does not match the value derived. Using the correct value $y = 18.1$ gives $k = -2(-8.4) + 18.1 = 16.8 + 18.1 = 34.9$, not $35$."
+        },
+        {
+          "episode_id": "ep06",
+          "quoted_text": "$k = -2x + y = -2(-8.4) + 18.2 = 16.8 + 18.2 = \\boxed{35}$",
+          "explanation": "Even if $y = 18.2$ were correct, the arithmetic here is wrong: $16.8 + 18.2 = 35.0$, not $35$ exactly as a final answer (though the rounding hides it). More fundamentally, this contradicts the derived $y = 18.1$. The correct computation with $y = 18.1$ is $-2(-8.4) + 18.1 = 16.8 + 18.1 = 34.9$."
+        },
+        {
+          "episode_id": "ep07",
+          "quoted_text": "(3\\frac{1}{2}\\text{ hours})(11\\text{ mph})=42",
+          "explanation": "Joann's speed is given as 12 miles per hour, not 11 mph. The correct calculation is (3.5 hours)(12 mph) = 42 miles, which happens to give the same distance, but the speed used in the multiplication is wrong."
+        }
+      ],
+      "unit_collapse": [
+        {
+          "episode_id": "ep01",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep02",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep03",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep04",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep05",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep06",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep07",
+          "k": 3,
+          "num_error_units": 1
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 8,
+        "format_valid_rate": 1.0,
+        "mean_perturber_reward": 0.4792,
+        "mean_perturber_reward_valid_only": 0.4792,
+        "mean_verifier_reward": 0.5417,
+        "mean_verifier_recall": 0.4583,
+        "mean_verifier_precision": 0.75,
+        "mean_units_per_episode": 2.5,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "error_type_detection": {
+        "wrong_operation": {
+          "injected": 5,
+          "detected": 2,
+          "detection_rate": 0.4
+        },
+        "negative_number_error": {
+          "injected": 2,
+          "detected": 1,
+          "detection_rate": 0.5
+        },
+        "operand_swap": {
+          "injected": 4,
+          "detected": 3,
+          "detection_rate": 0.75
+        },
+        "decimal_magnitude": {
+          "injected": 1,
+          "detected": 1,
+          "detection_rate": 1.0
+        },
+        "wrong_fraction": {
+          "injected": 1,
+          "detected": 1,
+          "detection_rate": 1.0
+        },
+        "whole_number_bias": {
+          "injected": 4,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "variable_misconception": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "incomplete_solution": {
+          "injected": 3,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "inversion_error": {
+          "injected": 2,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "duplication_error": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        }
+      },
+      "format_failures": [],
+      "undetected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_003",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_002",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_003",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_002",
+          "error_type": "incomplete_solution",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_001",
+          "error_type": "inversion_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_002",
+          "error_type": "inversion_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_003",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_002",
+          "error_type": "incomplete_solution",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_002",
+          "error_type": "duplication_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_003",
+          "error_type": "incomplete_solution",
+          "best_overlap": 0.0
+        }
+      ],
+      "detected_errors": [
+        {
+          "episode_id": "ep01",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_001",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.941
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_001",
+          "error_type": "operand_swap",
+          "best_overlap": 0.591
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_003",
+          "error_type": "decimal_magnitude",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_003",
+          "error_type": "operand_swap",
+          "best_overlap": 0.733
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_001",
+          "error_type": "operand_swap",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_003",
+          "error_type": "wrong_fraction",
+          "best_overlap": 0.758
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 1.0
+        }
+      ],
+      "verifier_false_positives": [
+        {
+          "episode_id": "ep04",
+          "quoted_text": "the series involving even powers of $r$ is $r(ar+ar^3+ar^5+\\cdots)$",
+          "explanation": "This is incorrect. The even-power series is $a + ar^2 + ar^4 + \\cdots$. Factoring out $a$ gives $a(1 + r^2 + r^4 + \\cdots)$, not $r$ times the odd-power series. The odd-power series $ar + ar^3 + ar^5 + \\cdots = a(r + r^3 + r^5 + \\cdots)$, so $r$ times this gives $ar^2 + ar^4 + ar^6 + \\cdots$, which "
+        }
+      ],
+      "unit_collapse": [
+        {
+          "episode_id": "ep01",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep02",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep03",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep06",
+          "k": 3,
+          "num_error_units": 2
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 7,
+        "format_valid_rate": 0.875,
+        "mean_perturber_reward": -0.3542,
+        "mean_perturber_reward_valid_only": 0.3095,
+        "mean_verifier_reward": 0.6048,
+        "mean_verifier_recall": 0.5476,
+        "mean_verifier_precision": 0.7143,
+        "mean_units_per_episode": 2.0,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "error_type_detection": {
+        "whole_number_bias": {
+          "injected": 8,
+          "detected": 4,
+          "detection_rate": 0.5
+        },
+        "duplication_error": {
+          "injected": 2,
+          "detected": 1,
+          "detection_rate": 0.5
+        },
+        "wrong_operation": {
+          "injected": 4,
+          "detected": 1,
+          "detection_rate": 0.25
+        },
+        "operand_swap": {
+          "injected": 1,
+          "detected": 1,
+          "detection_rate": 1.0
+        },
+        "denominator_only": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "incomplete_solution": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "variable_misconception": {
+          "injected": 2,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "additive_thinking": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "wrong_sequence_term": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        }
+      },
+      "format_failures": [
+        {
+          "episode_id": "ep03",
+          "failure_stage": "schema",
+          "reason": "Schema validation failed: 1 validation error for MathPerturberOutput\nerrors.0\n  Value error, Phantom error detected for err_001: injected_text equals original_text — no actual modification was made. Text: 'Multiplying both sides of the second equation by 2, we get $4b+2s = 400$' [type=value_error, i"
+        }
+      ],
+      "undetected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_003",
+          "error_type": "denominator_only",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_003",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_002",
+          "error_type": "incomplete_solution",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_002",
+          "error_type": "duplication_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_002",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_003",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_003",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_003",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.0
+        }
+      ],
+      "detected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_002",
+          "error_type": "duplication_error",
+          "best_overlap": 0.585
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.848
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.534
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_001",
+          "error_type": "operand_swap",
+          "best_overlap": 0.5
+        }
+      ],
+      "verifier_false_positives": [
+        {
+          "episode_id": "ep00",
+          "quoted_text": "Then $\\alpha = 47$ and $\\beta = 90$",
+          "explanation": "This conclusion is based on the incorrect factorization above. After the numerator cancellation, the correct simplified form should be $\\frac{x - 47}{x - 33}$ (from $(x - 47)(x - 33) / ((x - 33)(x + 90))$), not $\\frac{x - 47}{x + 33}$. However, the problem states the form is $\\frac{x - \\alpha}{x + \\"
+        },
+        {
+          "episode_id": "ep02",
+          "quoted_text": "or $x=\\sqrt{109}+6$",
+          "explanation": "The solution states $x = \\sqrt{109} + 6$, but the problem requires the positive solution in the form $\\sqrt{a} - b$. From $(x+6)^2 = 109$, taking the square root gives $x + 6 = \\pm\\sqrt{109}$. For the positive solution, we need $x = \\sqrt{109} - 6$ (which is positive since $\\sqrt{109} \\approx 10.44 "
+        }
+      ],
+      "unit_collapse": [
+        {
+          "episode_id": "ep01",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep02",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep04",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep05",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep06",
+          "k": 3,
+          "num_error_units": 1
+        },
+        {
+          "episode_id": "ep07",
+          "k": 3,
+          "num_error_units": 2
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 7,
+        "format_valid_rate": 0.875,
+        "mean_perturber_reward": -0.0625,
+        "mean_perturber_reward_valid_only": 0.6429,
+        "mean_verifier_reward": 0.4381,
+        "mean_verifier_recall": 0.3571,
+        "mean_verifier_precision": 0.619,
+        "mean_units_per_episode": 2.0,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "error_type_detection": {
+        "variable_misconception": {
+          "injected": 2,
+          "detected": 1,
+          "detection_rate": 0.5
+        },
+        "whole_number_bias": {
+          "injected": 5,
+          "detected": 2,
+          "detection_rate": 0.4
+        },
+        "wrong_operation": {
+          "injected": 7,
+          "detected": 1,
+          "detection_rate": 0.143
+        },
+        "negative_number_error": {
+          "injected": 2,
+          "detected": 1,
+          "detection_rate": 0.5
+        },
+        "incomplete_solution": {
+          "injected": 1,
+          "detected": 1,
+          "detection_rate": 1.0
+        },
+        "duplication_error": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "inversion_error": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "operand_swap": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "wrong_fraction": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        }
+      },
+      "format_failures": [
+        {
+          "episode_id": "ep01",
+          "failure_stage": "schema",
+          "reason": "Expected exactly 3 errors, got 2. Error IDs: ['err_001', 'err_002']"
+        }
+      ],
+      "undetected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_002",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_003",
+          "error_type": "duplication_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_001",
+          "error_type": "inversion_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_003",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_001",
+          "error_type": "wrong_fraction",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_003",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        }
+      ],
+      "detected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_003",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.728
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_002",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.509
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_003",
+          "error_type": "whole_number_bias",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_002",
+          "error_type": "incomplete_solution",
+          "best_overlap": 0.605
+        }
+      ],
+      "verifier_false_positives": [
+        {
+          "episode_id": "ep02",
+          "quoted_text": "x^2-14x+49+y^2-8y+16& =16",
+          "explanation": "Adding 49 and 16 to both sides of the correct equation $x^2-14x+y^2-8y=-49$ gives $x^2-14x+49+y^2-8y+16=-49+49+16=16$. However, the solution started from $x^2-14x+y^2-8y=-48$, so adding 49 and 16 gives $-48+49+16=17$. The right side should be $17$, not $16$. This error propagates from the previous m"
+        },
+        {
+          "episode_id": "ep02",
+          "quoted_text": "(x-7)^2+(y-4)^2 & =16",
+          "explanation": "The correct equation after completing the square from $x^2-14x+y^2-8y=-49$ is $(x-7)^2+(y-4)^2=16+49-49=16$. Wait, let me recalculate: from $x^2-14x+y^2-8y=-49$, we complete the square to get $(x-7)^2-49+(y-4)^2-16=-49$, so $(x-7)^2+(y-4)^2=49+16-49=16$. Actually this is correct if we proceed from t"
+        }
+      ],
+      "unit_collapse": [
+        {
+          "episode_id": "ep00",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep02",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep03",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep04",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep05",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep06",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep07",
+          "k": 3,
+          "num_error_units": 2
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 6,
+        "format_valid_rate": 0.75,
+        "mean_perturber_reward": -1.2917,
+        "mean_perturber_reward_valid_only": 0.7778,
+        "mean_verifier_reward": 0.1944,
+        "mean_verifier_recall": 0.1389,
+        "mean_verifier_precision": 0.3333,
+        "mean_units_per_episode": 2.5,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "error_type_detection": {
+        "wrong_operation": {
+          "injected": 3,
+          "detected": 1,
+          "detection_rate": 0.333
+        },
+        "variable_misconception": {
+          "injected": 1,
+          "detected": 1,
+          "detection_rate": 1.0
+        },
+        "incomplete_solution": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "whole_number_bias": {
+          "injected": 4,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "additive_thinking": {
+          "injected": 4,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "duplication_error": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "negative_number_error": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "wrong_sequence_term": {
+          "injected": 3,
+          "detected": 0,
+          "detection_rate": 0.0
+        }
+      },
+      "format_failures": [
+        {
+          "episode_id": "ep03",
+          "failure_stage": "json",
+          "reason": "JSON parse error after fence stripping: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\nFirst 500 chars: {19440}$\n\nThese are 6 separable computational places. I need 3 errors in 3 different places, each independently wrong.\n\n**Planning the errors:**\n\n1. **Error 1 (Step 2 "
+        },
+        {
+          "episode_id": "ep07",
+          "failure_stage": "schema",
+          "reason": "Expected exactly 3 errors, got 1. Error IDs: ['err_001']"
+        }
+      ],
+      "undetected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_001",
+          "error_type": "incomplete_solution",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_003",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_001",
+          "error_type": "duplication_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_002",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_003",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_003",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_003",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_001",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_002",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_003",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_003",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        }
+      ],
+      "detected_errors": [
+        {
+          "episode_id": "ep04",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.764
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_002",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.952
+        }
+      ],
+      "verifier_false_positives": [],
+      "unit_collapse": [
+        {
+          "episode_id": "ep01",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep05",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep06",
+          "k": 3,
+          "num_error_units": 2
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 7,
+        "format_valid_rate": 0.875,
+        "mean_perturber_reward": -0.25,
+        "mean_perturber_reward_valid_only": 0.4286,
+        "mean_verifier_reward": 0.3048,
+        "mean_verifier_recall": 0.2857,
+        "mean_verifier_precision": 0.381,
+        "mean_units_per_episode": 2.0,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "error_type_detection": {
+        "wrong_sequence_term": {
+          "injected": 2,
+          "detected": 1,
+          "detection_rate": 0.5
+        },
+        "operand_swap": {
+          "injected": 5,
+          "detected": 1,
+          "detection_rate": 0.2
+        },
+        "whole_number_bias": {
+          "injected": 3,
+          "detected": 1,
+          "detection_rate": 0.333
+        },
+        "negative_number_error": {
+          "injected": 2,
+          "detected": 1,
+          "detection_rate": 0.5
+        },
+        "wrong_operation": {
+          "injected": 4,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "variable_misconception": {
+          "injected": 2,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "additive_thinking": {
+          "injected": 2,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "incomplete_solution": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        }
+      },
+      "format_failures": [
+        {
+          "episode_id": "ep02",
+          "failure_stage": "schema",
+          "reason": "Expected exactly 3 errors, got 1. Error IDs: ['err_001']"
+        }
+      ],
+      "undetected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_002",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_003",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_002",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_003",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_001",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_003",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_002",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_002",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_003",
+          "error_type": "incomplete_solution",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_002",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_003",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_003",
+          "error_type": "variable_misconception",
+          "best_overlap": 0.0
+        }
+      ],
+      "detected_errors": [
+        {
+          "episode_id": "ep01",
+          "error_id": "err_001",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_002",
+          "error_type": "operand_swap",
+          "best_overlap": 0.836
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.857
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_002",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.875
+        }
+      ],
+      "verifier_false_positives": [
+        {
+          "episode_id": "ep07",
+          "quoted_text": "wx + yz = -1\\cdot-8 + 7\\cdot13 = 8+92 = \\boxed{100}",
+          "explanation": "With the correct values $w=-1, x=-8, y=7, z=13$, we have $wx + yz = (-1)(-8) + (7)(13) = 8 + 91 = 99$, not 100. The error stems from the incorrect values of $x$ and $y$ computed above."
+        }
+      ],
+      "unit_collapse": [
+        {
+          "episode_id": "ep00",
+          "k": 3,
+          "num_error_units": 1
+        },
+        {
+          "episode_id": "ep01",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep03",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep05",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep06",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep07",
+          "k": 3,
+          "num_error_units": 2
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 5,
+        "format_valid_rate": 0.625,
+        "mean_perturber_reward": -1.4375,
+        "mean_perturber_reward_valid_only": 0.7,
+        "mean_verifier_reward": 0.3,
+        "mean_verifier_recall": 0.3,
+        "mean_verifier_precision": 0.3,
+        "mean_units_per_episode": 2.0,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "error_type_detection": {
+        "inversion_error": {
+          "injected": 1,
+          "detected": 1,
+          "detection_rate": 1.0
+        },
+        "wrong_operation": {
+          "injected": 4,
+          "detected": 1,
+          "detection_rate": 0.25
+        },
+        "whole_number_bias": {
+          "injected": 4,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "additive_thinking": {
+          "injected": 2,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "operand_swap": {
+          "injected": 2,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "wrong_fraction": {
+          "injected": 2,
+          "detected": 0,
+          "detection_rate": 0.0
+        }
+      },
+      "format_failures": [
+        {
+          "episode_id": "ep01",
+          "failure_stage": "schema",
+          "reason": "Expected exactly 3 errors, got 1. Error IDs: ['err_001']"
+        },
+        {
+          "episode_id": "ep04",
+          "failure_stage": "schema",
+          "reason": "Expected exactly 3 errors, got 1. Error IDs: ['err_001']"
+        },
+        {
+          "episode_id": "ep06",
+          "failure_stage": "schema",
+          "reason": "Expected exactly 3 errors, got 2. Error IDs: ['err_001', 'err_002']"
+        }
+      ],
+      "undetected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_003",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_001",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_002",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_003",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_003",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_002",
+          "error_type": "wrong_fraction",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_003",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_002",
+          "error_type": "wrong_fraction",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_003",
+          "error_type": "additive_thinking",
+          "best_overlap": 0.0
+        }
+      ],
+      "detected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_001",
+          "error_type": "inversion_error",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.519
+        }
+      ],
+      "verifier_false_positives": [
+        {
+          "episode_id": "ep00",
+          "quoted_text": "when we multiply the wrench length by $\\dfrac53$",
+          "explanation": "The solution first correctly computes the ratio 15/9 = 5/3, but then incorrectly labels this as the multiplier to apply to force. The problem states the force varies inversely with handle length, meaning F × L = k (constant). If L is multiplied by 5/3, then F must be multiplied by 3/5 to preserve th"
+        }
+      ],
+      "unit_collapse": [
+        {
+          "episode_id": "ep00",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep02",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep03",
+          "k": 3,
+          "num_error_units": 1
+        },
+        {
+          "episode_id": "ep07",
+          "k": 3,
+          "num_error_units": 2
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "metrics": {
+        "num_episodes": 8,
+        "num_format_valid": 8,
+        "format_valid_rate": 1.0,
+        "mean_perturber_reward": 0.5,
+        "mean_perturber_reward_valid_only": 0.5,
+        "mean_verifier_reward": 0.4125,
+        "mean_verifier_recall": 0.375,
+        "mean_verifier_precision": 0.5208,
+        "mean_units_per_episode": 2.375,
+        "total_duplicate_penalty": 0,
+        "total_spam_penalty": 0,
+        "total_repetition_penalty": 0,
+        "total_phantom_penalty": 0
+      },
+      "error_type_detection": {
+        "negative_number_error": {
+          "injected": 8,
+          "detected": 2,
+          "detection_rate": 0.25
+        },
+        "wrong_sequence_term": {
+          "injected": 2,
+          "detected": 1,
+          "detection_rate": 0.5
+        },
+        "variable_misconception": {
+          "injected": 2,
+          "detected": 2,
+          "detection_rate": 1.0
+        },
+        "wrong_operation": {
+          "injected": 6,
+          "detected": 1,
+          "detection_rate": 0.167
+        },
+        "inversion_error": {
+          "injected": 1,
+          "detected": 1,
+          "detection_rate": 1.0
+        },
+        "denominator_only": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "operand_swap": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "incomplete_solution": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "whole_number_bias": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        },
+        "proportional_reasoning_error": {
+          "injected": 1,
+          "detected": 0,
+          "detection_rate": 0.0
+        }
+      },
+      "format_failures": [],
+      "undetected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_002",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep00",
+          "error_id": "err_003",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_003",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_001",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_002",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep03",
+          "error_id": "err_003",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_001",
+          "error_type": "denominator_only",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_002",
+          "error_type": "operand_swap",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep04",
+          "error_id": "err_003",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_001",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_003",
+          "error_type": "incomplete_solution",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_001",
+          "error_type": "wrong_operation",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_002",
+          "error_type": "whole_number_bias",
+          "best_overlap": 0.0
+        },
+        {
+          "episode_id": "ep07",
+          "error_id": "err_003",
+          "error_type": "proportional_reasoning_error",
+          "best_overlap": 0.0
+        }
+      ],
+      "detected_errors": [
+        {
+          "episode_id": "ep00",
+          "error_id": "err_001",
+          "error_type": "negative_number_error",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep01",
+          "error_id": "err_001",
+          "error_type": "wrong_sequence_term",
+          "best_overlap": 0.527
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_002",
+          "error_type": "negative_number_error",
+          "best_overlap": 0.962
+        },
+        {
+          "episode_id": "ep02",
+          "error_id": "err_003",
+          "error_type": "variable_misconception",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep05",
+          "error_id": "err_002",
+          "error_type": "wrong_operation",
+          "best_overlap": 1.0
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_001",
+          "error_type": "inversion_error",
+          "best_overlap": 0.9
+        },
+        {
+          "episode_id": "ep06",
+          "error_id": "err_003",
+          "error_type": "variable_misconception",
+          "best_overlap": 1.0
+        }
+      ],
+      "verifier_false_positives": [
+        {
+          "episode_id": "ep01",
+          "quoted_text": "$x=\\boxed{1004}$",
+          "explanation": "The final answer is incorrect. The correct answer is $x = -1004$. Verification: $(2008 + (-1004))^2 = 1004^2 = 1,008,016$ and $(-1004)^2 = 1,008,016$. The value $x = 1004$ does not satisfy the original equation: $(2008+1004)^2 = 3012^2 = 9,072,144$ while $1004^2 = 1,008,016$."
+        },
+        {
+          "episode_id": "ep06",
+          "quoted_text": "It takes $d/60$ hours to travel from $A$ to $B$ and $d/r$ hours to travel from $B$ to $A$.",
+          "explanation": "Given the incorrect definition of $r$ above, this line perpetuates the error. With the correct setup where $r$ is the return speed, this line should read: It takes $d/60 = 120/60 = 2$ hours to travel from $A$ to $B$ and $d/r = 120/r$ hours to travel from $B$ to $A$."
+        }
+      ],
+      "unit_collapse": [
+        {
+          "episode_id": "ep00",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep01",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep02",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep05",
+          "k": 3,
+          "num_error_units": 2
+        },
+        {
+          "episode_id": "ep06",
+          "k": 3,
+          "num_error_units": 2
+        }
+      ]
+    }
+  ]
+}

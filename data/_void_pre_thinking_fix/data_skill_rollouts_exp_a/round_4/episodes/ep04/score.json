@@ -1,0 +1,86 @@
+{
+  "perturber_reward": -0.5,
+  "verifier_reward": 1.0,
+  "verifier_recall": 1.0,
+  "verifier_precision": 1.0,
+  "verifier_f_beta": 1.0,
+  "k": 3,
+  "num_verifier_claims": 1,
+  "num_matched": 1,
+  "k_effective": 2,
+  "num_error_units": 2,
+  "num_matched_units": 1,
+  "format_penalty_applied": false,
+  "format_violation_reason": null,
+  "duplicate_penalty": 0.0,
+  "spam_penalty": 0.0,
+  "phantom_penalty": 0.0,
+  "repetition_penalty": 0.0,
+  "perturber_base_reward": 0.0,
+  "verifier_base_reward": 1.0,
+  "match_details": [
+    {
+      "error_id": "err_001",
+      "best_claim_idx": 0,
+      "best_overlap": 1.0,
+      "error_type": "whole_number_bias",
+      "all_overlaps": {
+        "35 \\cdot \\frac{5}{28} = 7 \\cdot \\frac{5}{4}": 1.0
+      }
+    },
+    {
+      "error_id": "err_002",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "duplication_error",
+      "all_overlaps": {
+        "35 \\cdot \\frac{5}{28} = 7 \\cdot \\frac{5}{4}": 0.288
+      }
+    },
+    {
+      "error_id": "err_003",
+      "best_claim_idx": null,
+      "best_overlap": 0.0,
+      "error_type": "wrong_operation",
+      "all_overlaps": {
+        "35 \\cdot \\frac{5}{28} = 7 \\cdot \\frac{5}{4}": 0.0
+      }
+    }
+  ],
+  "episode_id": "ep04",
+  "perturber_format_valid": true,
+  "verifier_parse_error": null,
+  "scored": true,
+  "errors": [
+    {
+      "error_id": "err_001",
+      "error_type": "whole_number_bias",
+      "original_text": "35 \\cdot \\frac{5}{28} = 5 \\cdot \\frac{5}{4}",
+      "injected_text": "35 \\cdot \\frac{5}{28} = 7 \\cdot \\frac{5}{4}",
+      "rationale": "The correct simplification is $\\frac{35}{28} = \\frac{5}{4}$, so $35 \\cdot \\frac{5}{28} = 5 \\cdot \\frac{5}{4}$. The error treats the GCD of 35 and 28 as if it were 7 instead of 7, incorrectly replacing 5 with 7. This reflects treating the reduced form incompletely by misapplying the cancellation."
+    },
+    {
+      "error_id": "err_002",
+      "error_type": "duplication_error",
+      "original_text": "5 \\cdot \\frac{5}{4} = \\boxed{\\frac{25}{4}}",
+      "injected_text": "7 \\cdot \\frac{5}{4} = \\boxed{\\frac{35}{4}}",
+      "rationale": "Once the erroneous coefficient of 7 from err_001 is in place, multiplying it by $\\frac{5}{4}$ yields $\\frac{35}{4}$ instead of the correct $\\frac{25}{4}$. This is the propagated consequence of the earlier wrong coefficient, carried through consistently to the final answer."
+    },
+    {
+      "error_id": "err_003",
+      "error_type": "wrong_operation",
+      "original_text": "\\frac{30}{5}-\\frac{2}{5} = \\frac{28}{5}",
+      "injected_text": "\\frac{30}{5}-\\frac{2}{5} = \\frac{32}{5}",
+      "rationale": "The correct computation is $30 - 2 = 28$, so the denominator should be $\\frac{28}{5}$. The error treats the subtraction as addition instead, yielding $30 + 2 = 32$ and thus $\\frac{32}{5}$. This is an independent error in the denominator simplification."
+    }
+  ],
+  "claims": [
+    {
+      "step_index": null,
+      "quoted_text": "35 \\cdot \\frac{5}{28} = 7 \\cdot \\frac{5}{4}",
+      "explanation": "When simplifying $35 \\cdot \\frac{5}{28}$, the solution cancels $35$ and $28$ by dividing both by their GCD of 7, yielding $5 \\cdot \\frac{5}{4} = \\frac{25}{4}$, not $7 \\cdot \\frac{5}{4}$. The numerator $35$ should reduce to $5$ (since $35 ÷ 7 = 5$), and the denominator $28$ should reduce to $4$ (since $28 ÷ 7 = 4$). The final answer is therefore $\\frac{25}{4}$, not $\\frac{35}{4}$.",
+      "error_type": "wrong_operation"
+    }
+  ],
+  "source_id": "algebra_Level 2_296"
+}

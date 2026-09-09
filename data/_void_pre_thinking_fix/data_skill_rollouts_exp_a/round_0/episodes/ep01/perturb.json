@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "The terms of sequence $A$ are $2,$ $4,$ $8,$ $16,$ $32,$ $64,$ $128,$ $256,$ $512.$ The terms of sequence $B$ start from $20$ and go up by $20$ each time, so sequence $B$ is precisely all multiples of $20$ from $20$ to $320.$ We thus need to see which term in sequence $A$ is closest to a multiple of $20.$ $16,$ $32,$ and $256$ are the closest, each being $8$ away from a multiple of $20.$ So the least positive difference between a term in sequence $A$ and one in sequence $B$ is $\\boxed{3}.$",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 4,
+      "original_text": "$16,$ $64,$ and $256$ are the closest",
+      "injected_text": "$16,$ $32,$ and $256$ are the closest",
+      "error_type": "wrong_sequence_term",
+      "rationale": "The term $64$ from sequence $A$ is $4$ away from $60$ (a multiple of $20$), but $32$ is $12$ away from the nearest multiple of $20$ (either $20$ or $40$). The correct closest terms are $16$, $64$, and $256$, not $16$, $32$, and $256$."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 5,
+      "original_text": "each being $4$ away from a multiple of $20.$",
+      "injected_text": "each being $8$ away from a multiple of $20.$",
+      "error_type": "wrong_operation",
+      "rationale": "The distances are actually $4$, not $8$. For example, $16$ is $4$ away from $20$, $64$ is $4$ away from $60$, and $256$ is $4$ away from $260$."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 6,
+      "original_text": "So the least positive difference between a term in sequence $A$ and one in sequence $B$ is $\\boxed{4}.$",
+      "injected_text": "So the least positive difference between a term in sequence $A$ and one in sequence $B$ is $\\boxed{3}.$",
+      "error_type": "whole_number_bias",
+      "rationale": "The correct answer is $4$, not $3$. The minimum difference found is $4$ (from terms like $16$ vs $20$, $64$ vs $60$, or $256$ vs $260$). Changing the final answer to $3$ is arithmetically incorrect."
+    }
+  ]
+}

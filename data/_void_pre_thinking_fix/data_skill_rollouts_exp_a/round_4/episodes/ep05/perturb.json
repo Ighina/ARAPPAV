@@ -1,0 +1,29 @@
+{
+  "perturbed_solution": "We could substitute the points into the equation $y = ax^2 + bx + c$, solve for $a$, $b$, and $c$, and then complete the square to find the coordinates of the vertex.\n\nHowever, a much faster way is to recognize that two of the points, namely $(-1,7)$ and $(5,7)$, have the same $y$-coordinate.  Therefore, these two points are symmetric about the parabola's axis of symmetry.  The axis must pass through the midpoint of the segment connecting these two symmetric points, so the axis must pass through $\\left(\\frac{-1+5}{2},\\frac{7+7}{2}\\right)$, which is $(3,7)$.  Therefore, the axis of symmetry is a vertical line through $(3,7)$.  This line is the graph of the equation $x=3$.  The axis of symmetry also passes through the vertex of the parabola, so the $x$-coordinate of the vertex is $\\boxed{3}$.",
+  "errors": [
+    {
+      "error_id": "err_001",
+      "step_index": 1,
+      "original_text": "$\\left(\\frac{-1+5}{2},\\frac{7+7}{2}\\right)$, which is $(2,7)$",
+      "injected_text": "$\\left(\\frac{-1+5}{2},\\frac{7+7}{2}\\right)$, which is $(3,7)$",
+      "error_type": "whole_number_bias",
+      "rationale": "The midpoint calculation $\\frac{-1+5}{2} = \\frac{4}{2} = 2$ is correct, but the injected text claims it equals 3. This is a whole-number miscalculation where the student incorrectly computes the x-coordinate of the midpoint as 3 instead of 2."
+    },
+    {
+      "error_id": "err_002",
+      "step_index": 1,
+      "original_text": "Therefore, the axis of symmetry is a vertical line through $(2,7)$.  This line is the graph of the equation $x=2$.",
+      "injected_text": "Therefore, the axis of symmetry is a vertical line through $(3,7)$.  This line is the graph of the equation $x=3$.",
+      "error_type": "variable_misconception",
+      "rationale": "The error from err_001 is propagated consistently. The student incorrectly uses $x=3$ as the axis of symmetry instead of $x=2$, treating the wrong x-coordinate value as the axis equation."
+    },
+    {
+      "error_id": "err_003",
+      "step_index": 1,
+      "original_text": "the $x$-coordinate of the vertex is $\\boxed{2}$",
+      "injected_text": "the $x$-coordinate of the vertex is $\\boxed{3}$",
+      "error_type": "additive_thinking",
+      "rationale": "The final answer is changed from 2 to 3. This represents treating the wrong axis value as the vertex x-coordinate, a consequence of the earlier computational error now stated as the final answer."
+    }
+  ]
+}
