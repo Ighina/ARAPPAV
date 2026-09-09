@@ -137,6 +137,46 @@ run_experiment() {   # name players updater
 }
 
 # --- dispatch ---------------------------------------------------------------
+usage() {
+  sed -n '3,$p' "$0" | sed -n '/^#/!q;p' | sed 's/^#\{1,\} \{0,1\}//'
+  cat <<'USAGE'
+
+Experiments
+  A  claude-opus-5      updater + claude-haiku-4-5   players
+  B  claude-haiku-4-5   updater + claude-haiku-4-5   players
+  C  gpt-5.6-sol        updater + gpt-5.6-terra      players
+  D  deepseek-v4-pro    updater + deepseek-v4-flash  players
+
+Environment overrides (defaults in brackets)
+  ROUNDS [10]          self-play rounds per experiment
+  EPISODES [8]         episodes per round
+  K [3]                errors injected per episode
+  SEED [42]            problem sampling seed
+  PER_TOPIC [300]      problems drawn from the dataset
+  START [cold]         cold | warm  initial policies
+  EVAL [1]             0 skips the held-out ProcessBench evaluation
+  PB_PER_SUBSET [20]   ProcessBench items per subset, per policy
+  PB_BACKEND [api]     api | batch | claude-code
+  DRY_RUN [0]          1 renders every prompt and calls nothing
+  A_PLAYERS/A_UPDATER  ... D_PLAYERS/D_UPDATER  override any model id
+
+Credentials
+  Claude experiments run through `claude -p` and need no key. OpenAI and
+  DeepSeek need OPENAI_API_KEY / DEEPSEEK_API_KEY; an experiment whose key is
+  missing is skipped with a message, the others still run.
+  If you keep keys in configs/.secrets (gitignored):
+      set -a; . configs/.secrets; set +a
+
+Resuming
+  Re-running the same command resumes: completed rounds and answered evaluation
+  items are skipped, so an interrupted run never re-pays for finished work.
+USAGE
+}
+
+case "${1:-}" in
+  -h|--help|help) usage; exit 0 ;;
+esac
+
 declare -a WANT=("$@")
 [ ${#WANT[@]} -eq 0 ] && WANT=(A B C D)
 

@@ -176,6 +176,52 @@ interactive session limit.
 The `api` backend supports **Anthropic, OpenAI and DeepSeek**, inferred from the
 model id or set with `--provider`. See **[NEW_BACKENDS.md](NEW_BACKENDS.md)**.
 
+### Running the experiment suite
+
+`run_experiments.sh` runs four self-play configurations that vary **who writes
+the policy** and **who plays the episodes**. They exist to test the finding in
+[HAIKU_FAILURE.md](HAIKU_FAILURE.md): that the policy updater, not the
+perturber or verifier, is what stalled the loop.
+
+| | policy updater | perturber + verifier | backend |
+|---|---|---|---|
+| **A** | `claude-opus-5` | `claude-haiku-4-5` | `claude-code` |
+| **B** | `claude-haiku-4-5` | `claude-haiku-4-5` | `claude-code` |
+| **C** | `gpt-5.6-sol` | `gpt-5.6-terra` | `api` |
+| **D** | `deepseek-v4-pro` | `deepseek-v4-flash` | `api` |
+
+**A** is the discriminating run and **B** the published baseline: if A improves
+on held-out ProcessBench and B does not, the updater was the bottleneck and the
+architecture is sound. C and D repeat the contrast on other model families.
+
+```bash
+./run_experiments.sh --help          # full option reference
+./run_experiments.sh                 # all four
+./run_experiments.sh A B             # just the Claude contrast
+DRY_RUN=1 ./run_experiments.sh       # render every prompt, call nothing
+ROUNDS=3 EPISODES=4 ./run_experiments.sh A     # a cheap pilot
+```
+
+Each experiment gets its own policy namespace (`exp_a_verify-v1` …) and rollout
+root, then evaluates every verifier version it produced on held-out
+ProcessBench. Everything is tunable from the environment — `ROUNDS`, `EPISODES`,
+`K`, `START`, `EVAL`, `PB_BACKEND`, and per-experiment model ids such as
+`C_PLAYERS`.
+
+**Credentials.** Claude experiments go through `claude -p` and need no key.
+OpenAI and DeepSeek need `OPENAI_API_KEY` / `DEEPSEEK_API_KEY`; an experiment
+whose key is missing is skipped with a message while the others continue. Keys
+kept in `configs/.secrets` (gitignored) load with:
+
+```bash
+set -a; . configs/.secrets; set +a
+```
+
+**Cost.** At defaults this is ~1,000 self-play calls and ~3,200 evaluation
+calls. A and B run through `claude -p` at ~$0.048/call, so start with
+`ROUNDS=3` and `PB_BACKEND=batch`. Re-running the same command resumes:
+completed rounds and answered evaluation items are skipped.
+
 ### Documentation
 
 - **[NEW_BACKENDS.md](NEW_BACKENDS.md)** — the three backends, providers, costs.

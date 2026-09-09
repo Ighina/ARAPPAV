@@ -202,4 +202,6 @@ python scripts/run_pipeline.py --rounds 10 --episodes 8 \
 
 `run_experiments.sh` wraps the four comparisons this repository cares about —
 strong-updater vs weak-updater, on Claude, OpenAI and DeepSeek — picking the
-backend per model family and skipping any run whose credential is absent.
+backend per model family and skipping any run whose credential is absent. Run
+`./run_experiments.sh --help` for the full option reference, and see the README
+for the experiment table.
