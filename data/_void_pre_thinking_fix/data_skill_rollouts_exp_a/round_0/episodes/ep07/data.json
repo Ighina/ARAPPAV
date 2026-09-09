@@ -1,4 +1,0 @@
-{
-  "problem": "Evaluate $\\log_464$.",
-  "solution": "We have $4^3=64$, so $\\log_4 64 = \\boxed{3}$."
-}

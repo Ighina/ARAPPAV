@@ -1,8 +1,0 @@
-{
-  "episode_id": "math-805",
-  "subset": "math",
-  "label": -1,
-  "num_steps": 6,
-  "final_answer_correct": true,
-  "generator": "Qwen2.5-Math-72B-Instruct"
-}

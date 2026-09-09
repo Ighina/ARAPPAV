@@ -1,9 +1,0 @@
-{
-  "claims": [
-    {
-      "step_index": 5,
-      "quoted_text": "\\[ \\sum_{k=1}^{44} \\cos (8k^\\circ) = 0. \\]",
-      "explanation": "The angles 8°, 16°, ..., 352° are not the complete set of 44th roots of unity: they are spaced by 8°, and 44×8°=352°, not 360°. In fact, since the angles 0°, 8°, ..., 352° sum as complex exponentials to zero, the sum from 8° to 352° equals minus the 0° term, so \\(\\sum_{k=1}^{44}\\cos(8k^\\circ)=-1\\). Thus the sum is \\(\\frac12(44-(-1))=\\frac{45}{2}\\), not 22."
-    }
-  ]
-}

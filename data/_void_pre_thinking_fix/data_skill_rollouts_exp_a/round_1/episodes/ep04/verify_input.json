@@ -1,4 +1,0 @@
-{
-  "problem": "Compute the value of $x$ such that\n\n$\\left(1+\\frac{1}{2}+\\frac{1}{4}+\\frac{1}{8}\\cdots\\right)\\left(1-\\frac{1}{2}+\\frac{1}{4}-\\frac{1}{8}+\\cdots\\right)=1+\\frac{1}{x}+\\frac{1}{x^2}+\\frac{1}{x^3}+\\cdots$.",
-  "solution_to_review": "The sum of an infinite geometric series with first term $a$ and common ratio $r$ is $\\frac{a}{1-r}$. Thus the sum of the first series is\n\n$$\\frac{1}{1-\\frac{1}{2}}=2$$\n\nAnd the sum of the second series is\n\n$$\\frac{1}{1+\\frac{1}{2}}=\\frac{2}{3}$$\n\nMultiplying these, we get\n\n$$2 \\cdot \\frac{2}{3}=\\frac{4}{3}$$\n\nThis equals $\\frac{1}{1-\\frac{1}{x}}$, so $\\frac{4}{3}=\\frac{1}{1-\\frac{1}{x}}$. Solving, $1-\\frac{1}{x}=\\frac{3}{4}$, thus $\\frac{1}{x}=\\frac{1}{4}$, giving $x=\\boxed{4}$."
-}

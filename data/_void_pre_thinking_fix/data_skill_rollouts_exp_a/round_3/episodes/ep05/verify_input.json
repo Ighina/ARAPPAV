@@ -1,4 +1,0 @@
-{
-  "problem": "If $a \\div b = 2$ and $b \\div c = \\frac{3}{4}$, what is the value of $c \\div a$? Express your answer as a common fraction.",
-  "solution_to_review": "Since $\\dfrac{b}{a} \\cdot \\dfrac{c}{b} = \\dfrac{c}{a}$, we first rewrite the given equations. From $a \\div b = 2$, we have $\\dfrac{a}{b} = 2$, so $\\dfrac{b}{a} = \\dfrac{1}{2}$. From $b \\div c = \\dfrac{3}{4}$, we have $\\dfrac{b}{c} = \\dfrac{3}{4}$, so $\\dfrac{c}{b} = \\dfrac{4}{3}$.\n\nNow we multiply: $\\dfrac{b}{a} \\cdot \\dfrac{c}{b} = \\dfrac{1}{2} \\cdot \\dfrac{4}{3} = \\dfrac{4}{6} = \\dfrac{2}{3}$.\n\nTherefore, $c \\div a = \\boxed{\\dfrac{3}{2}}$."
-}

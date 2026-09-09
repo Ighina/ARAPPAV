@@ -1,4 +1,0 @@
-{
-  "problem": "Define $A\\star B$ as $A\\star B = \\frac{(A+B)}{3}$. What is the value of $(2\\star 10) \\star 5$?",
-  "solution_to_review": "We have $2 \\star 10 = \\frac{2+10}{3} = \\frac{12}{3} = 5$. Then $5 \\star 5 = \\frac{5+5}{3} = \\frac{10}{3} = \\boxed{\\frac{10}{3}}$."
-}

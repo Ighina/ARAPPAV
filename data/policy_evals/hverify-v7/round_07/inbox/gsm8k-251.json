@@ -1,8 +1,0 @@
-{
-  "episode_id": "gsm8k-251",
-  "subset": "gsm8k",
-  "problem": "Roy has saved 40% more in money earned by chores than his brother Anthony.  Anthony has saved $10.00 more than their sister Eva.   Eva has saved $20.00.  How much money does Roy have?",
-  "solution_to_review": "<step_0>\nLet's break down the problem step by step to find out how much money Roy has.\n</step_0>\n\n<step_1>\nFirst, determine how much money Eva has saved. According to the problem, Eva has saved $20.00. So, \\( E = 20 \\).\n</step_1>\n\n<step_2>\nSecond, determine how much money Anthony has saved. Anthony has saved $10.00 more than Eva. Therefore, \\( A = E + 10 \\). Substituting the value of \\( E \\): \\[ A = 20 + 10 = 30 \\]\n</step_2>\n\n<step_3>\nThird, determine how much money Roy has saved. Roy has saved 40% more than Anthony. To calculate 40% more than Anthony's savings: \\[ 0.40 \\times A = 0.40 \\times 30 = 12 \\] Therefore, the amount Roy has saved is: \\[ R = A + 0.40 \\times A = 30 + 12 = 42 \\]\n</step_3>\n\n<step_4>\nThus, the amount of money Roy has saved is \\(\\boxed{42}\\).\n</step_4>",
-  "step_format": "tagged",
-  "num_steps": 5
-}

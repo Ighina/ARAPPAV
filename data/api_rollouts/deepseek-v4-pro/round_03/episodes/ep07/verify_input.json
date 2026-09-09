@@ -1,5 +1,0 @@
-{
-  "episode_id": "ep07",
-  "problem": "If the ratio of $b$ to $a$ is 3, then what is the value of $a$ when $b=12-5a$?",
-  "solution_to_review": "The given ratio tells us that $\\frac{b}{a}=3$ or that $b=3a$. We substitute this value for $a$ so we have an equation with only one variable. We find\n\\begin{align*}\n3a&=12+5a \\\\\n\\Rightarrow \\quad -2a&=12 \\\\\n\\Rightarrow \\quad a &= 6 \\\\\n\\Rightarrow \\quad a &= \\boxed{6}.\n\\end{align*}"
-}

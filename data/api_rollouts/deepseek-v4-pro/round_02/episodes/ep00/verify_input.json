@@ -1,5 +1,0 @@
-{
-  "episode_id": "ep00",
-  "problem": "The graph of $y=\\frac{5x^2-9}{3x^2+5x+2}$ has vertical asymptotes at $x = a$ and $x = b$.  Find $a + b$.",
-  "solution_to_review": "The vertical asymptotes will occur when the denominator of an unsimplified rational expression is equal to zero. We factor the denominator $3x^2+5x+2$ to obtain $(3x+1)(x+2)$.  Hence, there are vertical asymptotes when $x=-2,-\\frac{1}{3}$, and the sum of these values of $x$ is $-2-\\frac{1}{3}=\\boxed{-\\frac{7}{3}.}\n\n(We can also use Vieta's formulas, which states that the sum of the roots of $ax^2 + bx + c = 0$ is $b/a$.)"
-}

@@ -1,4 +1,0 @@
-{
-  "problem": "The expression $3y^2-y-24$ can be written as $(3y + a)(y + b),$ where $a$ and $b$ are integers. What is $a - b$?",
-  "solution_to_review": "We see that $3y^2-y-24 = (3y + 8)(y + 5)$, thus $a = 8$ and $b = 5$. Hence, $a - b = 3$. We can verify: $(3y + 8)(y + 5) = 3y^2 + 15y + 8y + 40 = 3y^2 + 23y + 40$, which matches the original expression $3y^2-y-24$. Therefore $a - b = \\boxed{3}$."
-}

@@ -35,6 +35,7 @@ PB_PER_SUBSET=${PB_PER_SUBSET:-20}     # ProcessBench items per subset, per poli
 PB_BACKEND=${PB_BACKEND:-api}          # api | batch | claude-code
 DRY_RUN=${DRY_RUN:-0}
 EVAL=${EVAL:-1}                        # 0 to skip the held-out evaluation
+FREEZE=${FREEZE:-none}                  # none | perturber | verifier  freeze one of the players
 
 # --- model ids --------------------------------------------------------------
 # Override any of these from the environment if an id is wrong for your account.
@@ -115,7 +116,7 @@ run_experiment() {   # name players updater
   # Each experiment gets its own policy namespace so versions never collide.
   python scripts/run_pipeline.py \
       --rounds "$ROUNDS" --episodes "$EPISODES" --k "$K" --seed "$SEED" \
-      --start "$START" --freeze none --source hendrycks --per-topic "$PER_TOPIC" \
+      --start "$START" --freeze "$FREEZE" --source hendrycks --per-topic "$PER_TOPIC" \
       --model "$players" --updater-model "$updater" \
       --backend "$backend" \
       --perturb-prefix "${tag}_perturb" --verify-prefix "${tag}_verify" \
@@ -172,6 +173,7 @@ Environment overrides (defaults in brackets)
   PB_BACKEND [api]     api | batch | claude-code  (evaluation only)
   DRY_RUN [0]          1 renders every prompt and calls nothing
   A_PLAYERS/A_UPDATER  ... D_PLAYERS/D_UPDATER  override any model id
+  FREEZE [none]          none | perturber | verifier  freeze one of the players
 
 Credentials
   Claude experiments run through `claude -p` and need no key. OpenAI and

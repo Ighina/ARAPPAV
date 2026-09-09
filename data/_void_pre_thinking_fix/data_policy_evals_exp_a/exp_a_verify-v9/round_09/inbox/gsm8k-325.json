@@ -1,8 +1,0 @@
-{
-  "episode_id": "gsm8k-325",
-  "subset": "gsm8k",
-  "problem": "Charlie had 10 stickers. He bought 21 stickers from a store in the mall and got 23 stickers for his birthday. Then Charlie gave 9 of the stickers to his sister and used 28 to decorate a greeting card. How many stickers does Charlie have left?",
-  "solution_to_review": "<step_0>\nLet's break it down step by step: Initially, Charlie has 10 stickers. He buys 21 stickers from the store, so he now has: 10 + 21 = 31 stickers.\n</step_0>\n\n<step_1>\nHe gets 23 stickers for his birthday, so he now has: 31 + 23 = 54 stickers.\n</step_1>\n\n<step_2>\nHe gives 9 stickers to his sister, so he now has: 54 - 9 = 45 stickers.\n</step_2>\n\n<step_3>\nHe uses 28 stickers to decorate a greeting card, so he now has: 45 - 28 = 17 stickers.\n</step_3>\n\n<step_4>\nTherefore, Charlie has \\boxed{17} stickers left.\n</step_4>",
-  "step_format": "tagged",
-  "num_steps": 5
-}

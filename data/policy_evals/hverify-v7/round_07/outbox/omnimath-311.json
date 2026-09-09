@@ -1,3 +1,0 @@
-```json
-{"claims": [{"step_index": 5, "quoted_text": "2016 - \\frac{2016}{2015} = 2015 + \\frac{2015 - 1}{2015}", "explanation": "This algebraic transformation is incorrect. The correct simplification is $2016 - \\frac{2016}{2015} = 2016 - 1 - \\frac{1}{2015} = 2015 - \\frac{1}{2015}$, which equals $2014 + \\frac{2014}{2015}$, not $2015 + \\frac{2014}{2015}$. This error propagates to the final answer. The correct value is $n = 2014 + \\frac{2014}{2015}$, so $\\{n\\} = \\frac{2014}{2015}$, not $\\frac{1}{2015}$.", "error_type": "wrong_operation"}]}
-```

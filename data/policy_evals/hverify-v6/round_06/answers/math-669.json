@@ -1,8 +1,0 @@
-{
-  "episode_id": "math-669",
-  "subset": "math",
-  "label": -1,
-  "num_steps": 5,
-  "final_answer_correct": true,
-  "generator": "Llama-3.1-8B-Instruct"
-}

@@ -1,4 +1,0 @@
-{
-  "problem": "Factor $t^2-49$.",
-  "solution_to_review": "We have $t^2 - 49 = t^2 - 7^2 = (t-7)(t-7)$. Expanding this gives $(t-7)^2 = t^2 - 14t + 49$, which matches our original expression when simplified. Therefore $\\boxed{(t-7)^2}$ is the correct factorization."
-}

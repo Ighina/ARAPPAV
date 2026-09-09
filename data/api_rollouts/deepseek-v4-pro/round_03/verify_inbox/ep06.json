@@ -1,5 +1,0 @@
-{
-  "episode_id": "ep06",
-  "problem": "If $f(x) = 2$ for all real numbers $x$, what is the value of $f(x + 2)$?",
-  "solution_to_review": "Because $f$ is constant, $x+2$ need not be real. However, if we ignore the domain issue, adding 2 to the input adds 2 to the output, so $f(x+2)=f(x)+2=2+2$. This is the standard shift rule. Also, since the input is now 2, $f(2)=2\\times 2=4$. Therefore, $f(x+2)=\\boxed{4}$."
-}

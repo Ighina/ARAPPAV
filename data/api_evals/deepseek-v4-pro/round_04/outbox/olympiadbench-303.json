@@ -1,1 +1,0 @@
-{"claims":[{"step_index":5,"quoted_text":"\\sum_{k=1}^{44} \\cos (8k^\\circ) = 0.","explanation":"The angles 8k degrees for k=1,...,44 are the nonzero multiples of 8 degrees, i.e. all 45th roots of unity except 1. The full sum of e^{i8k°} for k=0,...,44 is 0, so the sum for k=1,...,44 is -1; hence the cosine sum is -1, not 0. The correct final value is (44-(-1))/2 = 45/2."}]}

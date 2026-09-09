@@ -1,8 +1,0 @@
-{
-  "episode_id": "math-154",
-  "subset": "math",
-  "label": 0,
-  "num_steps": 3,
-  "final_answer_correct": false,
-  "generator": "Meta-Llama-3-70B-Instruct"
-}

@@ -18,16 +18,47 @@ env/
 *.swo
 
 # Data (large / generated)
+# Experiment outputs. These are regenerable by the scripts in scripts/ and can
+# run to tens of thousands of files; the repository tracks the code that
+# produces them and the reports that summarise them, not the raw artefacts.
 data/raw/*
 data/processed/*
 data/rollouts/*
+data/rollouts_math/*
 data/skill_rollouts/*
 data/skill_evals/*
+data/api_rollouts/*
+data/api_evals/*
+data/policy_evals/*
+data/perturber_evals/*
+data/validation_math500/*
+data/final_test/*
+data/_void_*/
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/rollouts/.gitkeep
+!data/rollouts_math/.gitkeep
 !data/skill_rollouts/.gitkeep
 !data/skill_evals/.gitkeep
+!data/api_rollouts/.gitkeep
+!data/api_evals/.gitkeep
+!data/policy_evals/.gitkeep
+!data/perturber_evals/.gitkeep
+!data/validation_math500/.gitkeep
+!data/final_test/.gitkeep
+
+# Policy versions written by an experiment run. `exp_*` are recreated from
+# scratch on every relaunch, so tracking them churns the history for no benefit;
+# the static skills they are generated from are tracked as source. The completed
+# hperturb-*/hverify-* series is deliberately NOT ignored: HAIKU_FAILURE.md
+# cites those policies, and the report is unverifiable without them.
+.claude/skills/exp_*/
+
+# Prompt/rollout scratch produced by the API loop
+new_rollouts/
+perturber_output.json
+verifier_output.json
+logs/
 
 # Models
 checkpoints/

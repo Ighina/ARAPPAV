@@ -1,3 +1,0 @@
-```json
-{"claims": [{"step_index": 0, "quoted_text": "The side length of each triangle is the same as the side length of the hexagon, which is 4 inches.", "explanation": "In a regular hexagon with side length 4 inches, alternate vertices are separated by 120° from the center (not 60°). Using the law of cosines with circumradius $r = 4$: the distance between alternate vertices is $d = 2r\\sin(60°) = 4\\sqrt{3}$ inches, not 4 inches. Therefore, each equilateral triangle has side length $4\\sqrt{3}$ and area $\\frac{(4\\sqrt{3})^2\\sqrt{3}}{4} = 12\\sqrt{3}$ square inches, not $4\\sqrt{3}$ square inches.", "error_type": "geometry"}]}
-```

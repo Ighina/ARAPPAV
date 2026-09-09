@@ -1,8 +1,0 @@
-{
-  "episode_id": "math-744",
-  "subset": "math",
-  "label": 0,
-  "num_steps": 2,
-  "final_answer_correct": true,
-  "generator": "Qwen2-1.5B-Instruct"
-}

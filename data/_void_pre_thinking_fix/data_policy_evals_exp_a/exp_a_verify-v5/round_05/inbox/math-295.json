@@ -1,8 +1,0 @@
-{
-  "episode_id": "math-295",
-  "subset": "math",
-  "problem": "Find the angle between the vectors $\\begin{pmatrix} 4 \\\\ 4 \\\\ 7 \\end{pmatrix}$ and $\\begin{pmatrix} 1 \\\\ 4 \\\\ 1 \\end{pmatrix},$ in degrees.",
-  "solution_to_review": "<step_0>\nWe have that\n\\[\n\\cos \\theta = \\frac{\\begin{pmatrix} 4 \\\\ 4 \\\\ 7 \\end{pmatrix} \\cdot \\begin{pmatrix} 1 \\\\ 4 \\\\ 1 \\end{pmatrix}}{\\|\\begin{pmatrix} 4 \\\\ 4 \\\\ 7 \\end{pmatrix}\\| \\|\\begin{pmatrix} 1 \\\\ 4 \\\\ 1 \\end{pmatrix}\\|}.\n\\]\n</step_0>\n\n<step_1>\nThis simplifies to\n\\[\n\\cos \\theta = \\frac{4 + 16 + 7}{\\sqrt{65} \\sqrt{18}} = \\frac{27}{\\sqrt{1170}}.\n\\]\n</step_1>\n\n<step_2>\nTherefore, we obtain that\n\\[\n\\theta = \\arccos \\left(\\frac{27}{\\sqrt{1170}}\\right) = 39.42^\\circ.\n\\]\n</step_2>\n\n<step_3>\nFinal Answer: The final answer is 39.42^\\circ. I hope it is correct.\n</step_3>",
-  "step_format": "tagged",
-  "num_steps": 4
-}

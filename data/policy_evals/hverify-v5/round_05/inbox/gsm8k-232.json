@@ -1,8 +1,0 @@
-{
-  "episode_id": "gsm8k-232",
-  "subset": "gsm8k",
-  "problem": "Leila buys 3 cucumbers from the market. Cucumbers are $2 each. Jack buys 5 tomatoes from the grocery store.  Tomatoes are $1 each. Chase buys 1 head of lettuce from the farmer’s market.  Lettuce cost $3 each. Together, how much did the three of them spend to make a salad for the potluck?",
-  "solution_to_review": "<step_0>\nTo find out how much the three of them spent to make a salad for the potluck, we need to calculate the total amount spent by Leila, Jack, and Chase.\n</step_0>\n\n<step_1>\nFirst, calculate the amount spent by Leila. Leila buys 3 cucumbers at $2 each. The total amount spent by Leila is the number of cucumbers multiplied by the price per cucumber. Therefore, the total amount spent by Leila is 3 * $2, which equals $6.\n</step_1>\n\n<step_2>\nSecond, calculate the amount spent by Jack. Jack buys 5 tomatoes at $1 each. The total amount spent by Jack is the number of tomatoes multiplied by the price per tomato. Therefore, the total amount spent by Jack is 5 * $1, which equals $5.\n</step_2>\n\n<step_3>\nThird, calculate the amount spent by Chase. Chase buys 1 head of lettuce at $3 each. The total amount spent by Chase is the number of lettuces multiplied by the price per lettuce. Therefore, the total amount spent by Chase is 1 * $3, which equals $3.\n</step_3>\n\n<step_4>\nFinally, calculate the total amount spent by all three. The total amount spent is the sum of the amounts spent by Leila, Jack, and Chase. Therefore, the total amount spent is $6 + $5 + $3, which equals $14.\n</step_4>\n\n<step_5>\nTherefore, the three of them spent a total of $\\boxed{$14}$ to make a salad for the potluck.\n</step_5>",
-  "step_format": "tagged",
-  "num_steps": 6
-}

@@ -1,4 +1,0 @@
-{
-  "problem": "A triangle has three sides of the following side lengths: $7$, $10$, and $x^2$. What are all of the positive integer values of $x$ such that the triangle exists? Separate your answers using commas and express them in increasing order.",
-  "solution_to_review": "For a triangle to exist, the sum of two sides of the triangle must be greater than the third. Therefore, we have three formulas: $x^2+7>10 \\to x^2>3$, $x^2+10>7 \\to x^2>-3$, and $7+10>x^2 \\to x^2<18$. Thus, we have two quadratics, $x^2>3$ and $x^2<18$. From $x^2>3$, we need $x\\geq 2$ since $1^2=1\\not>3$ but $2^2=4>3$. From $x^2<18$, we need $x\\leq 4$ since $4^2=16<18$ but $5^2=25\\not<18$. Therefore, possible values for $x$ are $\\boxed{2, 3, \\text{ and } 5}$."
-}

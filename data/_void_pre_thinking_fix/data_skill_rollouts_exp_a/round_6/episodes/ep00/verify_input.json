@@ -1,4 +1,0 @@
-{
-  "problem": "Let $f(x)=x+2$ and $g(x)=x/3.$ Also denote the inverses to these functions as $f^{-1}$ and $g^{-1}.$ Compute \\[f(g^{-1}(f^{-1}(f^{-1}(g(f(19)))))).\\]",
-  "solution_to_review": "Since $f$ is the function that adds two, $f^{-1}$ is the function that subtracts two. Since $g$ is the function that divides by $3,$ $g^{-1}$ is the function that triples. This lets us compute from inside out: \\[\\begin{array}{rl|l}\n&f(g^{-1}(f^{-1}(f^{-1}(g(f(19)))))).\\\\\n&\\quad=f(g^{-1}(f^{-1}(f^{-1}(g(21))))).\n&\\quad=f(g^{-1}(f^{-1}(f^{-1}(6))))&\\text{divided by 3}\\\\\n&\\quad=f(g^{-1}(f^{-1}(4)))&\\text{subtracted 2}\\\\\n&\\quad=f(g^{-1}(2))&\\text{subtracted 2}\\\\\n&\\quad=f(6)&\\text{tripled}\\\\\n&\\quad=\\boxed{8}&\\text{added 2}\\\\\n\\end{array}\\]"
-}

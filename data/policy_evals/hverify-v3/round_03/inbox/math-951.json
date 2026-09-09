@@ -1,8 +1,0 @@
-{
-  "episode_id": "math-951",
-  "subset": "math",
-  "problem": "For triangle $ABC$, points $D$ and $E$ are   the midpoints of sides $AB$ and $AC$,  respectively.  Side $BC$ measures six inches.   What is the measure of segment $DE$ in inches?\n\n[asy]\ndraw((-5,-5)--(10,3)--(0,10)--cycle);\ndraw((-2.5,2.5)--(2.5,-1));\nlabel(\"$A$\",(-5,-5),SW);\nlabel(\"$B$\",(0,10),N);\nlabel(\"$C$\",(10,3),SE);\nlabel(\"$D$\",(-2.5,2.5),NW);\nlabel(\"$E$\",(2.5,-1),SE);\n[/asy]",
-  "solution_to_review": "<step_0>\nGiven that $D$ and $E$ are midpoints of sides $AB$ and $AC$ respectively, this means that $AD = DB$ and $AE = EC$.\n</step_0>\n\n<step_1>\nAccording to the properties of triangles and midsegments (or midlines), the segment joining the midpoints of two sides of a triangle (in this case, $DE$) is parallel to the third side ($BC$) and is half its length.\n</step_1>\n\n<step_2>\nGiven:\n- Length of $BC = 6$ inches\n</step_2>\n\n<step_3>\nUsing the property of midsegments:\n\\[ DE = \\frac{1}{2} BC \\]\n</step_3>\n\n<step_4>\nSubstitute the given value of $BC$:\n\\[ DE = \\frac{1}{2} \\times 6 = 3 \\text{ inches} \\]\n</step_4>\n\n<step_5>\nTherefore, the measure of segment $DE$ is $3$ inches. The answer is $\\boxed{3}$.\n</step_5>",
-  "step_format": "tagged",
-  "num_steps": 6
-}

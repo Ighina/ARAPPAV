@@ -1,4 +1,0 @@
-{
-  "problem": "The operation $\\#$ is defined as $a \\# b = a + \\frac{a}{b}$. What is the value of $6 \\# 2$?",
-  "solution_to_review": "We have $6 \\# 2 = 6+\\frac{2}{6} = 6+\\frac{1}{3} = \\frac{18}{3}+\\frac{1}{3} = \\frac{19}{3}$.\n\nConverting to a decimal, $\\frac{19}{3} \\approx 6.33$, so the answer is $\\boxed{6.33}$."
-}

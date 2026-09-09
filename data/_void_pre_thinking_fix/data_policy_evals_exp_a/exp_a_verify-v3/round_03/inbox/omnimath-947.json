@@ -1,8 +1,0 @@
-{
-  "episode_id": "omnimath-947",
-  "subset": "omnimath",
-  "problem": "The value of $\\frac{2^4 - 2}{2^3 - 1}$ is?",
-  "solution_to_review": "<step_0>\nTo find the value of the given expression: \\[ \\frac{2^4 - 2}{2^3 - 1} \\] we will calculate the numerator and the denominator separately and then divide.\n</step_0>\n\n<step_1>\nFirst, let's calculate the numerator \\(2^4 - 2\\): \\[ 2^4 = 2 \\times 2 \\times 2 \\times 2 = 16 \\] So, \\[ 2^4 - 2 = 16 - 2 = 14 \\]\n</step_1>\n\n<step_2>\nNext, let's calculate the denominator \\(2^3 - 1\\): \\[ 2^3 = 2 \\times 2 \\times 2 = 8 \\] So, \\[ 2^3 - 1 = 8 - 1 = 7 \\]\n</step_2>\n\n<step_3>\nNow we can substitute these values back into the original expression: \\[ \\frac{2^4 - 2}{2^3 - 1} = \\frac{14}{7} = 2 \\]\n</step_3>\n\n<step_4>\nThus, the value of the given expression is \\(2\\). \\[ \\boxed{2} \\]\n</step_4>",
-  "step_format": "tagged",
-  "num_steps": 5
-}

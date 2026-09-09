@@ -1,8 +1,0 @@
-{
-  "episode_id": "gsm8k-124",
-  "subset": "gsm8k",
-  "problem": "If it takes 3 kangaroos traveling at the same speed a total of 18 hours to travel across a highway, how many hours will it take four turtles, each traveling at half the speed of a kangaroo, to do so?",
-  "solution_to_review": "<step_0>\nLet's break this down step by step! First, if 3 kangaroos take 18 hours to travel across the highway, then the time taken by 1 kangaroo to travel across the highway is: 18 hours / 3 kangaroos = 6 hours per kangaroo. So, it takes 6 hours for 1 kangaroo to travel across the highway.\n</step_0>\n\n<step_1>\nSecond, since the turtles travel at half the speed of a kangaroo, it will take a turtle twice as long to travel the same distance. Therefore, the time taken by 1 turtle to travel across the highway is: 2 × 6 hours = 12 hours per turtle.\n</step_1>\n\n<step_2>\nThird, now we need to find the time taken by 4 turtles to travel across the highway. Since they all travel at the same speed, the total time taken will be the same as the time taken by 1 turtle: 12 hours per turtle × 1 turtle = 12 hours.\n</step_2>\n\n<step_3>\nSo, it will take 4 turtles 12 hours to travel across the highway. Therefore, the final answer is: \\boxed{12 hours}.\n</step_3>",
-  "step_format": "tagged",
-  "num_steps": 4
-}

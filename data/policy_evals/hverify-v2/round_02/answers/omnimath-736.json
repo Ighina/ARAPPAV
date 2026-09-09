@@ -1,8 +1,0 @@
-{
-  "episode_id": "omnimath-736",
-  "subset": "omnimath",
-  "label": 0,
-  "num_steps": 7,
-  "final_answer_correct": true,
-  "generator": "Llama-3.1-8B-Instruct"
-}

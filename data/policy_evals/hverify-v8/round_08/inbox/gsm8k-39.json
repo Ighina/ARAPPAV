@@ -1,8 +1,0 @@
-{
-  "episode_id": "gsm8k-39",
-  "subset": "gsm8k",
-  "problem": "John is very tired. He decides to take a nap, but he wants to finish his homework first. If John has 20 minutes of math homework, 40 minutes of reading homework, and 20 minutes of history homework and 3 hours before he has to eat dinner, how many minutes does John have to nap?",
-  "solution_to_review": "<step_0>\nFirst, let's calculate the total amount of time John spends on his homework. First, Math homework: 20 minutes. Second, Reading homework: 40 minutes. Third, History homework: 20 minutes. Total homework time = 20 + 40 + 20 = 80 minutes.\n</step_0>\n\n<step_1>\nJohn also has 3 hours before he has to eat dinner. Since there are 60 minutes in an hour, this is: 3 hours * 60 minutes/hour = 180 minutes.\n</step_1>\n\n<step_2>\nNow, let's add the time spent on homework to the time before dinner to find out how much time John has in total for activities other than eating dinner: 180 minutes (before dinner) + 80 minutes (homework) = 260 minutes.\n</step_2>\n\n<step_3>\nAssuming John wants to nap after finishing his homework and before eating dinner, we subtract the time spent on homework from the total time available to see how much time he has left for napping: 260 minutes (total available time) - 80 minutes (homework time) = 180 minutes.\n</step_3>\n\n<step_4>\nTherefore, John has 180 minutes to nap. Answer: John has 180 minutes to nap.\n</step_4>",
-  "step_format": "tagged",
-  "num_steps": 5
-}

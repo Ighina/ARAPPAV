@@ -1,4 +1,0 @@
-{
-  "problem": "Given that $a > 0$, if $f(g(a)) = 8$, where $f(x) = x^2 + 8$ and $g(x) = x^2 - 4$, what is the value of $a$?",
-  "solution_to_review": "First, we solve for $b = g(a)$.\n\n\\begin{align*}\nf(g(a)) &= 8 \\\\\nf(b) &= 8 \\\\\nb^2 + 8 &= 16 \\\\\nb^2 &= 8 \\\\\n\\end{align*}\n\nTherefore, $b = g(a) = 8.$ Now, we solve for $a$ using $g(a) = a^2 - 4 = 8.$ From this, $a^2 = 12,$ so $a = \\pm 2\\sqrt{3}.$ Since we are given that $a > 0$, our answer is $a = \\boxed{2\\sqrt{3}}.$"
-}

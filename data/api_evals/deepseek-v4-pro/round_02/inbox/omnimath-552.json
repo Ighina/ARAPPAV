@@ -1,8 +1,0 @@
-{
-  "episode_id": "omnimath-552",
-  "subset": "omnimath",
-  "problem": "If \\( 50\\% \\) of \\( N \\) is 16, what is \\( 75\\% \\) of \\( N \\)?",
-  "solution_to_review": "<step_0>\nFirst, let's find the value of \\(N\\) given that \\(50\\%\\) of \\(N\\) is 16. Since \\(50\\% = \\frac{1}{2}\\), we have: \\[ \\frac{1}{2}N = 16 \\]\n</step_0>\n\n<step_1>\nTo find \\(N\\), we multiply both sides by 2: \\[ N = 16 \\times 2 = 32 \\]\n</step_1>\n\n<step_2>\nNow, we need to find \\(75\\%\\) of \\(N\\). Since \\(75\\% = \\frac{3}{4}\\), we calculate: \\[ \\frac{3}{4}N = \\frac{3}{4} \\times 32 \\]\n</step_2>\n\n<step_3>\nSimplifying this gives: \\[ \\frac{3}{4} \\times 32 = 3 \\times 8 = 24 \\]\n</step_3>\n\n<step_4>\nTherefore, \\(75\\%\\) of \\(N\\) is \\(24\\). Putting it all together: \\[ \\boxed{24} \\]\n</step_4>",
-  "step_format": "tagged",
-  "num_steps": 5
-}

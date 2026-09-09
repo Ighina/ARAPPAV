@@ -1,8 +1,0 @@
-{
-  "episode_id": "gsm8k-115",
-  "subset": "gsm8k",
-  "problem": "Manolo bought five lollipops and four candies that cost $3.20. If each lollipop costs $0.40, how much will 10 lollipops and 10 candies cost him?",
-  "solution_to_review": "<step_0>\nLet's break down the problem step by step. First, we need to determine the total cost of the candies Manolo bought. We know he bought 4 candies for $3.20 in total. So, the cost per candy is: \\[ \\text{Cost per candy} = \\frac{\\$3.20}{4} = \\$0.80 \\]\n</step_0>\n\n<step_1>\nNext, we know the cost of each lollipop is $0.40. Now, we need to calculate the cost of 10 lollipops and 10 candies. The cost of 10 lollipops is: \\[ 10 \\times \\$0.40 = \\$4.00 \\]\n</step_1>\n\n<step_2>\nThe cost of 10 candies is: \\[ 10 \\times \\$0.80 = \\$8.00 \\]\n</step_2>\n\n<step_3>\nAdding these two amounts together gives us the total cost: \\[ \\$4.00 + \\$8.00 = \\$12.00 \\]\n</step_3>\n\n<step_4>\nTherefore, the total cost of 10 lollipops and 10 candies is: \\[ \\boxed{12.00} \\]\n</step_4>",
-  "step_format": "tagged",
-  "num_steps": 5
-}

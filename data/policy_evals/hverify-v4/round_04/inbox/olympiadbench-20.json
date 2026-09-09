@@ -1,8 +1,0 @@
-{
-  "episode_id": "olympiadbench-20",
-  "subset": "olympiadbench",
-  "problem": "Let $T=67$. Rectangles $F A K E$ and $F U N K$ lie in the same plane. Given that $E F=T$, $A F=\\frac{4 T}{3}$, and $U F=\\frac{12}{5}$, compute the area of the intersection of the two rectangles.",
-  "solution_to_review": "<step_0>\nTo find the area of the intersection of the two rectangles \\(F A K E\\) and \\(F U N K\\), we need to determine the dimensions of the overlapping region. Let's start by analyzing the given information: First, the length \\(EF = T = 67\\). Second, the length \\(AF = \\frac{4T}{3} = \\frac{4 \\cdot 67}{3} = \\frac{268}{3}\\). Third, the length \\(UF = \\frac{12}{5}\\).\n</step_0>\n\n<step_1>\nSince both rectangles share the common vertex \\(F\\) and the side \\(FK\\), the intersection of the two rectangles will be a rectangle with one side equal to the minimum of \\(AF\\) and \\(UF\\) and the other side equal to \\(EF\\). First, we compare \\(AF\\) and \\(UF\\):\n\\[AF = \\frac{268}{3} \\approx 89.33\\]\n\\[UF = \\frac{12}{5} = 2.4\\]\n</step_1>\n\n<step_2>\nClearly, \\(UF < AF\\). Therefore, the width of the intersection is \\(UF = \\frac{12}{5}\\) and the length is \\(EF = 67\\).\n</step_2>\n\n<step_3>\nThe area of the intersection is given by the product of these two dimensions:\n\\[\\text{Area} = EF \\times UF = 67 \\times \\frac{12}{5} = \\frac{804}{5} = 160.8\\]\n</step_3>\n\n<step_4>\nThus, the area of the intersection of the two rectangles is \\(\\boxed{160.8}\\).\n</step_4>",
-  "step_format": "tagged",
-  "num_steps": 5
-}

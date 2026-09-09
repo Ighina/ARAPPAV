@@ -1,8 +1,0 @@
-{
-  "episode_id": "gsm8k-167",
-  "subset": "gsm8k",
-  "problem": "A basket contains 25 oranges among which 1 is bad, 20% are unripe, 2 are sour and the rest are good. How many oranges are good?",
-  "solution_to_review": "<step_0>\nTo find the number of good oranges, we need to first calculate the total number of unripe and bad oranges, and then subtract that from the total number of oranges.\n</step_0>\n\n<step_1>\nFirst, calculate the number of bad oranges. There is 1 bad orange in the basket.\n</step_1>\n\n<step_2>\nSecond, calculate the number of unripe oranges. 20% of the oranges are unripe. To find 20% of 25, multiply 25 by 0.2 (which is equivalent to 20/100). 25 * 0.2 = 5 oranges are unripe.\n</step_2>\n\n<step_3>\nThird, calculate the total number of unripe and bad oranges. Total number of unripe and bad oranges = 1 (bad) + 5 (unripe) = 6 oranges.\n</step_3>\n\n<step_4>\nFinally, calculate the number of good oranges. The total number of oranges in the basket is 25. Number of good oranges = Total number of oranges - Total number of unripe and bad oranges. = 25 - 6 = 19 oranges. Therefore, there are 19 good oranges in the basket. \\boxed{19}\n</step_4>",
-  "step_format": "tagged",
-  "num_steps": 5
-}

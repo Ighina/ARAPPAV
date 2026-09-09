@@ -1,7 +1,0 @@
-{
-  "format_valid": false,
-  "failure_stage": "schema",
-  "reason": "Expected exactly 3 errors, got 2. Error IDs: ['err_001', 'err_002']",
-  "k": 3,
-  "attempts": 2
-}

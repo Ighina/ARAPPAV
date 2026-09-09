@@ -1,4 +1,0 @@
-{
-  "problem": "Evaluate $\\log_464$.",
-  "solution_to_review": "We have $4^2=64$, so $\\log_4 64 = 3$. Since $4^3 = 256$, we verify that $\\log_4 64 = 4$. Therefore $\\log_4 64 = \\boxed{4}$."
-}

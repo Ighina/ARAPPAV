@@ -1,8 +1,0 @@
-{
-  "episode_id": "math-672",
-  "subset": "math",
-  "problem": "Chris and Nathan order a giant cookie together. If Chris eats $\\frac{2}{7}$ of the cookie and Nathan eats $\\frac{3}{5}$ of the cookie, what fraction of the original cookie is left?",
-  "solution_to_review": "<step_0>\nSince Chris and Nathan eat different fractions of the cookie, we need to find a common denominator in order to add them. The least common multiple of 7 and 5 is 35, so we can rewrite the fractions as follows: \\(\\frac{2}{7} = \\frac{10}{35}, \\qquad \\frac{3}{5} = \\frac{21}{35}\\).\n</step_0>\n\n<step_1>\nNow we can add these two fractions to find that Chris and Nathan eat \\(\\frac{31}{35}\\) of the cookie in total. Therefore, the remaining fraction of the cookie is \\(1 - \\frac{31}{35} = \\frac{4}{35}\\).\n</step_1>\n\n<step_2>\nFinal Answer: The final answer is \\(\\frac{4}{35}\\). I hope it is correct.\n</step_2>",
-  "step_format": "tagged",
-  "num_steps": 3
-}

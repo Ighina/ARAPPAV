@@ -1,8 +1,0 @@
-{
-  "episode_id": "omnimath-367",
-  "subset": "omnimath",
-  "label": 1,
-  "num_steps": 3,
-  "final_answer_correct": false,
-  "generator": "Qwen2.5-Math-72B-Instruct"
-}

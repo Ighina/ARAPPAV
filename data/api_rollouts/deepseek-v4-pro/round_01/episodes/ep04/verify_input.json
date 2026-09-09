@@ -1,5 +1,0 @@
-{
-  "episode_id": "ep04",
-  "problem": "What is the value of $x$ if $|x-1| = |x-2|$? Express your answer as a common fraction.",
-  "solution_to_review": "The equation implies that either \\[\nx-1 = 2-x\\]or \\[ x-1 = -(x-2).\\]The first equation has solution $x=-1$; the second equation has solution $x= \\boxed{\\frac{3}{4}}$."
-}

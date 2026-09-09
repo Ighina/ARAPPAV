@@ -1,8 +1,0 @@
-{
-  "episode_id": "math-805",
-  "subset": "math",
-  "problem": "Five is added to four times an integer to get a result of 277. What was the integer?",
-  "solution_to_review": "<step_0>\nTo find the integer, let's denote the integer by \\( x \\). According to the problem, five is added to four times the integer to get a result of 277. We can express this relationship with the following equation: \\[ 5 + 4x = 277 \\]\n</step_0>\n\n<step_1>\nTo isolate \\( x \\), we need to first subtract 5 from both sides of the equation: \\[ 4x = 277 - 5 \\]\n</step_1>\n\n<step_2>\nThis simplifies to: \\[ 4x = 272 \\]\n</step_2>\n\n<step_3>\nNext, we divide both sides of the equation by 4: \\[ x = \\frac{272}{4} \\]\n</step_3>\n\n<step_4>\nThis simplifies to: \\[ x = 68 \\]\n</step_4>\n\n<step_5>\nTherefore, the integer is \\(\\boxed{68}\\).\n</step_5>",
-  "step_format": "tagged",
-  "num_steps": 6
-}
