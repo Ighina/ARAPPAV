@@ -322,3 +322,231 @@ Only 2/3 injected_text values found in perturbed output — applying mechanical 
 Mechanical injection: 1/3 errors applied (2 warning(s)).
 Mechanical injection: Could not find original_text for err_002 in solution. Original: '$(x-2)^2 = \\frac{15}{4}$'
 Mechanical injection: Could not find original_text for err_003 in solution. Original: '$$\\left(2 + \\frac{\\sqrt{15}}{2}\\right) - \\left(2 - \\frac{\\sqrt{15}}{2}\\right) = \\sqrt{15}.$$Thus $(A'
+Injected text for err_001 not found in perturbed_solution — the error may not be detectable. Injected: 'The slope of this line is $2$.'
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$\\boxed{y=2x+1}$'
+Only 1/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 1/3 errors applied (2 warning(s)).
+Mechanical injection: Could not find original_text for err_002 in solution. Original: 'Writing this requirement in point-slope form gives the line $y-1=-2x$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$\\boxed{y=-2x+1}$'
+Unknown error_type 'wrong_value' — coercing to None.
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: 'The product of the roots of a quadratic of the form of $ax^2+bx+c$ is equal to $\\frac{c}{-a}$'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 1/3 errors applied (2 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: 'Since the discriminant of this quadratic is $2^2 - 4(1)(-3) = 16$, which is positive'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: 'so the desired product of the values of $x$ for which $x^2 + 2x - 3=0$ is $\\frac{-3}{1}$, or $\\boxed'
+Unknown error_type 'wrong_formula' — coercing to None.
+Unknown error_type 'wrong_answer' — coercing to None.
+Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: '$m = \\dfrac{y_2 - y_1}{x_2-x_1} = \\dfrac{5-(-5)}{2-(-3)}$'
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$2+(-3)$'
+Only 1/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '\\dfrac{-10}{5}'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$m = \\dfrac{y_2 - y_1}{x_2-x_1} = \\dfrac{-5-5}{2-(-3)}$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$2-(-3)$'
+Missing error penalty: 2/3 errors not found in perturbed text. Penalty: -1.0
+Injected text for err_001 not found in perturbed_solution — the error may not be detectable. Injected: 'Note that $a-3 = 0$, since $a = 2$.'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 2/3 errors applied (1 warning(s)).
+Mechanical injection: Could not find original_text for err_002 in solution. Original: 'which is $\\boxed{0}$, since zero times any real number is zero.'
+Unknown error_type 'wrong_answer' — coercing to None.
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: 'Let $d$ denote the number of miles in the distance from $A$ to $B$ and let $r$ denote the speed of the car (in miles per'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 1/3 errors applied (2 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '\\frac{120}{1+\\frac{60}{r}}'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: 'Setting this expression equal to $45$, we find $r=\\boxed{36}$.'
+Unknown error_type 'wrong_variable_definition' — coercing to None.
+Unknown error_type 'follows_from_wrong_definition' — coercing to None.
+Unknown error_type 'algebraic_error' — coercing to None.
+[round 0] ep00: r_P=0.33333333333333337 r_V=0.6666666666666666
+[round 0] ep01: r_P=0.5 r_V=0.6666666666666666
+[round 0] ep02: r_P=0.5 r_V=0.6666666666666666
+[round 0] ep03: r_P=0.0 r_V=0.6666666666666666
+[round 0] ep04: r_P=1.0 r_V=0.0
+[round 0] ep05: r_P=0.5 r_V=0.5
+[round 0] ep06: r_P=0.5 r_V=0.0
+[round 0] ep07: r_P=0.0 r_V=1.0
+
+=== round 1 ==================================================
+[policy] exp_a_perturb-v2: tuned from round 0
+[policy] exp_a_verify-v2: tuned from round 0
+[round 1] ep00: unparseable perturbation (schema); retry 1 of 1
+[round 1] ep00: r_P=-0.5 r_V=1.0
+[round 1] ep01: r_P=1.0 r_V=0.0
+[round 1] ep02: r_P=-0.5 r_V=1.0
+[round 1] ep03: r_P=0.0 r_V=0.5
+[round 1] ep04: r_P=0.6666666666666667 r_V=0.5
+[round 1] ep05: r_P=0.0 r_V=1.0
+[round 1] ep06: r_P=0.5 r_V=0.6666666666666666
+[round 1] ep07: r_P=0.6666666666666667 r_V=0.5
+
+=== round 2 ==================================================
+[policy] exp_a_perturb-v3: tuned from round 1
+[policy] exp_a_verify-v3: tuned from round 1
+[round 2] ep00: r_P=1.0 r_V=0.0
+[round 2] ep01: r_P=-0.5 r_V=1.0
+[round 2] ep02: r_P=1.0 r_V=0.0
+[round 2] ep03: unparseable perturbation (schema); retry 1 of 1
+[round 2] ep03: r_P=0.0 r_V=0.5
+[round 2] ep04: r_P=0.5 r_V=0.0
+[round 2] ep05: r_P=1.0 r_V=0.0
+[round 2] ep06: r_P=0.5 r_V=0.4
+[round 2] ep07: r_P=0.5 r_V=0.0
+
+=== round 3 ==================================================
+[policy] exp_a_perturb-v4: tuned from round 2
+[policy] exp_a_verify-v4: tuned from round 2
+[round 3] ep00: r_P=1.0 r_V=0.0
+[round 3] ep01: r_P=0.0 r_V=0.6666666666666666
+[round 3] ep02: unparseable perturbation (json); retry 1 of 1
+[round 3] ep02: r_P=0.5 r_V=0.6666666666666666
+[round 3] ep03: r_P=0.0 r_V=1.0
+[round 3] ep04: r_P=1.0 r_V=0.0
+[round 3] ep05: r_P=0.6666666666666667 r_V=0.5
+[round 3] ep06: r_P=0.0 r_V=1.0
+[round 3] ep07: r_P=0.6666666666666667 r_V=0.5
+
+=== round 4 ==================================================
+[policy] exp_a_perturb-v5: tuned from round 3
+[policy] exp_a_verify-v5: tuned from round 3
+[round 4] ep00: r_P=0.6666666666666667 r_V=0.4
+[round 4] ep01: r_P=0.5 r_V=0.6666666666666666
+[round 4] ep02: r_P=0.5 r_V=0.5
+[round 4] ep03: unparseable perturbation (schema); retry 1 of 1
+[round 4] ep03: unparseable perturbation (schema); retry 2 of 1
+[round 4] ep03: r_P=-5.0 r_V=None
+[round 4] ep04: r_P=-0.5 r_V=1.0
+[round 4] ep05: r_P=1.0 r_V=0.0
+[round 4] ep06: r_P=-0.5 r_V=1.0
+[round 4] ep07: r_P=0.5 r_V=0.6666666666666666
+
+=== round 5 ==================================================
+[policy] exp_a_perturb-v6: tuned from round 4
+[policy] exp_a_verify-v6: tuned from round 4
+[round 5] ep00: r_P=0.5 r_V=0.6666666666666666
+[round 5] ep01: unparseable perturbation (schema); retry 1 of 1
+[round 5] ep01: unparseable perturbation (schema); retry 2 of 1
+[round 5] ep01: r_P=-5.0 r_V=None
+[round 5] ep02: r_P=0.5 r_V=0.4
+[round 5] ep03: r_P=0.5 r_V=0.6666666666666666
+[round 5] ep04: r_P=1.0 r_V=0.0
+[round 5] ep05: r_P=0.5 r_V=0.6666666666666666
+[round 5] ep06: r_P=1.0 r_V=0.0
+[round 5] ep07: r_P=0.5 r_V=0.6666666666666666
+
+=== round 6 ==================================================
+[policy] exp_a_perturb-v7: tuned from round 5
+[policy] exp_a_verify-v7: tuned from round 5
+[round 6] ep00: r_P=1.0 r_V=0.0
+[round 6] ep01: r_P=0.5 r_V=0.0
+[round 6] ep02: r_P=1.0 r_V=0.0
+[round 6] ep03: unparseable perturbation (schema); retry 1 of 1
+[round 6] ep03: unparseable perturbation (json); retry 2 of 1
+[round 6] ep03: r_P=-10.0 r_V=None
+[round 6] ep04: r_P=0.6666666666666667 r_V=0.5
+[round 6] ep05: r_P=1.0 r_V=0.0
+[round 6] ep06: unparseable perturbation (schema); retry 1 of 1
+[round 6] ep06: r_P=0.5 r_V=0.6666666666666666
+[round 6] ep07: unparseable perturbation (schema); retry 1 of 1
+[round 6] ep07: unparseable perturbation (schema); retry 2 of 1
+[round 6] ep07: r_P=-5.0 r_V=None
+
+=== round 7 ==================================================
+[policy] exp_a_perturb-v8: tuned from round 6
+[policy] exp_a_verify-v8: tuned from round 6
+[round 7] ep00: unparseable perturbation (schema); retry 1 of 1
+[round 7] ep00: r_P=0.0 r_V=0.0
+[round 7] ep01: unparseable perturbation (schema); retry 1 of 1
+[round 7] ep01: r_P=0.5 r_V=0.6666666666666666
+[round 7] ep02: unparseable perturbation (schema); retry 1 of 1
+[round 7] ep02: unparseable perturbation (schema); retry 2 of 1
+[round 7] ep02: r_P=-5.0 r_V=None
+[round 7] ep03: r_P=0.0 r_V=0.6666666666666666
+[round 7] ep04: r_P=1.0 r_V=0.0
+[round 7] ep05: r_P=1.0 r_V=0.0
+[round 7] ep06: r_P=1.0 r_V=0.0
+[round 7] ep07: r_P=-0.5 r_V=0.8
+
+=== round 8 ==================================================
+[policy] exp_a_perturb-v9: tuned from round 7
+[policy] exp_a_verify-v9: tuned from round 7
+[round 8] ep00: r_P=0.5 r_V=0.5
+[round 8] ep01: unparseable perturbation (schema); retry 1 of 1
+[round 8] ep01: unparseable perturbation (schema); retry 2 of 1
+[round 8] ep01: r_P=-5.0 r_V=None
+[round 8] ep02: r_P=1.0 r_V=0.0
+[round 8] ep03: r_P=0.0 r_V=1.0
+[round 8] ep04: unparseable perturbation (schema); retry 1 of 1
+[round 8] ep04: unparseable perturbation (schema); retry 2 of 1
+[round 8] ep04: r_P=-5.0 r_V=None
+[round 8] ep05: r_P=1.0 r_V=0.0
+[round 8] ep06: unparseable perturbation (schema); retry 1 of 1
+[round 8] ep06: unparseable perturbation (schema); retry 2 of 1
+[round 8] ep06: r_P=-5.0 r_V=None
+[round 8] ep07: r_P=1.0 r_V=0.0
+
+=== round 9 ==================================================
+[policy] exp_a_perturb-v10: tuned from round 8
+[policy] exp_a_verify-v10: tuned from round 8
+[round 9] ep00: r_P=0.5 r_V=0.6666666666666666
+[round 9] ep01: unparseable perturbation (schema); retry 1 of 1
+[round 9] ep01: r_P=0.5 r_V=0.5
+[round 9] ep02: r_P=0.5 r_V=0.6666666666666666
+[round 9] ep03: r_P=1.0 r_V=0.0
+[round 9] ep04: r_P=0.0 r_V=0.0
+[round 9] ep05: r_P=0.5 r_V=0.6666666666666666
+[round 9] ep06: r_P=0.0 r_V=0.8
+[round 9] ep07: r_P=1.0 r_V=0.0
+
+[final] data/skill_rollouts/exp_a/final_summary.md
+
+| round | perturb policy | verify policy | format-valid | mean r_P | mean r_V | recall | precision | units/ep | penalties | ProcessBench |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | exp_a_perturb-v1 | exp_a_verify-v1 | 1.0 | 0.4167 | 0.5208 | 0.4583 | 0.6458 | 1.875 | 0 | disabled |
+| 1 | exp_a_perturb-v2 | exp_a_verify-v2 | 1.0 | 0.2292 | 0.6458 | 0.5833 | 0.8125 | 2.125 | 0 | disabled |
+| 2 | exp_a_perturb-v3 | exp_a_verify-v3 | 1.0 | 0.5 | 0.2375 | 0.25 | 0.2292 | 2.0 | 0 | disabled |
+| 3 | exp_a_perturb-v4 | exp_a_verify-v4 | 1.0 | 0.4792 | 0.5417 | 0.4583 | 0.75 | 2.5 | 0 | disabled |
+| 4 | exp_a_perturb-v5 | exp_a_verify-v5 | 0.875 | -0.3542 | 0.6048 | 0.5476 | 0.7143 | 2.0 | 0 | disabled |
+| 5 | exp_a_perturb-v6 | exp_a_verify-v6 | 0.875 | -0.0625 | 0.4381 | 0.3571 | 0.619 | 2.0 | 0 | disabled |
+| 6 | exp_a_perturb-v7 | exp_a_verify-v7 | 0.75 | -1.2917 | 0.1944 | 0.1389 | 0.3333 | 2.5 | 0 | disabled |
+| 7 | exp_a_perturb-v8 | exp_a_verify-v8 | 0.875 | -0.25 | 0.3048 | 0.2857 | 0.381 | 2.0 | 0 | disabled |
+| 8 | exp_a_perturb-v9 | exp_a_verify-v9 | 0.625 | -1.4375 | 0.3 | 0.3 | 0.3 | 2.0 | 0 | disabled |
+| 9 | exp_a_perturb-v10 | exp_a_verify-v10 | 1.0 | 0.5 | 0.4125 | 0.375 | 0.5208 | 2.375 | 0 | disabled |
+
+[eval] backend=batch provider=anthropic model=claude-haiku-4-5 concurrency=6
+[exp_a_verify-v1] 80 item(s) to run (0 already done), concurrency=6
+[exp_a_verify-v1] submitted 80 item(s) as batch msgbatch_01ArF58bgKKQEkCDNCKz5Cg7
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (0s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (20s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (40s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (60s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (80s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (100s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (120s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (140s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (160s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (180s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (200s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (220s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (240s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (260s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (280s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (300s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (320s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (340s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (360s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (380s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (400s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (420s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (440s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (460s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (480s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (500s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (520s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (540s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (560s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (580s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (600s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (620s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (640s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (660s)
+[exp_a_verify-v1] in_progress {'processing': 80, 'succeeded': 0, 'errored': 0, 'canceled': 0, 'expired': 0} (680s)

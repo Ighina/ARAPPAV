@@ -45,13 +45,14 @@ def main() -> int:
     ax.set_ylabel("Reward", fontsize=10, color=TEXT_SECONDARY)
     ax.set_xticks(xs)
     ax.set_ylim(0, 1.05)
-    ax.legend(frameon=False, loc="center left", fontsize=9.5,
-              labelcolor=TEXT_SECONDARY, handlelength=2.4)
+    ax.legend(frameon=False, loc="lower left", bbox_to_anchor=(0, 1.01),
+              fontsize=9.5, labelcolor=TEXT_SECONDARY, handlelength=2.4,
+              ncols=2, columnspacing=2.2)
 
     titles(fig, ax, "Verifier F1 and perturber reward across self-play rounds",
            f"{root.name} · cold start · {rows[0]['n_episodes']} episodes per round · "
            f"claude-haiku-4-5")
-    fig.subplots_adjust(top=0.78, right=0.965, left=0.095, bottom=0.13)
+    fig.subplots_adjust(top=0.74, right=0.965, left=0.095, bottom=0.13)
 
     out = save(fig, root / "f1_vs_perturber_reward.pdf")
     print(f"[plot] {len(rows)} round(s) → {out}")
