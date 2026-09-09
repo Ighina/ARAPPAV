@@ -305,6 +305,7 @@ class TestBackends:
         from arappav.pipeline import backends as B
 
         class Resp:
+            stop_reason = "end_turn"
             content = [types.SimpleNamespace(type="text", text='{"claims": []}')]
             usage = types.SimpleNamespace(input_tokens=500, output_tokens=40,
                                           cache_read_input_tokens=2100,
@@ -319,7 +320,7 @@ class TestBackends:
 
         monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test")
         monkeypatch.setattr(anthropic, "Anthropic", Client)
-        return B.make_backend("api", model=model,
+        return B.make_backend("api", model=model, max_tokens=8000,
                               skills_root=Path(".claude/skills"))
 
     def test_api_requires_a_key(self, monkeypatch):
@@ -490,7 +491,8 @@ class TestApiProviders:
 
         monkeypatch.setenv(env, "sk-test")
         monkeypatch.setattr(openai, "OpenAI", lambda **kw: Cli())
-        b = B.make_backend("api", model=model, skills_root=Path(".claude/skills"))
+        b = B.make_backend("api", model=model, max_tokens=8000,
+                           skills_root=Path(".claude/skills"))
         b.run(skill="verify-v1", user="item", step="s", round_dir=Path("/tmp"))
         return b
 
@@ -706,3 +708,68 @@ class TestThinkingConfiguration:
         # an empty set means every model gets some thinking configuration.
         from arappav.pipeline.backends import NO_THINKING
         assert NO_THINKING == set()
+
+
+class TestTruncationAndStreaming:
+    """A ceiling that is too low must be reported as such, not as an outage."""
+
+    def _stub(self, monkeypatch, stop_reason, max_tokens=8000):
+        import types
+        import anthropic
+        from arappav.pipeline import backends as B
+
+        class Resp:
+            content = [types.SimpleNamespace(type="text", text="partial")]
+            usage = types.SimpleNamespace(input_tokens=100, output_tokens=max_tokens,
+                                          cache_read_input_tokens=0,
+                                          cache_creation_input_tokens=0)
+        Resp.stop_reason = stop_reason
+
+        class Stream:
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+            def get_final_message(self): return Resp()
+
+        class Msgs:
+            def __init__(self): self.streamed = False
+            def create(self, **kw): return Resp()
+            def stream(self, **kw):
+                self.streamed = True
+                return Stream()
+
+        class Client:
+            def __init__(self, **kw): self.messages = Msgs()
+
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test")
+        monkeypatch.setattr(anthropic, "Anthropic", Client)
+        return B.make_backend("api", model="claude-haiku-4-5", max_tokens=max_tokens,
+                              skills_root=Path(".claude/skills"))
+
+    def test_hitting_the_ceiling_says_so(self, tmp_path, monkeypatch):
+        b = self._stub(monkeypatch, "max_tokens")
+        r = b.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
+        assert "max_tokens" in r.infra_failure()
+        # and must not be misreported as the model being unreachable
+        assert "empty response" not in r.infra_failure()
+
+    def test_a_normal_stop_is_not_flagged(self, tmp_path, monkeypatch):
+        b = self._stub(monkeypatch, "end_turn")
+        r = b.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
+        assert r.infra_failure() is None and r.text == "partial"
+
+    def test_large_ceilings_use_streaming(self, tmp_path, monkeypatch):
+        # The SDK refuses non-streaming requests that may exceed 10 minutes.
+        b = self._stub(monkeypatch, "end_turn", max_tokens=16000)
+        b.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
+        assert b._client.messages.streamed is True
+
+    def test_small_ceilings_do_not(self, tmp_path, monkeypatch):
+        b = self._stub(monkeypatch, "end_turn", max_tokens=8000)
+        b.run(skill="verify-v1", user="x", step="s", round_dir=tmp_path)
+        assert b._client.messages.streamed is False
+
+    def test_thinking_budget_leaves_room_under_the_ceiling(self):
+        from arappav.pipeline.backends import thinking_kwargs, DEFAULT_THINK_BUDGET
+        kw = thinking_kwargs("claude-haiku-4-5", 16000, "high")
+        assert kw["thinking"]["budget_tokens"] == DEFAULT_THINK_BUDGET
+        assert kw["thinking"]["budget_tokens"] < 16000 / 2

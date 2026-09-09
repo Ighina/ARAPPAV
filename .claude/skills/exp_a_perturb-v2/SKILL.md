@@ -151,27 +151,31 @@ it once and your recall term is 0. The only way to earn reward is `k` errors tha
 > **TUNED SECTION.** The orchestrator replaces everything between here and the changelog
 > when it creates the next version. Everything above stays fixed.
 
-1. **Separation is the first priority.** Every injected error must sit in its own clearly distinct region of the response — a different step, paragraph, or declared quantity. Never put two errors in the same sentence, the same equation, or the same computed value, and never let one error's altered text be adjacent to another's. If the response is short, spread the errors across its full span rather than clustering them in the part you find easiest to edit.
+1. **Emit exactly k distinct error units.** Each unit must live in its own step, equation, or declaration, separated by at least one clean intervening line. Two corruptions inside the same sentence or the same displayed equation collapse into one unit and the extra work earns nothing.
 
-2. **One mistake per error, and no dependent chains.** Do not create an error that is merely the arithmetic consequence of another error, and do not split a single conceptual slip into several edits. Each error must be independently identifiable and independently wrong for a different reason; otherwise the whole cluster reads as one mistake and earns nothing.
+2. **Vary the error type within a solution.** Repeating one manipulation mistake two or three times in a single derivation makes the pattern legible; after the second instance a reader stops checking and starts scanning for the motif.
 
-3. **Keep the opening correct.** The first substantive claim, the restated setup, and any headline formula receive the most scrutiny. Leave them intact and place errors after the setup, in the middle and later stages of long derivations, where checking requires recomputing rather than reading.
+3. **Do not corrupt the opening.** The problem restatement, the setup, the first formula and the first substitution are read most carefully and are checked against the problem statement directly. Put errors in the middle and late portions, after the reader has accepted the framing as correct.
 
-4. **Prefer errors that must be re-derived to be found.** The most durable are: a plausible but wrong operation buried deep in a multi-step chain; an off-by-one or wrong-index term in a recurrence or sequence; treating a multiplicative or proportional relation as additive; applying an operation where its inverse is required; and quietly shifting the role or referent of a variable. Favour these.
+4. **Propagate fully.** Every line after the corrupted step, including the final boxed or stated answer, must be arithmetically consistent with the wrong value. An unpropagated error leaves a self-contradiction that is found without re-deriving anything.
 
-5. **Avoid conspicuous edits.** Do not restate a standard definition incorrectly, do not produce a fraction or ratio that is visibly nonsense at a glance, and do not insert extra commentary, an irrelevant quantity, or a spurious justification. Inserted-looking text is found immediately; edited-looking text is not.
+5. **Execute the wrong step correctly.** Whatever operation the corrupted line claims to perform, perform it accurately. Mismatches between the narrated method and the arithmetic actually done are the fastest thing to spot; a wrong-but-cleanly-executed operation forces genuine re-derivation.
 
-6. **Propagate consistently.** Once a value or rule is altered, carry it through every later use so nothing in the response contradicts anything else. An internal contradiction between a wrong value and its correct reuse is the loudest possible signal.
+6. **Keep the prose in agreement.** If the operation, sign, or quantity changes, adjust the surrounding narration to describe what is now being done, neutrally and in the same voice. Never leave commentary that states the correct method beside a step that violates it.
 
-7. **Execute the wrong method correctly.** All arithmetic downstream of a wrong step must itself be exact. A wrong method plus a careless arithmetic slip gives two chances to be caught for the credit of one.
+7. **Respect the sanity ceiling.** The corrupted value must keep the right sign, plausible magnitude, correct units, and satisfy the obvious domain constraints (counts whole and positive, probabilities in range, lengths and areas positive, monotonicity where it is expected). Anything that fails a two-second plausibility glance is detected without any computation.
 
-8. **Keep results the right kind of number.** After the error, quantities should remain the type and rough magnitude the problem expects — integral where integrality is expected, positive where positivity is forced, in plausible range, correct units. Small, believable deviations survive; wild ones do not.
+8. **Avoid textbook-archetype forms.** Canonical misconceptions stated in their most recognisable place — adding numerators and denominators of a displayed fraction sum, treating a symbol as a fixed number in the defining equation, reversing the two operands of the headline computation — are recognised on sight. Use the same underlying misconception one level down: inside a sub-step, in an intermediate coefficient, in a unit conversion, in one term of a longer expression.
 
-9. **Match the surrounding register exactly.** Same notation, symbol choices, sentence length, and level of explanation as the untouched text. No hedging, no added emphasis, no unusual phrasing around the error.
+9. **Favour errors that require re-derivation to see.** A defensible-looking but wrong choice of operation at an intermediate step, a sign lost while distributing or rearranging, a dropped case, root, or constraint, and a solution that confidently answers a nearby-but-different quantity all survive scrutiny far better than a corrupted digit in a headline calculation.
 
-10. **Respect the plausibility floor.** Every error must be one a competent but fallible student would genuinely make. Discard anything absurd, anything that is merely odd phrasing with unchanged mathematics, and anything that only looks wrong because of how the text is worded rather than what it asserts.
+10. **Make omissions look finished.** An incomplete solution must end with a confident concluding sentence — the missing case or the missing final conversion should simply never be mentioned, rather than being trailed off, hedged, or left mid-sentence.
 
-11. **Check the whole edit before finishing.** Read the response end to end as a grader would: confirm the errors are far apart, mutually independent, individually recoverable only by recomputation, and that no unedited line silently reveals one of them.
+11. **Never inject anything mathematically inert.** Notational oddities, restatements, or changes that leave every subsequent value identical are not errors; they cost effort and return nothing.
+
+12. **Match register exactly.** Same notation, rounding conventions, verbosity, and step granularity as the surrounding solution. A step that is suddenly terse, suddenly chatty, or that introduces notation used nowhere else advertises itself regardless of its content.
+
+13. **Declare spans that tightly cover the corrupted text** — the wrong expression together with the line it sits in, no padding and no truncation. Spans chosen to game overlap rather than to mark the mistake are not wins.
 
 ---
 

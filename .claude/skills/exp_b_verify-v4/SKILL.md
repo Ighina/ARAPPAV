@@ -1,17 +1,17 @@
 ---
-name: exp_a_verify-v2
-description: Verifier policy exp_a_verify-v2 (math mode) — find every genuine error in a possibly-perturbed math solution and emit ARAPPAV claim JSON with exact quoted spans. Invoked by the deterministic pipeline orchestrator with inputs inline.
+name: exp_b_verify-v4
+description: Verifier policy exp_b_verify-v4 (math mode) — find every genuine error in a possibly-perturbed math solution and emit ARAPPAV claim JSON with exact quoted spans. Invoked by the deterministic pipeline orchestrator with inputs inline.
 ---
 
-# Verifier — exp_a_verify-v2 (math mode)
+# Verifier — exp_b_verify-v4 (math mode)
 
 You are the **Verifier** in an ARAPPAV self-play episode. You are given a math problem and a
 solution that may contain injected errors. You must find every genuine mistake, quote it
 exactly, and explain it. You are scored on F1 against a hidden ground truth.
 
-- **version:** 2
-- **parent:** exp_a_verify-v1
-- **tuned from rounds:** 0
+- **version:** 4
+- **parent:** exp_b_verify-v3
+- **tuned from rounds:** 2
 
 ---
 
@@ -129,33 +129,25 @@ Consequences worth internalising:
 
 ---
 
-## Policy — exp_a_verify-v2
+## Policy — exp_b_verify-v4
 
 > **TUNED SECTION.** The orchestrator replaces everything between here and the changelog
 > when it creates the next version. Everything above stays fixed.
 
-1. **Re-derive before you read closely.** Solve the problem yourself from the statement alone — full computation, final value — before judging the given solution. Only then compare. Your own derivation is what licenses a claim.
+1. Re-derive the solution step-by-step from the problem statement. At each step, verify: (a) that the operation type (addition, subtraction, multiplication, division) matches what the problem demands; (b) that operands appear in the correct order and are not swapped; (c) that the calculated value is correct. Directly compare your re-derivation against each numerical claim in the provided solution. Flag any mismatch.
 
-2. **Audit every line to the very end; never stop at the first error.** A solution may contain several independent mistakes, and later ones are as likely as early ones. Walk each step in order and check it *locally*: take that step's inputs as given (even if you believe an earlier step corrupted them) and verify that the step's own transformation is valid. A step is a new error if it is wrong even on its own inputs.
+2. When a result is stated as a whole number, check whether the arithmetic process genuinely produces an integer or whether it yields a fraction, decimal, or irrational number. If the solution presents a whole number (or rounds without justification) when correct derivation requires a non-integer form, flag whole_number_bias. Include intermediate results—division of odd numerators by even denominators, for example, should be checked.
 
-3. **Check operation choice, not just arithmetic.** For each step ask which operation the wording actually calls for: multiply vs. divide, add vs. subtract, part-of-whole vs. whole-of-part, rate vs. reciprocal rate, total vs. difference. Confirm the operand order for non-commutative operations (subtraction, division, exponent, "A less than B", "A per B"). An arithmetically flawless line can still implement the wrong relation; this is the single most common miss.
+3. Examine variable definitions and usage. Flag if a variable's meaning changes between its introduction and use, if it is applied outside its stated domain, or if it is used before being formally defined.
 
-4. **Check completeness against the question asked.** Enumerate every quantity the problem requests, every case/root/interval/unit/simplification the method requires, and confirm each is actually produced. A derivation that halts before answering, drops a case, leaves an unsimplified or unconverted result, or boxes only part of what was asked is an error — quote the final line of the truncated work or the incomplete final answer.
+4. Check solution completeness: if the problem asks for a specific quantity and the solution stops before computing or stating it, flag as incomplete solution. Verify the stated final answer matches the work shown.
 
-5. **Give special scrutiny to sign and structure handling:** negatives distributed across parentheses or subtracted quantities, symmetry/parity claims (odd vs. even), fraction arithmetic (common denominators, operating on the denominator only), rounding or truncating a value that should stay fractional, index/term offsets in sequences, and substitution of the wrong variable or the wrong term.
+5. Identify contexts where additive reasoning would be incorrect (e.g., rates, ratios, multiplicative relationships, or sequences stated in the problem) and flag if the solution uses addition instead. For sequences, verify that any pattern or formula is correctly identified and applied to find the requested term.
 
-6. **Precision gate.** Claim a step only if you can state, in your explanation, the specific correct value or correct statement that should replace it. If your re-derivation reproduces the line, or you can only say it "looks suspicious," say nothing.
-
-7. **Root cause only.** When a wrong value propagates, claim the earliest line where the wrong value is produced, not the downstream lines that merely carry it. Do not claim a final answer separately when it is simply the consequence of an already-claimed step; do claim it if it fails to follow from the work above it.
-
-8. **Do not claim correct results with shaky reasoning.** If a line's stated value or conclusion is right, leave it alone even if the justification is odd. If the justification is itself an explicitly wrong statement, quote the wrong statement, not the correct conclusion that follows it.
-
-9. **One claim per error, one error per claim.** Never let a single quote span two distinct mistakes — split it into two claims with disjoint quotes. Never file two claims for the same mistake.
-
-10. **Quote minimally and verbatim.** The quoted span must be an exact substring of the solution, short enough to contain only the erroneous expression (typically one equation, one clause, or one sentence) and long enough to be unique in the text. Reproduce spacing and notation exactly; do not paraphrase, normalise, or add ellipses.
+6. For problems involving signs, negative quantities, or reciprocals, verify that signs are handled correctly throughout and that inversions are applied when required. Flag if a negative quantity is treated as positive without justification, or if a reciprocal or multiplicative inverse should be applied but is not.
 
 ---
 
 ## Changelog
 
-- **exp_a_verify-v2** — tuned from round 0
+- **exp_b_verify-v4** — tuned from round 2

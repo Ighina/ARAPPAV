@@ -46,6 +46,12 @@ BUDGET_THINKING = {"claude-haiku-4-5"}
 #: Thinking budget for those models, in tokens. Must be < max_tokens.
 DEFAULT_THINK_BUDGET = 4000
 
+#: Above this the SDK refuses a non-streaming request ("operations that may take
+#: longer than 10 minutes"), so those go through .stream(). Measured need: a
+#: perturbation with thinking on used 7,321 of an 8,000 ceiling — 91% — so a
+#: ceiling near the budget silently truncates the longer episodes.
+STREAM_ABOVE = 8192
+
 #: Models that take no thinking configuration at all.
 NO_THINKING: set[str] = set()
 
@@ -121,7 +127,7 @@ class Backend:
     name: str
     model: str | None = None
     timeout: int = 600
-    max_tokens: int = 8000
+    max_tokens: int = 16000
     effort: str = "high"
     skills_root: Path = Path(".claude/skills")
 
@@ -267,8 +273,12 @@ class ApiBackend(Backend):
         t0 = time.time()
         try:
             if anthropic_path:
-                resp = self._client.messages.create(
-                    **self.anthropic_kwargs(system, user))
+                kw = self.anthropic_kwargs(system, user)
+                if self.max_tokens > STREAM_ABOVE:
+                    with self._client.messages.stream(**kw) as s:
+                        resp = s.get_final_message()
+                else:
+                    resp = self._client.messages.create(**kw)
             else:
                 resp = self._client.chat.completions.create(
                     **self.openai_kwargs(system, user))
@@ -280,6 +290,14 @@ class ApiBackend(Backend):
 
         if anthropic_path:
             text = "".join(b.text for b in resp.content if b.type == "text")
+            if getattr(resp, "stop_reason", None) == "max_tokens":
+                # Not an outage and not a bad answer: our ceiling was too low,
+                # most often because extended thinking ate the budget. Saying
+                # "empty response" here sent the last run chasing the wrong bug.
+                return AgentResult(
+                    step, "", 3, round(time.time() - t0, 2), len(user), "",
+                    stderr=f"truncated at max_tokens={self.max_tokens} "
+                           f"(output {resp.usage.output_tokens}); raise --max-tokens")
             u = resp.usage
             usage = {"input_tokens": u.input_tokens, "output_tokens": u.output_tokens,
                      "cache_read": getattr(u, "cache_read_input_tokens", 0),

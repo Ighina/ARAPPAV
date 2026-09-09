@@ -87,6 +87,9 @@ def build_parser() -> argparse.ArgumentParser:
                    help="api backend: provider for the policy author; "
                         "inferred from --updater-model")
     a.add_argument("--timeout", type=int, default=900)
+    a.add_argument("--max-tokens", type=int, default=16000, dest="max_tokens",
+                   help="output ceiling per call; must comfortably exceed the "
+                        "thinking budget or long episodes truncate")
     a.add_argument("--retry-format", type=int, default=0, dest="retry_format",
                    help="extra attempts when a reply fails to parse (default 0, "
                         "which preserves the pre-refactor penalty statistics)")
@@ -116,6 +119,7 @@ def main() -> int:
         processbench_seed=args.processbench_seed, no_context=args.no_context,
         overwrite_policies=args.overwrite_policies, dry_run=args.dry_run,
         timeout=args.timeout, retry_format=args.retry_format,
+        max_tokens=args.max_tokens,
         resume=args.resume,
     )
     print(f"[pipeline] backend={cfg.backend} players={cfg.model or 'default'} "

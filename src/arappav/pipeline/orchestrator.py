@@ -67,6 +67,7 @@ class PipelineConfig:
     overwrite_policies: bool = False
     dry_run: bool = False
     timeout: int = 900
+    max_tokens: int = 16000
     retry_format: int = 0   # extra attempts when a reply fails to parse
     resume: bool = False    # skip rounds that already have a summary
 
@@ -172,13 +173,13 @@ class Pipeline:
             if self._players is None:
                 self._players = make_backend(
                     cfg.backend, model=cfg.model, timeout=cfg.timeout,
-                    skills_root=self.skills,
+                    skills_root=self.skills, max_tokens=cfg.max_tokens,
                     **({"provider": cfg.provider} if cfg.backend != "claude-code" else {}))
             return self._players
         if self._author is None:
             self._author = make_backend(
                 cfg.backend, model=cfg.policy_model(), timeout=cfg.timeout,
-                skills_root=self.skills,
+                skills_root=self.skills, max_tokens=cfg.max_tokens,
                 **({"provider": cfg.policy_provider()} if cfg.backend != "claude-code" else {}))
         return self._author
 

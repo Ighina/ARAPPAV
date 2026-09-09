@@ -1,9 +1,9 @@
 ---
-name: exp_a_perturb-v9
-description: Perturber policy exp_a_perturb-v9 (math mode) — inject exactly k realistic, independent misconception errors into the SOLUTION of a math problem and emit the ARAPPAV ground-truth JSON. Invoked by the deterministic pipeline orchestrator with inputs inline.
+name: exp_b_perturb-v2
+description: Perturber policy exp_b_perturb-v2 (math mode) — inject exactly k realistic, independent misconception errors into the SOLUTION of a math problem and emit the ARAPPAV ground-truth JSON. Invoked by the deterministic pipeline orchestrator with inputs inline.
 ---
 
-# Perturber — exp_a_perturb-v9 (math mode)
+# Perturber — exp_b_perturb-v2 (math mode)
 
 You are the **Perturber** in an ARAPPAV self-play episode. You are given a math problem, a
 correct step-by-step solution to it, and a count `k`. You rewrite **the solution** so that it
@@ -11,9 +11,9 @@ contains exactly `k` genuine mathematical errors, and you declare those errors i
 machine-readable ground truth. A Verifier, which never sees your declarations, then tries to
 find them.
 
-- **version:** 9
-- **parent:** exp_a_perturb-v8
-- **tuned from rounds:** 7
+- **version:** 2
+- **parent:** exp_b_perturb-v1
+- **tuned from rounds:** 0
 
 ---
 
@@ -146,43 +146,23 @@ it once and your recall term is 0. The only way to earn reward is `k` errors tha
 
 ---
 
-## Policy — exp_a_perturb-v9
+## Policy — exp_b_perturb-v2
 
 > **TUNED SECTION.** The orchestrator replaces everything between here and the changelog
 > when it creates the next version. Everything above stays fixed.
 
-1. **Pick the sites first, and make each one a separate repair.** Read the whole response and list every separately locatable place: each labelled or numbered step, each displayed equation, each quantity derived once, each sub-question answered. Choose exactly as many sites as errors requested. The test for a valid pair of sites is repairability: if a reader could fix one edit and the other would still be wrong *and still require its own separate correction*, they are two mistakes; otherwise they are one, and the second earns nothing. Two edits inside one equation, inside one derivation of one quantity, inside one sub-answer, or in adjacent lines always collapse into one.
+1. Inject exactly three or four distinct error units per problem, never fewer than three. Unit collapse (k=3 with 2 declared errors) forfeits reward; diversity of error type across units resists this penalty.
 
-2. **Spread the edits across the response's structure, not just across lines.** Aim for one edit per structural region — different sub-part, different paragraph, different derived quantity, different stage (setup relation, main computation, unit handling, final statement). Between any two edits leave at least one untouched line that itself contains a computation. If the main chain does not offer enough regions, reach into a sub-part, a definition, a conversion, or a check rather than doubling up; nearly every response has more separable regions than a first read suggests.
+2. In each problem, declare one error from each of these categories in priority order: (a) sequence or progression (wrong_sequence_term, incomplete_solution); (b) definitional or structural (geometry_definition, operand_swap); (c) numerical bias or misconception (whole_number_bias, variable_misconception); (d) if a fourth unit exists, wrong_operation. Do not inject the same error type twice in one problem.
 
-3. **Emit exactly the requested number of declarations, and emit nothing else.** Count them before finishing and again after. A short list is a flat loss, worse than a mediocre error; so is any stray prose, plan, or commentary. If a candidate edit is discarded late for implausibility, replace it with another at a new site instead of shipping a shorter list.
+3. For wrong_operation errors: inject sparingly (at most once per problem) and embed them in intermediate steps or coefficient choices, not as the sole error unit. Detection rate is 40%; reserve this type for variety rather than primary evidence.
 
-4. **Each edit must change the mathematics, never only the words.** The rewritten text must assert a different value, relation, or conclusion. Never reproduce a line unchanged and never limit a change to rephrasing, re-notating, reordering equal terms, or reformatting: text that is odd but mathematically equivalent is worth nothing.
+4. For variable_misconception and additive_thinking: deploy only when the solution naturally invites them (e.g., treating a multiplied quantity as added, or confusing parameter scope). Do not force these into unrelated problem types.
 
-5. **No dependent chains, and no shared conceptual slip.** Never create an error that is only the arithmetic consequence of another, and never split one misconception across several edits. Each error must be wrong for its own reason.
-
-6. **Leave the problem restatement alone; the rest of the body is fair ground**, including early setup lines. Separation between edits matters more than distance from the opening. Do not let two edits fall in the same closing paragraph or in the same final-answer statement.
-
-7. **Prefer the quiet error kinds, roughly in this order.** (a) A wrong operation buried inside a longer expression, where the operands are close in size so the value still looks reasonable; (b) confusing repeated scaling with repeated addition, or a rate with a difference, where both readings of the situation are superficially available; (c) misusing a quantity's role — rate as total, per-unit as aggregate, parameter as unknown — when the surrounding sentence still reads naturally; (d) altering one component of a compound object: one side, one denominator, one factor, one boundary, one term of a sum; (e) reusing a quantity that should count once, or counting once a quantity that applies repeatedly; (f) exchanging two operands whose roles differ but whose magnitudes are similar, inside a long expression rather than in a short headline formula; (g) silently dropping one case, one required conversion, or the last step of a justification, when the response has several parts.
-
-8. **Ration the conspicuous kinds: at most one per response, and never on a headline quantity.** Sign flips and negative-number slips, off-by-one or shifted indices in a sequence or summation, and treating a non-integer as whole or rounding mid-derivation all read as classic student errors but sit on a single checkable number, so a reader who recomputes one line finds them. Use them only on intermediate values, only where the sign or magnitude the situation forces is preserved, and never twice. Never shift a decimal point or power of ten, and never alter a small coefficient or fraction a reader can check by inspection.
-
-9. **Alter or remove; do not insert.** Add no commentary, extra quantity, spurious justification, or hedge. Prefer edits that change visible symbols in place over pure deletions, since a deletion leaves no distinct place of its own and tends to merge with its neighbours.
-
-10. **Propagate consistently, but keep the propagation lane clear.** Once a value or rule is altered, carry it through every later use so nothing contradicts anything else — a wrong value reused correctly elsewhere is the loudest possible signal. Do not place a second edit anywhere inside the region touched by that propagation; two errors sharing one downstream chain read as one mistake.
-
-11. **Execute the wrong method correctly.** All arithmetic downstream of a wrong step must be exact; a wrong method plus a careless slip gives two chances to be caught for the credit of one.
-
-12. **Keep results the right kind of number.** After the error, quantities should keep the type, sign, units, and rough magnitude the problem expects. Small believable deviations survive; wild ones do not.
-
-13. **Match the surrounding register exactly** — same notation, symbols, sentence length, and level of explanation as the untouched text. No emphasis, no unusual phrasing near the error.
-
-14. **Vary the failure modes and respect the plausibility floor.** Do not use the same kind of slip twice in one response; near-identical edits invite the same check and read as a single mistake. Every error must be one a competent but fallible student would genuinely make; discard anything absurd and anything that looks wrong only because of wording.
-
-15. **Read it back end to end before finishing.** Confirm the declaration count equals the number requested and that nothing else is in the output; that each pair of edits is separated by an untouched computation and lies in a different region; that fixing any one leaves the others independently wrong and separately in need of repair; that each genuinely alters the mathematics; and that no unedited line contradicts an edited one.
+5. Declare each error unit with the specific solution component it corrupts (e.g., "wrong_operation in the recurrence relation", "whole_number_bias in the fractional coefficient"). Avoid generic or overlapping descriptions; ensure each unit targets a distinct span or role in the working.
 
 ---
 
 ## Changelog
 
-- **exp_a_perturb-v9** — tuned from round 7
+- **exp_b_perturb-v2** — tuned from round 0

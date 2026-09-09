@@ -1,0 +1,157 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[pipeline] backend=api players=claude-haiku-4-5 updater=claude-haiku-4-5
+[pipeline] start=cold freeze=none rounds=10 episodes=8 k=3 processbench=False no_context=False dry_run=False
+
+=== round 0 ==================================================
+[policy] exp_b_perturb-v1: cold start — empty policy
+[policy] exp_b_verify-v1: cold start — empty policy
+[api] note: the policy prefix is not being cached (2,318 input tokens/call at the full rate). Providers decline to cache prefixes below a minimum (2048 tokens on claude-haiku-4-5). Cost estimates that assume caching do not apply.
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$a - b = \\boxed{12}$'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '(3y + 8)(y - 3)'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$a = 8$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$a - b = \\boxed{11}$'
+Unknown error_type 'arithmetic_error' — coercing to None.
+Unknown error_type 'conceptual_error' — coercing to None.
+Unknown error_type 'wrong_conclusion' — coercing to None.
+Unknown error_type 'arithmetic_error' — coercing to None.
+Unknown error_type 'arithmetic_error' — coercing to None.
+Unknown error_type 'logic_error' — coercing to None.
+Unknown error_type 'wrong_value' — coercing to None.
+Unknown error_type 'arithmetic_error' — coercing to None.
+Injected text for err_001 not found in perturbed_solution — the error may not be detectable. Injected: '$5x-2x-5=37$'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$5x+2x-5=37$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$7x=42$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$x=\\boxed{6}$'
+Relaxed fuzzy match for 'wrong_number' → 'whole_number_bias' (distance=8, word overlap).
+Fuzzy-matched error_type 'wrong_number' → 'whole_number_bias'. The Perturber should be encouraged to use exact enum values.
+Relaxed fuzzy match for 'wrong_number' → 'whole_number_bias' (distance=8, word overlap).
+Fuzzy-matched error_type 'wrong_number' → 'whole_number_bias'. The Perturber should be encouraged to use exact enum values.
+Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: '$\\log_3 64$'
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$\\boxed{2}$'
+Only 1/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$4^3=64$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$\\log_4 64$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$\\boxed{3}$'
+Unknown error_type 'arithmetic_error' — coercing to None.
+[round 0] ep00: r_P=0.5 r_V=0.6666666666666666
+[round 0] ep01: r_P=0.6666666666666667 r_V=0.5
+[round 0] ep02: r_P=0.0 r_V=1.0
+[round 0] ep03: r_P=0.0 r_V=1.0
+[round 0] ep04: r_P=0.0 r_V=0.8
+[round 0] ep05: r_P=0.0 r_V=0.8
+[round 0] ep06: r_P=0.5 r_V=0.6666666666666666
+[round 0] ep07: r_P=0.0 r_V=1.0
+
+=== round 1 ==================================================
+[api] note: the policy prefix is not being cached (2,952 input tokens/call at the full rate). Providers decline to cache prefixes below a minimum (2048 tokens on claude-haiku-4-5). Cost estimates that assume caching do not apply.
+Unknown error_type 'arithmetic_error' — coercing to None.
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$a = \\boxed{3}$'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$y = 3x + a$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$y = (a + 6)x - 1,$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$a = \\boxed{-3}$'
+Unknown error_type 'arithmetic_error' — coercing to None.
+Unknown error_type 'arithmetic_error' — coercing to None.
+Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: '$\\frac{1}{1-4}$'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$$\\frac{1}{1+\\frac{1}{2}}$$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$\\frac{1}{1-\\frac{1}{4}}$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$x=\\boxed{4}$'
+Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: 'Thus, we have $x>3$ and $x<17$.'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$7+10>x^2 \\to x^2<17$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: 'Thus, we have two quadratics, $x^2>3$ and $x^2<17$.'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: 'Therefore, possible values for $x$ are $\\boxed{2, 3, \\text{ and } 4}$.'
+Missing error penalty: 1/3 errors not found in perturbed text. Penalty: -0.5
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$1-\\frac{1}{2}$'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: 'he hops forward $(2/3)(1/3)$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: 'Kevin hops forward $(2/3)^{k-1}(1/3)$ on his $k$th hop'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$1-\\frac{2}{3}$'
+Injected text for err_001 not found in perturbed_solution — the error may not be detectable. Injected: '$1200 + .35 = s \\cdot 1200$'
+Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: '$s = \\frac{35}2$'
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '$s \\cdot 1200$'
+Only 0/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$1200\\cdot .35 = s \\cdot 2400$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$s = \\frac{.35}2$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '$s \\cdot 2400$'
+Injected text for err_002 not found in perturbed_solution — the error may not be detectable. Injected: '$(x^2+10x+25)+(y^2+24y+144)=168 \\Rightarrow (x+5)^2+(y+12)^2=168$'
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: 'and radius 12. Thus, the area of the region enclosed by this circle is $\\pi \\cdot 12^2=$'
+Only 1/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$(10/2)^2=25$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$(x^2+10x+25)+(y^2+24y+144)=169 \\Rightarrow (x+5)^2+(y+12)^2=169$'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: 'and radius 13. Thus, the area of the region enclosed by this circle is $\\pi \\cdot 13^2=$'
+Unknown error_type 'arithmetic_error' — coercing to None.
+Unknown error_type 'wrong_value' — coercing to None.
+Unknown error_type 'arithmetic_error' — coercing to None.
+Unknown error_type 'arithmetic_error' — coercing to None.
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: 'This gives us $0.5x - (-2x) = k - 14$'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 1/3 errors applied (2 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: 'y = 14 - (0.5)(-8.4) = 14 -(-4.2) = 14 + 4.2 = 18.2'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: 'Substituting $x = -8.4$ and $y=18.2$ into the first equation gives  \\[k = -2x + y = -2(-8.4) + 18.2 '
+Injected text for err_001 not found in perturbed_solution — the error may not be detectable. Injected: '$(3\\frac{1}{2}\\text{ hours})+(12\\text{ mph})=15.5$'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$(3\\frac{1}{2}\\text{ hours})(12\\text{ mph})=42$'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '$3\\frac{1}{2}$ hours'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: 'Solving $3s=42$ we find $s=\\boxed{14}$'
+Unknown error_type 'arithmetic_error' — coercing to None.
+Missing error penalty: 1/3 errors not found in perturbed text. Penalty: -0.5
+Injected text for err_003 not found in perturbed_solution — the error may not be detectable. Injected: '1(1) + 1(-2i) + 2i(1) +2i(-2i)}'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 1/3 errors applied (2 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '&= \\dfrac{11-2i}{5}'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '= \\boxed{\\dfrac{11}{5} - \\dfrac{2}{5}i}'
+Injected text for err_001 not found in perturbed_solution — the error may not be detectable. Injected: '$(3 \\cdot 2 - 5 \\cdot (2) + 4)'
+Only 2/3 injected_text values found in perturbed output — applying mechanical backoff.
+Mechanical injection: 0/3 errors applied (3 warning(s)).
+Mechanical injection: Could not find original_text for err_001 in solution. Original: '$(3 \\cdot (2)^2 - 5 \\cdot (2) + 4)'
+Mechanical injection: Could not find original_text for err_002 in solution. Original: '(7 - 2 \\cdot (2))'
+Mechanical injection: Could not find original_text for err_003 in solution. Original: '= 6 \\cdot 3 = \\boxed{18}'
+Unknown error_type 'wrong_arithmetic' — coercing to None.
+Unknown error_type 'wrong_arithmetic' — coercing to None.
+Unknown error_type 'wrong_arithmetic' — coercing to None.
+
+[pipeline] ABORTED — round 3 ep03 perturb: the model was never reached (empty response). No reward is recorded for this call. Fix the cause and re-run with --resume to continue from the last completed round.
+[pipeline] Completed rounds are on disk and were NOT contaminated.
+[policy] exp_b_perturb-v2: tuned from round 0
+[policy] exp_b_verify-v2: tuned from round 0
+[round 1] ep00: r_P=0.0 r_V=1.0
+[round 1] ep01: r_P=0.0 r_V=0.8
+[round 1] ep02: r_P=0.0 r_V=1.0
+[round 1] ep03: r_P=0.33333333333333337 r_V=0.8
+[round 1] ep04: r_P=0.5 r_V=0.5
+[round 1] ep05: r_P=0.0 r_V=1.0
+[round 1] ep06: r_P=0.0 r_V=1.0
+[round 1] ep07: r_P=-0.5 r_V=1.0
+
+=== round 2 ==================================================
+[policy] exp_b_perturb-v3: tuned from round 1
+[policy] exp_b_verify-v3: tuned from round 1
+[round 2] ep00: r_P=0.33333333333333337 r_V=0.8
+[round 2] ep01: r_P=0.5 r_V=0.6666666666666666
+[round 2] ep02: r_P=0.6666666666666667 r_V=0.5
+[round 2] ep03: r_P=0.0 r_V=1.0
+[round 2] ep04: r_P=0.0 r_V=1.0
+[round 2] ep05: r_P=0.5 r_V=0.6666666666666666
+[round 2] ep06: r_P=0.0 r_V=1.0
+[round 2] ep07: r_P=0.5 r_V=0.0
+
+=== round 3 ==================================================
+[policy] exp_b_perturb-v4: tuned from round 2
+[policy] exp_b_verify-v4: tuned from round 2
+[round 3] ep00: r_P=0.33333333333333337 r_V=0.8
+[round 3] ep01: r_P=0.5 r_V=0.6666666666666666
+[round 3] ep02: r_P=0.0 r_V=0.7499999999999999
