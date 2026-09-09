@@ -152,6 +152,7 @@ class ApiBackend(Backend):
             raise SystemExit(f"[api] unknown provider {self.provider!r} "
                              f"({'/'.join(PROVIDERS)})")
         self._cache: dict[str, str] = {}
+        self._cache_checked = False
 
         if spec["sdk"] == "anthropic":
             try:
@@ -278,10 +279,32 @@ class ApiBackend(Backend):
                      "cache_read": cached, "cache_write": 0}
 
         (pdir / f"{tag}.stdout.txt").write_text(text)
+        self._warn_if_not_caching(usage)
         r = AgentResult(step, text.strip(), 0, round(time.time() - t0, 2),
                         len(system) + len(user), "")
         r.usage = usage                                # type: ignore[attr-defined]
         return r
+
+    def _warn_if_not_caching(self, usage: dict) -> None:
+        """Say so, once, when the policy prefix is not actually being cached.
+
+        Every provider has a minimum cacheable prefix (2048 tokens on Claude
+        Haiku 4.5, lower on larger models) and silently declines to cache
+        anything shorter. A short policy therefore bills at the full input rate
+        on every call with no error — measured here at ~2,030 tokens for a seed
+        policy, just under the threshold. Worth knowing, since it is the
+        difference between ~$0.0026 and ~$0.0008 per item.
+        """
+        if self._cache_checked:
+            return
+        self._cache_checked = True
+        if usage.get("cache_read", 0) or usage.get("cache_write", 0):
+            return
+        print(f"[api] note: the policy prefix is not being cached "
+              f"({usage.get('input_tokens', 0):,} input tokens/call at the full "
+              f"rate). Providers decline to cache prefixes below a minimum "
+              f"(2048 tokens on claude-haiku-4-5). Cost estimates that assume "
+              f"caching do not apply.", flush=True)
 
 
 # ---------------------------------------------------------------------------

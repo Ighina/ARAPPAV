@@ -252,7 +252,15 @@ class TestInfrastructureFailure:
         assert self._res("   ", rc=0).infra_failure() == "empty response"
 
     def test_nonzero_exit_is_infrastructure(self):
-        assert "exited 1" in self._res("something", rc=1).infra_failure()
+        # With no stderr there is nothing better to say than the return code.
+        assert "rc=1" in self._res("something", rc=1).infra_failure()
+
+    def test_failure_reports_the_cause_not_the_transport(self):
+        # An API backend has no `claude` process, so the old "claude exited N"
+        # wording was misleading; the provider's own message is what helps.
+        r = self._res("", rc=2, stderr="APIStatusError: Error code: 402 - "
+                                       "Insufficient Balance")
+        assert "402" in r.infra_failure() and "claude" not in r.infra_failure()
 
     def test_a_genuinely_malformed_reply_is_data_not_infrastructure(self):
         # This one MUST be scored: the model answered, just badly.

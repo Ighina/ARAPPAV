@@ -83,7 +83,11 @@ class AgentResult:
         if self.returncode == 124:
             return "timeout"
         if self.returncode != 0:
-            return f"claude exited {self.returncode}"
+            # The stderr carries the real cause for API backends, where there is
+            # no `claude` process to have exited.
+            detail = (self.stderr or "").strip().splitlines()
+            return (detail[0][:160] if detail
+                    else f"call failed (rc={self.returncode})")
         if not self.text.strip():
             return "empty response"
         return None

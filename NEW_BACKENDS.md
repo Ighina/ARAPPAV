@@ -41,7 +41,7 @@ The API backends send only the policy and the item.
 | transport | `claude -p` per item | Messages / Chat Completions | Message Batches |
 | policy delivered as | `/skill` slash command | (cached) system prompt | cached system prompt |
 | input tokens per item | ~17,200 | ~2,600 | ~2,600 |
-| cost per item (haiku) | $0.048 | ~$0.002 | ~$0.001 |
+| cost per item (haiku) | $0.048 | ~$0.0026 measured | ~$0.0013 |
 | latency | ~45 s/item | ~26 s/item | minutes–24 h, all items at once |
 | quota consumed | **interactive session limit** | API key | API key |
 | providers | Claude only | Anthropic / OpenAI / DeepSeek | Anthropic only |
@@ -51,16 +51,27 @@ Projected on the same work:
 
 | workload | `claude-code` | `api` | `batch` |
 |---|---|---|---|
-| 800 calls (10 policies × 80 items) | $38.28 | $1.36 | ~$0.70 |
-| 3,400 calls (full ProcessBench, 1 policy) | $162.69 | $5.79 | ~$2.90 |
+| 800 calls (10 policies × 80 items) | $38.28 | ~$2.10 | ~$1.05 |
+| 3,400 calls (full ProcessBench, 1 policy) | $162.69 | ~$8.80 | ~$4.40 |
+
+Measured live on 2026-09-09 with `claude-haiku-4-5`: 2,061 input and ~98 output
+tokens per item through `api`, against 17,209 input and 6,263 output through
+`claude -p` — an 8x reduction in input and 64x in output.
 
 ### `api` — the default
 
 Sends the policy as a system prompt and the item as the user turn. On Anthropic
 the policy carries `cache_control: ephemeral`; since it is byte-identical across
-every item of a run, it bills at roughly a tenth of the input rate after the
-first call. OpenAI and DeepSeek cache long prefixes automatically, so the same
-saving applies with no flag.
+every item of a run, it can bill at roughly a tenth of the input rate after the
+first call. OpenAI and DeepSeek cache long prefixes automatically.
+
+**Caching does not always engage, and its absence is silent.** Every provider
+declines to cache a prefix below a minimum — 2048 tokens on `claude-haiku-4-5`.
+A seed policy measures ~2,030 tokens and therefore does *not* cache; a tuned one
+(~2,060) is marginal. The backend prints a one-line note when it sees no cache
+activity, so a run that is quietly paying the full input rate says so rather
+than appearing to save. The figures in the table above are the **uncached**
+measurements, which is the conservative case.
 
 ### `batch` — cheapest, asynchronous
 
