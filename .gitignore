@@ -81,3 +81,7 @@ Thumbs.db
 
 # claude code configuration file
 claude-code-source.sh
+
+# Experiment bundles produced by scripts/package_experiment.py — transported
+# out of band, never through the repository.
+/*.zip

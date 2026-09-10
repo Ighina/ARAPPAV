@@ -94,12 +94,75 @@ def render_steps(steps: list[str]) -> str:
 # ---------------------------------------------------------------------------
 
 
+def _prm800k_rows(seed: int):
+    """PRM800K test split, reshaped into ProcessBench's (steps, label) form.
+
+    Per-step the annotator saw one or more model completions. We take the one
+    named by `chosen_completion`, or index 0 when that is null, and never a
+    `human_completion` — those are the annotator's own rewrite, not model output
+    under test. `rating` 1 is a correct step and -1 an error; 0 is PRM800K's
+    "neither clearly right nor wrong" and is not treated as an error.
+
+    One structural caveat, measured: PRM800K stops annotating at the first
+    error, so in 97% of erroneous chains the error is the LAST step, against 4%
+    in ProcessBench. Position therefore carries information here that it does
+    not carry there. The harmonic-mean F1 punishes the degenerate "always blame
+    the last step" policy — it would flag every clean chain and score 0 — but a
+    mild late-step bias is still rewarded on this set and not on ProcessBench,
+    so the two are not interchangeable and a correlation between them will be
+    attenuated for structural reasons.
+    """
+    import json as _json
+
+    from huggingface_hub import hf_hub_download
+
+    out = []
+    for fname in ("phase1_test.jsonl", "phase2_test.jsonl"):
+        path = hf_hub_download("tasksource/PRM800K", fname, repo_type="dataset")
+        for line in open(path):
+            rec = _json.loads(line)
+            label = rec.get("label") or {}
+            steps_raw = label.get("steps") or []
+            texts, ratings, usable = [], [], True
+            for st in steps_raw:
+                comps = st.get("completions") or []
+                if not comps:
+                    # Nothing model-generated to show for this step (typically a
+                    # human_completion only). The chain cannot be rendered
+                    # faithfully, so drop the instance rather than skip a step
+                    # and silently renumber every label after it.
+                    usable = False
+                    break
+                idx = st.get("chosen_completion")
+                if not isinstance(idx, int) or not (0 <= idx < len(comps)):
+                    idx = 0
+                texts.append((comps[idx].get("text") or "").strip())
+                ratings.append(comps[idx].get("rating"))
+            if not usable or not texts:
+                continue
+            first_error = next((i for i, r in enumerate(ratings) if r == -1), -1)
+            out.append({
+                "id": f"prm800k-{len(out)}",
+                "problem": (rec.get("question") or {}).get("problem", ""),
+                "steps": texts,
+                "label": first_error,
+                "final_answer_correct": first_error == -1,
+                "generator": "prm800k",
+            })
+    return out
+
+
 def cmd_prepare(args) -> int:
     from datasets import load_dataset
 
     root = Path(args.root)
     edir = eval_dir(root, args.round)
     existing_ids: set[str] = set()
+    prm_rows = _prm800k_rows(args.seed) if args.dataset == "prm800k" else None
+    if prm_rows is not None:
+        print(f"[prepare] PRM800K test: {len(prm_rows)} usable chains "
+              f"({sum(1 for r in prm_rows if r['label'] == -1)} correct)")
+
     manifest_items = []
 
     if (edir / "inbox").exists() and not (args.force or args.extend):
@@ -121,10 +184,15 @@ def cmd_prepare(args) -> int:
         print(f"[prepare] extending: keeping {len(existing_ids)} existing item(s), "
               f"topping up to {args.per_subset}/subset")
 
-    for subset in args.subsets:
-        ds = load_dataset("Qwen/ProcessBench", split=subset)
-        erroneous = [i for i, label in enumerate(ds["label"]) if label != -1]
-        correct = [i for i, label in enumerate(ds["label"]) if label == -1]
+    for subset in (["prm800k"] if prm_rows is not None else args.subsets):
+        if prm_rows is not None:
+            ds = prm_rows
+            labels = [r["label"] for r in ds]
+        else:
+            ds = load_dataset("Qwen/ProcessBench", split=subset)
+            labels = ds["label"]
+        erroneous = [i for i, label in enumerate(labels) if label != -1]
+        correct = [i for i, label in enumerate(labels) if label == -1]
 
         # Seeded independently of the round: every round sees the same held-out
         # items, so cross-round deltas measure the policy, not the sample.
@@ -137,7 +205,7 @@ def cmd_prepare(args) -> int:
             # Exclude what is already answered, then draw the shortfall under a
             # seed derived from the target size, so the extension is
             # deterministic and identical across policies.
-            ids = ds["id"]
+            ids = [r["id"] for r in ds] if prm_rows is not None else ds["id"]
             erroneous = [i for i in erroneous if ids[i] not in existing_ids]
             correct = [i for i in correct if ids[i] not in existing_ids]
             rng = random.Random(f"{args.seed}:{subset}:extend:{args.per_subset}")
@@ -149,7 +217,8 @@ def cmd_prepare(args) -> int:
             picks = rng.sample(erroneous, min(half, len(erroneous)))
             picks += rng.sample(correct, min(need - half, len(correct)))
         else:
-            pool = [i for i in range(len(ds)) if ds["id"][i] not in existing_ids]
+            _ids = [r["id"] for r in ds] if prm_rows is not None else ds["id"]
+            pool = [i for i in range(len(ds)) if _ids[i] not in existing_ids]
             picks = rng.sample(pool, min(need, len(pool)))
         picks.sort()
 
@@ -455,6 +524,12 @@ def main() -> int:
     p_prep.add_argument("--max-steps", type=int, default=None, help="Skip chains longer than this many steps.")
     p_prep.add_argument("--verify-skill", default="verify-v1")
     p_prep.add_argument("--seed", type=int, default=0, help="Fixes the held-out sample; keep it constant across rounds.")
+    p_prep.add_argument("--dataset", choices=["processbench", "prm800k"],
+                        default="processbench",
+                        help="prm800k reshapes tasksource/PRM800K's test split into "
+                             "the same (steps, first-error-index) form; note its "
+                             "errors sit at the final step 97%% of the time against "
+                             "4%% in ProcessBench")
     p_prep.add_argument("--force", action="store_true")
     p_prep.add_argument("--extend", action="store_true",
                         help="keep existing items and add new ones up to --per-subset, "

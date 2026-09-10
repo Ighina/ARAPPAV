@@ -38,7 +38,10 @@ MANIFEST = "arappav_experiment.json"
 #: (tree, whether the experiment name is a prefix rather than an exact match)
 ROOTS = (
     ("data/skill_rollouts", False),
-    ("data/policy_evals", False),
+    # Alias-matched: evaluation roots are named after the dataset and the skill
+    # prefix (`prm800k_algev`), not the experiment, so exact-name matching drops
+    # the held-out results — the one thing the package exists to carry.
+    ("data/policy_evals", True),
     ("data/validation_math500", True),
     ("data/perturber_evals", True),
     ("data/final_test", True),
@@ -81,15 +84,30 @@ def _matches(child: str, name: str, aliases: list[str], others: set[str]) -> boo
 
     `startswith` alone is wrong: "algebra_evolve_b" starts with
     "algebra_evolve", so packing one run would swallow the other's data.
+
+    Both affixes count. Evaluation roots are named `<dataset>_<prefix>`
+    (`prm800k_algev`) as often as `<prefix>_<qualifier>` (`algev_indep`), and
+    matching only the leading form silently ships a package with the held-out
+    results missing. The suffix test uses `_` + alias rather than a bare
+    endswith, so `prm800k_algevb` stays with algebra_evolve_b.
     """
+    def hit(a: str) -> bool:
+        # Three affix forms occur: `algev_indep` (qualifier), `prm800k_algev`
+        # (dataset-first), and `hverify-v1` (per-version evaluation roots named
+        # after the skill). The separators are kept explicit so `algev` never
+        # claims `algevb`.
+        return (child == a or child.startswith(a + "_")
+                or child.startswith(a + "-") or child.endswith("_" + a))
+
     if child in others and child != name:
         return False                          # it is another experiment outright
     for a in aliases:
-        if child == a or child.startswith(a + "_"):
+        if hit(a):
             # A longer alias belonging to a different experiment wins, so
             # algev_indep goes to algebra_evolve but algevb_* does not.
             better = [o for o in others if o != name and
-                      (child == o or child.startswith(o + "_"))]
+                      (child == o or child.startswith(o + "_")
+                       or child.endswith("_" + o))]
             return not better
     return False
 
@@ -114,6 +132,8 @@ def _collect(name: str) -> tuple[list[Path], dict]:
             if by_prefix:
                 hit = _matches(child.name, name, aliases, others)
                 if hit and any(child.name == s or child.name.startswith(s + "_")
+                               or child.name.startswith(s + "-")
+                               or child.name.endswith("_" + s)
                                for s in sibling_aliases - set(aliases)):
                     hit = False
             else:

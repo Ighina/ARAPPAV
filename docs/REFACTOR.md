@@ -312,6 +312,11 @@ name, and `apply_patch` refuses a patch that targets one rule twice — an
 unresolved merge conflict fails the round rather than silently producing
 mangled text.
 
+**Full write-up: [`docs/EVOLVE_MODE.md`](EVOLVE_MODE.md)** — the three stages, the
+patch operations, how the reward enters (and where it does not), and the measured
+outcome: zero `delete_rule` across 37 edits, and held-out F1 rising to a peak at
+round 2 (0.731 → 0.840 → 0.905) then decaying (0.874 → 0.822 → 0.831 at v10).
+
 ## 13. Validation-gated acceptance (`--accept-on-validation`)
 
 Keeps a revised **verifier** policy only if it does not regress on a small
