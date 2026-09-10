@@ -1283,3 +1283,67 @@ class TestPackaging:
         self._make(tmp_path)
         with pytest.raises(SystemExit, match="found nothing"):
             m.cmd_pack(argparse.Namespace(name="nope", out=str(tmp_path / "x.zip")))
+
+
+class TestPackagingSiblingNames:
+    """One experiment's package must not swallow another's data."""
+
+    def _mod(self):
+        from importlib.machinery import SourceFileLoader
+        return SourceFileLoader("pkgsib", "scripts/package_experiment.py").load_module()
+
+    def _two_runs(self, repo: Path):
+        import json
+        for name, pre in (("algebra_evolve", "algev"),
+                          ("algebra_evolve_b", "algevb")):
+            d = repo / "data" / "skill_rollouts" / name
+            d.mkdir(parents=True)
+            (d / "run_config.json").write_text(json.dumps(
+                {"perturb_prefix": f"{pre}_perturb", "verify_prefix": f"{pre}_verify"}))
+            for v in (1, 2):
+                for role in ("perturb", "verify"):
+                    s = repo / ".claude" / "skills" / f"{pre}_{role}-v{v}"
+                    s.mkdir(parents=True)
+                    (s / "SKILL.md").write_text("x")
+        # validation roots are named after the skill-prefix stem, not the run
+        for leaf in ("algev", "algev_indep", "algevb"):
+            v = repo / "data" / "validation_math500" / leaf
+            v.mkdir(parents=True)
+            (v / "pool.json").write_text("[]")
+
+    def test_a_sibling_with_a_longer_name_is_not_swallowed(self, tmp_path, monkeypatch):
+        # "algebra_evolve_b".startswith("algebra_evolve"), so a naive prefix
+        # match packs one run's data into the other's archive.
+        m = self._mod()
+        monkeypatch.setattr(m, "REPO", tmp_path)
+        self._two_runs(tmp_path)
+        _, summary = m._collect("algebra_evolve")
+        assert not any("algevb" in k or "_b" in k for k in summary)
+
+    def test_validation_named_by_prefix_stem_is_still_collected(self, tmp_path, monkeypatch):
+        # The other half: matching only the experiment name would ship a
+        # package with no validation data at all.
+        m = self._mod()
+        monkeypatch.setattr(m, "REPO", tmp_path)
+        self._two_runs(tmp_path)
+        _, summary = m._collect("algebra_evolve")
+        leaves = {k.rsplit("/", 1)[-1] for k in summary if "validation" in k}
+        assert leaves == {"algev", "algev_indep"}
+
+    def test_each_run_gets_only_its_own_policies(self, tmp_path, monkeypatch):
+        m = self._mod()
+        monkeypatch.setattr(m, "REPO", tmp_path)
+        self._two_runs(tmp_path)
+        _, a = m._collect("algebra_evolve")
+        _, b = m._collect("algebra_evolve_b")
+        assert all("algevb" not in k for k in a if k.startswith(".claude"))
+        assert all(k.startswith(".claude/skills/algevb") for k in b
+                   if k.startswith(".claude"))
+
+    def test_the_sibling_collects_its_own_validation(self, tmp_path, monkeypatch):
+        m = self._mod()
+        monkeypatch.setattr(m, "REPO", tmp_path)
+        self._two_runs(tmp_path)
+        _, summary = m._collect("algebra_evolve_b")
+        leaves = {k.rsplit("/", 1)[-1] for k in summary if "validation" in k}
+        assert leaves == {"algevb"}

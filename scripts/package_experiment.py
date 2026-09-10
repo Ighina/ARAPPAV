@@ -54,10 +54,55 @@ def _prefixes(name: str) -> list[str]:
     return [p for p in (d.get("perturb_prefix"), d.get("verify_prefix")) if p]
 
 
+def _known_experiments() -> set[str]:
+    base = REPO / "data" / "skill_rollouts"
+    return {p.name for p in base.iterdir() if p.is_dir()} if base.is_dir() else set()
+
+
+def _aliases(name: str) -> list[str]:
+    """Every name this experiment's directories might be filed under.
+
+    Evaluation and validation roots are conventionally named after the skill
+    prefix rather than the experiment — algebra_evolve's validation sets live
+    under `algev/` and `algev_indep/` — so matching on the experiment name
+    alone silently ships a package with no validation data in it.
+    """
+    out = {name}
+    for pre in _prefixes(name):
+        out.add(pre)
+        stem = pre.rsplit("_", 1)[0]          # algev_perturb -> algev
+        if stem:
+            out.add(stem)
+    return sorted(out, key=len, reverse=True)
+
+
+def _matches(child: str, name: str, aliases: list[str], others: set[str]) -> bool:
+    """Does a directory belong to this experiment and not to a sibling?
+
+    `startswith` alone is wrong: "algebra_evolve_b" starts with
+    "algebra_evolve", so packing one run would swallow the other's data.
+    """
+    if child in others and child != name:
+        return False                          # it is another experiment outright
+    for a in aliases:
+        if child == a or child.startswith(a + "_"):
+            # A longer alias belonging to a different experiment wins, so
+            # algev_indep goes to algebra_evolve but algevb_* does not.
+            better = [o for o in others if o != name and
+                      (child == o or child.startswith(o + "_"))]
+            return not better
+    return False
+
+
 def _collect(name: str) -> tuple[list[Path], dict]:
     """Every path belonging to the experiment, plus a summary by component."""
     paths: list[Path] = []
     summary: dict[str, int] = {}
+    aliases = _aliases(name)
+    others = _known_experiments()
+    # A sibling's aliases must not be claimed either: algevb belongs to
+    # algebra_evolve_b, and algev is a prefix of it.
+    sibling_aliases = {a for o in others if o != name for a in _aliases(o)}
 
     for tree, by_prefix in ROOTS:
         base = REPO / tree
@@ -66,7 +111,13 @@ def _collect(name: str) -> tuple[list[Path], dict]:
         for child in sorted(base.iterdir()):
             if not child.is_dir():
                 continue
-            hit = child.name.startswith(name) if by_prefix else child.name == name
+            if by_prefix:
+                hit = _matches(child.name, name, aliases, others)
+                if hit and any(child.name == s or child.name.startswith(s + "_")
+                               for s in sibling_aliases - set(aliases)):
+                    hit = False
+            else:
+                hit = child.name == name
             if not hit:
                 continue
             files = [p for p in child.rglob("*") if p.is_file()]
@@ -108,7 +159,11 @@ def cmd_pack(args) -> int:
     mb = out.stat().st_size / 1e6
     print(f"[pack] {name}: {len(paths)} files, {mb:.1f} MB → {out}")
     for comp, n in sorted(summary.items()):
-        print(f"         {n:5d}  {comp}")
+        leaf = comp.rsplit("/", 1)[-1]
+        # Flag anything matched by alias rather than by the experiment name, so
+        # a stray directory from a deleted run is visible rather than silent.
+        mark = "" if leaf == name or comp.startswith(".claude/skills") else "  (by alias)"
+        print(f"         {n:5d}  {comp}{mark}")
     if not any(k.startswith(".claude/skills") for k in summary):
         print("[pack] NOTE: no policy skills found — the run's prefixes may have "
               "been deleted, so the package cannot be re-scored as-is.")
