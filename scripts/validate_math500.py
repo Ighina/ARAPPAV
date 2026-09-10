@@ -97,16 +97,39 @@ def cmd_prepare(args) -> int:
         print(f"[prepare] restricted to {normalise(args.category)!r}: "
               f"{len(pool)} of {len(ds)} MATH-500 items")
     rng = random.Random(args.seed)
-    idx = rng.sample(pool, min(args.n, len(pool)))
+    if args.stratify:
+        # Difficulty is the dimension that matters here: an unstratified draw
+        # from MATH-500 can land mostly on Level 1-2 and make every policy look
+        # alike. Proportional allocation by level keeps the mix fixed across
+        # every version scored on this set.
+        from collections import defaultdict
+        by_level = defaultdict(list)
+        for i in pool:
+            by_level[ds[i]["level"]].append(i)
+        idx, order = [], sorted(by_level)
+        for lvl in order:
+            share = max(1, round(args.n * len(by_level[lvl]) / len(pool)))
+            idx += rng.sample(by_level[lvl], min(share, len(by_level[lvl])))
+        rng.shuffle(idx)
+        idx = idx[:args.n]
+        counts = {lvl: sum(1 for i in idx if ds[i]["level"] == lvl) for lvl in order}
+        print(f"[prepare] stratified by level: {counts}")
+    else:
+        idx = rng.sample(pool, min(args.n, len(pool)))
     idx.sort()
     n_clean = int(round(len(idx) * args.clean_frac))
     clean_ids = set(rng.sample(idx, n_clean))
 
-    backend = make_backend(args.backend, model=args.model, timeout=args.timeout,
+    # The validation perturber must be independent of the policies under test.
+    # Building it with the run's own evolved perturber would make validation a
+    # restatement of the self-play score, which is precisely the signal we
+    # already know does not track held-out ability.
+    pmodel = args.perturber_model or args.model
+    backend = make_backend(args.backend, model=pmodel, timeout=args.timeout,
                            skills_root=Path(args.skills_root),
                            **({"provider": args.provider} if args.backend != "claude-code" else {}))
     print(f"[prepare] {len(idx)} items ({n_clean} left clean), perturber="
-          f"{args.perturber}, backend={args.backend}, model={args.model}")
+          f"{args.perturber} on {pmodel} (independent of the policies under test)")
 
     lock = threading.Lock()
     items, failures = [], []
@@ -329,6 +352,13 @@ def build_parser() -> argparse.ArgumentParser:
                    help="PINNED perturber policy; keep it fixed for the life of "
                         "the experiment or versions stop being comparable")
     a.add_argument("--seed", type=int, default=0)
+    a.add_argument("--stratify", action="store_true",
+                   help="allocate the sample across MATH-500 difficulty levels in "
+                        "proportion to the pool, instead of drawing uniformly")
+    a.add_argument("--perturber-model", default=None, dest="perturber_model",
+                   help="model that builds the validation set; set it stronger "
+                        "than the run's players so validation difficulty is not "
+                        "bounded by the policies being tested")
     a.add_argument("--force", action="store_true")
     a.set_defaults(func=cmd_prepare)
 
