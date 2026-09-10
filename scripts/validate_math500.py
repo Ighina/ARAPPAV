@@ -204,9 +204,13 @@ def cmd_run(args) -> int:
     manifest = json.loads((root / "manifest.json").read_text())
     reward_cfg = scoring.load_reward_config()
 
-    backend = make_backend(args.backend, model=args.model, timeout=args.timeout,
-                           skills_root=Path(args.skills_root),
-                           **({"provider": args.provider} if args.backend != "claude-code" else {}))
+    kw = dict(model=args.model, timeout=args.timeout,
+              skills_root=Path(args.skills_root))
+    if args.backend != "claude-code":
+        kw["provider"] = args.provider
+    if args.backend == "batch":
+        kw.update(poll_interval=args.poll_interval, max_wait=args.max_wait)
+    backend = make_backend(args.backend, **kw)
 
     for v in args.versions:
         skill = f"{args.prefix}-v{v}"
@@ -219,6 +223,11 @@ def cmd_run(args) -> int:
                 if not (out / f.name).exists()]
         print(f"[run] {skill}: {len(todo)} to score "
               f"({len(manifest['items']) - len(todo)} cached)")
+
+        if args.backend == "batch" and todo:
+            _run_batch(backend, skill, root, out, todo, args)
+            _score_version(root, skill, reward_cfg)
+            continue
 
         abort: list[str] = []
         lock = threading.Lock()
@@ -246,6 +255,53 @@ def cmd_run(args) -> int:
 
         _score_version(root, skill, reward_cfg)
     return 0
+
+
+def _run_batch(backend, skill: str, root: Path, out: Path, todo: list, args) -> None:
+    """Score one policy's outstanding items as a single batch.
+
+    Batching only pays when everything is submitted before anything is awaited,
+    so the id is persisted first and the wait happens after. An interrupted run
+    reattaches instead of submitting a second copy.
+    """
+    import time
+
+    marker = out / "batch_id.txt"
+    if marker.exists():
+        bid = marker.read_text().strip()
+        print(f"[run] {skill}: reattaching to batch {bid}")
+    else:
+        items = []
+        for f in todo:
+            item = json.loads(f.read_text())
+            ep = Episode(episode_id=f.stem, problem=item["problem"], solution="", k=0)
+            items.append((f.stem,
+                          render_verify_prompt(ep, item["solution_to_review"], "", "").lstrip()))
+        bid = backend.submit(skill, items)
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text(bid + "\n")
+        print(f"[run] {skill}: submitted {len(items)} item(s) as batch {bid}")
+
+    waited = 0
+    while True:
+        status, counts = backend.status(bid)
+        if status == "ended":
+            break
+        if waited >= args.max_wait:
+            raise InfrastructureError(
+                f"{skill}: batch {bid} still {status} after {waited}s. Nothing "
+                f"scored; re-run to reattach — the batch keeps working.")
+        if waited % (args.poll_interval * 10) == 0:
+            print(f"[run] {skill}: {status} {counts} ({waited}s)", flush=True)
+        time.sleep(args.poll_interval)
+        waited += args.poll_interval
+
+    texts, failed, _ = backend.collect(skill, bid)
+    for iid, text in texts.items():
+        (out / f"{iid}.json").write_text(text)
+    marker.unlink(missing_ok=True)
+    # Failed requests get no file, so a re-run retries exactly those.
+    print(f"[run] {skill}: collected {len(texts)} ok, {len(failed)} failed")
 
 
 def _score_version(root: Path, skill: str, reward_cfg: dict) -> dict:
@@ -332,7 +388,11 @@ def build_parser() -> argparse.ArgumentParser:
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--root", default=str(DEFAULT_ROOT))
     p.add_argument("--skills-root", default=".claude/skills", dest="skills_root")
-    p.add_argument("--backend", choices=["api", "claude-code", "batch"], default="api")
+    p.add_argument("--backend", choices=["api", "claude-code", "batch"], default="api",
+                   help="batch is Anthropic-only and asynchronous, at 50%% of the "
+                        "api rate; it needs ANTHROPIC_API_KEY")
+    p.add_argument("--poll-interval", type=int, default=20, dest="poll_interval")
+    p.add_argument("--max-wait", type=int, default=24 * 3600, dest="max_wait")
     p.add_argument("--provider", default=None,
                    choices=["anthropic", "openai", "deepseek"])
     p.add_argument("--model", default="claude-haiku-4-5")

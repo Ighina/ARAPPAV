@@ -298,6 +298,22 @@ on heavy unit collapse — a policy that emits unparseable JSON or stacks one
 mistake as several can otherwise post a high 1 − recall for the wrong reason.
 `scripts/final_evaluation.sh` runs both protocols end to end.
 
+### Moving an experiment to another machine
+
+```bash
+python scripts/package_experiment.py pack algebra_evolve      # -> algebra_evolve.zip
+# copy the zip to the other machine, then, in that repository:
+python scripts/package_experiment.py unpack algebra_evolve.zip
+python scripts/package_experiment.py list algebra_evolve.zip  # manifest only
+```
+
+An experiment is scattered across `data/skill_rollouts/`, `data/policy_evals/`,
+`data/validation_math500/` and `.claude/skills/`, and the skill prefix is not the
+experiment name — `algebra_evolve` writes `algev_perturb-v1..v10`. The prefixes
+are read from the run's own `run_config.json`, so the policies travel with the
+data and the package can be re-scored on arrival. Unpacking refuses to overwrite
+an experiment of the same name unless `--force` is given.
+
 ### Documentation
 
 - **[NEW_BACKENDS.md](NEW_BACKENDS.md)** — the three backends, providers, costs.

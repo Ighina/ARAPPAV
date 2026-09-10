@@ -1182,3 +1182,104 @@ class TestAcceptanceGateItems:
         missed = compute_rewards(ground_truth=gt, verifier_claims=[],
                                  perturbed_text="2+2 = 5.", k=1).verifier_reward
         assert found > missed
+
+
+class TestPackaging:
+    """An experiment must survive a round trip to another machine intact."""
+
+    def _mod(self):
+        from importlib.machinery import SourceFileLoader
+        return SourceFileLoader("pkg", "scripts/package_experiment.py").load_module()
+
+    def _make(self, repo: Path, name="demo", prefixes=("dp_perturb", "dp_verify")):
+        import json
+        (repo / "data" / "skill_rollouts" / name).mkdir(parents=True)
+        (repo / "data" / "skill_rollouts" / name / "run_config.json").write_text(
+            json.dumps({"perturb_prefix": prefixes[0], "verify_prefix": prefixes[1],
+                        "category": "algebra", "update_mode": "evolve", "rounds": 2}))
+        (repo / "data" / "skill_rollouts" / name / "round_0").mkdir()
+        (repo / "data" / "skill_rollouts" / name / "round_0" / "round_summary.json").write_text('{"round":0}')
+        (repo / "data" / "policy_evals" / name).mkdir(parents=True)
+        (repo / "data" / "policy_evals" / name / "eval.json").write_text('{"f1":0.9}')
+        for pre in prefixes:
+            for v in (1, 2):
+                d = repo / ".claude" / "skills" / f"{pre}-v{v}"
+                d.mkdir(parents=True)
+                (d / "SKILL.md").write_text(f"# {pre}-v{v}\n")
+
+    def test_prefixes_come_from_the_run_config_not_the_name(self, tmp_path, monkeypatch):
+        # The skill prefix is not the experiment name: algebra_evolve writes
+        # algev_*. Guessing would silently ship no policies.
+        m = self._mod()
+        monkeypatch.setattr(m, "REPO", tmp_path)
+        self._make(tmp_path)
+        assert m._prefixes("demo") == ["dp_perturb", "dp_verify"]
+
+    def test_pack_collects_runs_evals_and_every_policy(self, tmp_path, monkeypatch):
+        m = self._mod()
+        monkeypatch.setattr(m, "REPO", tmp_path)
+        self._make(tmp_path)
+        paths, summary = m._collect("demo")
+        assert any("skill_rollouts" in str(p) for p in paths)
+        assert any("policy_evals" in str(p) for p in paths)
+        assert sum(1 for k in summary if k.startswith(".claude/skills")) == 4
+
+    def test_round_trip_is_byte_identical(self, tmp_path, monkeypatch):
+        import argparse
+        import hashlib
+        m = self._mod()
+        src, dst = tmp_path / "src", tmp_path / "dst"
+        src.mkdir(); dst.mkdir()
+        monkeypatch.setattr(m, "REPO", src)
+        self._make(src)
+        zf = tmp_path / "demo.zip"
+        m.cmd_pack(argparse.Namespace(name="demo", out=str(zf)))
+        m.cmd_unpack(argparse.Namespace(file=str(zf), into=str(dst), force=False))
+        for rel in ("data/skill_rollouts/demo/run_config.json",
+                    ".claude/skills/dp_verify-v2/SKILL.md"):
+            a = hashlib.sha256((src / rel).read_bytes()).hexdigest()
+            b = hashlib.sha256((dst / rel).read_bytes()).hexdigest()
+            assert a == b
+
+    def test_unpack_refuses_to_merge_two_runs_of_one_name(self, tmp_path, monkeypatch):
+        import argparse
+        m = self._mod()
+        src, dst = tmp_path / "src", tmp_path / "dst"
+        src.mkdir(); dst.mkdir()
+        monkeypatch.setattr(m, "REPO", src)
+        self._make(src)
+        zf = tmp_path / "demo.zip"
+        m.cmd_pack(argparse.Namespace(name="demo", out=str(zf)))
+        m.cmd_unpack(argparse.Namespace(file=str(zf), into=str(dst), force=False))
+        with pytest.raises(SystemExit, match="already exists"):
+            m.cmd_unpack(argparse.Namespace(file=str(zf), into=str(dst), force=False))
+
+    def test_force_allows_the_overwrite(self, tmp_path, monkeypatch):
+        import argparse
+        m = self._mod()
+        src, dst = tmp_path / "src", tmp_path / "dst"
+        src.mkdir(); dst.mkdir()
+        monkeypatch.setattr(m, "REPO", src)
+        self._make(src)
+        zf = tmp_path / "demo.zip"
+        m.cmd_pack(argparse.Namespace(name="demo", out=str(zf)))
+        m.cmd_unpack(argparse.Namespace(file=str(zf), into=str(dst), force=False))
+        m.cmd_unpack(argparse.Namespace(file=str(zf), into=str(dst), force=True))
+
+    def test_a_foreign_zip_is_rejected(self, tmp_path):
+        import argparse
+        import zipfile
+        m = self._mod()
+        zf = tmp_path / "random.zip"
+        with zipfile.ZipFile(zf, "w") as z:
+            z.writestr("hello.txt", "hi")
+        with pytest.raises(SystemExit, match="was not written by"):
+            m.cmd_unpack(argparse.Namespace(file=str(zf), into=str(tmp_path), force=False))
+
+    def test_packing_an_unknown_experiment_lists_what_exists(self, tmp_path, monkeypatch):
+        import argparse
+        m = self._mod()
+        monkeypatch.setattr(m, "REPO", tmp_path)
+        self._make(tmp_path)
+        with pytest.raises(SystemExit, match="found nothing"):
+            m.cmd_pack(argparse.Namespace(name="nope", out=str(tmp_path / "x.zip")))
