@@ -158,7 +158,13 @@ def run_claude(prompt: str, *, step: str, round_dir: Path,
         return AgentResult(step, "", 0, 0.0, len(prompt), sha, dry_run=True)
 
     if not claude_available():
-        raise AgentError("`claude` CLI not found on PATH.")
+        # Raising here kills the run. The binary can vanish for a few seconds
+        # while a package manager rewrites its symlink — a Homebrew upgrade of
+        # claude-code did exactly that mid-experiment and cost five rounds — so
+        # report it as a retryable infrastructure failure and let the guard's
+        # backoff wait it out. A genuinely missing CLI simply fails every retry.
+        return AgentResult(step, "", 127, 0.0, len(prompt), sha,
+                           stderr="`claude` CLI not found on PATH")
 
     # The CLI prefers ANTHROPIC_API_KEY over the claude.ai subscription login
     # whenever the variable is set. Sourcing a secrets file for the API

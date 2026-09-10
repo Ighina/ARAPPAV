@@ -1347,3 +1347,25 @@ class TestPackagingSiblingNames:
         _, summary = m._collect("algebra_evolve_b")
         leaves = {k.rsplit("/", 1)[-1] for k in summary if "validation" in k}
         assert leaves == {"algevb"}
+
+
+class TestTransientCliDisappearance:
+    """A package manager rewriting the CLI symlink must not end a run."""
+
+    def test_a_missing_cli_is_retryable_not_fatal(self, monkeypatch, tmp_path):
+        import arappav.pipeline.agents as A
+        monkeypatch.setattr(A, "claude_available", lambda: False)
+        r = A.run_claude("x", step="s", round_dir=tmp_path)
+        # returned, not raised, so the guard's backoff can wait it out
+        assert r.returncode == 127
+        assert "not found on PATH" in r.infra_failure()
+
+    def test_it_still_aborts_once_the_retries_are_spent(self, monkeypatch, tmp_path):
+        import arappav.pipeline.agents as A
+        import arappav.pipeline.orchestrator as O
+        from arappav.pipeline.agents import InfrastructureError
+        monkeypatch.setattr(A, "claude_available", lambda: False)
+        monkeypatch.setattr(O.time, "sleep", lambda s: None)
+        r = A.run_claude("x", step="s", round_dir=tmp_path)
+        with pytest.raises(InfrastructureError):
+            O._guard(r, "step", attempt=2, retries=2)
